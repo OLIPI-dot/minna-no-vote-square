@@ -1410,11 +1410,14 @@ function App() {
                         {votedOption || isTimeUp ? (
                           <>
                             <div className="result-info">
-                              <span>
+                              <span className="choice-name">
                                 {index + 1}. {opt.name}
                                 {(String(votedOption) === String(opt.id) || votedOption === opt.name) && ' ✅'}
                               </span>
-                              <span>{opt.votes || 0}票 ({perc}%)</span>
+                              <span className="vote-count-meta">
+                                <span className="vote-count-num">{opt.votes || 0}票</span>
+                                <span className="vote-count-perc">({perc}%)</span>
+                              </span>
                             </div>
                             <div className="result-bar-bg"><div className="result-bar-fill" style={{ width: `${perc}%` }}></div></div>
                           </>
