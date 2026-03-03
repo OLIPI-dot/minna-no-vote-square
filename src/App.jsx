@@ -656,13 +656,13 @@ function App() {
         ? `/survey/${currentSurvey.id}`
         : (view === 'list' ? '/' : '/create');
 
-      // 🌟 らびの原点回帰魔法！
+      // 🌟 らびの最終・超安定確定魔法！
       // 1. ブラウザのタイトルを更新
       document.title = pageTitle;
 
-      // 2. config 命令を使って、ページ情報の更新とページビュー送信を同時に行うよ！
-      // これがSPAでは一番安定して「アクティブユーザー」として認識される方法だよ！✨
-      window.gtag('config', 'G-7XDW2RW3L7', {
+      // 2. ページビューイベントを、すべての情報を含めて明示的に送るよ！
+      // これがSPAでは「複数のデバイス」も一番きれいに数えられる方法だよ！✨
+      window.gtag('event', 'page_view', {
         page_title: pageTitle,
         page_location: window.location.href,
         page_path: virtualPath
