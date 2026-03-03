@@ -636,9 +636,17 @@ function App() {
 
   // 🖱️ ページ遷移時に一番上へ戻る魔法 & 📊 Google Analytics 追跡
   useEffect(() => {
+    // 🐰 らびのGA計測魔法（SPA対応・超確実版！）
+
+    // ガード1: 詳細画面なのに対象アンケートがまだ読み込まれていない場合はスキップ
+    if (view === 'details' && !currentSurvey) return;
+
+    // ガード2: 初期ロード時、URLにアンケートIDがあるのにまだ詳細画面に切り替わっていない間はスキップ
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('s') && view === 'list') return;
+
     window.scrollTo(0, 0);
 
-    // 🐰 らびのGA計測魔法（SPA対応強化版！）
     if (window.gtag) {
       const pageTitle = currentSurvey
         ? `${currentSurvey.title} - みんなのアンケート広場`
@@ -646,8 +654,8 @@ function App() {
 
       const pagePath = window.location.pathname + window.location.search;
 
-      // config を使うことで、GA4 の「現在のページ」情報を強制的に更新するよ！
-      window.gtag('config', 'G-7XDW2RW3L7', {
+      // 'event' の 'page_view' を明示的に呼ぶのが、SPAでの一番確実な方法だよ！✨
+      window.gtag('event', 'page_view', {
         page_title: pageTitle,
         page_location: window.location.href,
         page_path: pagePath
