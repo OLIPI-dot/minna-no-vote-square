@@ -656,16 +656,17 @@ function App() {
         ? `/survey/${currentSurvey.id}`
         : (view === 'list' ? '/' : '/create');
 
-      // 🌟 らびの最終・超安定確定魔法！
-      // 1. ブラウザのタイトルを更新
+      // 🌟 らびの「絶対に諦めない！応援」魔法！
+      // 1. ブラウザのタイトルを即座に更新
       document.title = pageTitle;
 
-      // 2. ページビューイベントを、すべての情報を含めて明示的に送るよ！
-      // これがSPAでは「複数のデバイス」も一番きれいに数えられる方法だよ！✨
-      window.gtag('event', 'page_view', {
+      // 2. config 命令で Google に報告！ 
+      // debug_mode を ON にして、管理画面の「DebugView」でリアルタイムに動きが見えるようにするよ！✨
+      window.gtag('config', 'G-7XDW2RW3L7', {
         page_title: pageTitle,
         page_location: window.location.href,
-        page_path: virtualPath
+        page_path: virtualPath,
+        debug_mode: true // これでおいぴさんが何を見てるか、DebugViewで1秒ごとにわかるようになるよ！
       });
     }
   }, [view, currentSurvey?.id]);
