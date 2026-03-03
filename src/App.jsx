@@ -652,13 +652,17 @@ function App() {
         ? `${currentSurvey.title} - みんなのアンケート広場`
         : (view === 'list' ? 'みんなのアンケート広場' : 'アンケート作成 - みんなのアンケート広場');
 
-      const pagePath = window.location.pathname + window.location.search;
+      // 仮想パスを生成して、GAのレポートで別々のページとして認識されやすくするよ！
+      // ?s=137 などを /survey/137 として送る「らびの仮想パス魔法」🧙‍♂️🥕
+      const virtualPath = currentSurvey
+        ? `/survey/${currentSurvey.id}`
+        : (view === 'list' ? '/' : '/create');
 
       // 'event' の 'page_view' を明示的に呼ぶのが、SPAでの一番確実な方法だよ！✨
       window.gtag('event', 'page_view', {
         page_title: pageTitle,
         page_location: window.location.href,
-        page_path: pagePath
+        page_path: virtualPath // ここを仮想パスに差し替え！
       });
     }
   }, [view, currentSurvey?.id]);
