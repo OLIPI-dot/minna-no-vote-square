@@ -656,20 +656,20 @@ function App() {
         ? `/survey/${currentSurvey.id}`
         : (view === 'list' ? '/' : '/create');
 
-      // 🌟 らびの「TOPページも忘れない！」復活魔法！
+      // 🌟 らびの「TOPページも逃さない！究極」魔法！
       // 1. ブラウザのタイトルを更新
       document.title = pageTitle;
 
-      // 2. config 命令で報告！ 
-      // debug_mode を ON にして、動きを見えやすくするよ！✨
-      window.gtag('config', 'G-7XDW2RW3L7', {
+      // 2. page_view イベントを明示的に送信！
+      // config よりも、SPAではこちらのほうが「今ページが変わったよ！」と伝わりやすいんだよ✨
+      window.gtag('event', 'page_view', {
         page_title: pageTitle,
         page_location: window.location.href,
         page_path: virtualPath,
         debug_mode: true
       });
 
-      // 3. ちゃんと動いてるか、おりぴさんがコンソールで見えるようにするよ！
+      // 3. おりぴさんがコンソールで「今だ！」とわかるようにログを出すよ！
       console.log(`📊 GA計測発動！: ${pageTitle} (path: ${virtualPath})`);
     }
   }, [view, currentSurvey?.id]);
