@@ -119,7 +119,7 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null }) => {
     { title: 'LISEN USB-C ケーブル 2M', url: 'https://amzn.to/4aQsQO4', image: 'https://m.media-amazon.com/images/I/81eeRU5gwtL._AC_SX679_.jpg', icon: '🔌', category: 'おりぴPC' },
     { title: 'UGREEN USB-C ケーブル 2M', url: 'https://amzn.to/40ekjhW', image: 'https://m.media-amazon.com/images/I/61DgZxJhEZL._AC_SY879_.jpg', icon: '🔌', category: 'おりぴPC' },
     { title: '味の素 冷凍ギョーザ 1kg', url: 'https://amzn.to/4b9MxiU', image: 'https://m.media-amazon.com/images/I/81bIZEBVGqL._AC_SY679_.jpg', icon: '🥟', category: 'おりぴ食品' },
-    { title: 'Logicool G ゲーミングヘッドセット', url: 'https://amzn.to/46HYQS0', image: 'https://m.media-amazon.com/images/I/71QEWj+ioXS._AC_SX679_.jpg', icon: '�', category: 'おりぴPC' },
+    { title: 'Logicool G ゲーミングヘッドセット', url: 'https://amzn.to/46HYQS0', image: 'https://m.media-amazon.com/images/I/71QEWj+ioXS._AC_SX679_.jpg', icon: '🎧', category: 'おりぴPC' },
     { title: 'ブテナロック 足洗いソープ', url: 'https://amzn.to/4rVg8ni', image: 'https://m.media-amazon.com/images/I/51U5qFjDPOL._AC_SY879_.jpg', icon: '🧼', category: 'おりぴ生活' },
     { title: '下村企販 バナナスタンド', url: 'https://amzn.to/4rfif4a', image: 'https://m.media-amazon.com/images/I/41SLnhzQXVL._AC_SY879_.jpg', icon: '🍌', category: 'おりぴキッチン' }
   ];
@@ -157,14 +157,18 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null }) => {
         zIndex: 1 // 👈 ここを1にして、中身がクリックできるようにします
       }}>
         {affiliateType === 'amazon' ? (
-          <div className="affiliate-content" style={{ position: 'relative', zIndex: 10 }}>
-            <div style={{ fontSize: '1.8rem', marginBottom: '8px' }}>{rec.icon}</div>
-            <div style={{ fontWeight: 'bold', color: '#334155' }}>{rec.title}</div>
-            <div style={{ fontSize: '0.8rem', opacity: 0.8, marginTop: '4px' }}>おりぴさんのおすすめ！ 🎁<br />Amazonでお買い物を楽しもう🥕</div>
-            <a href={rec.url} target="_blank" rel="noopener noreferrer" className="affiliate-btn amazon-btn" style={{
-              marginTop: '12px', padding: '8px 24px', background: '#ff9900', color: '#fff', borderRadius: '25px', textDecoration: 'none', fontWeight: 'bold', fontSize: '0.9rem',
-              boxShadow: '0 4px 10px rgba(255, 153, 0, 0.2)', display: 'inline-block', position: 'relative', zIndex: 20
-            }}>Amazonで詳細を見る ✨</a>
+          <div className="affiliate-content" style={{ position: 'relative', zIndex: 10, display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap', justifyContent: 'center', width: '100%' }}>
+            <div className="product-image-container" style={{ width: '80px', height: '80px', background: '#fff', borderRadius: '12px', padding: '6px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <img src={rec.image} alt={rec.title} referrerPolicy="no-referrer" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+            </div>
+            <div style={{ textAlign: 'left', flex: '1', minWidth: '200px' }}>
+              <div style={{ fontSize: '0.7rem', color: '#ec4899', fontWeight: 'bold', marginBottom: '4px' }}>✨ {rec.category} (おりぴ厳選！) ✨</div>
+              <div style={{ fontWeight: '900', color: '#334155', fontSize: '1.1rem', marginBottom: '8px', lineHeight: '1.3' }}>{rec.title}</div>
+              <a href={rec.url} target="_blank" rel="noopener noreferrer" className="affiliate-btn amazon-btn" style={{
+                padding: '8px 24px', background: 'linear-gradient(135deg, #ff9900 0%, #ffb347 100%)', color: '#fff', borderRadius: '25px', textDecoration: 'none', fontWeight: 'bold', fontSize: '0.9rem',
+                boxShadow: '0 4px 12px rgba(255, 153, 0, 0.2)', display: 'inline-block', position: 'relative', zIndex: 20
+              }}>Amazonで詳細を見る ✨</a>
+            </div>
           </div>
         ) : affiliateType === 'ofuse' ? (
           <div className="affiliate-content" style={{ position: 'relative', zIndex: 10 }}>
