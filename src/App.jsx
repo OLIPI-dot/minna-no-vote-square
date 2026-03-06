@@ -164,15 +164,15 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null }) => {
               overflow: 'hidden', border: '1px solid #f1f5f9', position: 'relative'
             }}>
               <img
-                src={`https://ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${rec.asin}&Format=_SL250_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1&tag=${ASSOCIATE_ID}`}
+                src={`https://i.amazon-adsystem.com/e/ir?t=${ASSOCIATE_ID}&language=ja_JP&l=li3&o=9&a=${rec.asin}`}
                 alt={rec.title}
                 style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
                 onError={(e) => {
                   e.target.style.display = 'none';
-                  e.target.nextSibling.style.display = 'block';
+                  e.target.nextSibling.style.display = 'flex';
                 }}
               />
-              <div style={{ display: 'none', fontSize: '3rem' }}>{rec.icon}</div>
+              <div style={{ display: 'none', fontSize: '3.5rem', alignItems: 'center', justifyContent: 'center', height: '100%' }}>{rec.icon}</div>
             </div>
             <div className="product-title" style={{ fontWeight: '800', color: '#1e293b', fontSize: '1.05rem', marginBottom: '4px' }}>{rec.title}</div>
             <div className="product-recommend" style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: '500' }}>おりぴさん厳選のおすすめ！ 💖</div>
