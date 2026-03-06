@@ -501,6 +501,17 @@ body {
   box-sizing: border-box !important;
 }
 
+.ads-placeholder:hover {
+  transform: translateY(-6px) !important;
+  box-shadow: 0 20px 50px rgba(236, 72, 153, 0.25) !important;
+  background: white !important;
+  cursor: pointer;
+}
+
+.ads-placeholder:hover .product-image-container {
+  transform: scale(1.08) rotate(-3deg);
+}
+
 @media (min-width: 1024px) {
   .survey-item-card {
     flex-direction: column !important;

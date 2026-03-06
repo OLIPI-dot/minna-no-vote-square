@@ -153,15 +153,16 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null }) => {
         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
         padding: '28px', color: '#64748b', fontSize: '0.9rem',
         boxShadow: '0 10px 40px rgba(236, 72, 153, 0.12)',
-        zIndex: 1
+        zIndex: 1,
+        transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
       }}>
         {affiliateType === 'amazon' ? (
           <div className="affiliate-content" style={{ position: 'relative', zIndex: 10, display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: '100%', gap: '30px', flexWrap: 'wrap', padding: '10px' }}>
-            <div className="product-image-container" style={{ width: '140px', height: '140px', background: '#fff', borderRadius: '16px', padding: '8px', boxShadow: '0 4px 20px rgba(236, 72, 153, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0, border: '1px solid #ffe4e6' }}>
+            <div className="product-image-container" style={{ width: '140px', height: '140px', background: '#fff', borderRadius: '16px', padding: '8px', boxShadow: '0 4px 20px rgba(236, 72, 153, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0, border: '1px solid #ffe4e6', transition: 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)' }}>
               <img src={rec.image} alt={rec.title} referrerPolicy="no-referrer" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
             </div>
             <div style={{ textAlign: 'center', maxWidth: '350px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <div style={{ fontSize: '0.75rem', color: '#ec4899', fontWeight: 'bold', marginBottom: '8px', letterSpacing: '0.05em' }}>💖 おりぴおすすめアイテム 💖</div>
+              <div style={{ fontSize: '0.75rem', color: '#ec4899', fontWeight: 'bold', marginBottom: '8px', letterSpacing: '0.05em' }}>💖 おすすめアイテム 💖</div>
               <div style={{ fontWeight: '900', color: '#1e293b', fontSize: '1.1rem', marginBottom: '15px', lineHeight: '1.4', display: '-webkit-box', WebkitLineClamp: '2', WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{rec.title}</div>
               <a href={rec.url} target="_blank" rel="noopener noreferrer" className="affiliate-btn amazon-btn" style={{
                 padding: '12px 32px', background: 'linear-gradient(135deg, #ff9900 0%, #ffb347 100%)', color: '#fff', borderRadius: '40px', textDecoration: 'none', fontWeight: '800', fontSize: '1rem',
