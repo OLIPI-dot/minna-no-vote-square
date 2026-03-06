@@ -108,6 +108,22 @@ const CountdownTimer = ({ deadline, onTimeUp }) => {
 };
 
 const AdSenseBox = ({ slot, format = 'auto', affiliateType = null }) => {
+  // 🥕 おりぴさんの特別な紹介ID！
+  const ASSOCIATE_ID = 'olipivote-22';
+
+  // ✨ おすすめ商品リスト
+  const RECOMMENDATIONS = [
+    { title: 'mofusand ポテトスナック', url: `https://www.amazon.co.jp/dp/B0DHHM7D1V?tag=${ASSOCIATE_ID}`, icon: '🍟' },
+    { title: 'mofusand キャンディ', url: `https://www.amazon.co.jp/dp/B0DLT6KMTY?tag=${ASSOCIATE_ID}`, icon: '🍭' },
+    { title: 'アンケート作りのノート', url: `https://www.amazon.co.jp/s?k=%E3%83%8E%E3%83%BC%E3%83%88&tag=${ASSOCIATE_ID}`, icon: '📝' }
+  ];
+
+  // ランダムに1つ選ぶよ
+  const [rec, setRec] = useState(RECOMMENDATIONS[0]);
+  useEffect(() => {
+    setRec(RECOMMENDATIONS[Math.floor(Math.random() * RECOMMENDATIONS.length)]);
+  }, []);
+
   useEffect(() => {
     const initAd = () => {
       try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) { }
@@ -136,12 +152,13 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null }) => {
       }}>
         {affiliateType === 'amazon' ? (
           <div className="affiliate-content">
-            <div style={{ fontSize: '1.5rem', marginBottom: '8px' }}>🛒</div>
-            <div style={{ fontWeight: 'bold', color: '#334155' }}>らびのおすすめアイテム</div>
-            <div style={{ fontSize: '0.8rem', opacity: 0.8, marginTop: '4px' }}>アンケート作りのお供に！<br />Amazonでお買い物を楽しもう🥕</div>
-            <a href="https://www.amazon.co.jp/" target="_blank" rel="noopener noreferrer" className="affiliate-btn amazon-btn" style={{
-              marginTop: '12px', padding: '8px 20px', background: '#ff9900', color: '#fff', borderRadius: '20px', textDecoration: 'none', fontWeight: 'bold', fontSize: '0.85rem'
-            }}>Amazonで見る ✨</a>
+            <div style={{ fontSize: '1.8rem', marginBottom: '8px' }}>{rec.icon}</div>
+            <div style={{ fontWeight: 'bold', color: '#334155' }}>{rec.title}</div>
+            <div style={{ fontSize: '0.8rem', opacity: 0.8, marginTop: '4px' }}>おりぴさんのおすすめ！ 🎁<br />Amazonでお買い物を楽しもう🥕</div>
+            <a href={rec.url} target="_blank" rel="noopener noreferrer" className="affiliate-btn amazon-btn" style={{
+              marginTop: '12px', padding: '8px 24px', background: '#ff9900', color: '#fff', borderRadius: '25px', textDecoration: 'none', fontWeight: 'bold', fontSize: '0.9rem',
+              boxShadow: '0 4px 10px rgba(255, 153, 0, 0.2)'
+            }}>Amazonで詳細を見る ✨</a>
           </div>
         ) : affiliateType === 'ofuse' ? (
           <div className="affiliate-content">
