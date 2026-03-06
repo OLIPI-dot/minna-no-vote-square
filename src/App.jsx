@@ -113,12 +113,15 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null }) => {
 
   // ✨ バリエーション豊かなおすすめ商品リスト（画像URL直接指定で確実に表示！）
   const RECOMMENDATIONS = [
-    { title: 'mofusand なかよしにゃんこ缶', url: `https://www.amazon.co.jp/dp/B0GPQ4PW1H?tag=${ASSOCIATE_ID}`, image: 'https://m.media-amazon.com/images/I/71nS0Y+0kEL._AC_SL400_.jpg', icon: '🐱', category: 'お菓子ギフト' },
-    { title: 'by Amazon エナジードリンク', url: 'https://amzn.to/4rVsb47', image: 'https://m.media-amazon.com/images/I/81YLVVDtZRL._AC_SX679_.jpg', icon: '⚡', category: 'おりぴ飲料' },
+    { title: 'by Amazon エナジードリンク', url: 'https://amzn.to/4rVsb47', image: 'https://m.media-amazon.com/images/I/81YLVVDtZRL._AC_SX679_.jpg', icon: '⚡', category: 'おりぴ飲物' },
     { title: 'SONY 65インチ 4Kブラビア', url: 'https://amzn.to/3N15HiU', image: 'https://m.media-amazon.com/images/I/61N0XNFinyL._AC_SY879_.jpg', icon: '�', category: 'おりぴ家電' },
-    { title: 'Shark 自動ゴミ収集掃除機', url: 'https://amzn.to/4bgVp6q', image: 'https://m.media-amazon.com/images/I/51F7qXg9W+L._AC_SX679_.jpg', icon: '�', category: 'おりぴ家電' },
-    { title: 'mofusand タオルハンカチ', url: `https://www.amazon.co.jp/dp/B0CNK9KYD5?tag=${ASSOCIATE_ID}`, image: 'https://m.media-amazon.com/images/I/71618rRE97L._AC_SL400_.jpg', icon: '🌿', category: 'かわいい雑貨' },
-    { title: 'mofusand クリアシール', url: `https://www.amazon.co.jp/dp/B0CC88WPXW?tag=${ASSOCIATE_ID}`, image: 'https://m.media-amazon.com/images/I/81An4JmO8zL._AC_SL400_.jpg', icon: '✨', category: '文具・シール' }
+    { title: 'Shark 自動ゴミ収集掃除機', url: 'https://amzn.to/4bgVp6q', image: 'https://m.media-amazon.com/images/I/51F7qXg9W+L._AC_SX679_.jpg', icon: '🧹', category: 'おりぴ家電' },
+    { title: 'LISEN USB-C ケーブル 2M', url: 'https://amzn.to/4aQsQO4', image: 'https://m.media-amazon.com/images/I/81eeRU5gwtL._AC_SX679_.jpg', icon: '🔌', category: 'おりぴPC' },
+    { title: 'UGREEN USB-C ケーブル 2M', url: 'https://amzn.to/40ekjhW', image: 'https://m.media-amazon.com/images/I/61DgZxJhEZL._AC_SY879_.jpg', icon: '🔌', category: 'おりぴPC' },
+    { title: '味の素 冷凍ギョーザ 1kg', url: 'https://amzn.to/4b9MxiU', image: 'https://m.media-amazon.com/images/I/81bIZEBVGqL._AC_SY679_.jpg', icon: '🥟', category: 'おりぴ食品' },
+    { title: 'Logicool G ゲーミングヘッドセット', url: 'https://amzn.to/46HYQS0', image: 'https://m.media-amazon.com/images/I/71QEWj+ioXS._AC_SX679_.jpg', icon: '�', category: 'おりぴPC' },
+    { title: 'ブテナロック 足洗いソープ', url: 'https://amzn.to/4rVg8ni', image: 'https://m.media-amazon.com/images/I/51U5qFjDPOL._AC_SY879_.jpg', icon: '🧼', category: 'おりぴ生活' },
+    { title: '下村企販 バナナスタンド', url: 'https://amzn.to/4rfif4a', image: 'https://m.media-amazon.com/images/I/41SLnhzQXVL._AC_SY879_.jpg', icon: '🍌', category: 'おりぴキッチン' }
   ];
 
   // ランダムに1つ選ぶよ
@@ -142,7 +145,7 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null }) => {
   }, []);
 
   return (
-    <div className="survey-item-card recommend-box-card" style={{ cursor: 'default', position: 'relative', overflow: 'hidden', minHeight: '340px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', border: '2px dashed #ec4899', background: 'linear-gradient(135deg, #fff5f7 0%, #ffffff 100%)' }}>
+    <div className="survey-item-card recommend-box-card" style={{ cursor: 'default', position: 'relative', overflow: 'hidden', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', border: '2px dashed #ec4899', background: 'linear-gradient(135deg, #fff5f7 0%, #ffffff 100%)', padding: '16px', boxSizing: 'border-box' }}>
       <div className="recommend-placeholder" style={{
         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
         padding: '20px', width: '100%', height: '100%'
