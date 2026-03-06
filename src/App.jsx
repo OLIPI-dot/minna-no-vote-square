@@ -111,14 +111,14 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null }) => {
   // 🥕 おりぴさんの特別な紹介ID！
   const ASSOCIATE_ID = 'olipivote-22';
 
-  // ✨ バリエーション豊かなおすすめ商品リスト（お菓子・文具・雑貨・バス用品）
+  // ✨ バリエーション豊かなおすすめ商品リスト（画像URL直接指定で確実に表示！）
   const RECOMMENDATIONS = [
-    { title: 'mofusand なかよしにゃんこ缶', url: `https://www.amazon.co.jp/dp/B0GPQ4PW1H?tag=${ASSOCIATE_ID}`, asin: 'B0GPQ4PW1H', icon: '🐱', category: 'お菓子ギフト' },
-    { title: 'mofusand びっくらたまご', url: `https://www.amazon.co.jp/dp/B0GHMSBSJF?tag=${ASSOCIATE_ID}`, asin: 'B0GHMSBSJF', icon: '🛁', category: 'バス用品' },
-    { title: 'mofusand ウカンムリクリップ', url: `https://www.amazon.co.jp/dp/B0DW8RGKST?tag=${ASSOCIATE_ID}`, asin: 'B0DW8RGKST', icon: '📎', category: '便利な文房具' },
-    { title: 'mofusand 2WAYオープナー', url: `https://www.amazon.co.jp/dp/B0DW91LHL1?tag=${ASSOCIATE_ID}`, asin: 'B0DW91LHL1', icon: 'ドリンク', category: '便利グッズ' },
-    { title: 'mofusand タオルハンカチ', url: `https://www.amazon.co.jp/dp/B0CNK9KYD5?tag=${ASSOCIATE_ID}`, asin: 'B0CNK9KYD5', icon: '�', category: 'かわいい雑貨' },
-    { title: 'mofusand クリアシール', url: `https://www.amazon.co.jp/dp/B0CC88WPXW?tag=${ASSOCIATE_ID}`, asin: 'B0CC88WPXW', icon: '✨', category: '文具・シール' }
+    { title: 'mofusand なかよしにゃんこ缶', url: `https://www.amazon.co.jp/dp/B0GPQ4PW1H?tag=${ASSOCIATE_ID}`, image: 'https://m.media-amazon.com/images/I/71nS0Y+0kEL._AC_SL1500_.jpg', icon: '🐱', category: 'お菓子ギフト' },
+    { title: 'mofusand びっくらたまご', url: `https://www.amazon.co.jp/dp/B0GHMSBSJF?tag=${ASSOCIATE_ID}`, image: 'https://m.media-amazon.com/images/I/71WpB2HshDL._AC_SL1500_.jpg', icon: '🛁', category: 'バス用品' },
+    { title: 'mofusand ウカンムリクリップ', url: `https://www.amazon.co.jp/dp/B0DW8RGKST?tag=${ASSOCIATE_ID}`, image: 'https://m.media-amazon.com/images/I/51r2X7f+UmL._AC_SL1200_.jpg', icon: '📎', category: '便利な文房具' },
+    { title: 'mofusand 2WAYオープナー', url: `https://www.amazon.co.jp/dp/B0DW91LHL1?tag=${ASSOCIATE_ID}`, image: 'https://m.media-amazon.com/images/I/511Q5kS03rL._AC_SL1200_.jpg', icon: '🥤', category: '便利グッズ' },
+    { title: 'mofusand タオルハンカチ', url: `https://www.amazon.co.jp/dp/B0CNK9KYD5?tag=${ASSOCIATE_ID}`, image: 'https://m.media-amazon.com/images/I/71618rRE97L._AC_SL1500_.jpg', icon: '🌿', category: 'かわいい雑貨' },
+    { title: 'mofusand クリアシール', url: `https://www.amazon.co.jp/dp/B0CC88WPXW?tag=${ASSOCIATE_ID}`, image: 'https://m.media-amazon.com/images/I/81An4JmO8zL._AC_SL1500_.jpg', icon: '✨', category: '文具・シール' }
   ];
 
   // ランダムに1つ選ぶよ
@@ -164,7 +164,7 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null }) => {
               overflow: 'hidden', border: '1px solid #f1f5f9', position: 'relative'
             }}>
               <img
-                src={`https://i.amazon-adsystem.com/e/ir?t=${ASSOCIATE_ID}&language=ja_JP&l=li3&o=9&a=${rec.asin}`}
+                src={rec.image}
                 alt={rec.title}
                 style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
                 onError={(e) => {
