@@ -179,7 +179,7 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null }) => {
         )}
       </div>
       <ins className="adsbygoogle"
-        style={{ display: 'block', position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 0 }} // 👈 insタグを後ろに隠します
+        style={{ display: 'block', position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 0, pointerEvents: 'none' }} // 👈 pointerEvents: 'none' でクリックを通します
         data-ad-client="ca-pub-9429738476925701"
         data-ad-slot={slot}
         data-ad-format={format}
@@ -1190,7 +1190,7 @@ function App() {
           ))}
         </div>
       </div>
-      <AdSenseBox slot="sidebar_slot_placeholder" />
+      <AdSenseBox slot="sidebar_slot_placeholder" affiliateType="amazon" />
     </div>
   );
 
