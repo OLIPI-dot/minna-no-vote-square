@@ -157,16 +157,16 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null }) => {
         zIndex: 1 // 👈 ここを1にして、中身がクリックできるようにします
       }}>
         {affiliateType === 'amazon' ? (
-          <div className="affiliate-content" style={{ position: 'relative', zIndex: 10, display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap', justifyContent: 'center', width: '100%' }}>
-            <div className="product-image-container" style={{ width: '80px', height: '80px', background: '#fff', borderRadius: '12px', padding: '6px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="affiliate-content" style={{ position: 'relative', zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', gap: '12px' }}>
+            <div className="product-image-container" style={{ width: '70px', height: '70px', background: '#fff', borderRadius: '12px', padding: '4px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
               <img src={rec.image} alt={rec.title} referrerPolicy="no-referrer" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
             </div>
-            <div style={{ textAlign: 'left', flex: '1', minWidth: '200px' }}>
-              <div style={{ fontSize: '0.7rem', color: '#ec4899', fontWeight: 'bold', marginBottom: '4px' }}>✨ {rec.category} (おりぴ厳選！) ✨</div>
-              <div style={{ fontWeight: '900', color: '#334155', fontSize: '1.1rem', marginBottom: '8px', lineHeight: '1.3' }}>{rec.title}</div>
+            <div style={{ textAlign: 'center', width: '100%', maxWidth: '400px' }}>
+              <div style={{ fontSize: '0.7rem', color: '#ec4899', fontWeight: 'bold', marginBottom: '2px' }}>✨ {rec.category} ✨</div>
+              <div style={{ fontWeight: '900', color: '#334155', fontSize: '1rem', marginBottom: '8px', lineHeight: '1.2', display: '-webkit-box', WebkitLineClamp: '2', WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{rec.title}</div>
               <a href={rec.url} target="_blank" rel="noopener noreferrer" className="affiliate-btn amazon-btn" style={{
-                padding: '8px 24px', background: 'linear-gradient(135deg, #ff9900 0%, #ffb347 100%)', color: '#fff', borderRadius: '25px', textDecoration: 'none', fontWeight: 'bold', fontSize: '0.9rem',
-                boxShadow: '0 4px 12px rgba(255, 153, 0, 0.2)', display: 'inline-block', position: 'relative', zIndex: 20
+                padding: '6px 20px', background: 'linear-gradient(135deg, #ff9900 0%, #ffb347 100%)', color: '#fff', borderRadius: '25px', textDecoration: 'none', fontWeight: 'bold', fontSize: '0.85rem',
+                boxShadow: '0 4px 10px rgba(255, 153, 0, 0.2)', display: 'inline-block', position: 'relative', zIndex: 20
               }}>Amazonで詳細を見る ✨</a>
             </div>
           </div>
