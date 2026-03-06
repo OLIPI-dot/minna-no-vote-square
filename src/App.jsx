@@ -225,6 +225,7 @@ function App() {
   const [liveSurveys, setLiveSurveys] = useState([]);
   const [popularSurveys, setPopularSurveys] = useState([]);
   const [endingSoonSurveys, setEndingSoonSurveys] = useState([]);
+  const [showAllEndingSoon, setShowAllEndingSoon] = useState(false);
   const [isTotalVotes, setIsTotalVotes] = useState(0);
   const [surveyTitle, setSurveyTitle] = useState('');
   const [surveyImage, setSurveyImage] = useState('');
@@ -883,8 +884,7 @@ function App() {
       const next24h = new Date(now.getTime() + 24 * 60 * 60 * 1000);
       const endingSoon = withStats
         .filter(s => s.deadline && new Date(s.deadline) > now && new Date(s.deadline) <= next24h)
-        .sort((a, b) => new Date(a.deadline) - new Date(b.deadline))
-        .slice(0, 3);
+        .sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
       setEndingSoonSurveys(endingSoon);
     }
   };
@@ -1161,14 +1161,24 @@ function App() {
         <div className="live-feed-title" style={{ color: '#e11d48' }}>⏰ もうすぐ終了！</div>
         <div className="live-feed-content">
           {endingSoonSurveys.length > 0 ? (
-            endingSoonSurveys.map(s => (
-              <div key={s.id} className="live-item clickable" onClick={() => navigateTo('details', s)}>
-                <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>{s.title}</div>
-                <div style={{ fontSize: '0.8rem', color: '#e11d48', background: '#fff1f2', display: 'inline-block', padding: '2px 8px', borderRadius: '12px' }}>
-                  〆: {formatWithDay(s.deadline)}
+            <>
+              {(showAllEndingSoon ? endingSoonSurveys : endingSoonSurveys.slice(0, 4)).map(s => (
+                <div key={s.id} className="live-item clickable" onClick={() => navigateTo('details', s)}>
+                  <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>{s.title}</div>
+                  <div style={{ fontSize: '0.8rem', color: '#e11d48', background: '#fff1f2', display: 'inline-block', padding: '2px 8px', borderRadius: '12px' }}>
+                    〆: {formatWithDay(s.deadline)}
+                  </div>
                 </div>
-              </div>
-            ))
+              ))}
+              {endingSoonSurveys.length > 4 && (
+                <button onClick={() => setShowAllEndingSoon(v => !v)} style={{
+                  marginTop: '8px', width: '100%', background: 'none', border: '1.5px solid #fca5a5',
+                  borderRadius: '12px', color: '#e11d48', fontSize: '0.8rem', padding: '4px 0', cursor: 'pointer', fontWeight: 'bold'
+                }}>
+                  {showAllEndingSoon ? '▲ 閉じる' : `▼ あと${endingSoonSurveys.length - 4}件 もっと見る`}
+                </button>
+              )}
+            </>
           ) : (
             <div style={{ fontSize: '0.85rem', color: '#64748b', textAlign: 'center', padding: '12px 0' }}>
               現在、24時間以内に終了する<br />アンケートはありません🍵
