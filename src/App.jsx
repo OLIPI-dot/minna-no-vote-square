@@ -1368,20 +1368,7 @@ function App() {
                                         ? s.title.split('||')[0].trim() 
                                         : s.title}
                                     </span>
-                                    {s.tags?.includes('お知らせ') && s.title.includes('||') && (
-                                      <div className="survey-item-description" style={{ 
-                                        fontSize: '0.85rem', 
-                                        color: '#475569', 
-                                        marginTop: '4px', 
-                                        lineHeight: '1.5',
-                                        background: '#f8fafc',
-                                        padding: '8px',
-                                        borderRadius: '8px',
-                                        borderLeft: '4px solid #7c3aed'
-                                      }}>
-                                        {s.title.split('||')[1].trim()}
-                                      </div>
-                                    )}
+                                    {/* 💡 お知らせの本文は一覧では非表示にし、詳細画面でのみ表示するらび！ */}
                                     <div className="card-right-actions">
                                       <button className={`watch-star-btn ${watchedIds.includes(s.id) ? 'active' : ''}`} onClick={(e) => toggleWatch(e, s.id)}>{watchedIds.includes(s.id) ? '★' : '☆'}</button>
                                       <span className={`status-badge ${isEnded ? 'ended' : 'active'}`}>{isEnded ? '終了' : '受付中'}</span>
