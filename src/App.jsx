@@ -1362,11 +1362,15 @@ function App() {
                                 className={`survey-item-card ${s.tags?.includes('お知らせ') ? 'announcement-card' : ''}`} 
                                 onClick={() => navigateTo('details', s)}
                                 style={s.tags?.includes('お知らせ') ? {
-                                  background: 'linear-gradient(135deg, #fdfcfb 0%, #e2d1f9 100%)',
-                                  border: '2px solid #7c3aed',
-                                  boxShadow: '0 8px 15px -3px rgba(124, 58, 237, 0.2)'
+                                  background: 'linear-gradient(135deg, #fffbeb, #fff7ed)',
+                                  border: '2px solid #fbbf24',
+                                  boxShadow: '0 8px 15px -3px rgba(251, 191, 36, 0.15)',
+                                  position: 'relative'
                                 } : {}}
                               >
+                                {s.tags?.includes('お知らせ') && (
+                                  <span style={{ position: 'absolute', top: '8px', right: '12px', fontSize: '1.2rem', animation: 'glitter 2s infinite ease-in-out' }}>✨</span>
+                                )}
                                 <div className="category-icon-thumb" style={{ background: CATEGORY_ICON_STYLE[s.category]?.color }}>{CATEGORY_ICON_STYLE[s.category]?.icon}</div>
                                 <div className="survey-item-content">
                                   <div className="survey-item-info">
