@@ -866,14 +866,17 @@ function App() {
   const refreshSidebar = async () => {
     const { data: sData } = await supabase.from('surveys').select('*').eq('visibility', 'public');
     const { data: oData } = await supabase.from('options').select('survey_id, votes');
-    const { data: cData } = await supabase.from('comments').select('survey_id');
 
     if (sData && oData) {
-      const withStats = sData.map(s => ({
+      // 💡 サイドバーからは「お知らせ」を除外する
+      const regularSurveys = sData.filter(s => !s.tags?.includes('お知らせ'));
+
+      const withStats = regularSurveys.map(s => ({
         ...s,
         total_votes: oData.filter(o => o.survey_id === s.id).reduce((sum, opt) => sum + (opt.votes || 0), 0),
-        comment_count: s.comment_count || 0 // DB カラムをそのまま使うらび！
+        comment_count: s.comment_count || 0 
       }));
+
       setLiveSurveys([...withStats].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 10));
       setPopularSurveys([...withStats].sort((a, b) => {
         const scoreA = (a.total_votes || 0) * SCORE_VOTE_WEIGHT + (a.view_count || 0);
@@ -1311,6 +1314,12 @@ function App() {
                         return true;
                       })
                       .sort((a, b) => {
+                        // 📌 「お知らせ」タグがあるものを最優先で上に持ってくるロジック
+                        const isAnnounceA = a.tags?.includes('お知らせ');
+                        const isAnnounceB = b.tags?.includes('お知らせ');
+                        if (isAnnounceA && !isAnnounceB) return -1;
+                        if (!isAnnounceA && isAnnounceB) return 1;
+
                         if (sortMode !== 'popular') return new Date(b.created_at) - new Date(a.created_at);
                         if (popularMode === 'trending') {
                           const ageA = Math.max(0.5, (new Date() - new Date(a.created_at)) / 3600000);
