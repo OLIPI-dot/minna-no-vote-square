@@ -206,6 +206,40 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null }) => {
   );
 };
 
+const SiteConceptSection = () => (
+  <div className="site-concept-card" style={{
+    background: 'linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%)',
+    borderRadius: '24px',
+    padding: '30px',
+    marginBottom: '32px',
+    border: '1px solid #e2e8f0',
+    boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.05)',
+    textAlign: 'left'
+  }}>
+    <h2 style={{ color: '#6366f1', fontSize: '1.5rem', marginTop: 0, marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+      <span>🌟</span> みんなのアンケート広場へようこそ
+    </h2>
+    <p style={{ fontSize: '1rem', color: '#475569', lineHeight: '1.8', marginBottom: '20px' }}>
+      「みんなのアンケート広場」は、誰もが気軽に本音をシェアできる、日本最大級の匿名アンケートコミュニティを目指しています。
+      日常のささいな疑問から、今世の中で話題のトレンドまで、多様な価値観に触れ、新しい発見を楽しむための場所です。
+    </p>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
+      <div style={{ background: '#fff', padding: '15px', borderRadius: '16px', border: '1px solid #f1f5f9' }}>
+        <h3 style={{ fontSize: '1rem', color: '#1e293b', marginTop: 0, marginBottom: '8px' }}>🛡️ 匿名で安心</h3>
+        <p style={{ fontSize: '0.85rem', color: '#64748b', margin: 0 }}>会員登録不要。周囲の目を気にせず、あなたの本当の気持ちを1タップで伝えられます。</p>
+      </div>
+      <div style={{ background: '#fff', padding: '15px', borderRadius: '16px', border: '1px solid #f1f5f9' }}>
+        <h3 style={{ fontSize: '1rem', color: '#1e293b', marginTop: 0, marginBottom: '8px' }}>🌍 多彩なジャンル</h3>
+        <p style={{ fontSize: '0.85rem', color: '#64748b', margin: 0 }}>エンタメ、生活、IT、グルメなど、12以上のカテゴリで毎日新しいアンケートが登場します。</p>
+      </div>
+      <div style={{ background: '#fff', padding: '15px', borderRadius: '16px', border: '1px solid #f1f5f9' }}>
+        <h3 style={{ fontSize: '1rem', color: '#1e293b', marginTop: 0, marginBottom: '8px' }}>🥕 らびと一緒に</h3>
+        <p style={{ fontSize: '0.85rem', color: '#64748b', margin: 0 }}>AIキャラクター「らび」が、あなたの投稿を見守り、時には優しくコメントしてくれるかも！</p>
+      </div>
+    </div>
+  </div>
+);
+
 function App() {
   const [view, setView] = useState('list');
   const [user, setUser] = useState(null);
