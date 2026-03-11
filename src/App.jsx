@@ -1325,6 +1325,7 @@ function App() {
                     </div>
                   );
                 })()}
+                <SiteConceptSection />
                 <div className="survey-list">
                   {isLoading ? <div className="empty-msg">読み込み中...</div> : (() => {
                     const filtered = surveys
