@@ -61,6 +61,7 @@ const CATEGORY_ICON_STYLE = {
   "トレンド": { icon: "🔥", color: "#ec4899" },
   "IT・テクノロジー": { icon: "💻", color: "#8b5cf6" },
   "生活": { icon: "🏠", color: "#10b981" },
+  "ニュース・経済": { icon: "📈", color: "#0ea5e9" }, // 📈 ニュース・経済（スカイブルー系）
   "ゲーム": { icon: "🎮", color: "#14b8a6" },
   "アニメ": { icon: "📺", color: "#6366f1" }, // 📺 アニメ用アイコン（インディゴ系に変更してITと差別化）
   "らび": { icon: "🐰", color: "#ec4899" }, // らび専用アイコン（ピンク系）
@@ -230,7 +231,7 @@ const SiteConceptSection = () => (
       </div>
       <div style={{ background: '#fff', padding: '15px', borderRadius: '16px', border: '1px solid #f1f5f9' }}>
         <h3 style={{ fontSize: '1rem', color: '#1e293b', marginTop: 0, marginBottom: '8px' }}>🌍 多彩なジャンル</h3>
-        <p style={{ fontSize: '0.85rem', color: '#64748b', margin: 0 }}>エンタメ、生活、IT、グルメなど、12以上のカテゴリで毎日新しいアンケートが登場します。</p>
+        <p style={{ fontSize: '0.85rem', color: '#64748b', margin: 0 }}>エンタメ、生活、IT、グルメなど、13以上のカテゴリで毎日新しいアンケートが登場します。</p>
       </div>
       <div style={{ background: '#fff', padding: '15px', borderRadius: '16px', border: '1px solid #f1f5f9' }}>
         <h3 style={{ fontSize: '1rem', color: '#1e293b', marginTop: 0, marginBottom: '8px' }}>🥕 らびと一緒に</h3>
@@ -1328,7 +1329,7 @@ function App() {
                   </div>
                 )}
                 <div className="category-filter-bar">
-                  {['すべて', 'エンタメ', 'アニメ', 'グルメ', 'スポーツ', 'トレンド', 'IT・テクノロジー', '生活', 'ゲーム', 'らび', 'その他'].map(cat => (
+                  {['すべて', 'ニュース・経済', 'エンタメ', 'アニメ', 'グルメ', 'スポーツ', 'トレンド', 'IT・テクノロジー', '生活', 'ゲーム', 'らび', 'その他'].map(cat => (
                     <button key={cat} className={`filter-cat-btn ${filterCategory === cat ? 'active' : ''}`} onClick={() => setFilterCategory(cat)}>{cat}</button>
                   ))}
                 </div>
@@ -1435,7 +1436,12 @@ function App() {
                                 {s.tags?.includes('お知らせ') && (
                                   <span style={{ position: 'absolute', top: '8px', right: '12px', fontSize: '1.2rem', animation: 'glitter 2s infinite ease-in-out' }}>✨</span>
                                 )}
-                                <div className="category-icon-thumb" style={{ background: CATEGORY_ICON_STYLE[s.category]?.color }}>{CATEGORY_ICON_STYLE[s.category]?.icon}</div>
+                                <div className="category-icon-thumb" style={{ 
+                                  background: (CATEGORY_ICON_STYLE[s.category] || CATEGORY_ICON_STYLE[s.category?.trim()] || CATEGORY_ICON_STYLE["その他"]).color,
+                                  border: `2px solid ${(CATEGORY_ICON_STYLE[s.category] || CATEGORY_ICON_STYLE[s.category?.trim()] || CATEGORY_ICON_STYLE["その他"]).color}44`
+                                }}>
+                                  {(CATEGORY_ICON_STYLE[s.category] || CATEGORY_ICON_STYLE[s.category?.trim()] || CATEGORY_ICON_STYLE["その他"]).icon}
+                                </div>
                                 <div className="survey-item-content">
                                   <div className="survey-item-info">
                                     <span className="survey-item-title">
@@ -1512,7 +1518,7 @@ function App() {
                   <div className="setting-item-block"><label>お題（タイトル）:</label><input className="title-input" value={surveyTitle} onChange={e => setSurveyTitle(e.target.value)} placeholder="例：今日のおやつは何がいい？" /></div>
                   <div className="setting-item-block"><label>カテゴリ:</label>
                     <div className="category-selector">
-                      {(isAdmin ? ['エンタメ', 'アニメ', 'グルメ', 'スポーツ', 'トレンド', 'IT・テクノロジー', '生活', 'ゲーム', 'らび', 'その他'] : ['エンタメ', 'アニメ', 'グルメ', 'スポーツ', 'トレンド', 'IT・テクノロジー', '生活', 'ゲーム', 'その他']).map(cat => (
+                      {(isAdmin ? ['ニュース・経済', 'エンタメ', 'アニメ', 'グルメ', 'スポーツ', 'トレンド', 'IT・テクノロジー', '生活', 'ゲーム', 'らび', 'その他'] : ['ニュース・経済', 'エンタメ', 'アニメ', 'グルメ', 'スポーツ', 'トレンド', 'IT・テクノロジー', '生活', 'ゲーム', 'その他']).map(cat => (
                         <button key={cat} className={`cat-btn ${surveyCategory === cat ? 'active' : ''}`} onClick={() => setSurveyCategory(cat)}>{cat}</button>
                       ))}
                     </div>
