@@ -729,9 +729,9 @@ function App() {
     }
   }
 
-  // 🖱️ ページ遷移時に一番上へ戻る魔法 & 📊 Google Analytics 追跡
+  // 🖱️ ページ遷移時に一番上へ戻る魔法 & 📊 Google Analytics 追跡 & 🔍 SEO 強化魔法 (Meta / JSON-LD)
   useEffect(() => {
-    // 🐰 らびのGA計測魔法（SPA対応・超確実版！）
+    // 🐰 らびのGA & SEO計測魔法（SPA対応・超確実版！）
 
     // ガード1: 詳細画面なのに対象アンケートがまだ読み込まれていない場合はスキップ
     if (view === 'details' && !currentSurvey) return;
@@ -742,20 +742,49 @@ function App() {
 
     window.scrollTo(0, 0);
 
-    if (window.gtag) {
-      const pageTitle = currentSurvey
-        ? `${currentSurvey.title} - みんなのアンケート広場`
-        : (view === 'list' ? 'みんなのアンケート広場' : 'アンケート作成 - みんなのアンケート広場');
+    // 🔍 SEOメタタグとタイトルの更新
+    const pageTitle = currentSurvey
+      ? `${currentSurvey.title} - みんなのアンケート広場`
+      : (view === 'list' ? 'みんなのアンケート広場｜匿名で気軽に投票・本音が集まるアンケートコミュニティ' : 'アンケート作成 - みんなのアンケート広場');
 
+    const metaDescription = currentSurvey
+      ? `【${currentSurvey.category}】${currentSurvey.title}のアンケート実施中！みんなはどう思ってる？匿名で1タップ投票して、リアルタイムの結果やコメントをチェックしよう！🐰🥕`
+      : 'みんなのアンケート広場は、誰でもかんたんに匿名でアンケートを作成・投票できる場所です。日常の疑問や本音を共有して、みんなの意見を楽しく集約しましょう！';
+
+    document.title = pageTitle;
+
+    // メタディスクリプションの更新
+    let metaDescTag = document.querySelector('meta[name="description"]');
+    if (metaDescTag) {
+      metaDescTag.setAttribute('content', metaDescription);
+    }
+
+    // 🏷️ JSON-LD (構造化データ) の動的注入
+    let scriptTag = document.getElementById('json-ld-structured-data');
+    if (scriptTag) scriptTag.remove();
+
+    if (currentSurvey) {
+      const structuredData = {
+        "@context": "https://schema.org",
+        "@type": "Question",
+        "name": currentSurvey.title,
+        "text": `${currentSurvey.title}（カテゴリ：${currentSurvey.category}）`,
+        "answerCount": currentSurvey.total_votes || 0,
+        "dateCreated": currentSurvey.created_at,
+        "author": { "@type": "Person", "name": "匿名ユーザー" }
+      };
+      scriptTag = document.createElement('script');
+      scriptTag.id = 'json-ld-structured-data';
+      scriptTag.type = 'application/ld+json';
+      scriptTag.text = JSON.stringify(structuredData);
+      document.head.appendChild(scriptTag);
+    }
+
+    if (window.gtag) {
       const virtualPath = currentSurvey
         ? `/survey/${currentSurvey.id}`
         : (view === 'list' ? '/' : '/create');
 
-      // 🌟 らびの「大成功 ＆ 完璧計測」魔法！
-      // 1. ブラウザのタイトルを更新
-      document.title = pageTitle;
-
-      // 2. page_view イベントを明示的に送信！
       window.gtag('event', 'page_view', {
         page_title: pageTitle,
         page_location: window.location.href,
