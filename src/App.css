@@ -531,14 +531,14 @@ body {
     margin-right: 0 !important;
     margin-bottom: 12px !important;
     border-radius: 16px !important;
-    font-size: 7rem !important; /* もっともっとおっきく！ */
-    color: inherit !important; /* 絵文字の元の色を出す */
-    text-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    /* 🎨 絵文字の「白抜け（透過）」対策：中央に白い円形グラデを配置 */
-    background-image: 
-      radial-gradient(circle, #ffffff 40%, transparent 70%),
-      linear-gradient(135deg, rgba(255,255,255,0.3), transparent) !important;
-    background-color: inherit; /* 本体の背景色（青など）を活かす */
+    font-size: 6rem !important; /* 少し落ち着かせたサイズに */
+    color: inherit !important;
+    /* ⚽️ 絵文字の透過部分が目立たないよう、文字自体に細い白縁取り(text-shadow)を適用 */
+    text-shadow: 
+      0 0 10px rgba(255, 255, 255, 0.4),
+      0 4px 15px rgba(0, 0, 0, 0.15);
+    background-image: linear-gradient(135deg, rgba(255,255,255,0.3), transparent) !important;
+    background-color: inherit;
   }
 
   .survey-item-info {
