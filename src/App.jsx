@@ -1433,8 +1433,8 @@ function App() {
                                   position: 'relative',
                                   '--cat-color': '#fbbf24'
                                 } : {
-                                  background: `${(CATEGORY_ICON_STYLE[s.category] || CATEGORY_ICON_STYLE[s.category?.trim()] || CATEGORY_ICON_STYLE["その他"]).color}08`,
-                                  border: `1px solid ${(CATEGORY_ICON_STYLE[s.category] || CATEGORY_ICON_STYLE[s.category?.trim()] || CATEGORY_ICON_STYLE["その他"]).color}22`,
+                                  background: `${(CATEGORY_ICON_STYLE[s.category] || CATEGORY_ICON_STYLE[s.category?.trim()] || CATEGORY_ICON_STYLE["その他"]).color}26`,
+                                  border: `1px solid ${(CATEGORY_ICON_STYLE[s.category] || CATEGORY_ICON_STYLE[s.category?.trim()] || CATEGORY_ICON_STYLE["その他"]).color}33`,
                                   '--cat-color': (CATEGORY_ICON_STYLE[s.category] || CATEGORY_ICON_STYLE[s.category?.trim()] || CATEGORY_ICON_STYLE["その他"]).color
                                 }}
                               >
