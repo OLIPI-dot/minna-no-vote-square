@@ -2044,13 +2044,6 @@ body {
     border: 1px solid #e2e8f0 !important;
   }
 
-  /* 📢 モバイルでもお知らせは黄金に輝く！ */
-  .survey-item-card.announcement-card {
-    background: linear-gradient(135deg, #fffbeb, #fff7ed) !important;
-    border: 2px solid #fbbf24 !important;
-    box-shadow: 0 4px 12px rgba(251, 191, 36, 0.1) !important;
-  }
-
   .category-icon-thumb {
     width: 38px !important; /* さらに少し小さく */
     height: 38px !important;
