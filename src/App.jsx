@@ -62,6 +62,7 @@ const CATEGORY_ICON_STYLE = {
   "IT・テクノロジー": { icon: "💻", color: "#8b5cf6" },
   "生活": { icon: "🏠", color: "#10b981" },
   "ニュース・経済": { icon: "📈", color: "#0ea5e9" }, // 📈 ニュース・経済（スカイブルー系）
+  "音楽": { icon: "🎵", color: "#8b5cf6" }, // 🎵 音楽（バイオレット系）
   "ゲーム": { icon: "🎮", color: "#14b8a6" },
   "アニメ": { icon: "📺", color: "#6366f1" }, // 📺 アニメ用アイコン（インディゴ系に変更してITと差別化）
   "らび": { icon: "🐰", color: "#ec4899" }, // らび専用アイコン（ピンク系）
@@ -1319,9 +1320,36 @@ function App() {
                       <span className="user-name">{user.user_metadata?.full_name || user.email.split('@')[0]}さん</span>
                       <button className="logout-button" onClick={() => supabase.auth.signOut()}>ログアウト</button>
                     </div>
-                  ) : <button className="login-button-top" onClick={() => supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin } })}>Googleでログイン</button>}
+                  ) : (
+                    <button 
+                      className="google-login-btn" 
+                      onClick={() => supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin } })}
+                    >
+                      <div className="google-icon-wrapper">
+                        <svg viewBox="0 0 24 24">
+                          <path
+                            fill="#EA4335"
+                            d="M5.266 9.765A7.077 7.077 0 0 1 12 4.909c1.69 0 3.218.6 4.418 1.582L19.91 3C17.782 1.145 15.055 0 12 0 7.27 0 3.198 2.698 1.24 6.65l4.026 3.115z"
+                          />
+                          <path
+                            fill="#34A853"
+                            d="M16.04 18.013c-1.09.693-2.43 1.077-4.04 1.077-3.327 0-6.14-2.223-7.141-5.226L.833 17.03c1.98 3.86 5.989 6.511 10.655 6.511 2.872 0 5.48-.95 7.554-2.54l-3.003-2.988z"
+                          />
+                          <path
+                            fill="#4285F4"
+                            d="M22.027 12.188c0-.627-.052-1.245-.152-1.841H12v3.481h5.624c-.244 1.314-1 2.428-2.112 3.179l3.003 2.988c1.758-1.623 2.774-4.009 2.774-6.807z"
+                          />
+                          <path
+                            fill="#FBBC05"
+                            d="M5.266 14.235A7.065 7.065 0 0 1 4.909 12c0-.795.131-1.559.357-2.235L1.24 6.65c-.792 1.636-1.24 3.46-1.24 5.35 0 1.89.448 3.714 1.24 5.35l4.026-3.115z"
+                          />
+                        </svg>
+                      </div>
+                      <span>Googleでログイン</span>
+                    </button>
+                  )}
                 </div>
-                <button className="create-new-button" onClick={() => user ? setView('create') : alert("📝 アンケートの作成はログインしていないと使えません🙇‍♀️\n上の「Googleでログイン」ボタンからログインしてね！")}>＋ 新しいアンケートを作る</button>
+                <button className="create-new-button" onClick={() => user ? setView('create') : alert("🌟 広場をもっと楽しもう！\n\nアンケートを作るには、ログインが必要だよ。上の「Googleでログイン」から、らびと一緒に始めよう！🐰🥕")}>＋ 新しいアンケートを作る</button>
                 <div className="search-container">
                   <input type="text" placeholder="🔍 アンケートを検索する..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="search-input" />
                 </div>
@@ -1341,7 +1369,7 @@ function App() {
                   </div>
                 )}
                 <div className="category-filter-bar">
-                  {['すべて', 'ニュース・経済', 'エンタメ', 'アニメ', 'グルメ', 'スポーツ', 'トレンド', 'IT・テクノロジー', '生活', 'ゲーム', 'らび', 'その他'].map(cat => (
+                  {['すべて', 'ニュース・経済', 'エンタメ', '音楽', 'アニメ', 'グルメ', 'スポーツ', 'トレンド', 'IT・テクノロジー', '生活', 'ゲーム', 'らび', 'その他'].map(cat => (
                     <button key={cat} className={`filter-cat-btn ${filterCategory === cat ? 'active' : ''}`} onClick={() => setFilterCategory(cat)}>{cat}</button>
                   ))}
                 </div>
@@ -1545,7 +1573,7 @@ function App() {
                   <div className="setting-item-block"><label>📺 YouTube動画を貼る（URL）:</label><input className="title-input" value={surveyYoutube} onChange={e => setSurveyYoutube(e.target.value)} placeholder="例：https://www.youtube.com/watch?v=..." /></div>
                   <div className="setting-item-block"><label>カテゴリ:</label>
                     <div className="category-selector">
-                      {(isAdmin ? ['ニュース・経済', 'エンタメ', 'アニメ', 'グルメ', 'スポーツ', 'トレンド', 'IT・テクノロジー', '生活', 'ゲーム', 'らび', 'その他'] : ['ニュース・経済', 'エンタメ', 'アニメ', 'グルメ', 'スポーツ', 'トレンド', 'IT・テクノロジー', '生活', 'ゲーム', 'その他']).map(cat => (
+                      {(isAdmin ? ['ニュース・経済', 'エンタメ', '音楽', 'アニメ', 'グルメ', 'スポーツ', 'トレンド', 'IT・テクノロジー', '生活', 'ゲーム', 'らび', 'その他'] : ['ニュース・経済', 'エンタメ', '音楽', 'アニメ', 'グルメ', 'スポーツ', 'トレンド', 'IT・テクノロジー', '生活', 'ゲーム', 'その他']).map(cat => (
                         <button key={cat} className={`cat-btn ${surveyCategory === cat ? 'active' : ''}`} onClick={() => setSurveyCategory(cat)}>{cat}</button>
                       ))}
                     </div>
