@@ -1441,7 +1441,14 @@ function App() {
                                   </div>
                                   <div className="survey-item-content">
                                     <div className="survey-item-info">
-                                      <span className="survey-item-title">
+                                      <span className="survey-item-title" style={{
+                                        backgroundColor: `${(CATEGORY_ICON_STYLE[s.category] || CATEGORY_ICON_STYLE[s.category?.trim()] || CATEGORY_ICON_STYLE["その他"]).color}14`,
+                                        borderLeft: `4px solid ${(CATEGORY_ICON_STYLE[s.category] || CATEGORY_ICON_STYLE[s.category?.trim()] || CATEGORY_ICON_STYLE["その他"]).color}`,
+                                        padding: '4px 12px',
+                                        borderRadius: '6px',
+                                        display: 'block',
+                                        marginBottom: '10px'
+                                      }}>
                                         {showBadge && (realIdx === 0 ? '👑 ' : realIdx === 1 ? '🥈 ' : '🥉 ')}
                                         {s.tags?.includes('お知らせ') && s.title.includes('||') 
                                           ? s.title.split('||')[0].trim() 
