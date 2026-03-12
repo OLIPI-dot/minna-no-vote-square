@@ -1431,7 +1431,10 @@ function App() {
                                   border: '2px solid #fbbf24',
                                   boxShadow: '0 8px 15px -3px rgba(251, 191, 36, 0.15)',
                                   position: 'relative'
-                                } : {}}
+                                } : {
+                                  background: `${(CATEGORY_ICON_STYLE[s.category] || CATEGORY_ICON_STYLE[s.category?.trim()] || CATEGORY_ICON_STYLE["その他"]).color}08`,
+                                  border: `1px solid ${(CATEGORY_ICON_STYLE[s.category] || CATEGORY_ICON_STYLE[s.category?.trim()] || CATEGORY_ICON_STYLE["その他"]).color}22`
+                                }}
                               >
                                   <div className="category-icon-thumb" style={{ 
                                     background: (CATEGORY_ICON_STYLE[s.category] || CATEGORY_ICON_STYLE[s.category?.trim()] || CATEGORY_ICON_STYLE["その他"]).color,
@@ -1442,11 +1445,14 @@ function App() {
                                   <div className="survey-item-content">
                                     <div className="survey-item-info">
                                       <span className="survey-item-title" style={{
-                                        backgroundColor: `${(CATEGORY_ICON_STYLE[s.category] || CATEGORY_ICON_STYLE[s.category?.trim()] || CATEGORY_ICON_STYLE["その他"]).color}14`,
-                                        padding: '4px 12px',
-                                        borderRadius: '6px',
+                                        backgroundColor: 'white',
+                                        padding: '10px 14px',
+                                        borderRadius: '12px',
                                         display: 'block',
-                                        marginBottom: '10px'
+                                        marginBottom: '10px',
+                                        boxShadow: '0 2px 10px rgba(0,0,0,0.04)',
+                                        border: `1px solid ${(CATEGORY_ICON_STYLE[s.category] || CATEGORY_ICON_STYLE[s.category?.trim()] || CATEGORY_ICON_STYLE["その他"]).color}15`,
+                                        color: '#1e293b'
                                       }}>
                                         {showBadge && (realIdx === 0 ? '👑 ' : realIdx === 1 ? '🥈 ' : '🥉 ')}
                                         {s.tags?.includes('お知らせ') && s.title.includes('||') 
