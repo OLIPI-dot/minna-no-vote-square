@@ -530,7 +530,7 @@ body {
     flex: none !important;
     margin-right: 0 !important;
     margin-bottom: 12px !important;
-    border-radius: 16px !important;
+    border-radius: 20px !important; /* 角丸を復活 */
     font-size: 6rem !important; /* 少し落ち着かせたサイズに */
     color: inherit !important;
     /* ⚽️ 絵文字の透過部分が目立たないよう、文字自体に細い白縁取り(text-shadow)を適用 */
@@ -598,7 +598,7 @@ body {
   width: 48px !important; /* スマホ向けに小さく */
   height: 48px !important;
   flex: 0 0 48px !important;
-  border-radius: 12px !important;
+  border-radius: 22px !important; /* もっと丸っこく（おりぴさん指定） */
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -2044,13 +2044,20 @@ body {
     border: 1px solid #e2e8f0 !important;
   }
 
+  /* 📢 モバイルでもお知らせは黄金に輝くデザインを徹底死守！ */
+  .survey-item-card.announcement-card {
+    background: linear-gradient(135deg, #fffbeb, #fff7ed) !important;
+    border: 2px solid #fbbf24 !important;
+    box-shadow: 0 4px 12px rgba(251, 191, 36, 0.1) !important;
+  }
+
   .category-icon-thumb {
     width: 38px !important; /* さらに少し小さく */
     height: 38px !important;
     flex: 0 0 38px !important;
     font-size: 1rem !important;
     margin-right: 0 !important;
-    border-radius: 8px !important;
+    border-radius: 50% !important; /* モバイルでは完全な円に近く */
   }
 
   .survey-item-content {
