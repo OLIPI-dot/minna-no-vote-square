@@ -577,7 +577,7 @@ body {
 
 .survey-item-card:hover {
   background: white;
-  border-color: var(--primary-color);
+  border-color: var(--cat-color, var(--primary-color));
   transform: translateY(-4px);
   box-shadow: 0 12px 32px rgba(99, 102, 241, 0.1);
 }
@@ -2044,12 +2044,12 @@ body {
     transition: all 0.2s ease !important;
   }
 
-  /* 👆 タップした時の青い反応を復活！ */
+  /* 👆 タップした時の反応をカテゴリカラーに連動！ */
   .survey-item-card:active,
   .survey-item-card:hover {
-    border-color: var(--primary-color) !important;
-    background: #f8faff !important;
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1) !important;
+    border-color: var(--cat-color, var(--primary-color)) !important;
+    background: white !important; /* 少し明るく */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
   }
 
 

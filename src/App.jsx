@@ -1430,10 +1430,12 @@ function App() {
                                   background: 'linear-gradient(135deg, #fffbeb, #fff7ed)',
                                   border: '2px solid #fbbf24',
                                   boxShadow: '0 8px 15px -3px rgba(251, 191, 36, 0.15)',
-                                  position: 'relative'
+                                  position: 'relative',
+                                  '--cat-color': '#fbbf24'
                                 } : {
                                   background: `${(CATEGORY_ICON_STYLE[s.category] || CATEGORY_ICON_STYLE[s.category?.trim()] || CATEGORY_ICON_STYLE["その他"]).color}08`,
-                                  border: `1px solid ${(CATEGORY_ICON_STYLE[s.category] || CATEGORY_ICON_STYLE[s.category?.trim()] || CATEGORY_ICON_STYLE["その他"]).color}22`
+                                  border: `1px solid ${(CATEGORY_ICON_STYLE[s.category] || CATEGORY_ICON_STYLE[s.category?.trim()] || CATEGORY_ICON_STYLE["その他"]).color}22`,
+                                  '--cat-color': (CATEGORY_ICON_STYLE[s.category] || CATEGORY_ICON_STYLE[s.category?.trim()] || CATEGORY_ICON_STYLE["その他"]).color
                                 }}
                               >
                                   <div className="category-icon-thumb" style={{ 
