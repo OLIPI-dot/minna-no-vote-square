@@ -292,6 +292,7 @@ function App() {
   const isAdmin = user && ADMIN_EMAILS.includes(user.email);
 
   const [currentCommentPage, setCurrentCommentPage] = useState(1); // 💬 コメント用ページネーション
+  const [isEditingCategory, setIsEditingCategory] = useState(false);
 
   // 📡 リアルタイム人数
   const [globalOnlineCount, setGlobalOnlineCount] = useState(1);
@@ -1086,6 +1087,19 @@ function App() {
     fetchSurveys(user);
   };
 
+  // 🏷️ カテゴリを変更する（オーナーまたは管理者）
+  const handleUpdateCategory = async (newCategory) => {
+    if (!currentSurvey || !user || (!isAdmin && currentSurvey.user_id !== user.id)) return;
+    const { error } = await supabase.from('surveys').update({ category: newCategory }).eq('id', currentSurvey.id);
+    if (error) {
+      console.error("Update category error:", error);
+      return alert('😿 カテゴリの変更に失敗しました。');
+    }
+    setCurrentSurvey({ ...currentSurvey, category: newCategory });
+    setIsEditingCategory(false);
+    alert(`🏷️ カテゴリを「${newCategory}」に変更しましたらびっ！`);
+  };
+
   // 📩 お問い合わせをDBに保存する
   const handleSubmitInquiry = async () => {
     if (!contactMessage.trim()) return alert('内容を入力してください');
@@ -1856,16 +1870,48 @@ function App() {
                 </div>
                 <AdSenseBox slot="detail_after_votes_placeholder" affiliateType="amazon" />
                 {user && (currentSurvey.user_id === user.id || isAdmin) && (
-                  <div className="owner-visibility-panel">
-                    <span className="owner-vis-label">🔒 公開設定変更{isAdmin && currentSurvey.user_id !== user.id && ' (管理)'}:</span>
-                    <div className="visibility-selector">
-                      {[{ val: 'public', label: '🌐 公開' }, { val: 'limited', label: '🔗 限定公開' }, { val: 'private', label: '🔒 非公開' }].map(v => (
-                        <button key={v.val}
-                          className={`vis-btn ${currentSurvey.visibility === v.val ? 'active' : ''}`}
-                          onClick={() => handleUpdateVisibility(v.val)}>
-                          {v.label}
-                        </button>
-                      ))}
+                  <div className="owner-admin-panel" style={{ marginTop: '30px', borderTop: '2px solid #f1f5f9', paddingTop: '20px' }}>
+                    <div className="owner-visibility-panel">
+                      <span className="owner-vis-label">🔒 公開設定変更{isAdmin && currentSurvey.user_id !== user.id && ' (管理)'}:</span>
+                      <div className="visibility-selector">
+                        {[{ val: 'public', label: '🌐 公開' }, { val: 'limited', label: '🔗 限定公開' }, { val: 'private', label: '🔒 非公開' }].map(v => (
+                          <button key={v.val}
+                            className={`vis-btn ${currentSurvey.visibility === v.val ? 'active' : ''}`}
+                            onClick={() => handleUpdateVisibility(v.val)}>
+                            {v.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="owner-category-panel" style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px dashed #e2e8f0' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                        <span className="owner-vis-label">🏷️ カテゴリ変更:</span>
+                        {!isEditingCategory && (
+                          <button className="edit-cat-toggle-btn" onClick={() => setIsEditingCategory(true)} style={{
+                            padding: '8px 20px', borderRadius: '14px', background: '#f8fafc', border: '1px solid #cbd5e1', fontSize: '0.9rem', cursor: 'pointer', fontWeight: 'bold'
+                          }}>編集する</button>
+                        )}
+                      </div>
+                      
+                      {isEditingCategory && (
+                        <div className="edit-category-selector" style={{ background: '#f8fafc', padding: '20px', borderRadius: '24px', border: '2px solid #e2e8f0', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
+                          <div className="category-selector" style={{ gap: '8px' }}>
+                            {(isAdmin ? ['ニュース・経済', 'エンタメ', '音楽', 'アニメ', 'グルメ', 'スポーツ', 'トレンド', '自然', 'IT・テクノロジー', '生活', 'ゲーム', 'らび', 'その他'] : ['ニュース・経済', 'エンタメ', '音楽', 'アニメ', 'グルメ', 'スポーツ', 'トレンド', '自然', 'IT・テクノロジー', '生活', 'ゲーム', 'その他']).map(cat => (
+                              <button key={cat} 
+                                className={`cat-btn ${currentSurvey.category === cat ? 'active' : ''}`} 
+                                onClick={() => handleUpdateCategory(cat)}
+                                style={{ fontSize: '0.85rem', padding: '10px 14px' }}
+                              >
+                                {cat}
+                              </button>
+                            ))}
+                          </div>
+                          <button onClick={() => setIsEditingCategory(false)} style={{
+                            marginTop: '15px', width: '100%', padding: '10px', borderRadius: '15px', background: '#ffffff', border: '1px solid #e2e8f0', fontSize: '0.9rem', cursor: 'pointer', color: '#64748b'
+                          }}>キャンセル</button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
