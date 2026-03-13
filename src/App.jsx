@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import emailjs from '@emailjs/browser';
 import FooterModals from './components/FooterModals';
@@ -298,6 +298,7 @@ function App() {
 
   // 📡 リアルタイム人数
   const [globalOnlineCount, setGlobalOnlineCount] = useState(1);
+  const lastManualUpdateRef = useRef(0); // 💎 追加: 手動更新のタイミングを保護するガード落
   const [surveyOnlineCount, setSurveyOnlineCount] = useState(1);
 
   useEffect(() => {
@@ -913,9 +914,13 @@ function App() {
       setSurveys(updatedList);
 
       // 💎 重要: 詳細画面を開いている場合のみ、最新データで上書きする
-      // ただし、直前の手動更新との競合を避けるため、IDが一致する場合のみ。
+      // 🛡️ ガード: 直前に手動更新した場合は、DBの反映を待つために数秒間上書きを禁止する落
       setCurrentSurvey(prev => {
         if (!prev) return null;
+        if (Date.now() - lastManualUpdateRef.current < 5000) {
+          console.log("🛡️ Manual update guard active, skipping overwriting with potentially stale DB data.");
+          return prev;
+        }
         const latest = updatedList.find(s => String(s.id) === String(prev.id));
         return latest ? { ...latest } : prev;
       });
@@ -1096,6 +1101,7 @@ function App() {
       return alert('変更に失敗しました');
     }
     setCurrentSurvey({ ...currentSurvey, visibility: newVisibility });
+    lastManualUpdateRef.current = Date.now(); // 💎 タイムスタンプ記録落
     alert(`公開設定を「${newVisibility}」に変更しました！`);
     fetchSurveys(user);
   };
@@ -1111,6 +1117,7 @@ function App() {
       return alert('😿 カテゴリの変更に失敗しました。');
     }
     setCurrentSurvey({ ...currentSurvey, category: newCategory });
+    lastManualUpdateRef.current = Date.now(); // 💎 タイムスタンプ記録落
     setIsEditingCategory(false);
     alert(`🏷️ カテゴリを「${newCategory}」に変更しましたらびっ！`);
     fetchSurveys(user);
@@ -1128,6 +1135,7 @@ function App() {
       return alert('😿 タグの更新に失敗しました。');
     }
     setCurrentSurvey({ ...currentSurvey, tags: newTags });
+    lastManualUpdateRef.current = Date.now(); // 💎 タイムスタンプ記録落
     setIsEditingTags(false);
     alert('🏷️ タグを更新しましたらびっ！');
     fetchSurveys(user);
