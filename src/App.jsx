@@ -298,7 +298,7 @@ function App() {
 
   // 📡 リアルタイム人数
   const [globalOnlineCount, setGlobalOnlineCount] = useState(1);
-  const lastManualUpdateRef = useRef(0); // 💎 追加: 手動更新のタイミングを保護するガード落
+  const lastManualUpdateRef = useRef(0); // 💎 追加: 手動更新のタイミングを保護するガード
   const [surveyOnlineCount, setSurveyOnlineCount] = useState(1);
 
   useEffect(() => {
@@ -914,7 +914,7 @@ function App() {
       setSurveys(updatedList);
 
       // 💎 重要: 詳細画面を開いている場合のみ、最新データで上書きする
-      // 🛡️ ガード: 直前に手動更新した場合は、DBの反映を待つために数秒間上書きを禁止する落
+      // 🛡️ ガード: 直前に手動更新した場合は、DBの反映を待つために数秒間上書きを禁止する
       setCurrentSurvey(prev => {
         if (!prev) return null;
         if (Date.now() - lastManualUpdateRef.current < 5000) {
@@ -1101,7 +1101,7 @@ function App() {
       return alert('変更に失敗しました');
     }
     setCurrentSurvey({ ...currentSurvey, visibility: newVisibility });
-    lastManualUpdateRef.current = Date.now(); // 💎 タイムスタンプ記録落
+    lastManualUpdateRef.current = Date.now(); // 💎 タイムスタンプ記録
     alert(`公開設定を「${newVisibility}」に変更しました！`);
     fetchSurveys(user);
   };
@@ -1117,7 +1117,7 @@ function App() {
       return alert('😿 カテゴリの変更に失敗しました。');
     }
     setCurrentSurvey({ ...currentSurvey, category: newCategory });
-    lastManualUpdateRef.current = Date.now(); // 💎 タイムスタンプ記録落
+    lastManualUpdateRef.current = Date.now(); // 💎 タイムスタンプ記録
     setIsEditingCategory(false);
     alert(`🏷️ カテゴリを「${newCategory}」に変更しましたらびっ！`);
     fetchSurveys(user);
@@ -1135,7 +1135,7 @@ function App() {
       return alert('😿 タグの更新に失敗しました。');
     }
     setCurrentSurvey({ ...currentSurvey, tags: newTags });
-    lastManualUpdateRef.current = Date.now(); // 💎 タイムスタンプ記録落
+    lastManualUpdateRef.current = Date.now(); // 💎 タイムスタンプ記録
     setIsEditingTags(false);
     alert('🏷️ タグを更新しましたらびっ！');
     fetchSurveys(user);
@@ -1995,11 +1995,11 @@ function App() {
                 )}
                 <button className="back-to-list-link" onClick={() => navigateTo('list')}>← 戻る</button>
 
-                {/* 💬 コメント（掲示板）セクションル */}
+                {/* 💬 コメント（掲示板）セクション */}
                 <div className="comments-section-area">
                   <h3 className="comments-title">💬 みんなのコメント</h3>
 
-                  {/* 投稿フォームル */}
+                  {/* 投稿フォーム */}
                   <div className="comment-form-card">
                     <input
                       type="text"
@@ -2025,7 +2025,7 @@ function App() {
                     </button>
                   </div>
 
-                  {/* コメントリストル */}
+                  {/* コメントリスト */}
                   <div className="comments-list">
                     {/* 📄 コメントのページネーションロジック */}
                     {(() => {
