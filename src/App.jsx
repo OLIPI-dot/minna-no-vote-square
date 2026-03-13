@@ -917,8 +917,8 @@ function App() {
       // 🛡️ ガード: 直前に手動更新した場合は、DBの反映を待つために数秒間上書きを禁止する
       setCurrentSurvey(prev => {
         if (!prev) return null;
-        if (Date.now() - lastManualUpdateRef.current < 5000) {
-          console.log("🛡️ Manual update guard active, skipping overwriting with potentially stale DB data.");
+        if (Date.now() - lastManualUpdateRef.current < 10000) {
+          console.log("🛡️ Manual update guard active (10s), skipping overwriting with potentially stale DB data.");
           return prev;
         }
         const latest = updatedList.find(s => String(s.id) === String(prev.id));
