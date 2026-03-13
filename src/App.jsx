@@ -293,6 +293,8 @@ function App() {
 
   const [currentCommentPage, setCurrentCommentPage] = useState(1); // 💬 コメント用ページネーション
   const [isEditingCategory, setIsEditingCategory] = useState(false);
+  const [isEditingTags, setIsEditingTags] = useState(false);
+  const [tagEditValue, setTagEditValue] = useState('');
 
   // 📡 リアルタイム人数
   const [globalOnlineCount, setGlobalOnlineCount] = useState(1);
@@ -1098,6 +1100,24 @@ function App() {
     setCurrentSurvey({ ...currentSurvey, category: newCategory });
     setIsEditingCategory(false);
     alert(`🏷️ カテゴリを「${newCategory}」に変更しましたらびっ！`);
+  };
+
+  // 🏷️ タグを更新する（オーナーまたは管理者）
+  const handleUpdateTags = async () => {
+    if (!currentSurvey || !user || (!isAdmin && currentSurvey.user_id !== user.id)) return;
+    
+    // カンマ区切りを配列に変換（空の要素を除去、トリミング）
+    const newTags = tagEditValue.split(/[,、]/).map(t => t.trim()).filter(t => t !== "");
+    
+    const { error } = await supabase.from('surveys').update({ tags: newTags }).eq('id', currentSurvey.id);
+    if (error) {
+      console.error("Update tags error:", error);
+      return alert('😿 タグの更新に失敗しました。');
+    }
+    
+    setCurrentSurvey({ ...currentSurvey, tags: newTags });
+    setIsEditingTags(false);
+    alert('🏷️ タグを更新しましたらびっ！');
   };
 
   // 📩 お問い合わせをDBに保存する
@@ -1910,6 +1930,43 @@ function App() {
                           <button onClick={() => setIsEditingCategory(false)} style={{
                             marginTop: '15px', width: '100%', padding: '10px', borderRadius: '15px', background: '#ffffff', border: '1px solid #e2e8f0', fontSize: '0.9rem', cursor: 'pointer', color: '#64748b'
                           }}>キャンセル</button>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="owner-tags-panel" style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px dashed #e2e8f0' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '10px', flexWrap: 'wrap' }}>
+                        <span className="owner-vis-label">🏷️ タグ: <strong>{currentSurvey.tags?.join(', ') || 'なし'}</strong></span>
+                        {!isEditingTags && (
+                          <button className="edit-tags-toggle-btn" onClick={() => {
+                            setIsEditingTags(true);
+                            setTagEditValue(currentSurvey.tags?.join(', ') || '');
+                          }} style={{
+                            padding: '6px 16px', borderRadius: '12px', background: '#f1f5f9', border: '1px solid #e2e8f0', fontSize: '0.85rem', cursor: 'pointer', fontWeight: 'bold', color: '#475569'
+                          }}>変更する</button>
+                        )}
+                      </div>
+
+                      {isEditingTags && (
+                        <div className="edit-tags-input-area" style={{ background: '#f8fafc', padding: '20px', borderRadius: '24px', border: '2px solid #e2e8f0', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
+                          <input
+                            type="text"
+                            value={tagEditValue}
+                            onChange={e => setTagEditValue(e.target.value)}
+                            placeholder="タグ1, タグ2 (カンマ区切り)"
+                            style={{
+                              width: '100%', padding: '12px 20px', borderRadius: '16px', border: '1px solid #cbd5e1', fontSize: '1rem', outline: 'none', transition: 'all 0.2s', marginBottom: '15px'
+                            }}
+                          />
+                          <div style={{ display: 'flex', gap: '10px' }}>
+                            <button onClick={handleUpdateTags} style={{
+                              flex: 2, padding: '10px', borderRadius: '15px', background: '#7c3aed', color: 'white', border: 'none', fontSize: '0.9rem', cursor: 'pointer', fontWeight: 'bold'
+                            }}>タグを保存する</button>
+                            <button onClick={() => setIsEditingTags(false)} style={{
+                              flex: 1, padding: '10px', borderRadius: '15px', background: '#ffffff', border: '1px solid #e2e8f0', fontSize: '0.9rem', cursor: 'pointer', color: '#64748b'
+                            }}>キャンセル</button>
+                          </div>
+                          <p style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '10px', marginLeft: '5px' }}>※カンマ（または読点）で区切ると複数のタグを設定できます</p>
                         </div>
                       )}
                     </div>
