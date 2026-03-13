@@ -1093,15 +1093,16 @@ function App() {
   // 🔄 公開設定を変更する（オーナーまたは管理者）
   const handleUpdateVisibility = async (newVisibility) => {
     if (!currentSurvey || !user || (!isAdmin && currentSurvey.user_id !== user.id)) return;
+    lastManualUpdateRef.current = Date.now(); // 🛡️ 先にガードを張る
     setIsActionLoading(true);
-    const { error } = await supabase.from('surveys').update({ visibility: newVisibility }).eq('id', currentSurvey.id);
+    const { data, error } = await supabase.from('surveys').update({ visibility: newVisibility }).eq('id', currentSurvey.id).select();
     setIsActionLoading(false);
     if (error) {
       console.error("Update visibility error:", error);
       return alert('変更に失敗しました');
     }
-    setCurrentSurvey({ ...currentSurvey, visibility: newVisibility });
-    lastManualUpdateRef.current = Date.now(); // 💎 タイムスタンプ記録
+    const updatedSurvey = (data && data[0]) ? { ...data[0] } : { ...currentSurvey, visibility: newVisibility };
+    setCurrentSurvey(updatedSurvey);
     alert(`公開設定を「${newVisibility}」に変更しました！`);
     fetchSurveys(user);
   };
@@ -1109,15 +1110,16 @@ function App() {
   // 🏷️ カテゴリを変更する（オーナーまたは管理者）
   const handleUpdateCategory = async (newCategory) => {
     if (!currentSurvey || !user || (!isAdmin && currentSurvey.user_id !== user.id)) return;
+    lastManualUpdateRef.current = Date.now(); // 🛡️ 先にガードを張る
     setIsActionLoading(true);
-    const { error } = await supabase.from('surveys').update({ category: newCategory }).eq('id', currentSurvey.id);
+    const { data, error } = await supabase.from('surveys').update({ category: newCategory }).eq('id', currentSurvey.id).select();
     setIsActionLoading(false);
     if (error) {
       console.error("Update category error:", error);
       return alert('😿 カテゴリの変更に失敗しました。');
     }
-    setCurrentSurvey({ ...currentSurvey, category: newCategory });
-    lastManualUpdateRef.current = Date.now(); // 💎 タイムスタンプ記録
+    const updatedSurvey = (data && data[0]) ? { ...data[0] } : { ...currentSurvey, category: newCategory };
+    setCurrentSurvey(updatedSurvey);
     setIsEditingCategory(false);
     alert(`🏷️ カテゴリを「${newCategory}」に変更しましたらびっ！`);
     fetchSurveys(user);
@@ -1126,16 +1128,18 @@ function App() {
   // 🏷️ タグを更新する（オーナーまたは管理者）
   const handleUpdateTags = async () => {
     if (!currentSurvey || !user || (!isAdmin && currentSurvey.user_id !== user.id)) return;
+    lastManualUpdateRef.current = Date.now(); // 🛡️ 先にガードを張る
     setIsActionLoading(true);
-    const newTags = tagEditValue.split(/[,、]/).map(t => t.trim()).filter(t => t !== "");
-    const { error } = await supabase.from('surveys').update({ tags: newTags }).eq('id', currentSurvey.id);
+    // 🏷️ コンマ、読点、全角コンマ、スペースなどで分割できるように強化
+    const newTags = tagEditValue.split(/[,、，\s]+/).map(t => t.trim()).filter(t => t !== "");
+    const { data, error } = await supabase.from('surveys').update({ tags: newTags }).eq('id', currentSurvey.id).select();
     setIsActionLoading(false);
     if (error) {
       console.error("Update tags error:", error);
       return alert('😿 タグの更新に失敗しました。');
     }
-    setCurrentSurvey({ ...currentSurvey, tags: newTags });
-    lastManualUpdateRef.current = Date.now(); // 💎 タイムスタンプ記録
+    const updatedSurvey = (data && data[0]) ? { ...data[0] } : { ...currentSurvey, tags: newTags };
+    setCurrentSurvey(updatedSurvey);
     setIsEditingTags(false);
     alert('🏷️ タグを更新しましたらびっ！');
     fetchSurveys(user);
