@@ -1885,12 +1885,12 @@ function App() {
                     </div>
 
                     <div className="owner-category-panel" style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px dashed #e2e8f0' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                        <span className="owner-vis-label">🏷️ カテゴリ変更:</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '10px', flexWrap: 'wrap' }}>
+                        <span className="owner-vis-label">🏷️ カテゴリ: <strong>{currentSurvey.category}</strong></span>
                         {!isEditingCategory && (
                           <button className="edit-cat-toggle-btn" onClick={() => setIsEditingCategory(true)} style={{
-                            padding: '8px 20px', borderRadius: '14px', background: '#f8fafc', border: '1px solid #cbd5e1', fontSize: '0.9rem', cursor: 'pointer', fontWeight: 'bold'
-                          }}>編集する</button>
+                            padding: '6px 16px', borderRadius: '12px', background: '#f1f5f9', border: '1px solid #e2e8f0', fontSize: '0.85rem', cursor: 'pointer', fontWeight: 'bold', color: '#475569'
+                          }}>変更する</button>
                         )}
                       </div>
                       
