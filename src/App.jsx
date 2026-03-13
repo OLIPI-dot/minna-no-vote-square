@@ -1123,10 +1123,13 @@ function App() {
     setIsActionLoading(false);
     if (error) {
       console.error("Update visibility error:", error);
-      return alert('変更に失敗しました');
+      return alert('変更に失敗しましたらび...');
     }
-    const fresh = (data && data[0]) ? data[0] : { visibility: newVisibility };
-    const merged = { ...currentSurvey, ...fresh };
+    if (!data || data.length === 0) {
+      console.warn("Update visibility failed: No data returned. Possible RLS issue.", { userId: user.id, surveyId: currentSurvey.id });
+      return alert('😿 保存が反映されませんでした。権限の不具合かもしれません。');
+    }
+    const merged = { ...currentSurvey, ...data[0] };
     setCurrentSurvey(merged);
     setSurveys(prev => prev.map(s => String(s.id) === String(currentSurvey.id) ? { ...s, ...merged } : s));
     alert(`公開設定を「${newVisibility}」に変更しました！`);
@@ -1144,8 +1147,11 @@ function App() {
       console.error("Update category error:", error);
       return alert('😿 カテゴリの変更に失敗しました。');
     }
-    const fresh = (data && data[0]) ? data[0] : { category: newCategory };
-    const merged = { ...currentSurvey, ...fresh };
+    if (!data || data.length === 0) {
+      console.warn("Update category failed: No data returned.", { userId: user.id, surveyId: currentSurvey.id });
+      return alert('😿 カテゴリ保存が反映されませんでした。');
+    }
+    const merged = { ...currentSurvey, ...data[0] };
     setCurrentSurvey(merged);
     setSurveys(prev => prev.map(s => String(s.id) === String(currentSurvey.id) ? { ...s, ...merged } : s));
     setIsEditingCategory(false);
@@ -1158,7 +1164,6 @@ function App() {
     if (!currentSurvey || !user || (!isAdmin && currentSurvey.user_id !== user.id)) return;
     manualUpdatesRef.current[currentSurvey.id] = Date.now(); // 🛡️ ガード開始
     setIsActionLoading(true);
-    // 🏷️ コンマ、読点、全角コンマ、スペースなどで分割できるように強化
     const newTags = tagEditValue.split(/[,、，\s]+/).map(t => t.trim()).filter(t => t !== "");
     const { data, error } = await supabase.from('surveys').update({ tags: newTags }).eq('id', currentSurvey.id).select();
     setIsActionLoading(false);
@@ -1166,8 +1171,11 @@ function App() {
       console.error("Update tags error:", error);
       return alert('😿 タグの更新に失敗しました。');
     }
-    const fresh = (data && data[0]) ? data[0] : { tags: newTags };
-    const merged = { ...currentSurvey, ...fresh };
+    if (!data || data.length === 0) {
+      console.warn("Update tags failed: No data returned.", { userId: user.id, surveyId: currentSurvey.id });
+      return alert('😿 タグ保存が反映されませんでした。');
+    }
+    const merged = { ...currentSurvey, ...data[0] };
     setCurrentSurvey(merged);
     setSurveys(prev => prev.map(s => String(s.id) === String(currentSurvey.id) ? { ...s, ...merged } : s));
     setIsEditingTags(false);
