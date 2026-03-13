@@ -298,7 +298,7 @@ function App() {
 
   // 📡 リアルタイム人数
   const [globalOnlineCount, setGlobalOnlineCount] = useState(1);
-  const lastManualUpdateRef = useRef(0); // 💎 追加: 手動更新のタイミングを保護するガード
+  const manualUpdatesRef = useRef({}); // 🛡️ { [surveyId]: timestamp } アンケートごとの更新ガード
   const [surveyOnlineCount, setSurveyOnlineCount] = useState(1);
 
   useEffect(() => {
@@ -911,18 +911,28 @@ function App() {
         total_votes: oData ? oData.filter(o => o.survey_id === s.id).reduce((sum, opt) => sum + (opt.votes || 0), 0) : 0,
         comment_count: s.comment_count || 0
       }));
-      setSurveys(updatedList);
-
       // 💎 重要: 詳細画面を開いている場合のみ、最新データで上書きする
-      // 🛡️ ガード: 直前に手動更新した場合は、DBの反映を待つために数秒間上書きを禁止する
+      // 🛡️ ガード: 直前に手動更新した場合は、DBの反映遅延を考慮して10秒間上書きを禁止する
       setCurrentSurvey(prev => {
         if (!prev) return null;
-        if (Date.now() - lastManualUpdateRef.current < 10000) {
-          console.log("🛡️ Manual update guard active (10s), skipping overwriting with potentially stale DB data.");
+        const lastUpdate = manualUpdatesRef.current[prev.id];
+        if (lastUpdate && Date.now() - lastUpdate < 10000) {
+          console.log(`🛡️ Guarding currentSurvey [${prev.id}] from stale DB data.`);
           return prev;
         }
         const latest = updatedList.find(s => String(s.id) === String(prev.id));
         return latest ? { ...latest } : prev;
+      });
+
+      // 🖼️ リスト側のステートもガードを適用しつつ更新する
+      setSurveys(prevList => {
+        return updatedList.map(newS => {
+          const lastUpdate = manualUpdatesRef.current[newS.id];
+          if (lastUpdate && Date.now() - lastUpdate < 10000) {
+            return prevList.find(s => String(s.id) === String(newS.id)) || newS;
+          }
+          return newS;
+        });
       });
     } else {
       setSurveys([]);
@@ -956,19 +966,33 @@ function App() {
         comment_count: s.comment_count || 0 
       }));
 
-      setLiveSurveys([...withStats].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 10));
-      setPopularSurveys([...withStats].sort((a, b) => {
-        const scoreA = (a.total_votes || 0) * SCORE_VOTE_WEIGHT + (a.view_count || 0);
-        const scoreB = (b.total_votes || 0) * SCORE_VOTE_WEIGHT + (b.view_count || 0);
-        return scoreB - scoreA;
-      }).slice(0, 10));
-
       const now = new Date();
       const next24h = new Date(now.getTime() + 24 * 60 * 60 * 1000);
       const endingSoon = withStats
         .filter(s => s.deadline && new Date(s.deadline) > now && new Date(s.deadline) <= next24h)
         .sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
-      setEndingSoonSurveys(endingSoon);
+
+      // 🛡️ サイドバー/セクション用のガード適用マッパー
+      const applyGuard = (prevList) => withStats.map(s => {
+        const lastUpdate = manualUpdatesRef.current[s.id];
+        if (lastUpdate && Date.now() - lastUpdate < 10000) {
+          return prevList.find(p => String(p.id) === String(s.id)) || s;
+        }
+        return s;
+      });
+
+      setLiveSurveys(prev => applyGuard(prev).sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 10));
+      setPopularSurveys(prev => applyGuard(prev).sort((a, b) => {
+        const scoreA = (a.total_votes || 0) * SCORE_VOTE_WEIGHT + (a.view_count || 0);
+        const scoreB = (b.total_votes || 0) * SCORE_VOTE_WEIGHT + (b.view_count || 0);
+        return scoreB - scoreA;
+      }).slice(0, 10));
+      setEndingSoonSurveys(prev => {
+        const guarded = applyGuard(prev);
+        return guarded
+          .filter(s => s.deadline && new Date(s.deadline) > now && new Date(s.deadline) <= next24h)
+          .sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
+      });
     }
   };
 
@@ -1093,7 +1117,7 @@ function App() {
   // 🔄 公開設定を変更する（オーナーまたは管理者）
   const handleUpdateVisibility = async (newVisibility) => {
     if (!currentSurvey || !user || (!isAdmin && currentSurvey.user_id !== user.id)) return;
-    lastManualUpdateRef.current = Date.now(); // 🛡️ 先にガードを張る
+    manualUpdatesRef.current[currentSurvey.id] = Date.now(); // 🛡️ ガード開始
     setIsActionLoading(true);
     const { data, error } = await supabase.from('surveys').update({ visibility: newVisibility }).eq('id', currentSurvey.id).select();
     setIsActionLoading(false);
@@ -1101,8 +1125,10 @@ function App() {
       console.error("Update visibility error:", error);
       return alert('変更に失敗しました');
     }
-    const updatedSurvey = (data && data[0]) ? { ...data[0] } : { ...currentSurvey, visibility: newVisibility };
-    setCurrentSurvey(updatedSurvey);
+    const fresh = (data && data[0]) ? data[0] : { visibility: newVisibility };
+    const merged = { ...currentSurvey, ...fresh };
+    setCurrentSurvey(merged);
+    setSurveys(prev => prev.map(s => String(s.id) === String(currentSurvey.id) ? { ...s, ...merged } : s));
     alert(`公開設定を「${newVisibility}」に変更しました！`);
     fetchSurveys(user);
   };
@@ -1110,7 +1136,7 @@ function App() {
   // 🏷️ カテゴリを変更する（オーナーまたは管理者）
   const handleUpdateCategory = async (newCategory) => {
     if (!currentSurvey || !user || (!isAdmin && currentSurvey.user_id !== user.id)) return;
-    lastManualUpdateRef.current = Date.now(); // 🛡️ 先にガードを張る
+    manualUpdatesRef.current[currentSurvey.id] = Date.now(); // 🛡️ ガード開始
     setIsActionLoading(true);
     const { data, error } = await supabase.from('surveys').update({ category: newCategory }).eq('id', currentSurvey.id).select();
     setIsActionLoading(false);
@@ -1118,8 +1144,10 @@ function App() {
       console.error("Update category error:", error);
       return alert('😿 カテゴリの変更に失敗しました。');
     }
-    const updatedSurvey = (data && data[0]) ? { ...data[0] } : { ...currentSurvey, category: newCategory };
-    setCurrentSurvey(updatedSurvey);
+    const fresh = (data && data[0]) ? data[0] : { category: newCategory };
+    const merged = { ...currentSurvey, ...fresh };
+    setCurrentSurvey(merged);
+    setSurveys(prev => prev.map(s => String(s.id) === String(currentSurvey.id) ? { ...s, ...merged } : s));
     setIsEditingCategory(false);
     alert(`🏷️ カテゴリを「${newCategory}」に変更しましたらびっ！`);
     fetchSurveys(user);
@@ -1128,7 +1156,7 @@ function App() {
   // 🏷️ タグを更新する（オーナーまたは管理者）
   const handleUpdateTags = async () => {
     if (!currentSurvey || !user || (!isAdmin && currentSurvey.user_id !== user.id)) return;
-    lastManualUpdateRef.current = Date.now(); // 🛡️ 先にガードを張る
+    manualUpdatesRef.current[currentSurvey.id] = Date.now(); // 🛡️ ガード開始
     setIsActionLoading(true);
     // 🏷️ コンマ、読点、全角コンマ、スペースなどで分割できるように強化
     const newTags = tagEditValue.split(/[,、，\s]+/).map(t => t.trim()).filter(t => t !== "");
@@ -1138,8 +1166,10 @@ function App() {
       console.error("Update tags error:", error);
       return alert('😿 タグの更新に失敗しました。');
     }
-    const updatedSurvey = (data && data[0]) ? { ...data[0] } : { ...currentSurvey, tags: newTags };
-    setCurrentSurvey(updatedSurvey);
+    const fresh = (data && data[0]) ? data[0] : { tags: newTags };
+    const merged = { ...currentSurvey, ...fresh };
+    setCurrentSurvey(merged);
+    setSurveys(prev => prev.map(s => String(s.id) === String(currentSurvey.id) ? { ...s, ...merged } : s));
     setIsEditingTags(false);
     alert('🏷️ タグを更新しましたらびっ！');
     fetchSurveys(user);
