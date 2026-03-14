@@ -198,6 +198,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://minna-no-vote-square.vercel.app/?s=225</loc>
+    <lastmod>2026-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://minna-no-vote-square.vercel.app/?s=138</loc>
     <lastmod>2026-03-03</lastmod>
     <changefreq>weekly</changefreq>
@@ -306,12 +312,6 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minna-no-vote-square.vercel.app/?s=219</loc>
-    <lastmod>2026-03-14</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://minna-no-vote-square.vercel.app/?s=199</loc>
     <lastmod>2026-03-13</lastmod>
     <changefreq>weekly</changefreq>
@@ -374,12 +374,6 @@
   <url>
     <loc>https://minna-no-vote-square.vercel.app/?s=184</loc>
     <lastmod>2026-03-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minna-no-vote-square.vercel.app/?s=220</loc>
-    <lastmod>2026-03-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -456,20 +450,8 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minna-no-vote-square.vercel.app/?s=221</loc>
-    <lastmod>2026-03-14</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://minna-no-vote-square.vercel.app/?s=186</loc>
     <lastmod>2026-03-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minna-no-vote-square.vercel.app/?s=222</loc>
-    <lastmod>2026-03-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -578,12 +560,6 @@
   <url>
     <loc>https://minna-no-vote-square.vercel.app/?s=95</loc>
     <lastmod>2026-02-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minna-no-vote-square.vercel.app/?s=223</loc>
-    <lastmod>2026-03-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
