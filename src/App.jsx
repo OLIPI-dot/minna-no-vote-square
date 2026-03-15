@@ -785,13 +785,46 @@ function App() {
       ? `【${currentSurvey.category}】${currentSurvey.title}のアンケート実施中！みんなはどう思ってる？匿名で1タップ投票して、リアルタイムの結果やコメントをチェックしよう！🐰🥕`
       : 'みんなのアンケート広場は、誰でもかんたんに匿名でアンケートを作成・投票できる場所です。日常の疑問や本音を共有して、みんなの意見を楽しく集約しましょう！';
 
+    const currentUrl = currentSurvey 
+      ? `https://minna-no-vote-square.vercel.app/?s=${currentSurvey.id}` 
+      : (view === 'list' ? 'https://minna-no-vote-square.vercel.app/' : 'https://minna-no-vote-square.vercel.app/create');
+
+    // 動画サムネイルがあればOGP画像にする魔法 📸
+    let ogImageUrl = 'https://minna-no-vote-square.vercel.app/ogp-image.png?v=20260315';
+    if (currentSurvey?.image_url) {
+      const videoEntries = currentSurvey.image_url.split(',').map(s => s.trim());
+      const ytEntry = videoEntries.find(e => e.startsWith('yt:'));
+      if (ytEntry) {
+        const videoId = ytEntry.substring(3);
+        ogImageUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+      }
+    }
+
     document.title = pageTitle;
 
-    // メタディスクリプションの更新
-    let metaDescTag = document.querySelector('meta[name="description"]');
-    if (metaDescTag) {
-      metaDescTag.setAttribute('content', metaDescription);
+    // ヘルパー: メタタグの更新魔法 🪄
+    const updateMeta = (selector, attr, content) => {
+      let tag = document.querySelector(selector);
+      if (tag) tag.setAttribute(attr, content);
+    };
+
+    updateMeta('meta[name="description"]', 'content', metaDescription);
+    updateMeta('meta[property="og:title"]', 'content', pageTitle);
+    updateMeta('meta[property="og:description"]', 'content', metaDescription);
+    updateMeta('meta[property="og:url"]', 'content', currentUrl);
+    updateMeta('meta[property="og:image"]', 'content', ogImageUrl);
+    updateMeta('meta[name="twitter:title"]', 'content', pageTitle);
+    updateMeta('meta[name="twitter:description"]', 'content', metaDescription);
+    updateMeta('meta[name="twitter:image"]', 'content', ogImageUrl);
+
+    // 🔗 カノニカルURLの更新
+    let canonicalTag = document.querySelector('link[rel="canonical"]');
+    if (!canonicalTag) {
+      canonicalTag = document.createElement('link');
+      canonicalTag.setAttribute('rel', 'canonical');
+      document.head.appendChild(canonicalTag);
     }
+    canonicalTag.setAttribute('href', currentUrl);
 
     // 🏷️ JSON-LD (構造化データ) の動的注入
     let scriptTag = document.getElementById('json-ld-structured-data');
@@ -805,7 +838,12 @@ function App() {
         "text": `${currentSurvey.title}（カテゴリ：${currentSurvey.category}）`,
         "answerCount": currentSurvey.total_votes || 0,
         "dateCreated": currentSurvey.created_at,
-        "author": { "@type": "Person", "name": "匿名ユーザー" }
+        "author": { "@type": "Person", "name": "匿名ユーザー" },
+        "suggestedAnswer": options.map(opt => ({
+          "@type": "Answer",
+          "text": opt.name,
+          "upvoteCount": opt.votes || 0
+        }))
       };
       scriptTag = document.createElement('script');
       scriptTag.id = 'json-ld-structured-data';
@@ -1472,7 +1510,7 @@ function App() {
                   <button className={sortMode === 'latest' ? 'active' : ''} onClick={() => setSortMode('latest')}>⏳ 新着</button>
                   <button className={sortMode === 'popular' ? 'active' : ''} onClick={() => setSortMode('popular')}>🔥 人気</button>
                   <button className={sortMode === 'watching' ? 'active' : ''} onClick={() => setSortMode('watching')}>⭐ ウォッチ中</button>
-                  <button className={sortMode === 'ended' ? 'active' : ''} onClick={() => setSortMode('ended')}>📁 終了</button>
+                  <button className={sortMode === 'ended' ? 'active' : ''} onClick={() => setSortMode('ended')}>📁 アーカイブ</button>
                   <button className={sortMode === 'mine' ? 'active' : ''} onClick={() => { if (!user) return alert("👤 マイアンケートはログインしていないと使えません🙇‍♀️\n上の「Googleでログイン」ボタンからログインしてね！"); setSortMode('mine'); }}>👤 マイアンケート</button>
                 </div>
                 {sortMode === 'popular' && (
@@ -1522,7 +1560,7 @@ function App() {
                         const isAutoEnded = ageMs > 30 * 24 * 60 * 60 * 1000;
                         const isEnded = isAutoEnded || (s.deadline && new Date(s.deadline) < new Date());
 
-                        // 終わっているものは「最新」や「人気」の一覧から隠す（終了タブにのみ存在）
+                        // 終わっているものは「最新」や「人気」の一覧から隠す（アーカイブタブにのみ存在）
                         if (isEnded) {
                           if (sortMode === 'ended' || sortMode === 'mine') return true;
                           return false;
@@ -1655,6 +1693,29 @@ function App() {
                     );
                   })()}
                 </div>
+
+                {/* 📁 アーカイブ・ダイジェスト（メイン広場の下の方にひっそり展示） */}
+                {sortMode === 'latest' && searchQuery === '' && filterCategory === 'すべて' && !filterTag && currentPage === 1 && (
+                  <div className="archive-digest-section" style={{ marginTop: '40px', padding: '24px', background: '#f8fafc', borderRadius: '24px', border: '2px dashed #cbd5e1' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+                      <h3 style={{ margin: 0, fontSize: '1.2rem', color: '#64748b' }}>📁 アーカイブ・ダイジェスト</h3>
+                      <button onClick={() => setSortMode('ended')} style={{ background: 'none', border: 'none', color: '#7c3aed', fontWeight: 'bold', cursor: 'pointer' }}>もっと見る ⇠</button>
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '16px' }}>
+                      {surveys
+                        .filter(s => (s.deadline && new Date(s.deadline) < new Date()))
+                        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+                        .slice(0, 3)
+                        .map(s => (
+                          <div key={s.id} className="archive-mini-card" onClick={() => navigateTo('details', s)} style={{ background: 'white', padding: '12px', borderRadius: '16px', cursor: 'pointer', border: '1px solid #e2e8f0', fontSize: '0.9rem' }}>
+                            <div style={{ fontWeight: 'bold', marginBottom: '4px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{s.title}</div>
+                            <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>🗳️ {s.total_votes || 0} 票 / 💬 {s.comment_count || 0}</div>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                )}
+
                 <div className="pagination-container-outer">
                   {(() => {
                     const filtered = surveys
@@ -1726,7 +1787,7 @@ function App() {
                   </div>
                   <button className="start-button" onClick={handleStartSurvey}>公開する！</button>
                   <p style={{ fontSize: '0.85rem', color: '#64748b', textAlign: 'center', marginTop: '8px' }}>
-                    ※ 終了したアンケートは、公平を期すために<span style={{ fontWeight: 'bold' }}>締切から7日後</span>に自動的に完全削除されます。
+                    ※ 終了したアンケートは、広場の歴史として<span style={{ fontWeight: 'bold', color: '#7c3aed' }}>アーカイブ（永久保存）</span>されます。🐰💎
                   </p>
                   <div className="setting-item-block">
                     <label>🏷️ タグ（アンケートのキーワード）:</label>
