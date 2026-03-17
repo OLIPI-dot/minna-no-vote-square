@@ -256,7 +256,7 @@ function App() {
   const [surveyCategory, setSurveyCategory] = useState('');
   const [setupOptions, setSetupOptions] = useState([]);
   const [surveyVisibility, setSurveyVisibility] = useState('public');
-  const [sortMode, setSortMode] = useState('latest');
+  const [sortMode, setSortMode] = useState('today'); // デフォルトを今日のものに変更らび！
   const [popularMode, setPopularMode] = useState('trending');
   const [filterCategory, setFilterCategory] = useState('すべて');
   const [tempOption, setTempOption] = useState('');
@@ -1531,6 +1531,7 @@ function App() {
                   <input type="text" placeholder="🔍 アンケートを検索する..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="search-input" />
                 </div>
                 <div className="tab-switcher">
+                  <button className={sortMode === 'today' ? 'active' : ''} onClick={() => setSortMode('today')}>⌛ 今日の旬ネタ</button>
                   <button className={sortMode === 'latest' ? 'active' : ''} onClick={() => setSortMode('latest')}>⏳ 新着</button>
                   <button className={sortMode === 'popular' ? 'active' : ''} onClick={() => setSortMode('popular')}>🔥 人気</button>
                   <button className={sortMode === 'watching' ? 'active' : ''} onClick={() => setSortMode('watching')}>⭐ ウォッチ中</button>
@@ -1583,6 +1584,17 @@ function App() {
                         const ageMs = new Date() - new Date(s.created_at);
                         const isAutoEnded = ageMs > 30 * 24 * 60 * 60 * 1000;
                         const isEnded = isAutoEnded || (s.deadline && new Date(s.deadline) < new Date());
+
+                        // 「今日の旬ネタ」フィルタ：今日（JST）投稿されたもの
+                        if (sortMode === 'today') {
+                          const createdDate = new Date(s.created_at);
+                          const today = new Date();
+                          return (
+                            createdDate.getFullYear() === today.getFullYear() &&
+                            createdDate.getMonth() === today.getMonth() &&
+                            createdDate.getDate() === today.getDate()
+                          ) && !isEnded;
+                        }
 
                         // 終わっているものは「最新」や「人気」の一覧から隠す（アーカイブタブにのみ存在）
                         if (isEnded) {
@@ -1689,6 +1701,7 @@ function App() {
                                   </div>
                                   <div className="survey-item-meta-row">
                                     {showBadge && <span className="popular-score-badge">{badgeLabel}</span>}
+                                    <span className="survey-item-created-at" title="作成日時">🐣 {formatWithDay(s.created_at)}</span>
                                     {s.deadline && <span className="survey-item-deadline">〆: {formatWithDay(s.deadline)}</span>}
                                     <div className="card-stats-row">
                                       <span className="survey-item-votes" title="投票数">🗳️ {s.total_votes || 0}</span>
@@ -1749,6 +1762,17 @@ function App() {
                         const ageMs = new Date() - new Date(s.created_at);
                         const isAutoEnded = ageMs > 30 * 24 * 60 * 60 * 1000;
                         const isEnded = isAutoEnded || (s.deadline && new Date(s.deadline) < new Date());
+
+                        if (sortMode === 'today') {
+                          const createdDate = new Date(s.created_at);
+                          const today = new Date();
+                          return (
+                            createdDate.getFullYear() === today.getFullYear() &&
+                            createdDate.getMonth() === today.getMonth() &&
+                            createdDate.getDate() === today.getDate()
+                          ) && !isEnded;
+                        }
+
                         if (isEnded) {
                           if (sortMode === 'ended' || sortMode === 'mine') return true;
                           return false;

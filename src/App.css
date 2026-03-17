@@ -423,7 +423,7 @@ body {
   border: none;
   font-weight: 800;
   cursor: pointer;
-  background: transparent;
+  background: #f1f5f9; /* おりぴさん提案：押されてないやつは薄いグレー！ */
   color: #64748b;
   transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   display: flex;
@@ -754,11 +754,22 @@ body {
   flex-shrink: 0;
 }
 
-.survey-item-deadline {
-  background: #f1f5f9;
+.survey-item-created-at {
+  background: #f0f9ff;
+  color: #0369a1;
   padding: 4px 10px;
   border-radius: 6px;
   white-space: nowrap;
+  border: 1px solid #bae6fd;
+}
+
+.survey-item-deadline {
+  background: #fff1f2;
+  color: #e11d48;
+  padding: 4px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  border: 1px solid #fecdd3;
 }
 
 /* 📊 統計情報（投票・閲覧・コメント数）の横並びスタイル */
