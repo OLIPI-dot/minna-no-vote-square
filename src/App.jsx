@@ -270,6 +270,7 @@ function App() {
   const [currentPage, setCurrentPage] = useState(1); // 📄 ページネーション用
   const [likedSurveys, setLikedSurveys] = useState(() => JSON.parse(localStorage.getItem('liked_surveys') || '[]')); // 👍 いいね履歴
   const [surveyYoutube, setSurveyYoutube] = useState(''); // 📺 YouTube動画URL
+  const [surveyDescription, setSurveyDescription] = useState(''); // 📝 解説文 / 参考URL
 
   // 📺 YouTube URLからIDを抽出する魔法
   const extractYoutubeId = (input) => {
@@ -1107,7 +1108,16 @@ function App() {
     }
 
     const finalDeadline = new Date(`${deadline}:00+09:00`).toISOString();
-    const { data, error } = await supabase.from('surveys').insert([{ title: surveyTitle, deadline: finalDeadline, user_id: user.id, image_url: processedImage, category: surveyCategory, visibility: surveyVisibility, tags: surveyTags }]).select();
+    const { data, error } = await supabase.from('surveys').insert([{ 
+      title: surveyTitle, 
+      deadline: finalDeadline, 
+      user_id: user.id, 
+      image_url: processedImage, 
+      category: surveyCategory, 
+      visibility: surveyVisibility, 
+      tags: surveyTags,
+      description: surveyDescription.trim() // 📝 解説文を保存
+    }]).select();
     if (error) {
       alert('公開に失敗しました。エラー: ' + error.message);
       return;
@@ -1120,6 +1130,7 @@ function App() {
     setSurveyCategory('');
     setSurveyImage('');
     setSurveyYoutube('');
+    setSurveyDescription(''); // 📝 リセット
     setSetupOptions([]);
     setSurveyTags([]);
     setDeadline('');
@@ -1794,6 +1805,16 @@ function App() {
                 <h2 className="setup-title">📝 新しく作る</h2>
                 <div className="create-form">
                   <div className="setting-item-block"><label>お題（タイトル）:</label><input className="title-input" value={surveyTitle} onChange={e => setSurveyTitle(e.target.value)} placeholder="例：今日のおやつは何がいい？" /></div>
+                  <div className="setting-item-block">
+                    <label>📝 解説文 / 参考記事URL:</label>
+                    <textarea 
+                      className="title-input" 
+                      style={{ minHeight: '100px', resize: 'vertical', fontFamily: 'inherit' }}
+                      value={surveyDescription} 
+                      onChange={e => setSurveyDescription(e.target.value)} 
+                      placeholder="例：このニュースの詳細はここからチェック！ https://...&#10;アンケートの背景などを自由に書いてね 🐰🥕" 
+                    />
+                  </div>
                   <div className="setting-item-block"><label>📺 YouTube動画を貼る（URL）:</label><input className="title-input" value={surveyYoutube} onChange={e => setSurveyYoutube(e.target.value)} placeholder="例：https://www.youtube.com/watch?v=..." /></div>
                   <div className="setting-item-block"><label>カテゴリ:</label>
                     <div className="category-selector">
@@ -1880,6 +1901,7 @@ function App() {
                       {currentSurvey.title.split('||')[1].trim()}
                     </div>
                   )}
+
 
                    {/* 📺 動画プレイヤーの埋め込み (YouTube / ニコニコ) */}
                   {currentSurvey.image_url && (currentSurvey.image_url.includes('yt:') || currentSurvey.image_url.includes('nico:')) ? (() => {
@@ -1988,6 +2010,27 @@ function App() {
                     </div>
                   )}
                 </div>
+
+                {/* 🆕 description カラムをここに移動（投票項目の直前らび！） */}
+                {currentSurvey.description && (
+                  <div className="survey-description-box" style={{
+                    fontSize: '0.95rem',
+                    color: '#334155',
+                    lineHeight: '1.8',
+                    background: 'linear-gradient(to bottom, #f8fafc, #f1f5f9)',
+                    padding: '20px',
+                    borderRadius: '16px',
+                    margin: '0 auto 30px auto', // 上下の余白を調整
+                    maxWidth: '860px', // widthを調整してスッキリ
+                    borderLeft: '6px solid #8b5cf6',
+                    boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)',
+                    whiteSpace: 'pre-wrap', // 改行を反映
+                    textAlign: 'left' // テキストは左揃え
+                  }}>
+                    {renderCommentContent(currentSurvey.description)}
+                  </div>
+                )}
+
                 <div className="options-container">
                   {options.map((opt, index) => {
                     const perc = isTotalVotes > 0 ? Math.round((opt.votes / isTotalVotes) * 100) : 0;
