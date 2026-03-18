@@ -1001,8 +1001,8 @@ function App() {
         await supabase.rpc('increment_survey_view', { survey_id: survey.id });
       }
     } else if (nextView === 'list') {
-      // 🏘️ 広場に戻る時はURLからパラメータを完全に消去する（絶対パスで確実に）
-      window.history.pushState({ view: 'list' }, '', window.location.pathname);
+      // 🏘️ 広場に戻る時はURLをルート（/）にリセットするらび！
+      window.history.pushState({ view: 'list' }, '', '/');
       setCurrentSurvey(null);
     }
     setView(nextView);
@@ -1756,24 +1756,47 @@ function App() {
                                   '--cat-color': (CATEGORY_ICON_STYLE[s.category] || CATEGORY_ICON_STYLE[s.category?.trim()] || CATEGORY_ICON_STYLE["その他"]).color
                                 }}
                               >
-                                  {s.image_url && s.image_url.includes('yt:') ? (() => {
-                                    const ytEntryStr = s.image_url.split(',').map(v => v.trim()).find(v => v.startsWith('yt:'));
-                                    if (ytEntryStr) {
-                                      const videoId = ytEntryStr.substring(3);
-                                      const catStyle = CATEGORY_ICON_STYLE[s.category] || CATEGORY_ICON_STYLE[s.category?.trim()] || CATEGORY_ICON_STYLE["その他"];
+                                  {(() => {
+                                    const catStyle = CATEGORY_ICON_STYLE[s.category] || CATEGORY_ICON_STYLE[s.category?.trim()] || CATEGORY_ICON_STYLE["その他"];
+                                    
+                                    // 📸 サムネイルURLの解析らび！
+                                    let thumbSrc = null;
+                                    if (s.image_url) {
+                                      const entries = s.image_url.split(',').map(v => v.trim()).filter(Boolean);
+                                      const yt = entries.find(v => v.startsWith('yt:'));
+                                      const nico = entries.find(v => v.startsWith('nico:'));
+                                      
+                                      if (yt) thumbSrc = `https://img.youtube.com/vi/${yt.substring(3)}/hqdefault.jpg`;
+                                      else if (nico) thumbSrc = `https://snapshot.cdn.nicovideo.jp/snapshots/i/${nico.substring(5)}`;
+                                      else if (entries[0] && !entries[0].includes(':')) thumbSrc = entries[0];
+                                    }
+
+                                    if (thumbSrc) {
                                       return (
-                                        <div className="video-thumb-wrapper">
+                                        <div className="video-thumb-wrapper" style={{ position: 'relative', background: '#f8fafc' }}>
+                                          {/* 🟦 背面：プレースホルダー（読み込み中のみ見える） */}
+                                          <div className="category-icon-thumb placeholder-base" style={{ 
+                                            position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
+                                            background: catStyle.color, opacity: 0.1, zIndex: 0,
+                                            display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem'
+                                          }}>
+                                            {catStyle.icon}
+                                          </div>
+                                          {/* 🖼️ 前面：実際の画像（フェードイン） */}
                                           <img 
-                                            src={`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`} 
-                                            alt="動画サムネイル" 
+                                            src={thumbSrc} 
+                                            alt="サムネイル" 
                                             className="survey-item-thumb" 
                                             loading="lazy"
+                                            onLoad={(e) => e.target.classList.add('ready')}
+                                            onError={(e) => { e.target.style.display = 'none'; }}
+                                            style={{ position: 'relative', zIndex: 1 }}
                                           />
-                                          {/* 💎 サムネイルの下にカテゴリアイコンを配置（被りなし） */}
                                           <div className="thumb-category-badge" style={{
                                             color: catStyle.color,
                                             border: `1.5px solid ${catStyle.color}44`,
-                                            background: `rgba(255, 255, 255, 0.9)`
+                                            background: `rgba(255, 255, 255, 0.9)`,
+                                            zIndex: 2
                                           }}>
                                             <span style={{ fontSize: '1.2em' }}>{catStyle.icon}</span>
                                             <span>{s.category}</span>
@@ -1781,22 +1804,17 @@ function App() {
                                         </div>
                                       );
                                     }
+
+                                    // 画像がない場合はアイコンを表示
                                     return (
                                       <div className="category-icon-thumb" style={{ 
-                                        background: (CATEGORY_ICON_STYLE[s.category] || CATEGORY_ICON_STYLE[s.category?.trim()] || CATEGORY_ICON_STYLE["その他"]).color,
-                                        border: `2px solid ${(CATEGORY_ICON_STYLE[s.category] || CATEGORY_ICON_STYLE[s.category?.trim()] || CATEGORY_ICON_STYLE["その他"]).color}44`
+                                        background: catStyle.color,
+                                        border: `2px solid ${catStyle.color}44`
                                       }}>
-                                        {(CATEGORY_ICON_STYLE[s.category] || CATEGORY_ICON_STYLE[s.category?.trim()] || CATEGORY_ICON_STYLE["その他"]).icon}
+                                        {catStyle.icon}
                                       </div>
                                     );
-                                  })() : (
-                                    <div className="category-icon-thumb" style={{ 
-                                      background: (CATEGORY_ICON_STYLE[s.category] || CATEGORY_ICON_STYLE[s.category?.trim()] || CATEGORY_ICON_STYLE["その他"]).color,
-                                      border: `2px solid ${(CATEGORY_ICON_STYLE[s.category] || CATEGORY_ICON_STYLE[s.category?.trim()] || CATEGORY_ICON_STYLE["その他"]).color}44`
-                                    }}>
-                                      {(CATEGORY_ICON_STYLE[s.category] || CATEGORY_ICON_STYLE[s.category?.trim()] || CATEGORY_ICON_STYLE["その他"]).icon}
-                                    </div>
-                                  )}
+                                  })()}
                                   <div className="survey-item-content">
                                     <div className="survey-item-info">
                                       <span className="survey-item-title" style={{
