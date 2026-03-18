@@ -1,9 +1,9 @@
-name: Labi Daily Survey Launcher 🐰🚀
+name: Labi News & Daily Survey Launcher 🐰🚀
 
 on:
-#  schedule:
-#    # 毎日UTC 03:00 (JST 12:00 お昼時) に実行らびっ！
-#    - cron: '0 3 * * *'
+  schedule:
+    # 毎日 8:00, 12:00, 20:00 JST (UTC 23:00, 3:00, 11:00) に実行らびっ！
+    - cron: '0 23,3,11 * * *'
   workflow_dispatch: # 手動実行も可能らび！
 
 permissions:
@@ -24,5 +24,5 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Run Daily Poster Script 🥕
-        run: node scripts/daily_poster.cjs
+      - name: Run Auto News Poster Script 🥕
+        run: node scripts/auto_latest_news.cjs
