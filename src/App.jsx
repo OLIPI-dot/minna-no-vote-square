@@ -907,7 +907,13 @@ function App() {
   // 🔗 URL の ?s=<id> パラメータからアンケートを直接読み込む
   const loadFromUrl = async () => {
     const params = new URLSearchParams(window.location.search);
-    const surveyId = params.get('s');
+    let surveyId = params.get('s');
+    
+    // 🔗 パスベースのURL (/s/ID) にも対応らび！
+    if (!surveyId && window.location.pathname.startsWith('/s/')) {
+      surveyId = window.location.pathname.split('/')[2];
+    }
+
     // IDがない、または無効な文字列（'null','undefined'など）の場合は無視
     if (!surveyId || surveyId === 'null' || surveyId === 'undefined') {
       setView('list');
@@ -948,8 +954,8 @@ function App() {
       if (survey.visibility === 'private' && (!user || user.id !== survey.user_id)) {
         return alert('非公開です🔒');
       }
-      url.searchParams.set('s', survey.id);
-      window.history.pushState({ surveyId: survey.id }, '', url);
+      // 🔗 OGPが確実に効くように、パスベースのURL (/s/ID) を優先するらび！
+      window.history.pushState({ surveyId: survey.id }, '', `/s/${survey.id}`);
       setCurrentSurvey(survey);
       setIsTimeUp(survey.deadline && new Date(survey.deadline) < new Date());
 
@@ -1394,8 +1400,10 @@ function App() {
       navigator.clipboard.writeText(copyText).then(() => alert('コピーしました！'));
     } else if (type === 'x') {
       const xText = `📊「${title}」`;
+      // 🔗 シェアURLも OGPが効きやすいパスベース (/s/ID) に変更らび！
+      const shareUrl = `${window.location.origin}/s/${currentSurvey.id}`;
       window.open(
-        `https://twitter.com/intent/tweet?text=${encodeURIComponent(xText)}&url=${encodeURIComponent(url)}`,
+        `https://twitter.com/intent/tweet?text=${encodeURIComponent(xText)}&url=${encodeURIComponent(shareUrl)}`,
         '_blank'
       );
     }
