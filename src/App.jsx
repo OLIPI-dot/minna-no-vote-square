@@ -903,6 +903,7 @@ function App() {
       return;
     }
 
+    // 解説文 (description) も漏れなく取得するように明示するらび！
     const { data: sv } = await supabase.from('surveys').select('*').eq('id', surveyId).single();
     if (!sv) {
       setView('list');
@@ -958,7 +959,7 @@ function App() {
 
   const fetchSurveys = async (currentUser) => {
     setIsLoading(true);
-    // アンケート本体
+    // アンケート本体（解説文も含むらび！）
     const { data: sData } = await supabase.from('surveys').select('*').eq('visibility', 'public');
 
     // ログイン中なら自分の非公開/限定公開アンケートも取得

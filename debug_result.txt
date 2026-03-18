@@ -1,0 +1,52 @@
+🔗 URL: https://ssmkasmtdnojdicdpdfg.supabase.co
+🔑 Key prefix: sb_publish...
+--- Before Update ---
+[
+  {
+    "id": 274,
+    "title": "【速報/注目】収集車のホッパーに挟まれる 死亡。あなたはどう感じましたか？📡📰",
+    "image_url": "yt:Live_News_Placeholder"
+  },
+  {
+    "id": 273,
+    "title": "【速報/注目】USS買収 日鉄に計9000億円融資へ。あなたはどう感じましたか？📡📰",
+    "image_url": "yt:Live_News_Placeholder"
+  },
+  {
+    "id": 272,
+    "title": "【速報/注目】公示地価 バブル後で最高の上昇率。あなたはどう感じましたか？📡📰",
+    "image_url": "yt:Live_News_Placeholder"
+  },
+  {
+    "id": 271,
+    "title": "【速報】政府 日米首脳会談でアラスカ産原油調達の意向伝える方針。あなたはどう感じましたか？📡📰",
+    "image_url": "yt:Live_News_Placeholder"
+  }
+]
+Updated 274 to yt:sn2DE-WZ_9U
+Updated 273 to yt:cJB6yCvsT3A
+Updated 272 to yt:ZmHKShWO3b4
+Updated 271 to yt:2EKQ1XkY0qY
+--- After Update ---
+[
+  {
+    "id": 274,
+    "title": "【速報/注目】収集車のホッパーに挟まれる 死亡。あなたはどう感じましたか？📡📰",
+    "image_url": "yt:Live_News_Placeholder"
+  },
+  {
+    "id": 273,
+    "title": "【速報/注目】USS買収 日鉄に計9000億円融資へ。あなたはどう感じましたか？📡📰",
+    "image_url": "yt:Live_News_Placeholder"
+  },
+  {
+    "id": 272,
+    "title": "【速報/注目】公示地価 バブル後で最高の上昇率。あなたはどう感じましたか？📡📰",
+    "image_url": "yt:Live_News_Placeholder"
+  },
+  {
+    "id": 271,
+    "title": "【速報】政府 日米首脳会談でアラスカ産原油調達の意向伝える方針。あなたはどう感じましたか？📡📰",
+    "image_url": "yt:Live_News_Placeholder"
+  }
+]

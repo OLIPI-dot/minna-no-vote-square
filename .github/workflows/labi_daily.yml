@@ -2,8 +2,8 @@ name: Labi News & Daily Survey Launcher 🐰🚀
 
 on:
   schedule:
-    # 毎日 8:00, 12:00, 20:00 JST (UTC 23:00, 3:00, 11:00) に実行らびっ！
-    - cron: '0 23,3,11 * * *'
+    # 毎日 7:30, 11:30, 19:30 JST (UTC 22:30, 2:30, 10:30) に実行らびっ！
+    - cron: '30 22,2,10 * * *'
   workflow_dispatch: # 手動実行も可能らび！
 
 permissions:
@@ -23,6 +23,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies 📦
+        run: npm install
 
       - name: Run Auto News Poster Script 🥕
         run: node scripts/auto_latest_news.cjs

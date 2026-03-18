@@ -109,17 +109,18 @@ async function postLatestNewsSurveys() {
                 headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36' }
             });
 
-            // 動画情報を抽出する正規表現
-            const videoDataList = searchRes.data.match(/\{"videoId":"[^"]+","title":\{"runs":\[\{"text":"[^"]+"\}\]\}[^\}]+\}/g);
-            
-            if (videoDataList) {
-                for (const rawData of videoDataList) {
-                    const vidMatch = rawData.match(/"videoId":"([^"]+)"/);
-                    const titleMatch = rawData.match(/"text":"([^"]+)"/);
-                    
-                    if (vidMatch && titleMatch) {
-                        const vid = vidMatch[1];
-                        const vTitle = titleMatch[1];
+            // ytInitialData から動画情報を抽出する
+            const dataMatch = searchRes.data.match(/var ytInitialData = (\{.*?\});/);
+            const ytData = dataMatch ? JSON.parse(dataMatch[1]) : null;
+
+            if (ytData && ytData.contents) {
+                const contents = ytData.contents.twoColumnSearchResultsRenderer.primaryContents.sectionListRenderer.contents[0].itemSectionRenderer.contents;
+                
+                for (const item of contents) {
+                    const video = item.videoRenderer;
+                    if (video && video.videoId) {
+                        const vid = video.videoId;
+                        const vTitle = video.title.runs[0].text;
                         
                         // ❌ NGワードチェック（ライブ中や配信予定を避ける）
                         const ngWords = ['LIVE', 'ライブ', '配信中', '生放送', '予告', 'Upcoming'];
@@ -133,6 +134,12 @@ async function postLatestNewsSurveys() {
                             console.log(`⏩ スキップ（NGワード）: "${vTitle}"`);
                         }
                     }
+                }
+            } else {
+                console.log('⚠️ ytInitialData の取得に失敗したため、旧方式の抽出を試みます...');
+                const matches = searchRes.data.match(/"videoId":"([^"]+)"/g);
+                if (matches && matches.length > 0) {
+                    videoId = matches[0].split(':')[1].replace(/"/g, '');
                 }
             }
         } catch (searchErr) {
