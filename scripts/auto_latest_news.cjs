@@ -26,7 +26,9 @@ const supabase = createClient(url, key);
 // ニュースソース設定
 const RSS_SOURCES = [
     { name: 'Yahoo!トピックス', url: 'https://news.yahoo.co.jp/rss/topics/top-picks.xml', priority: 1 },
-    { name: 'NHK主要ニュース', url: 'https://www3.nhk.or.jp/rss/news/cat0.xml', priority: 2 }
+    { name: 'NHK主要ニュース', url: 'https://www3.nhk.or.jp/rss/news/cat0.xml', priority: 2 },
+    { name: 'まとめくすアンテナ(総合)', url: 'https://feeds.mtmx.jp/feed.xml', priority: 3 },
+    { name: 'まとめくすアンテナ(人気)', url: 'https://feeds.mtmx.jp/news/all/popular/feed.xml', priority: 3 }
 ];
 
 async function fetchRSSNews() {
