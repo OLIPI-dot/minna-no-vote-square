@@ -1393,17 +1393,7 @@ function App() {
       ].join('\n');
       navigator.clipboard.writeText(copyText).then(() => alert('コピーしました！'));
     } else if (type === 'x') {
-      // Xシェア：URLはurl=パラメータで渡してテキスト本文をスッキリさせる
-      const surveyTagsText = currentSurvey.tags && currentSurvey.tags.length > 0
-        ? currentSurvey.tags.map(t => `#${t}`).join(' ')
-        : '';
-      const xText = [
-        `📊「${title}」`,
-        '',
-        ...lines,
-        '',
-        `計${isTotalVotes}票 #アンケート広場 ${surveyTagsText}`,
-      ].join('\n');
+      const xText = `📊「${title}」`;
       window.open(
         `https://twitter.com/intent/tweet?text=${encodeURIComponent(xText)}&url=${encodeURIComponent(url)}`,
         '_blank'
