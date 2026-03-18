@@ -855,20 +855,24 @@ function App() {
 
     document.title = pageTitle;
 
+    const cleanDesc = currentSurvey && currentSurvey.description 
+      ? currentSurvey.description.slice(0, 100).replace(/https?:\/\/\S+/g, '').trim() + '...'
+      : metaDescription;
+
     // ヘルパー: メタタグの更新魔法 🪄
     const updateMeta = (selector, attr, content) => {
       let tag = document.querySelector(selector);
       if (tag) tag.setAttribute(attr, content);
     };
 
-    updateMeta('meta[name="description"]', 'content', metaDescription);
+    updateMeta('meta[name="description"]', 'content', cleanDesc);
     updateMeta('meta[name="keywords"]', 'content', metaKeywords);
     updateMeta('meta[property="og:title"]', 'content', pageTitle);
-    updateMeta('meta[property="og:description"]', 'content', metaDescription);
+    updateMeta('meta[property="og:description"]', 'content', cleanDesc);
     updateMeta('meta[property="og:url"]', 'content', currentUrl);
     updateMeta('meta[property="og:image"]', 'content', ogImageUrl);
     updateMeta('meta[name="twitter:title"]', 'content', pageTitle);
-    updateMeta('meta[name="twitter:description"]', 'content', metaDescription);
+    updateMeta('meta[name="twitter:description"]', 'content', cleanDesc);
     updateMeta('meta[name="twitter:image"]', 'content', ogImageUrl);
 
     // 🔗 カノニカルURLの更新
@@ -1421,23 +1425,33 @@ function App() {
     });
     const url = `${window.location.origin}/?s=${currentSurvey.id}`;
 
+    const shareUrl = `${window.location.origin}/s/${currentSurvey.id}`;
+
+    // 🏆 1位の項目を見つける
+    const sorted = [...options].sort((a, b) => (b.votes || 0) - (a.votes || 0));
+    const topOption = sorted[0];
+    const isWinner = topOption && topOption.votes > 0;
+
     if (type === 'copy') {
-      // コピー用はURLを含める
       const copyText = [
         `📊「${title}」`,
         '',
         ...lines,
         '',
-        `計${isTotalVotes}票 👉 ${url}`,
+        `計${isTotalVotes}票 👉 ${shareUrl}`,
         `#アンケート広場`,
       ].join('\n');
       navigator.clipboard.writeText(copyText).then(() => alert('コピーしました！'));
     } else if (type === 'x') {
-      const xText = `📊「${title}」`;
-      // 🔗 シェアURLも OGPが効きやすいパスベース (/s/ID) に変更らび！
-      const shareUrl = `${window.location.origin}/s/${currentSurvey.id}`;
+      // 📝 X用のテキストをリッチに！らび頑張る！🐰✨
+      let xText = `📊「${title}」\n`;
+      if (isWinner) {
+        xText += `🏆 現在1位: ${topOption.name} (${Math.round(topOption.votes / isTotalVotes * 100)}%)\n`;
+      }
+      xText += `🔥 現在の合計: ${isTotalVotes}票！みんなはどう思う？らびっ！`;
+      
       window.open(
-        `https://twitter.com/intent/tweet?text=${encodeURIComponent(xText)}&url=${encodeURIComponent(shareUrl)}`,
+        `https://twitter.com/intent/tweet?text=${encodeURIComponent(xText)}&url=${encodeURIComponent(shareUrl)}&hashtags=アンケート広場`,
         '_blank'
       );
     }
@@ -1653,7 +1667,7 @@ function App() {
                 })()}
 
                 {/* ⚖️ 公式・ユーザー切り替えタブ */}
-                {view === 'list' && !searchQuery && filterCategory === 'すべて' && !filterTag && (
+                {view === 'list' && !searchQuery /* filterCategory === 'すべて' */ && !filterTag && (
                   <div className="official-tab-navigation" style={{ display: 'flex', gap: '16px', marginBottom: '24px', borderBottom: '2px solid #f1f5f9', paddingBottom: '4px' }}>
                     <button 
                       onClick={() => setActiveTab('official')} 
@@ -1685,8 +1699,8 @@ function App() {
                   {isLoading ? <div className="empty-msg">読み込み中...</div> : (() => {
                     const finalItems = filteredBaseSurveys
                       .filter(s => {
-                        // ⚖️ 公式・ユーザー切り替えタブのフィルタ背景（検索中などは無効）
-                        if (!searchQuery && filterCategory === 'すべて' && !filterTag) {
+                        // ⚖️ 公式・ユーザー切り替えタブのフィルタ（検索中などは無効）
+                        if (!searchQuery /* && filterCategory === 'すべて' */ && !filterTag) {
                           if (activeTab === 'official') {
                             if (!s.is_official) return false;
                           } else if (activeTab === 'user') {
@@ -1902,7 +1916,8 @@ function App() {
                       .filter(s => !filterTag || (s.tags && s.tags.includes(filterTag)))
                       .filter(s => {
                         // ⚖️ 公式・ユーザー切り替えタブのフィルタ背景（検索中などは無効）
-                        if (!searchQuery && filterCategory === 'すべて' && !filterTag) {
+                        // ⚖️ 公式・ユーザー切り替えタブのフィルタ背景（検索中などは無効）
+                        if (!searchQuery /* && filterCategory === 'すべて' */ && !filterTag) {
                           if (activeTab === 'official') {
                             if (!s.is_official) return false;
                           } else if (activeTab === 'user') {
@@ -2182,6 +2197,24 @@ function App() {
                     );
                   })}
                 </div>
+
+                {/* 🎊 投票完了！お祝い＆シェアカードらび！ */}
+                {votedOption && !isTimeUp && (
+                  <div className="vote-completion-card">
+                    <div className="completion-title">
+                      <span className="glitter-icon">✨</span>
+                      投票完了らびっ！
+                      <span className="glitter-icon">✨</span>
+                    </div>
+                    <p className="completion-msg">
+                      あなたの1票が広場の歴史に刻まれたよっ！🐰💎<br />
+                      今の盛り上がりをみんなにも教えてあげようらび！
+                    </p>
+                    <button className="big-x-share-btn" onClick={() => handleShareResult('x')}>
+                      <span>𝕏</span> 結果をシェアする！
+                    </button>
+                  </div>
+                )}
                 <div className="share-result-area">
                   <button
                     className={`like-survey-btn ${likedSurveys.some(id => String(id) === String(currentSurvey.id)) ? 'liked' : ''}`}
