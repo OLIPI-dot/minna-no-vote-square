@@ -133,9 +133,13 @@ async function startAutoPosting() {
                 continue;
             }
 
-            const description = (ogp.description && ogp.description.length > (news.description || '').length) ? ogp.description : (news.description || '');
-            const deadline = new Date();
-            deadline.setDate(deadline.getDate() + 7);
+            // 動的なカテゴリ判定の強化
+            let finalCategory = news.category;
+            if (news.title.includes('株') || news.title.includes('円') || news.title.includes('経済') || news.title.includes('金利') || news.title.includes('原油')) {
+                finalCategory = 'ニュース・経済';
+            } else if (news.title.includes('アニメ') || news.title.includes('声優') || news.title.includes('漫画')) {
+                finalCategory = 'アニメ';
+            }
 
             // らびちゃんの動的コメント
             let comment = "ニュースを見つけただらび！みんなはどう思う？🥕";
@@ -143,22 +147,30 @@ async function startAutoPosting() {
                 comment = "おめでたいニュースだらび！🎉 みんなでお祝いしましょうらび！✨";
             } else if (news.title.includes('引退') || news.title.includes('休止') || news.title.includes('終了')) {
                 comment = "ちょっと寂しいニュースだらび…😢 みんなの気持ちを聞かせてらび。";
-            } else if (news.category === 'ニュース・経済') {
+            } else if (finalCategory === 'ニュース・経済') {
                 comment = "気になる社会の動きだらび。みんなの意見を教えてほしいらび！📰";
             }
 
             const { data: sData, error: sErr } = await supabase.from('surveys').insert([{
                 title: surveyTitle,
                 description: description ? `${description}\n\n🔗 リンク先で詳しく見るらび！\n【参考元: ${news.source}】\n${news.link}` : null,
-                category: news.category,
+                category: finalCategory,
                 image_url: ogp.image ? `${finalVideo},${ogp.image}` : finalVideo,
                 user_id: DEFAULT_USER_ID,
                 deadline: deadline.toISOString(),
-                options: ["1. 感動した・応援したい", "2. 驚いた・ショックだ", "3. もっと詳しく知りたい", "4. その他 (コメントへ！)"]
+                is_official: true
             }]).select();
 
             if (sErr) throw sErr;
             const surveyId = sData[0].id;
+
+            // 選択肢投稿 (optionsテーブル)らび！
+            const optionNames = ["1. 感動した・応援したい", "2. 驚いた・ショックだ", "3. もっと詳しく知りたい", "4. その他 (コメントへ！)"];
+            await supabase.from('options').insert(optionNames.map(name => ({
+                survey_id: surveyId,
+                name: name,
+                votes: 0
+            })));
 
             // コメント投稿
             await supabase.from('comments').insert([{
