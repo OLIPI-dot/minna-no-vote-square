@@ -298,9 +298,9 @@ async function postLatestNewsSurveys() {
                 title: surveyTitle,
                 description: finalDescription,
                 category: news.category,
-                options: ["非常に関心がある", "ある程度関心がある", "あまり関心がない", "全く関心がない"],
                 image_url: null,
-                created_at: new Date().toISOString()
+                created_at: new Date().toISOString(),
+                is_official: true
             }]).select();
 
             if (surveyError) {
@@ -309,6 +309,23 @@ async function postLatestNewsSurveys() {
             }
 
             const surveyId = surveyData[0].id;
+
+            // 選択肢の追加 📋
+            const options = ["非常に関心がある", "ある程度関心がある", "あまり関心がない", "全く関心がない"];
+            const { error: optionsError } = await supabase.from('options').insert(
+                options.map(opt => ({
+                    survey_id: surveyId,
+                    name: opt,
+                    votes: 0
+                }))
+            );
+
+            if (optionsError) {
+                console.error('❌ 選択肢の追加失敗:', optionsError.message);
+            }
+
+            const greeting = getLabiGreeting();
+            const impression = getLabiImpression(news.category, news.title);
             const comment = `${greeting} 『${news.title}』(${news.source}) \n\n${impression} みんなはどう思うかな？ 詳しい内容は解説文エリアのリンクもチェックしてみてね。らびと一緒に話そうらび！ 🐰🛡🥇🏆`;
 
             await supabase.from('comments').insert([{
