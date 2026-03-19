@@ -1781,7 +1781,11 @@ function App() {
                                       const nico = entries.find(v => v.startsWith('nico:'));
                                       
                                       if (yt) thumbSrc = `https://img.youtube.com/vi/${yt.substring(3)}/hqdefault.jpg`;
-                                      else if (nico) thumbSrc = `https://snapshot.cdn.nicovideo.jp/snapshots/i/${nico.substring(5)}`;
+                                      else if (nico) {
+                                        // 📺 ニコニコ動画のアイキャッチ（サムネ取得が不安定なため、公式ロゴをアイキャッチとして使用）
+                                        // おりぴさんリクエスト：URLでニコニコだとわかったらアイキャッチにする
+                                        thumbSrc = `https://upload.wikimedia.org/wikipedia/commons/7/7c/Niconico_logo.svg`;
+                                      }
                                       else if (entries[0] && !entries[0].includes(':')) thumbSrc = entries[0];
                                     }
 
