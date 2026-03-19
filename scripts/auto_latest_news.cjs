@@ -3,63 +3,66 @@ const { createClient } = require('@supabase/supabase-js');
 const fs = require('fs');
 const path = require('path');
 
-// 環境変数取得
-const getEnv = (key) => {
-    if (process.env[key]) return process.env[key];
-    const envPaths = ['.env.local', '.env'];
-    for (const p of envPaths) {
-        if (fs.existsSync(p)) {
-            const lines = fs.readFileSync(p, 'utf8').split('\n');
-            for (const line of lines) {
-                const trimmed = line.trim();
-                if (trimmed.startsWith(key + '=')) {
-                    return trimmed.split('=')[1].trim().replace(/^["'](.*)["']$/, '$1');
-                }
-            }
-        }
-    }
-    return null;
-};
+// .env から環境変数を手動で読み込むらび！
+const envPath = path.join(__dirname, '..', '.env');
+if (fs.existsSync(envPath)) {
+    const envContent = fs.readFileSync(envPath, 'utf8');
+    envContent.split('\n').forEach(line => {
+        const [key, value] = line.split('=');
+        if (key && value) process.env[key.trim()] = value.trim();
+    });
+}
 
-const url = getEnv('VITE_SUPABASE_URL');
-const key = getEnv('VITE_SUPABASE_ANON_KEY');
-const supabase = createClient(url, key);
+const SUPABASE_URL = process.env.VITE_SUPABASE_URL;
+const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY;
+const DEFAULT_USER_ID = "00000000-0000-0000-0000-000000000000";
 
-// おりぴさんのユーザーID
-const DEFAULT_USER_ID = "e9469808-1f11-4d97-87ab-633113c39166";
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const RSS_SOURCES = [
-    { name: 'Modelpress', url: 'https://feed.mdpr.jp/rss/export/mdpr-topics.xml', priority: 1, category: "エンタメ" },
-    { name: 'PANORA', url: 'https://panora.tokyo/feed/', priority: 1, category: "エンタメ" },
-    { name: 'Yahoo!トピックス(総合)', url: 'https://news.yahoo.co.jp/rss/topics/top-picks.xml', priority: 2, category: "ニュース・経済" },
-    { name: 'Yahoo!エンタメ', url: 'https://news.yahoo.co.jp/rss/topics/entertainment.xml', priority: 2, category: "エンタメ" },
-    { name: 'NHK主要ニュース', url: 'https://www3.nhk.or.jp/rss/news/cat0.xml', priority: 3, category: "ニュース・経済" }
+    { name: 'モデルプレス', url: 'https://mdpr.jp/news/rss', category: 'エンタメ', priority: 1 },
+    { name: 'NHK 芸能', url: 'https://www.nhk.or.jp/rss/news/cat5.xml', category: 'エンタメ', priority: 2 },
+    { name: 'NHK 速報', url: 'https://www.nhk.or.jp/rss/news/cat0.xml', category: 'ニュース・経済', priority: 3 }
 ];
+
+async function searchYouTubeVideo(title) {
+    try {
+        // 検索クエリをクリーンアップ（記号などを除去して検索精度を上げる）
+        const query = title.replace(/[【】\[\]()]/g, ' ').trim();
+        console.log(`🔍 YouTube検索中: ${query}`);
+        const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
+        const res = await axios.get(searchUrl, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+            },
+            timeout: 10000
+        });
+        const html = res.data;
+        const match = html.match(/"videoId":"([a-zA-Z0-9_-]{11})"/);
+        if (match && match[1] && match[1] !== 'videoseries') {
+            return match[1];
+        }
+        return null;
+    } catch (e) {
+        console.warn(`⚠️ YouTube Search Error: ${e.message}`);
+        return null;
+    }
+}
 
 async function fetchOGP(targetUrl) {
     try {
-        const response = await axios.get(targetUrl, { 
-            timeout: 8000, 
-            headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36' } 
-        });
-        const html = response.data;
+        const res = await axios.get(targetUrl, { timeout: 10000 });
+        const html = res.data;
         const getMeta = (prop) => {
-            const regex = new RegExp(`<meta[^>]*?(?:property|name)=["']${prop}["'][^>]*?content=["']([^"']*)["']`, 'i');
-            const match = html.match(regex);
-            return match ? match[1] : null;
+            const m = html.match(new RegExp(`<meta[^>]+(?:property|name)="${prop}"[^>]+content="([^"]+)"`, 'i'))
+                   || html.match(new RegExp(`<meta[^>]+content="([^"]+)"[^>]+(?:property|name)="${prop}"`, 'i'));
+            return m ? m[1] : null;
         };
         let desc = getMeta('og:description') || getMeta('description') || getMeta('twitter:description');
         let image = getMeta('og:image') || getMeta('twitter:image');
         
-        // 動画判定
         let video = null;
-        const ytPatterns = [
-            /youtube\.com\/embed\/([^"?\/ ]+)/,
-            /v=([^&" ]+)/,
-            /youtu\.be\/([^"?\/ ]+)/,
-            /youtube\.com\/shorts\/([^"?\/ ]+)/
-        ];
-        
+        const ytPatterns = [/youtube\.com\/embed\/([^"?\/ ]+)/, /v=([^&" ]+)/, /youtu\.be\/([^"?\/ ]+)/, /youtube\.com\/shorts\/([^"?\/ ]+)/];
         for (const p of ytPatterns) {
             const m = html.match(p);
             if (m && m[1] && m[1].length === 11 && m[1] !== 'videoseries') {
@@ -67,7 +70,6 @@ async function fetchOGP(targetUrl) {
                 break;
             }
         }
-
         if (!video && html.includes('nicovideo.jp')) {
             const nico = html.match(/nicovideo\.jp\/watch\/([a-z0-9]+)/i);
             if (nico && nico[1]) video = `nico:${nico[1]}`;
@@ -79,25 +81,17 @@ async function fetchOGP(targetUrl) {
         }
         return { description: desc, image: image, video: video };
     } catch (e) {
-        console.warn(`fetchOGP error for ${targetUrl}:`, e.message);
         return { description: null, image: null, video: null };
     }
 }
 
 function cleanTitle(str) {
     if (!str) return '';
-    return str
-        .replace(/<!\[CDATA\[|\]\]>/g, '')
-        .replace(/https?:\/\/[^\s]+/g, '')
-        .replace(/は NHKニュース 詳しく読む.*/g, '')
-        .replace(/NHKニュース 詳しく読む.*/g, '')
-        .replace(/詳しく読む.*/g, '')
-        .replace(/\s+/g, ' ')
-        .trim();
+    return str.replace(/<!\[CDATA\[|\]\]>/g, '').replace(/https?:\/\/[^\s]+/g, '').replace(/は NHKニュース 詳しく読む.*/g, '').replace(/NHKニュース 詳しく読む.*/g, '').replace(/詳しく読む.*/g, '').replace(/\s+/g, ' ').trim();
 }
 
 async function startAutoPosting() {
-    console.log('📡 ニュース取得開始らび！');
+    console.log('📡 プレミアム自動投稿開始らび！🎥🐰💎');
     let allNews = [];
     for (const src of RSS_SOURCES) {
         try {
@@ -112,7 +106,6 @@ async function startAutoPosting() {
         } catch (e) { console.warn(`⚠️ ${src.name} 失敗: ${e.message}`); }
     }
 
-    // 優先度でソートしつつシャッフル
     allNews.sort((a, b) => (a.priority - b.priority) || (Math.random() - 0.5));
 
     const max = 3;
@@ -124,60 +117,60 @@ async function startAutoPosting() {
             const { data: exist } = await supabase.from('surveys').select('id').eq('title', surveyTitle).limit(1);
             if (exist && exist.length > 0) continue;
 
-            console.log(`🔍 調査中: ${news.title} (Source: ${news.source})`);
+            console.log(`🔍 調査中: ${news.title}`);
             const ogp = await fetchOGP(news.link);
-            const description = (ogp.description && ogp.description.length > (news.description || '').length) ? ogp.description : (news.description || '');
             
+            // 動画の徹底取得ロジック
+            let finalVideo = ogp.video;
+            if (!finalVideo) {
+                const ytId = await searchYouTubeVideo(news.title);
+                if (ytId) finalVideo = `yt:${ytId}`;
+            }
+
+            // 🌟 プレミアム・ルール: 動画がないものは投稿しないらび！
+            if (!finalVideo) {
+                console.log(`⏩ スキップ: 動画が見つかりませんでした (Title: ${news.title})`);
+                continue;
+            }
+
+            const description = (ogp.description && ogp.description.length > (news.description || '').length) ? ogp.description : (news.description || '');
             const deadline = new Date();
             deadline.setDate(deadline.getDate() + 7);
-            
+
+            // らびちゃんの動的コメント
+            let comment = "ニュースを見つけただらび！みんなはどう思う？🥕";
+            if (news.title.includes('結婚') || news.title.includes('出産') || news.title.includes('発表')) {
+                comment = "おめでたいニュースだらび！🎉 みんなでお祝いしましょうらび！✨";
+            } else if (news.title.includes('引退') || news.title.includes('休止') || news.title.includes('終了')) {
+                comment = "ちょっと寂しいニュースだらび…😢 みんなの気持ちを聞かせてらび。";
+            } else if (news.category === 'ニュース・経済') {
+                comment = "気になる社会の動きだらび。みんなの意見を教えてほしいらび！📰";
+            }
+
             const { data: sData, error: sErr } = await supabase.from('surveys').insert([{
                 title: surveyTitle,
                 description: description ? `${description}\n\n🔗 リンク先で詳しく見るらび！\n【参考元: ${news.source}】\n${news.link}` : null,
                 category: news.category,
-                image_url: ogp.video ? (ogp.image ? `${ogp.video},${ogp.image}` : ogp.video) : (ogp.image || null),
+                image_url: ogp.image ? `${finalVideo},${ogp.image}` : finalVideo,
                 user_id: DEFAULT_USER_ID,
                 deadline: deadline.toISOString(),
-                is_official: true
+                options: ["1. 感動した・応援したい", "2. 驚いた・ショックだ", "3. もっと詳しく知りたい", "4. その他 (コメントへ！)"]
             }]).select();
 
-            if (sErr || !sData || sData.length === 0) {
-                console.error('❌ アンケート作成失敗:', sErr ? sErr.message : 'No data returned');
-                continue;
-            }
+            if (sErr) throw sErr;
+            const surveyId = sData[0].id;
 
-            const sid = sData[0].id;
-            await supabase.from('options').insert([
-                { survey_id: sid, name: "非常に関心がある", votes: 0 },
-                { survey_id: sid, name: "少し気になる", votes: 0 },
-                { survey_id: sid, name: "今のところ静観", votes: 0 },
-                { survey_id: sid, name: "詳しく調べたい", votes: 0 }
-            ]);
-
-            // 動的ならびちゃんコメント
-            let reaction = "みんなはどう思うかな？ 投票して教えてねっ！";
-            if (news.title.includes('結婚') || news.title.includes('出産') || news.title.includes('おめでとう')) {
-                reaction = "わぁ、とってもおめでたいニュースらび！🐰💕 みんなでお祝いの気持ちを届けよう！";
-            } else if (ogp.video) {
-                reaction = "📺 **動画もついているみたいだよ！** 迫力の映像をチェックして、みんなの意見を聞かせてね！";
-            } else if (news.category === "ニュース・経済") {
-                reaction = "世の中の大事なニュースらび。🐰📈 みんながどう感じているか、本音が知りたいな。";
-            }
-
-            const hello = ["やっほー！🐰✨", "ひょっこり降臨らび！🐾", "みんな、注目ー！🐰💎", "最新ニュースを持ってきたよ！🥕"][Math.floor(Math.random() * 4)];
+            // コメント投稿
             await supabase.from('comments').insert([{
-                survey_id: sid,
-                user_name: "らび🐰 (AI)",
-                content: `${hello} **「${news.title}」** について！\n\n${reaction} 🥕🥕💎✨🏆`,
-                is_official: true
+                survey_id: surveyId,
+                content: comment,
+                user_nickname: "らび"
             }]);
 
+            console.log(`✅ プレミアム投稿成功: ${news.title} (ID: ${surveyId})`);
             count++;
-            console.log(`🚀 完了: ${news.title} (Video: ${!!ogp.video})`);
-        } catch (innerErr) {
-            console.error(`❌ ${news.title} 処理中に重大なエラー:`, innerErr.message);
-        }
+        } catch (e) { console.warn(`❌ 投稿失敗 (${news.title}):`, e.message); }
     }
 }
 
-startAutoPosting().catch(console.error);
+startAutoPosting();
