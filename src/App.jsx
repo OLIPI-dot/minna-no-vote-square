@@ -2209,7 +2209,7 @@ function App() {
                           <>
                             <div className="result-info">
                               <span className="choice-name">
-                                {index + 1}. {opt.name}
+                                {opt.name.startsWith(`${index + 1}.`) ? opt.name : `${index + 1}. ${opt.name}`}
                                 {(String(votedOption) === String(opt.id) || votedOption === opt.name) && ' ✅'}
                               </span>
                               <span className="vote-count-meta">
@@ -2219,7 +2219,7 @@ function App() {
                             </div>
                             <div className="result-bar-bg"><div className="result-bar-fill" style={{ width: `${perc}%` }}></div></div>
                           </>
-                        ) : <button className="option-button" onClick={() => handleVote(opt)}>{index + 1}. {opt.name}</button>}
+                        ) : <button className="option-button" onClick={() => handleVote(opt)}>{opt.name.startsWith(`${index + 1}.`) ? opt.name : `${index + 1}. ${opt.name}`}</button>}
                       </div>
                     );
                   })}
