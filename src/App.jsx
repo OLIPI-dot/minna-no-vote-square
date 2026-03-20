@@ -1005,7 +1005,8 @@ function App() {
       const now = Date.now();
       if (now - lastView > VIEW_COOLDOWN_MS) {
         localStorage.setItem(viewKey, now.toString());
-        await supabase.rpc('increment_survey_view', { survey_id: survey.id });
+        // 🚀 非同期（Non-blocking）で実行して遷移を速くするらび！
+        supabase.rpc('increment_survey_view', { survey_id: survey.id });
       }
     } else if (nextView === 'list') {
       // 🏘️ 広場に戻る時はURLをルート（/）にリセットするらび！
@@ -1018,7 +1019,7 @@ function App() {
 
   const fetchSurveys = async (currentUser) => {
     setIsLoading(true);
-    // アンケート本体（解説文と公式フラグも取得らび！）
+    // アンケート本体（解説文も念のため含めておくらび！）
     const { data: sData } = await supabase.from('surveys').select('*, is_official').eq('visibility', 'public');
 
     // ログイン中なら自分の非公開/限定公開アンケートも取得
@@ -1032,9 +1033,14 @@ function App() {
       if (mData) mine = mData;
     }
 
-    // 投票数は一括取得してマージ
+    // 投票数は一括取得してマージ（Mapで高速化らび！）
     const { data: oData } = await supabase.from('options').select('survey_id, votes');
-    // コメント数は DB のカラムを使うのでここでは取得不要！
+    const voteMap = {};
+    if (oData) {
+      oData.forEach(o => {
+        voteMap[o.survey_id] = (voteMap[o.survey_id] || 0) + (o.votes || 0);
+      });
+    }
 
     const allSurveys = [...(sData || []), ...mine];
     
@@ -1062,7 +1068,7 @@ function App() {
         return {
           ...s,
           is_official: isOfficialPattern,
-          total_votes: oData ? oData.filter(o => o.survey_id === s.id).reduce((sum, opt) => sum + (opt.votes || 0), 0) : 0,
+          total_votes: voteMap[s.id] || 0,
           comment_count: s.comment_count || 0
         };
       });
