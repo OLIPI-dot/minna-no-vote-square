@@ -179,7 +179,7 @@ const SurveyDetailView = ({
             {isEditingCategory && (
               <div className="edit-panel" style={{ width: '100%', marginTop: '15px', padding: '15px', background: '#fff', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center' }}>
-                  {['ニュース・経済', 'エンタメ', '音楽', 'アニメ', 'グルメ', 'スポーツ', 'トレンド', '自然', 'IT・テクノロジー', '生活', 'ゲーム', 'らび', 'その他'].map(cat => (
+                  {(isAdmin ? ['ニュース', 'レビュー', 'コラム', 'ネタ', 'らび', 'その他'] : ['ニュース', 'レビュー', 'コラム', 'ネタ', 'その他']).map(cat => (
                     <button key={cat} onClick={() => handleUpdateCategory(cat)} className={`cat-btn ${currentSurvey.category === cat ? 'active' : ''}`}>{cat}</button>
                   ))}
                 </div>

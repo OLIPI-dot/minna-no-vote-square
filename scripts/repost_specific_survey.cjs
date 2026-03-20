@@ -28,7 +28,7 @@ async function repostSpecificSurvey() {
 
     const topic = {
         title: "【物議】沖縄ボート転覆事故と「腕組み謝罪」",
-        category: "ニュース・経済",
+        category: "ニュース",
         videoId: "682BZbEF6WM",
         options: [
             "謝罪の態度（腕組み）が不適切だと思う",

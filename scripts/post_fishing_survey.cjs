@@ -22,7 +22,7 @@ async function postFishingSurvey() {
 
     const topic = {
         title: "「寒ブリ釣るぞ！」と4時起きで6時間…→結果に家族で爆笑ｗｗ この結末、どう思う？ 🐟🤣",
-        category: "生活",
+        category: "その他",
         // 静止画的に、釣りや魚のイメージがあれば良いので、一般的な釣り動画やカサゴの動画を検討。
         // 今回は「カサゴ 25cm 釣り」などで探してみます。
         searchQuery: "カサゴ 釣り 堤防 25cm", 
