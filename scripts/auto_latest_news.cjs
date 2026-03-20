@@ -139,9 +139,12 @@ async function startAutoPosting() {
 
             // 動的なカテゴリ判定の強化
             let finalCategory = news.category;
-            if (news.title.includes('株') || news.title.includes('円') || news.title.includes('経済') || news.title.includes('金利') || news.title.includes('原油')) {
+            const economyKeywords = ['株', '円', '経済', '金利', '原油', '日銀', '予算', '与党', '野党', '衆院', '参院', '政府', '経産省', '首相', '為替', '投資'];
+            const animeKeywords = ['アニメ', '声優', '漫画', 'コミック', '推しの子', 'ジャンプ', 'マガジン', 'サンデー', '連載', '劇場版'];
+
+            if (economyKeywords.some(k => news.title.includes(k))) {
                 finalCategory = 'ニュース・経済';
-            } else if (news.title.includes('アニメ') || news.title.includes('声優') || news.title.includes('漫画')) {
+            } else if (animeKeywords.some(k => news.title.includes(k))) {
                 finalCategory = 'アニメ';
             }
 
