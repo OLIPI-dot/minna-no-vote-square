@@ -57,7 +57,8 @@ const SurveyDescription = ({ description, renderCommentContent }) => {
           pointerEvents: 'none'
         }} />
 
-        <div style={{ position: 'relative', zIndex: 0 }}>
+        {/* 本文 💡 */}
+        <div style={{ position: 'relative', zIndex: 1 }}>
           {renderCommentContent(description)}
         </div>
       </div>
