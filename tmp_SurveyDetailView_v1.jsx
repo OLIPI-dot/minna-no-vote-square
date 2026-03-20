@@ -170,13 +170,11 @@ const SurveyDetailView = ({
 
       {/* 🛡️ 管理パネル (チャッピー・アルゴリズム) */}
       {(user && (currentSurvey.user_id === user.id || isAdmin)) && (
-         <div className="admin-actions">
-            <span style={{ fontWeight: 'bold', color: '#64748b' }}>🛠️ 管理者メニュー</span>
-            <div className="admin-btn-group">
-              <button onClick={() => setIsEditingCategory(true)} className="admin-btn">🏷️ カテゴリ変更</button>
-              <button onClick={() => setIsEditingTags(true)} className="admin-btn"># タグ編集</button>
-              <button onClick={() => handleDeleteSurvey(currentSurvey.id)} className="admin-btn delete">🗑️ 削除</button>
-            </div>
+         <div className="admin-actions-group" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center', marginTop: '30px', padding: '20px', background: '#f8fafc', borderRadius: '24px', border: '2px dashed #cbd5e1' }}>
+            <span style={{ width: '100%', textAlign: 'center', fontWeight: 'bold', color: '#64748b', marginBottom: '10px' }}>🛠️ 管理者メニュー</span>
+            <button onClick={() => setIsEditingCategory(true)} className="admin-btn">🏷️ カテゴリ変更</button>
+            <button onClick={() => setIsEditingTags(true)} className="admin-btn"># タグ編集</button>
+            <button onClick={() => handleDeleteSurvey(currentSurvey.id)} className="admin-btn delete" style={{ background: '#fee2e2', color: '#ef4444' }}>🗑️ 削除</button>
             
             {isEditingCategory && (
               <div className="edit-panel" style={{ width: '100%', marginTop: '15px', padding: '15px', background: '#fff', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
