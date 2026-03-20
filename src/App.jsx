@@ -644,33 +644,54 @@ function App() {
       // 編集・削除用のランダムな鍵を生成
       const editKey = Math.random().toString(36).substring(2);
 
-      const { data, error } = await supabase.from('comments').insert([{
+      // 🏎️ UIを先に更新（楽観的UI更新）
+      const tempId = 'temp-' + Date.now();
+      const optimisticComment = {
+        id: tempId,
+        survey_id: currentSurvey.id,
+        user_name: finalName,
+        content: commentContent,
+        user_id: user?.id || null,
+        edit_key: editKey,
+        created_at: new Date().toISOString(),
+        reactions: {}
+      };
+
+      setComments(prev => [...prev, optimisticComment]);
+      setCommentContent('');
+      setCommentName('');
+      updateRateLimit();
+
+      // アンケート本体のコメント数も更新
+      const updatedSurvey = { ...currentSurvey, comment_count: (currentSurvey.comment_count || 0) + 1 };
+      setCurrentSurvey(updatedSurvey);
+      setSurveys(prev => prev.map(s => s.id === currentSurvey.id ? updatedSurvey : s));
+
+      // 🆙 DBへ反映（非同期でOKらび！）
+      supabase.from('comments').insert([{
         survey_id: currentSurvey.id,
         user_name: finalName,
         content: commentContent,
         user_id: user?.id || null,
         edit_key: editKey
-      }]).select();
+      }]).select().then(({ data, error }) => {
+        if (!error && data) {
+          // 成功したら本物のIDに書き換える（編集・削除のため）
+          setComments(prev => prev.map(c => c.id === tempId ? data[0] : c));
+          
+          const updatedKeys = { ...myCommentKeys };
+          updatedKeys[data[0].id] = editKey;
+          localStorage.setItem('my_comment_keys', JSON.stringify(updatedKeys));
+          setMyCommentKeys(updatedKeys);
+        } else if (error) {
+          console.error("Comment Insert Error:", error);
+          // 失敗したらロールバックする親切設計らび
+          setComments(prev => prev.filter(c => c.id !== tempId));
+        }
+      });
 
-      if (error) {
-        alert("😿 コメントが送れなかったみたい（理由: " + error.message + "）");
-        console.error("Comment Insert Error:", error);
-      } else {
-        // 成功したらIDと鍵をlocalStorageに保存（自分が書いた証明）
-        const updatedKeys = { ...myCommentKeys };
-        updatedKeys[data[0].id] = editKey;
-        localStorage.setItem('my_comment_keys', JSON.stringify(updatedKeys));
-        setMyCommentKeys(updatedKeys); // 状態を更新して即座にボタンを出す
-
-        setCommentContent('');
-        setCommentName(''); // 投稿後は空に
-        updateRateLimit(); // 🛡️ 投稿時間を記録
-
-        // 🪄 ラビの降臨チェック
-        // コメントリストの先頭に追加される想定なので、この時点での自分自身の番号は comments.length + 1
-        const resNum = comments.length + 1;
-        triggerLabiDescent(commentContent, finalName, isAdmin, resNum);
-      }
+      // 🪄 ラビの降臨チェック
+      triggerLabiDescent(commentContent, finalName, isAdmin, comments.length + 1);
     } finally {
       setIsPostingComment(false);
     }
@@ -741,28 +762,23 @@ function App() {
 
     const newReactions = { ...target.reactions };
     if (hasReacted) {
-      // 既に押している場合はキャンセル（-1）
       newReactions[type] = Math.max(0, (newReactions[type] || 0) - 1);
     } else {
-      // 未押下の場合は +1
       newReactions[type] = (newReactions[type] || 0) + 1;
     }
 
-    const { error } = await supabase
-      .from('comments')
-      .update({ reactions: newReactions })
-      .eq('id', commentId);
+    // 🏎️ UIを先に更新（楽観적UI更新）
+    setComments(prev => prev.map(c => c.id === commentId ? { ...c, reactions: newReactions } : c));
+    setMyReactions(prev => {
+      const next = { ...prev };
+      if (hasReacted) delete next[reactionKey];
+      else next[reactionKey] = true;
+      localStorage.setItem('my_reactions', JSON.stringify(next));
+      return next;
+    });
 
-    if (!error) {
-      const updatedMyReactions = { ...myReactions };
-      if (hasReacted) delete updatedMyReactions[reactionKey];
-      else updatedMyReactions[reactionKey] = true;
-
-      setMyReactions(updatedMyReactions);
-      localStorage.setItem('my_reactions', JSON.stringify(updatedMyReactions));
-    } else {
-      console.error("Reaction update error:", error);
-    }
+    // 🆙 DBへ反映（非同期）
+    supabase.from('comments').update({ reactions: newReactions }).eq('id', commentId);
   }
 
   async function handleDeleteComment(commentId) {
@@ -1237,7 +1253,7 @@ function App() {
     localStorage.setItem(`voted_survey_${currentSurvey.id}`, String(option.id));
     setVotedOption(String(option.id));
 
-    // 1. 現在表示中のアンケートの選択肢と合計票数を更新
+    // 2. 現在表示中のアンケートの選択肢と合計票数を更新
     const updatedOptions = (currentSurvey.options || []).map(o => o.id === option.id ? { ...o, votes: (o.votes || 0) + 1 } : o);
     const updatedSurvey = {
       ...currentSurvey,
@@ -1246,11 +1262,8 @@ function App() {
     };
     setCurrentSurvey(updatedSurvey);
 
-    // 2. 広場の総票数マップ(voteMap)も更新しておく
-    voteMap[currentSurvey.id] = (voteMap[currentSurvey.id] || 0) + 1;
-
     // 3. 全体リストの中のデータもつじつまを合わせる
-    setSurveys(prev => prev.map(s => s.id === currentSurvey.id ? { ...s, total_votes: (s.total_votes || 0) + 1 } : s));
+    setSurveys(prev => prev.map(s => s.id === currentSurvey.id ? updatedSurvey : s));
   };
 
   const handleLikeSurvey = async () => {
