@@ -46,7 +46,7 @@ async function searchYouTubeVideo(query) {
 
 function stripHtml(str) {
     if (!str) return '';
-    return str.replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ').trim();
+    return str.replace(/<!\[CDATA\[|\]\]>/g, '').replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ').trim();
 }
 
 /**
