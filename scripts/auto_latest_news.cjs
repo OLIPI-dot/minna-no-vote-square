@@ -19,6 +19,16 @@ const supabaseUrl = process.env.VITE_SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
+const IS_DRY_RUN = process.argv.includes('--dry-run');
+const LOG_FILE = path.join(__dirname, '..', 'labi_auto_post.log');
+
+function log(msg) {
+    const timestamp = new Date().toLocaleString('ja-JP');
+    const logMsg = `[${timestamp}] ${msg}\n`;
+    console.log(msg);
+    fs.appendFileSync(LOG_FILE, logMsg);
+}
+
 const RSS_FEEDS = [
     'https://news.yahoo.co.jp/rss/topics/top-picks.xml',
     'https://wired.jp/rss/feeds/index.xml',
@@ -46,7 +56,17 @@ async function searchYouTubeVideo(query) {
 
 function stripHtml(str) {
     if (!str) return '';
-    return str.replace(/<!\[CDATA\[|\]\]>/g, '').replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ').trim();
+    return str
+        .replace(/<!\[CDATA\[|\]\]>/g, '')
+        .replace(/<[^>]*>?/gm, '')
+        .replace(/&nbsp;/g, ' ')
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'")
+        .replace(/&#45;/g, '-')
+        .trim();
 }
 
 /**
@@ -132,7 +152,7 @@ function generateTags(title, content) {
 }
 
 async function startAutoPosting() {
-    console.log('🚀 自動投稿エンジン起動らび！ (v2026/03/20 Perfect Edition)');
+    log('🚀 自動投稿エンジン起動らび！ ' + (IS_DRY_RUN ? ' (DRY RUN MODE)' : ''));
     let allNews = [];
 
     for (const feed of RSS_FEEDS) {
@@ -194,6 +214,12 @@ async function startAutoPosting() {
             }
             const imageUrl = video || '';
 
+            if (IS_DRY_RUN) {
+                log(`[DRY RUN] 投稿をシミュレート: ${news.title} (${news.category})`);
+                count++;
+                continue;
+            }
+
             const { data: sData, error: sErr } = await supabase.from('surveys').insert([{
                 title: surveyTitle,
                 category: news.category,
@@ -232,15 +258,15 @@ async function startAutoPosting() {
                 edit_key: 'labi_bot'
             }]);
 
-            console.log(`✅ 投稿完了: ${news.title} (${news.category})`);
+            log(`✅ 投稿完了: ${news.title} (${news.category})`);
             categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
             count++;
         } catch (e) {
-            console.error(`❌ 投稿失敗: ${news.title}`, e.message);
+            log(`❌ 投稿失敗: ${news.title} -> ${e.message}`);
         }
     }
 
-    console.log(`✨ 自動投稿完了らび！合計: ${count}件`);
+    log(`✨ 自動投稿完了らび！合計: ${count}件`);
 }
 
 startAutoPosting();
