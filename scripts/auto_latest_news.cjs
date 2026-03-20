@@ -108,7 +108,7 @@ async function startAutoPosting() {
 
     allNews.sort((a, b) => (a.priority - b.priority) || (Math.random() - 0.5));
 
-    const max = 3;
+    const max = 5; // 💎 プレミアム増量らび！深夜を休む分、1回5件にするよ！
     let count = 0;
     for (const news of allNews) {
         if (count >= max) break;
