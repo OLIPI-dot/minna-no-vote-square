@@ -294,9 +294,14 @@ const SurveyDetailView = ({
             })}
           </div>
           <style>{`
-            .related-scroll-container::-webkit-scrollbar { height: 6px; }
+            .related-scroll-container::-webkit-scrollbar { height: 10px; }
             .related-scroll-container::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
-            .related-scroll-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+            .related-scroll-container::-webkit-scrollbar-thumb { 
+              background: #cbd5e1; 
+              border-radius: 10px; 
+              border: 3px solid #f1f5f9;
+              transition: all 0.3s;
+            }
             .related-scroll-container::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
           `}</style>
         </div>

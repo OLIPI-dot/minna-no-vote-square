@@ -209,9 +209,14 @@ const SurveyListView = ({
           </span>
         ))}
         <style>{`
-          .tag-filter-bar::-webkit-scrollbar { height: 4px; }
+          .tag-filter-bar::-webkit-scrollbar { height: 8px; }
           .tag-filter-bar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
-          .tag-filter-bar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+          .tag-filter-bar::-webkit-scrollbar-thumb { 
+            background: #cbd5e1; 
+            border-radius: 10px; 
+            border: 2px solid #f1f5f9;
+            transition: all 0.3s;
+          }
           .tag-filter-bar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
         `}</style>
       </div>
