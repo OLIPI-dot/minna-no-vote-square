@@ -1,4 +1,5 @@
 import React from 'react';
+import RecommendedSection from './RecommendedSection';
 
 const SurveyListView = ({
   searchQuery, setSearchQuery,
@@ -34,6 +35,7 @@ const SurveyListView = ({
   tempTag, setTempTag,
   handleStartSurvey,
   supabase,
+  recommendedSurveys,
 }) => {
   const ITEMS_PER_PAGE = 15;
 
@@ -162,6 +164,52 @@ const SurveyListView = ({
           .category-filter-bar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
         `}</style>
       </div>
+      
+      {/* 🏷️ 人気のタグバー（おりぴさんリクエスト） */}
+      <div className="tag-filter-bar" style={{
+        display: 'flex', overflowX: 'auto', gap: '8px', padding: '0 10px 20px',
+        marginBottom: '5px', WebkitOverflowScrolling: 'touch'
+      }}>
+        {['Switch', 'PS5', 'Steam', 'AI', 'グルメ', 'アニメ', 'YouTuber', 'VTuber', 'スマホ', 'ライフハック'].map(tag => (
+          <span
+            key={tag}
+            className={`tag-bubble ${filterTag === tag ? 'active' : ''}`}
+            style={{
+              cursor: 'pointer',
+              padding: '8px 16px',
+              borderRadius: '25px',
+              fontSize: '0.82rem',
+              fontWeight: '900',
+              whiteSpace: 'nowrap',
+              transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+              background: filterTag === tag ? 'linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%)' : '#fff',
+              color: filterTag === tag ? '#fff' : '#64748b',
+              border: filterTag === tag ? 'none' : '1.5px solid #e2e8f0',
+              boxShadow: filterTag === tag ? '0 4px 12px rgba(76, 29, 149, 0.25)' : 'none',
+              transform: filterTag === tag ? 'scale(1.05)' : 'scale(1)'
+            }}
+            onClick={() => {
+              const nextTag = filterTag === tag ? '' : tag;
+              setFilterTag(nextTag);
+              const url = new URL(window.location);
+              if (nextTag) url.searchParams.set('t', nextTag);
+              else url.searchParams.delete('t');
+              url.searchParams.delete('s');
+              window.history.pushState({}, '', url);
+            }}
+          >
+            #{tag}
+          </span>
+        ))}
+      </div>
+
+      {/* ✨ あなたへのおすすめセクション */}
+      {!searchQuery && !filterTag && filterCategory === 'すべて' && (
+        <RecommendedSection 
+          surveys={recommendedSurveys} 
+          navigateTo={navigateTo} 
+        />
+      )}
 
       {/* ⚖️ 公式・ユーザー切り替えタブ */}
       {!searchQuery && !filterTag && (

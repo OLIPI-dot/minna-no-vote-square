@@ -41,15 +41,18 @@ const RSS_FEEDS = [
 
 async function searchYouTubeVideo(query) {
     try {
-        const res = await axios.get(`https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`);
+        const refined = query.length < 50 ? `${query} ニュース` : query;
+        const res = await axios.get(`https://www.youtube.com/results?search_query=${encodeURIComponent(refined)}`, {
+            headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36' }
+        });
         const html = res.data;
-        const match = html.match(/\/watch\?v=([a-zA-Z0-9_-]{11})/);
+        
+        // 💡 最初の「videoId」を確実に当てる
+        const match = html.match(/"videoId":"([a-zA-Z0-9_-]{11})"/);
         if (match) return `yt:${match[1]}`;
         
-        if (html.includes('nicovideo.jp')) {
-            const nico = html.match(/nicovideo\.jp\/watch\/(sm\d+|so\d+|\d+)/);
-            if (nico) return `nico:${nico[1]}`;
-        }
+        const watchMatch = html.match(/\/watch\?v=([a-zA-Z0-9_-]{11})/);
+        if (watchMatch) return `yt:${watchMatch[1]}`;
     } catch (e) {}
     return null;
 }
@@ -66,6 +69,7 @@ function stripHtml(str) {
         .replace(/&quot;/g, '"')
         .replace(/&#39;/g, "'")
         .replace(/&#45;/g, '-')
+        .replace(/(\s*(?:続きを読む|続きを[読よ]む|詳細はこちら|詳細を見る|Read more|…|[\. ]{2,}|[\s\.\-]+$))+/gi, '') // 💡 文末だけでなく全体から「続きを読む」的なものを消去
         .trim();
 }
 
@@ -111,44 +115,99 @@ function classifyNews(title, content) {
 }
 
 /**
- * 💡 2026/03/20 パーフェクト版 タグ生成エンジン（スコアリング方式）
+ * 🏷️ カテゴリとタグを賢く導き出す魔法らび！（チャッピー式・強化版）
  */
 function generateTags(title, content) {
-    const text = (title + ' ' + content).toLowerCase();
-    const tagCandidates = [
-        { name: '注目', keywords: ['注目', '話題', '人気', 'トレンド'], score: 10 },
-        { name: '速報', keywords: ['速報', '発表', '決定', '解禁'], score: 15 },
-        { name: 'エンタメ', keywords: ['映画', 'ドラマ', '俳優', '歌手', '芸能', 'アイドル'], score: 20 },
-        { name: 'ゲーム', keywords: ['ゲーム', 'switch', 'ps5', 'スマホゲ', 'プレイ'], score: 20 },
-        { name: 'IT・技術', keywords: ['ai', 'スマホ', 'アプリ', '新技術', '開発'], score: 20 },
-        { name: 'グルメ', keywords: ['料理', 'スイーツ', '食べ放題', 'ランチ', '味'], score: 20 },
-        { name: '経済', keywords: ['株価', '投資', 'ビジネス', '経営', '市場'], score: 20 },
-        { name: '海外', keywords: ['アメリカ', '中国', '世界', '海外', '翻訳'], score: 15 },
-        { name: '癒やし', keywords: ['猫', '犬', '動物', '可愛い', 'ほっこり'], score: 15 },
-        { name: 'スポーツ', keywords: ['野球', 'サッカー', '五輪', '試合', '優勝'], score: 20 }
+    const titleLower = title.toLowerCase();
+    const contentLower = (content || '').toLowerCase();
+    const fullText = titleLower + ' ' + contentLower;
+    
+    const tagScores = {};
+    const addTag = (tag, score = 1) => {
+        tagScores[tag] = (tagScores[tag] || 0) + score;
+    };
+
+    // 1. 🔍 ジャンル（大項目）の検出: スコア 2
+    const genres = [
+        { name: 'ゲーム', keywords: ['ゲーム', '新作', '発売', 'プレイ', '攻略', 'switch', 'ps5', 'xbox', 'steam', 'スマホゲー'] },
+        { name: 'IT・技術', keywords: ['ai', 'スマホ', 'アプリ', 'ガジェット', 'web', '開発', 'openai', 'google', 'apple', 'microsoft'] },
+        { name: 'エンタメ', keywords: ['映画', 'ドラマ', 'アニメ', '芸能', '俳優', 'アイドル', 'youtuber', 'vtuber', 'ライブ', 'イベント'] },
+        { name: '経済', keywords: ['株価', 'ビジネス', '投資', '円安', '賃上げ', '決算', '銀行'] },
+        { name: 'ライフスタイル', keywords: ['グルメ', '料理', '健康', '掃除', '節約', '旅行', 'ファッション'] },
+        { name: 'スポーツ', keywords: ['プロ野球', '大谷', 'サッカー', 'ゴルフ', 'テニス', '五輪', 'マラソン'] }
     ];
 
-    const foundTags = [];
-    tagCandidates.forEach(tag => {
-        let tagScore = 0;
-        tag.keywords.forEach(kw => {
-            if (text.includes(kw)) tagScore += tag.score;
+    genres.forEach(g => {
+        g.keywords.forEach(kw => {
+            if (titleLower.includes(kw)) addTag(g.name, 4); // タイトルなら強力
+            else if (contentLower.includes(kw)) addTag(g.name, 2);
         });
-        if (tagScore >= 20) foundTags.push(tag.name);
     });
 
-    // 固有名詞ブースト（【】内の単語を抽出）
-    const properNouns = title.match(/【(.*?)】/);
-    if (properNouns && properNouns[1]) {
-        const noun = properNouns[1].slice(0, 10);
-        if (noun.length >= 2) foundTags.unshift(noun);
+    // 2. 🔍 サブタグ（詳細）の検出: スコア 3
+    const subTags = [
+        { name: 'Switch', keywords: ['switch', 'スイッチ'] },
+        { name: 'PS5', keywords: ['ps5', 'playstation', 'プレステ'] },
+        { name: 'Steam', keywords: ['steam'] },
+        { name: 'Apple', keywords: ['apple', 'iphone', 'ipad', 'mac'] },
+        { name: 'Google', keywords: ['google', 'android', 'pixel'] },
+        { name: '任天堂', keywords: ['nintendo', '任天堂', 'ポケモン', 'マリオ', 'ピクミン'] },
+        { name: 'ソニー', keywords: ['sony', 'ソニー'] },
+        { name: 'Microsoft', keywords: ['microsoft', 'windows', 'xbox'] },
+        { name: 'YouTuber', keywords: ['youtuber', 'ユーチューバー'] },
+        { name: 'VTuber', keywords: ['vtuber', 'ブイチューバー'] }
+    ];
+
+    subTags.forEach(s => {
+        s.keywords.forEach(kw => {
+            if (titleLower.includes(kw)) addTag(s.name, 5); // タイトルなら激強
+            else if (contentLower.includes(kw)) addTag(s.name, 3);
+        });
+    });
+
+    // 3. 🛡️ ニュース速報性の検出
+    const isBreaking = ['発表', '決定', '公開', '発売', '開始', '解禁', '速報'].some(kw => fullText.includes(kw));
+    if (isBreaking) addTag('ニュース', 2);
+
+    // 4. 🏆 【】内の固有名詞抽出: スコア 3 (ノイズ除去)
+    const brackets = title.match(/【([^】]+)】/g);
+    if (brackets) {
+        brackets.forEach(b => {
+            const word = b.replace(/[【】]/g, '').trim();
+            if (word.length >= 2 && word.length <= 12 && !/速報|まとめ|更新|一覧/.test(word)) {
+                addTag(word, 3);
+            }
+        });
     }
 
-    // 重複削除と数制限、最低1つは確保
-    const uniqueTags = [...new Set(foundTags)].slice(0, 5);
-    if (uniqueTags.length === 0) uniqueTags.push('トピックス');
-    
-    return uniqueTags;
+    // 5. 🥇 スコア順にソートして抽出
+    let sortedTags = Object.entries(tagScores)
+        .sort((a, b) => b[1] - a[1])
+        .map(([tag]) => tag);
+
+    // 6. 🛡️ 最低2タグ保証
+    if (sortedTags.length < 1) sortedTags.push('ニュース');
+    if (sortedTags.length < 2) sortedTags.push('話題');
+
+    // 最大4個
+    return sortedTags.slice(0, 4);
+}
+
+/**
+ * 💡 OGPから説明文を補完する
+ */
+async function fetchOgpDescription(url) {
+    try {
+        const res = await axios.get(url, { timeout: 5000 });
+        const html = res.data;
+        const ogDesc = html.match(/<meta property="og:description" content="([^"]+)"/i);
+        if (ogDesc) return stripHtml(ogDesc[1]);
+        const metaDesc = html.match(/<meta name="description" content="([^"]+)"/i);
+        if (metaDesc) return stripHtml(metaDesc[1]);
+    } catch (e) {
+        log(`[OGP Fetch Error] ${url} -> ${e.message}`);
+    }
+    return null;
 }
 
 async function startAutoPosting() {
@@ -157,77 +216,73 @@ async function startAutoPosting() {
 
     for (const feed of RSS_FEEDS) {
         try {
-            const res = await axios.get(feed);
+            const res = await axios.get(feed, { timeout: 10000 });
             const items = res.data.match(/<item>([\s\S]*?)<\/item>/g) || [];
-            items.forEach(item => {
+
+            for (const item of items) {
                 const title = stripHtml(item.match(/<title>([\s\S]*?)<\/title>/)?.[1]);
                 const link = item.match(/<link>([\s\S]*?)<\/link>/)?.[1];
-                const description = stripHtml(item.match(/<description>([\s\S]*?)<\/description>/)?.[1]);
+                let description = stripHtml(item.match(/<description>([\s\S]*?)<\/description>/)?.[1]);
 
-                if (title && link) {
-                    const category = classifyNews(title, description);
-                    const tags = generateTags(title, description);
-                    
-                    // 優先度：ニュース ＞ その他
-                    const priority = category === 'ニュース' ? 1 : 2;
+                if (!title || !link) continue;
 
-                    allNews.push({ title, link, description, category, tags, priority });
+                // 📝 説明文が空または短すぎる場合はOGPから取得を試みる
+                if (!description || description.length < 30) {
+                    const ogpDesc = await fetchOgpDescription(link);
+                    if (ogpDesc && ogpDesc.length > (description || '').length) {
+                        description = ogpDesc;
+                    }
                 }
-            });
+
+                const cat = classifyNews(title, description);
+                const tags = generateTags(title, description);
+                allNews.push({ title, link, description, category: cat, tags });
+            }
         } catch (e) {
-            console.error(`RSS取得失敗: ${feed}`, e.message);
+            log(`RSS取得失敗: ${feed} -> ${e.message}`);
         }
     }
 
-    // 優先度順、かつ少しランダムに
-    allNews.sort((a, b) => (a.priority - b.priority) || (Math.random() - 0.5));
+    // 重複チェック
+    const { data: recentSurveys } = await supabase.from('surveys').select('title').order('created_at', { ascending: false }).limit(20);
+    const recentTitles = new Set(recentSurveys?.map(s => s.title) || []);
 
-    // 🧠 カテゴリごとに制限して、合計数も抑えるらび！
-    const categoryCounts = {};
     let count = 0;
+    const categoryCounts = {};
 
     for (const news of allNews) {
         if (count >= 10) break;
-        const cat = news.category;
-        
-        if (!categoryCounts[cat]) categoryCounts[cat] = 0;
-        // ニュース以外は1カテゴリ1件までに絞って多様性を出すらび！
-        if (categoryCounts[cat] >= (cat === 'ニュース' ? 3 : 1)) continue; 
+        if (recentTitles.has(news.title)) continue;
 
         try {
-            const surveyTitle = news.title.slice(0, 100);
+            const cat = news.category;
+            if (categoryCounts[cat] >= (cat === 'ニュース' ? 3 : 1)) continue;
 
-            // --- [重複チェック] ---
-            const { data: existing } = await supabase.from('surveys').select('title').eq('title', surveyTitle).limit(1);
-            if (existing && existing.length > 0) {
-                console.log(`⏩ スキップ: ${news.title}`);
-                continue;
-            }
-
-            const deadline = new Date();
-            deadline.setDate(deadline.getDate() + 3);
-
+            // YouTube検索
             let video = await searchYouTubeVideo(news.title);
-            if (!video && news.link.includes('nicovideo.jp')) {
-                const nicoMatch = news.link.match(/nicovideo\.jp\/watch\/(sm\d+|so\d+|\d+)/);
-                if (nicoMatch) video = `nico:${nicoMatch[1]}`;
-            }
             const imageUrl = video || '';
 
             if (IS_DRY_RUN) {
-                log(`[DRY RUN] 投稿をシミュレート: ${news.title} (${news.category})`);
+                log(`[DRY RUN] 投稿: ${news.title} [${news.category}] Tags:[${news.tags.join(', ')}]`);
                 count++;
                 continue;
             }
+
+            const surveyTitle = news.title.slice(0, 100);
+            const deadline = new Date();
+            deadline.setDate(deadline.getDate() + 7);
+
+            // 📝 説明文の末尾に「[続きを読む](URL)」を挿入するらび！ (UI側で装飾されるよ)
+            const finalDescription = (news.description || '') + `\n\n[続きを読む](${news.link})`;
 
             const { data: sData, error: sErr } = await supabase.from('surveys').insert([{
                 title: surveyTitle,
                 category: news.category,
                 image_url: imageUrl,
-                description: news.description || '',
+                description: finalDescription,
                 deadline: deadline.toISOString(),
                 visibility: 'public',
-                user_id: null,
+                user_name: 'らび🐰',
                 is_official: true,
                 tags: news.tags || []
             }]).select();
@@ -235,6 +290,7 @@ async function startAutoPosting() {
             if (sErr) throw sErr;
             const surveyId = sData[0].id;
 
+            // 選択肢の追加
             const options = ['賛成・良いと思う', '反対・う～ん…', 'どちらとも言えない', '興味がある・期待！'];
             await supabase.from('options').insert(options.map(name => ({
                 survey_id: surveyId,
@@ -242,17 +298,19 @@ async function startAutoPosting() {
                 votes: 0
             })));
 
-            // 2. 🐰 らびの初期コメント投稿！
-            let reaction = 'これについて、みんなはどう思うらび？🐰🥕';
-            if (cat === 'ニュース') reaction = '最新のニュースをお届けするらび！世の中の動きに注目らびね。';
-            else if (cat === 'レビュー') reaction = 'みんなの評価が気になるところらび！使ってみた感想を教えてほしいらび。';
-            else if (cat === 'コラム') reaction = 'じっくり考えてみたいテーマらび。みんなの意見が聞きたいらび！';
-            else if (cat === 'ネタ') reaction = 'これは面白そうな話題らび！みんなで盛り上がろうらび〜。';
+            // らびのコメント投稿
+            const reactions = [
+                '最新のニュースをお届けするらび！世の中の動きに注目らびね。',
+                'これについて、みんなはどう思うらび？🐰🥕',
+                '興味深い内容らび！みんなの意見を聞かせてほしいらび。',
+                'すごいニュースらび！ワクワクするらびね。',
+                'これは見逃せないらびっ！みんなで語り合うらび。'
+            ];
+            const reaction = reactions[Math.floor(Math.random() * reactions.length)];
+            const rabiComment = `【らび🐰のひとりごと】\n${reaction}`;
 
-            const rabiComment = `【らび🐰のひとりごと】\n${reaction}\n\n[詳細・関連リンクはこちら](${news.link})`;
             await supabase.from('comments').insert([{
                 survey_id: surveyId,
-                user_id: null,
                 user_name: 'らび🐰(AI)',
                 content: rabiComment,
                 edit_key: 'labi_bot'

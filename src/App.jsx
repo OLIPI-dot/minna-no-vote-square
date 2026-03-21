@@ -613,23 +613,52 @@ function App() {
 
   const renderCommentContent = (content) => {
     if (!content) return null;
-    // 第2弾：より広範かつ確実なURL検出正規表現
-    const parts = content.split(/(https?:\/\/[^\s]+|>>\d+)/g);
-    return parts.map((part, i) => {
-      if (!part) return null;
-      if (part.startsWith('>>') && /^>>\d+$/.test(part)) {
-        return <span key={i} className="comment-anchor-link">{part}</span>;
+    // 第3弾：Markdownリンク [text](url) に対応！
+    const parts = content.split(/(\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|https?:\/\/[^\s]+|>>\d+)/g);
+    
+    // splitに正規表現のキャプチャグループが含まれる場合、マッチした部分も配列に入るため
+    // インデックスを調整しながらレンダリングするらび。
+    const elements = [];
+    for (let i = 0; i < parts.length; i++) {
+      const part = parts[i];
+      if (!part) continue;
+
+      // [text](url) 形式のマッチ後、i+1, i+2 にキャプチャグループが入るのでスキップ
+      const mdMatch = part.match(/^\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)$/);
+      if (mdMatch) {
+        elements.push(
+          <a key={i} href={mdMatch[2]} target="_blank" rel="noopener noreferrer" className="comment-url-link">
+            {mdMatch[1]}
+          </a>
+        );
+        i += 2; // キャプチャグループ分をスキップ
+        continue;
       }
+
+      if (part.startsWith('>>') && /^>>\d+$/.test(part)) {
+        elements.push(<span key={i} className="comment-anchor-link">{part}</span>);
+        continue;
+      }
+
       if (/^https?:\/\/\S+$/.test(part)) {
         const cleanUrl = part.trim();
-        return (
+        elements.push(
           <a key={i} href={cleanUrl} target="_blank" rel="noopener noreferrer" className="comment-url-link">
             {cleanUrl}
           </a>
         );
+        continue;
       }
-      return part;
-    });
+
+      // キャプチャグループとして入ってきただけの文字列を除外（親に含まれているため）
+      // [text](url) の一部である場合は mdMatch で処理済み
+      if (parts[i-1]?.startsWith('[') && parts[i-1]?.endsWith(')') && (part === parts[i-1].match(/\[([^\]]+)\]/)?.[1] || part === parts[i-1].match(/\(([^)]+)\)/)?.[1])) {
+        continue;
+      }
+
+      elements.push(part);
+    }
+    return elements;
   };
 
   // 🛡️ レートリミット（連投制限）チェック
@@ -1600,7 +1629,7 @@ function App() {
 
       const todayStart = new Date(); todayStart.setHours(0,0,0,0);
       if (sortMode === 'today') {
-        const isRecent = new Date(s.created_at).getTime() >= todayStart.getTime() - 86400000 * 2;
+        const isRecent = new Date(s.created_at).getTime() >= todayStart.getTime();
         return !isEnded && isRecent;
       } else if (sortMode === 'ended') {
         return isEnded;

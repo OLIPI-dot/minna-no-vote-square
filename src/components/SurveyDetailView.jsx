@@ -49,6 +49,13 @@ const SurveyDetailView = ({
   myReactions,
   handleReaction,
   handleReportContent,
+  relatedSurveys,
+  AdSenseBox,
+  CATEGORY_ICON_STYLE,
+  supabase,
+  setFilterTag,
+  setActiveTab,
+  setSurveys
 }) => {
   if (!currentSurvey) return <div className="empty-msg">読み込み中...</div>;
 
@@ -130,15 +137,25 @@ const SurveyDetailView = ({
           );
         })()}
 
-        <div className="detail-meta-bar">
-          <span style={{ color: '#10b981', fontWeight: 'bold' }}>👀 いま {surveyOnlineCount} 人がチェック中！</span>
-          <span>👁️ {currentSurvey.view_count || 0} 閲覧</span>
-          <span>👍 {currentSurvey.likes_count || 0} いいね</span>
-          {currentSurvey.category && <span>🏷️ {currentSurvey.category}</span>}
+        <div className="detail-meta-bar" style={{ marginBottom: '25px', display: 'flex', flexWrap: 'wrap', gap: '15px', justifyContent: 'center' }}>
+          <span style={{ color: '#10b981', fontWeight: 'bold', background: 'rgba(16, 185, 129, 0.05)', padding: '4px 12px', borderRadius: '20px' }}>👀 いま {surveyOnlineCount} 人がチェック中！</span>
+          <span style={{ background: '#f8fafc', padding: '4px 12px', borderRadius: '20px', color: '#64748b' }}>👁️ {currentSurvey.view_count || 0} 閲覧</span>
+          <span style={{ background: '#f8fafc', padding: '4px 12px', borderRadius: '20px', color: '#64748b' }}>👍 {currentSurvey.likes_count || 0} いいね</span>
+          {currentSurvey.category && <span style={{ background: '#eff6ff', padding: '4px 12px', borderRadius: '20px', color: '#3b82f6', fontWeight: 'bold' }}>🏷️ {currentSurvey.category}</span>}
         </div>
+        {currentSurvey.tags && currentSurvey.tags.length > 0 && (
+          <div className="detail-tags-row" style={{ marginTop: '25px', marginBottom: '15px', display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
+            {currentSurvey.tags.map((t, i) => (
+              <span key={i} className="tag-bubble clickable" onClick={() => { setFilterTag(t); setActiveTab('all'); navigateTo('list'); }} 
+                style={{ cursor: 'pointer', background: '#f1f5f9', color: '#475569', padding: '5px 15px', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 'bold', border: '1px solid #e2e8f0', transition: 'all 0.2s' }}>
+                #{t}
+              </span>
+            ))}
+          </div>
+        )}
         {currentSurvey.deadline && (
-          <div className="deadline-info-block">
-            <div className="absolute-deadline">締切：{new Date(currentSurvey.deadline).getFullYear()}年{formatWithDay(currentSurvey.deadline)}</div>
+          <div className="deadline-info-block" style={{ marginTop: '30px' }}>
+            <div className="absolute-deadline" style={{ marginBottom: '10px', fontSize: '0.9rem', color: '#64748b' }}>締切：{new Date(currentSurvey.deadline).getFullYear()}年{formatWithDay(currentSurvey.deadline)}</div>
             {!isTimeUp ? <CountdownTimer deadline={currentSurvey.deadline} onTimeUp={() => {}} /> : <div className="countdown-display ended">投票受付終了</div>}
           </div>
         )}
@@ -212,6 +229,60 @@ const SurveyDetailView = ({
       <div style={{ textAlign: 'center', marginTop: '40px' }}>
         <button className="back-to-list-link" onClick={() => navigateTo('list')} style={{ background: 'none', border: 'none', color: '#94a3b8', textDecoration: 'underline' }}>← 広場に戻る</button>
       </div>
+
+      {/* 🥕 広告/レコメンドエリア (らび＆おりぴ応援コーナー) */}
+      <div style={{ marginTop: '40px', marginBottom: '20px' }}>
+        <AdSenseBox slot="survey_detail_middle" affiliateType="amazon" />
+      </div>
+
+      {/* 🔥 関連アンケートセクション (回遊性アップ！) */}
+      {relatedSurveys && relatedSurveys.length > 0 && (
+        <div className="related-surveys-section" style={{ marginTop: '60px', paddingTop: '40px', borderTop: '2px solid #f1f5f9' }}>
+          <h3 style={{ fontSize: '1.4rem', fontWeight: '900', color: '#1e293b', marginBottom: '24px', textAlign: 'center' }}>
+            🔥 この話題、みんなはどう思ってる？
+          </h3>
+          <div className="related-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
+            {relatedSurveys.map(s => {
+              // サムネイル抽出
+              let thumb = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400';
+              if (s.image_url) {
+                const parts = s.image_url.split(',')[0].trim();
+                if (parts.startsWith('yt:')) thumb = `https://img.youtube.com/vi/${parts.substring(3)}/mqdefault.jpg`;
+                else if (!parts.startsWith('nico:')) thumb = parts;
+              }
+
+              return (
+                <div key={s.id} className="related-card" onClick={() => navigateTo('details', s)} style={{
+                  background: '#fff', borderRadius: '20px', overflow: 'hidden', cursor: 'pointer',
+                  boxShadow: '0 4px 15px rgba(0,0,0,0.05)', transition: 'all 0.3s ease',
+                  border: '1px solid #f1f5f9'
+                }} onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 12px 25px rgba(0,0,0,0.1)'; }} onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.05)'; }}>
+                  <div style={{ width: '100%', height: '140px', overflow: 'hidden', position: 'relative' }}>
+                    <img src={thumb} alt={s.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <div style={{ position: 'absolute', top: '10px', right: '10px', background: 'rgba(255,255,255,0.9)', padding: '2px 8px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 'bold', color: '#64748b' }}>
+                      {s.category}
+                    </div>
+                  </div>
+                  <div style={{ padding: '15px' }}>
+                    <div style={{ fontWeight: 'bold', fontSize: '0.95rem', lineHeight: '1.4', marginBottom: '10px', height: '2.8em', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+                      {s.title}
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem', color: '#94a3b8' }}>
+                      <span>🗳️ {s.total_votes || 0} 票</span>
+                      <div style={{ display: 'flex', gap: '4px' }}>
+                        {s.tags?.slice(0, 2).map((t, i) => (
+                          <span key={i} onClick={(e) => { e.stopPropagation(); setFilterTag(t); setActiveTab('all'); navigateTo('list'); }}
+                            style={{ background: '#f8fafc', padding: '1px 6px', borderRadius: '6px', fontSize: '0.7rem', cursor: 'pointer' }}>#{t}</span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* 💬 コメント（掲示板）セクション */}
       <div className="comment-section-area" style={{ marginTop: '60px', paddingTop: '40px', borderTop: '2px solid #f1f5f9' }}>

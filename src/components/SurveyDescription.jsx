@@ -1,66 +1,126 @@
 import React from 'react';
 
-// Deploy Kick v2: 2026-03-18 14:40 🚀🐰
 const SurveyDescription = ({ description, renderCommentContent }) => {
   if (!description) return null;
 
+  // 🔗 説明文の中からリンクを救出するらび！ [テキスト](URL) 形式を最優先、なければ生のURLを探すよ。
+  const mdMatch = description.match(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/);
+  const rawMatch = description.match(/(https?:\/\/[^\s)]+)/);
+  
+  const displayLink = mdMatch 
+    ? { text: mdMatch[1], url: mdMatch[2] } 
+    : (rawMatch ? { text: '出典元（詳細を見る）', url: rawMatch[0] } : null);
+  
+  // 📝 リンク部分を本文から隠して、ボタンとして別に表示するよ。
+  // 本文中にあるリンク（Markdown・生のURL両方）をすべて非表示にするらび。
+  let cleanBody = description
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '')
+    .replace(/https?:\/\/[^\s)]+/g, '')
+    .trim();
+
   return (
     <div className="survey-description-container" style={{
-      margin: '0 auto 30px auto',
+      margin: '0 auto 50px auto',
       maxWidth: '860px',
-      position: 'relative'
+      position: 'relative',
+      padding: '0 16px' // モバイル端対策
     }}>
-      {/* キャッチーなラベル 🏷️ */}
+      {/* プレミアムなラベル 🏷️ */}
       <div style={{
         position: 'absolute',
-        top: '-12px',
-        left: '24px',
-        background: 'linear-gradient(135deg, #8b5cf6, #6366f1)',
+        top: '-16px',
+        left: '40px',
+        background: 'linear-gradient(135deg, #FF6B95, #7c3aed)',
         color: 'white',
-        padding: '4px 16px',
-        borderRadius: '20px',
-        fontSize: '0.75rem',
-        fontWeight: 'bold',
-        zIndex: 1,
-        boxShadow: '0 4px 12px rgba(139, 92, 246, 0.3)',
+        padding: '6px 20px',
+        borderRadius: '30px',
+        fontSize: '0.85rem',
+        fontWeight: '900',
+        zIndex: 5,
+        boxShadow: '0 8px 16px rgba(124, 58, 237, 0.3)',
         display: 'flex',
         alignItems: 'center',
-        gap: '6px'
+        gap: '8px',
+        letterSpacing: '0.08em'
       }}>
-        <span>📝</span>
-        <span>解説 / 参考元</span>
+        <span style={{ fontSize: '1.2rem' }}>💎</span>
+        <span>解説 / ソース元</span>
       </div>
 
       <div className="survey-description-box" style={{
-        fontSize: '0.95rem',
-        color: '#334155',
-        lineHeight: '1.9',
-        background: 'rgba(255, 255, 255, 0.7)',
-        backdropFilter: 'blur(10px)',
-        border: '1px solid rgba(255, 255, 255, 0.5)',
-        padding: '32px 24px 24px 24px',
-        borderRadius: '20px',
-        boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05)',
+        fontSize: '1.1rem',
+        color: '#1e293b',
+        lineHeight: '2.1',
+        background: 'rgba(255, 255, 255, 0.9)',
+        backdropFilter: 'blur(20px)',
+        border: '2px solid rgba(255, 255, 255, 0.7)',
+        padding: '52px 32px 36px 32px',
+        borderRadius: '28px',
+        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.08)',
         whiteSpace: 'pre-wrap',
-        textAlign: 'left',
+        textAlign: 'justify',
         position: 'relative',
-        overflow: 'hidden'
+        fontFamily: "'Inter', 'Noto Sans JP', sans-serif"
       }}>
-        {/* 背景の装飾アクセント 🎨 */}
+        {/* 装飾的な背景アート 🎨 */}
         <div style={{
           position: 'absolute',
-          top: 0,
-          right: 0,
-          width: '100px',
-          height: '100px',
-          background: 'radial-gradient(circle at top right, rgba(139, 92, 246, 0.05), transparent)',
+          bottom: '-30px',
+          right: '-30px',
+          width: '180px',
+          height: '180px',
+          background: 'radial-gradient(circle, rgba(139, 92, 246, 0.05), transparent 70%)',
           pointerEvents: 'none'
         }} />
 
         {/* 本文 💡 */}
-        <div style={{ position: 'relative', zIndex: 1 }}>
-          {renderCommentContent(description)}
+        <div style={{ 
+          position: 'relative', 
+          zIndex: 1, 
+          marginBottom: displayLink ? '32px' : '0',
+          color: '#334155'
+        }}>
+          {cleanBody}
         </div>
+
+        {/* 🔗 プレミアム・ソースボタン */}
+        {displayLink && (
+          <div style={{ textAlign: 'center' }}>
+            <a
+              href={displayLink.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '12px',
+                padding: '14px 32px',
+                background: 'linear-gradient(135deg, #7c3aed, #6366f1)',
+                borderRadius: '18px',
+                color: 'white',
+                fontSize: '0.95rem',
+                fontWeight: 'bold',
+                textDecoration: 'none',
+                transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                boxShadow: '0 10px 20px rgba(124, 58, 237, 0.25)',
+                cursor: 'pointer',
+                border: 'none'
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.transform = 'translateY(-4px) scale(1.03)';
+                e.currentTarget.style.boxShadow = '0 15px 30px rgba(124, 58, 237, 0.4)';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                e.currentTarget.style.boxShadow = '0 10px 20px rgba(124, 58, 237, 0.25)';
+              }}
+            >
+              <span>🌐</span>
+              <span>続きを読む（出典元に飛びます）</span>
+              <span style={{ fontSize: '1.2em' }}>›</span>
+            </a>
+          </div>
+        )}
       </div>
     </div>
   );
