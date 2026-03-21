@@ -1648,6 +1648,31 @@ function App() {
     return base;
   }, [surveys, searchQuery, filterCategory, filterTag, sortMode, watchedIds, user, isAdmin]);
 
+  // 💎 あなたへのおすすめ（高スコアな数件）
+  const recommendedSurveys = useMemo(() => {
+    return [...surveys]
+      .filter(s => s.visibility === 'public')
+      .sort((a, b) => {
+        const scoreA = (a.total_votes || 0) * SCORE_VOTE_WEIGHT + (a.view_count || 0);
+        const scoreB = (b.total_votes || 0) * SCORE_VOTE_WEIGHT + (b.view_count || 0);
+        return scoreB - scoreA;
+      })
+      .slice(0, 4);
+  }, [surveys]);
+
+  // 🔥 関連アンケート（同じカテゴリ or 類似タグ）
+  const relatedSurveys = useMemo(() => {
+    if (!currentSurvey) return [];
+    return surveys
+      .filter(s => s.id !== currentSurvey.id && s.visibility === 'public')
+      .filter(s => 
+        s.category === currentSurvey.category || 
+        s.tags?.some(t => currentSurvey.tags?.includes(t))
+      )
+      .sort((a, b) => (b.total_votes || 0) - (a.total_votes || 0))
+      .slice(0, 4);
+  }, [surveys, currentSurvey?.id]);
+
   const Sidebar = () => (
     <div className="live-feed-sidebar">
       <div className="sidebar-section-card" style={{ marginBottom: '24px', background: 'linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%)', border: '1px solid #ddd6fe' }}>
@@ -1777,6 +1802,7 @@ function App() {
                 tempTag={tempTag} setTempTag={setTempTag}
                 handleStartSurvey={handleStartSurvey}
                 supabase={supabase}
+                recommendedSurveys={recommendedSurveys}
               />
             )}
 
@@ -1921,6 +1947,7 @@ function App() {
                 CATEGORY_ICON_STYLE={CATEGORY_ICON_STYLE}
                 supabase={supabase}
                 setSurveys={setSurveys}
+                relatedSurveys={relatedSurveys}
               />
             )}
           </div>
