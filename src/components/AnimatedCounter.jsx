@@ -16,7 +16,7 @@ const AnimatedCounter = ({ value }) => {
     return () => clearInterval(timer);
   }, [value]);
 
-  return <span className="count-animate">{displayValue}</span>;
+  return <span className="count-animate" style={{ display: 'inline-block' }}>{displayValue}</span>;
 };
 
 export default AnimatedCounter;

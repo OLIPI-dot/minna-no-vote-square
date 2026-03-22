@@ -70,7 +70,8 @@ async function postNewsSurveys() {
             tags: s.tags,
             image_url: s.image_url,
             deadline: deadline.toISOString(),
-            visibility: 'public'
+            visibility: 'public',
+            is_official: true
         }]).select();
 
         if (surveyError) {

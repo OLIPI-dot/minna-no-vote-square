@@ -1,5 +1,6 @@
 import React from 'react';
 import RecommendedSection from './RecommendedSection';
+import TrendingHeadline from './TrendingHeadline';
 
 const SurveyListView = ({
   searchQuery, setSearchQuery,
@@ -38,6 +39,55 @@ const SurveyListView = ({
   recommendedSurveys,
 }) => {
   const ITEMS_PER_PAGE = 15;
+
+  // ⚡ useMemoによりソート・フィルタの計算結果をキャッシュ化。filter/sortはレンダーのたびに実行されず、必要な時だけ実行される。
+  const trendingHeadlineSurveys = React.useMemo(() => {
+    if (!surveys || surveys.length === 0) return [];
+    const now = new Date();
+    return [...surveys]
+      .filter(s => !s.tags?.includes('お知らせ')) // お知らせは除外
+      .filter(s => !s.deadline || new Date(s.deadline) > now) // 終了済み(受付終了)を除外
+      .sort((a, b) => {
+        const scoreA = (a.total_votes || 0) * 10 + (a.view_count || 0);
+        const scoreB = (b.total_votes || 0) * 10 + (b.view_count || 0);
+        return scoreB - scoreA;
+      })
+      .slice(0, 5); // 上位5件をピックアップ
+  }, [surveys]);
+
+  const finalItems = React.useMemo(() => {
+    return filteredBaseSurveys
+      .filter(s => {
+        if (!searchQuery && !filterTag) {
+          if (activeTab === 'official' && !s.is_official) return false;
+          if (activeTab === 'user' && s.is_official) return false;
+        }
+        if (sortMode === 'popular' && s.tags?.includes('お知らせ')) return false;
+        return true;
+      })
+      .sort((a, b) => {
+        const isAnnounceA = a.tags?.includes('お知らせ');
+        const isAnnounceB = b.tags?.includes('お知らせ');
+        if (sortMode !== 'popular') {
+          if (isAnnounceA && !isAnnounceB) return -1;
+          if (!isAnnounceA && isAnnounceB) return 1;
+        }
+        if (sortMode !== 'popular') return new Date(b.created_at) - new Date(a.created_at);
+        if (popularMode === 'trending') {
+          const ageA = Math.max(0.5, (new Date() - new Date(a.created_at)) / 3600000);
+          const ageB = Math.max(0.5, (new Date() - new Date(b.created_at)) / 3600000);
+          return (((b.total_votes || 0) * 10 + (b.view_count || 0)) / Math.pow(ageB + 2, 1.2)) -
+                 (((a.total_votes || 0) * 10 + (a.view_count || 0)) / Math.pow(ageA + 2, 1.2));
+        }
+        if (popularMode === 'score') {
+          return ((b.total_votes || 0) * SCORE_VOTE_WEIGHT + (b.view_count || 0)) -
+                 ((a.total_votes || 0) * SCORE_VOTE_WEIGHT + (a.view_count || 0));
+        }
+        return popularMode === 'votes'
+          ? (b.total_votes || 0) - (a.total_votes || 0)
+          : (b.view_count || 0) - (a.view_count || 0);
+      });
+  }, [filteredBaseSurveys, searchQuery, filterTag, activeTab, sortMode, popularMode]);
 
   return (
     <>
@@ -158,9 +208,14 @@ const SurveyListView = ({
           </button>
         ))}
         <style>{`
-          .category-filter-bar::-webkit-scrollbar { height: 6px; }
+          .category-filter-bar::-webkit-scrollbar { height: 14px; }
           .category-filter-bar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
-          .category-filter-bar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+          .category-filter-bar::-webkit-scrollbar-thumb { 
+            background: #cbd5e1; 
+            border-radius: 10px; 
+            border: 2px solid #f1f5f9;
+            transition: all 0.3s;
+          }
           .category-filter-bar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
         `}</style>
       </div>
@@ -172,10 +227,7 @@ const SurveyListView = ({
         scrollSnapType: 'x proximity',
         scrollbarWidth: 'thin'
       }}>
-        {['Switch', 'PS5', 'Steam', 'AI', 'グルメ', 'アニメ', 'YouTuber', 'VTuber', 'スマホ', 'ライフハック', '映画', 'マンガ', 'VTuber', 'ライフスタイル', '経済'].reduce((acc, tag) => {
-          if (!acc.includes(tag)) acc.push(tag);
-          return acc;
-        }, []).map(tag => (
+        {[...new Set(['Switch', 'PS5', 'Steam', 'AI', 'グルメ', 'アニメ', 'YouTuber', 'VTuber', 'スマホ', 'ライフハック', '映画', 'マンガ', 'VTuber', 'ライフスタイル', '経済'])].map(tag => (
           <span
             key={tag}
             className={`tag-bubble ${filterTag === tag ? 'active' : ''}`}
@@ -209,7 +261,7 @@ const SurveyListView = ({
           </span>
         ))}
         <style>{`
-          .tag-filter-bar::-webkit-scrollbar { height: 8px; }
+          .tag-filter-bar::-webkit-scrollbar { height: 14px; }
           .tag-filter-bar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
           .tag-filter-bar::-webkit-scrollbar-thumb { 
             background: #cbd5e1; 
@@ -223,10 +275,16 @@ const SurveyListView = ({
 
       {/* ✨ あなたへのおすすめセクション */}
       {!searchQuery && !filterTag && filterCategory === 'すべて' && (
-        <RecommendedSection 
-          surveys={recommendedSurveys} 
-          navigateTo={navigateTo} 
-        />
+        <>
+          <TrendingHeadline 
+            surveys={trendingHeadlineSurveys} 
+            navigateTo={navigateTo} 
+          />
+          <RecommendedSection 
+            surveys={recommendedSurveys} 
+            navigateTo={navigateTo} 
+          />
+        </>
       )}
 
       {/* ⚖️ 公式・ユーザー切り替えタブ */}
@@ -269,35 +327,6 @@ const SurveyListView = ({
         {isLoading ? (
           <div className="empty-msg">読み込み中...🐰🥕</div>
         ) : (() => {
-          const finalItems = filteredBaseSurveys
-            .filter(s => {
-              if (!searchQuery && !filterTag) {
-                if (activeTab === 'official' && !s.is_official) return false;
-                if (activeTab === 'user' && s.is_official) return false;
-              }
-              return true;
-            })
-            .sort((a, b) => {
-              const isAnnounceA = a.tags?.includes('お知らせ');
-              const isAnnounceB = b.tags?.includes('お知らせ');
-              if (isAnnounceA && !isAnnounceB) return -1;
-              if (!isAnnounceA && isAnnounceB) return 1;
-              if (sortMode !== 'popular') return new Date(b.created_at) - new Date(a.created_at);
-              if (popularMode === 'trending') {
-                const ageA = Math.max(0.5, (new Date() - new Date(a.created_at)) / 3600000);
-                const ageB = Math.max(0.5, (new Date() - new Date(b.created_at)) / 3600000);
-                return (((b.total_votes || 0) * 10 + (b.view_count || 0)) / Math.pow(ageB + 2, 1.2)) -
-                       (((a.total_votes || 0) * 10 + (a.view_count || 0)) / Math.pow(ageA + 2, 1.2));
-              }
-              if (popularMode === 'score') {
-                return ((b.total_votes || 0) * SCORE_VOTE_WEIGHT + (b.view_count || 0)) -
-                       ((a.total_votes || 0) * SCORE_VOTE_WEIGHT + (a.view_count || 0));
-              }
-              return popularMode === 'votes'
-                ? (b.total_votes || 0) - (a.total_votes || 0)
-                : (b.view_count || 0) - (a.view_count || 0);
-            });
-
           const totalPages = Math.ceil(finalItems.length / ITEMS_PER_PAGE);
           const currentItems = finalItems.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
@@ -310,9 +339,10 @@ const SurveyListView = ({
               {currentItems.map((s, idx) => {
                 const realIdx = (currentPage - 1) * ITEMS_PER_PAGE + idx;
                 const isEnded = s.deadline && new Date(s.deadline) < new Date();
-                const showBadge = sortMode === 'popular' && realIdx < 3;
+                const isPopularRanking = sortMode === 'popular';
+                const showScoreBadge = isPopularRanking; // 全てのアンケートにスコアバッジを表示するらび！✨
                 let badgeLabel = '';
-                if (showBadge) {
+                if (showScoreBadge) {
                   if (popularMode === 'trending') {
                     badgeLabel = `🔥 ${Math.round(((s.total_votes || 0) * 10 + (s.view_count || 0)) / Math.pow(Math.max(0.5, (new Date() - new Date(s.created_at)) / 3600000) + 2, 1.2))}`;
                   } else if (popularMode === 'views') {
@@ -388,7 +418,7 @@ const SurveyListView = ({
                             display: 'block', marginBottom: '10px', boxShadow: 'none',
                             border: 'none', color: '#1e293b'
                           }}>
-                            {showBadge && (realIdx === 0 ? '👑 ' : realIdx === 1 ? '🥈 ' : '🥉 ')}
+                            {isPopularRanking && (realIdx === 0 ? '👑 ' : realIdx === 1 ? '🥈 ' : realIdx === 2 ? '🥉 ' : `${realIdx + 1}位 `)}
                             {s.tags?.includes('お知らせ') && s.title.includes('||')
                               ? s.title.split('||')[0].trim()
                               : s.title}
@@ -408,7 +438,7 @@ const SurveyListView = ({
                         </div>
 
                         <div className="survey-item-meta-row">
-                          {showBadge && <span className="popular-score-badge">{badgeLabel}</span>}
+                          {showScoreBadge && <span className="popular-score-badge">{badgeLabel}</span>}
                           <span className="survey-item-created-at" title="作成日時">🐣 {formatWithDay(s.created_at)}</span>
                           {s.deadline && <span className="survey-item-deadline">〆: {formatWithDay(s.deadline)}</span>}
                           <div className="card-stats-row">
@@ -420,12 +450,15 @@ const SurveyListView = ({
                         </div>
 
                         {s.tags && s.tags.length > 0 && (
-                          <div className="tag-bubble-row" onClick={e => e.stopPropagation()}>
+                          <div className="tag-bubble-row">
                             {s.tags.map(tag => (
                               <span
                                 key={tag}
                                 className={`tag-bubble ${filterTag === tag ? 'active' : ''}`}
-                                onClick={() => setFilterTag(filterTag === tag ? '' : tag)}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setFilterTag(filterTag === tag ? '' : tag);
+                                }}
                               >#{tag}</span>
                             ))}
                           </div>

@@ -39,6 +39,7 @@ const SurveyDetailView = ({
   CountdownTimer,
   Pagination,
   editingCommentId,
+  setEditingCommentId,
   editContent,
   setEditContent,
   handleUpdateComment,
@@ -141,6 +142,9 @@ const SurveyDetailView = ({
           <span style={{ color: '#10b981', fontWeight: 'bold', background: 'rgba(16, 185, 129, 0.05)', padding: '4px 12px', borderRadius: '20px' }}>👀 いま {surveyOnlineCount} 人がチェック中！</span>
           <span style={{ background: '#f8fafc', padding: '4px 12px', borderRadius: '20px', color: '#64748b' }}>👁️ {currentSurvey.view_count || 0} 閲覧</span>
           <span style={{ background: '#f8fafc', padding: '4px 12px', borderRadius: '20px', color: '#64748b' }}>👍 {currentSurvey.likes_count || 0} いいね</span>
+          <span style={{ background: '#f8fafc', padding: '4px 12px', borderRadius: '20px', color: '#64748b', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+            🗳️ <AnimatedCounter value={isTotalVotes || 0} /> 票
+          </span>
           {currentSurvey.category && <span style={{ background: '#eff6ff', padding: '4px 12px', borderRadius: '20px', color: '#3b82f6', fontWeight: 'bold' }}>🏷️ {currentSurvey.category}</span>}
         </div>
         {currentSurvey.tags && currentSurvey.tags.length > 0 && (
@@ -267,7 +271,9 @@ const SurveyDetailView = ({
                   border: '1px solid #f1f5f9',
                   minWidth: '280px',
                   flex: '0 0 280px',
-                  scrollSnapAlign: 'start'
+                  scrollSnapAlign: 'start',
+                  userSelect: 'none',
+                  WebkitTapHighlightColor: 'transparent'
                 }} onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 12px 25px rgba(0,0,0,0.1)'; }} onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.05)'; }}>
                   <div style={{ width: '100%', height: '140px', overflow: 'hidden', position: 'relative' }}>
                     <img src={thumb} alt={s.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -294,12 +300,12 @@ const SurveyDetailView = ({
             })}
           </div>
           <style>{`
-            .related-scroll-container::-webkit-scrollbar { height: 10px; }
+            .related-scroll-container::-webkit-scrollbar { height: 14px; }
             .related-scroll-container::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
             .related-scroll-container::-webkit-scrollbar-thumb { 
               background: #cbd5e1; 
               border-radius: 10px; 
-              border: 3px solid #f1f5f9;
+              border: 2px solid #f1f5f9;
               transition: all 0.3s;
             }
             .related-scroll-container::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
@@ -318,6 +324,7 @@ const SurveyDetailView = ({
         <div className="comments-list">
           {comments.length > 0 ? comments.slice((currentCommentPage - 1) * 5, currentCommentPage * 5).map((c, idx) => {
             const absoluteIndex = (currentCommentPage - 1) * 5 + idx;
+            // 🔢 レス番号の計算（全体の投稿順。最新投稿が一番大きな番号になるように）
             const stableResNum = comments.length - absoluteIndex;
             const isMyComment = myCommentKeys[c.id] || (user && c.user_id === user.id);
             const isLabi = c.user_name?.includes('らび');
@@ -345,7 +352,7 @@ const SurveyDetailView = ({
                       />
                       <div className="comment-edit-actions">
                         <button className="comment-edit-save" onClick={handleUpdateComment} disabled={isActionLoading}>保存</button>
-                        <button className="comment-edit-cancel" onClick={() => setEditContent('')}>中止</button>
+                        <button className="comment-edit-cancel" onClick={(e) => { e.preventDefault(); setEditingCommentId(null); setEditContent(''); }}>中止</button>
                       </div>
                     </div>
                   ) : (
@@ -378,13 +385,13 @@ const SurveyDetailView = ({
                   </div>
 
                   <div className="comment-owner-actions">
-                    {isMyComment && !editingCommentId && (
+                    {isMyComment && !editingCommentId && c.content !== '[[DELETED]]' && (
                       <>
                         <button className="comment-owner-edit" onClick={() => startEditComment(c)}>修正</button>
                         <button className="comment-owner-delete" onClick={() => handleDeleteComment(c.id)}>削除</button>
                       </>
                     )}
-                    {isAdmin && !isMyComment && (
+                    {isAdmin && !isMyComment && c.content !== '[[DELETED]]' && (
                       <button className="comment-owner-delete" onClick={() => handleDeleteComment(c.id)}>削除(管)</button>
                     )}
                   </div>

@@ -23,7 +23,6 @@ const SurveyDescription = ({ description, renderCommentContent }) => {
       margin: '0 auto 50px auto',
       maxWidth: '860px',
       position: 'relative',
-      padding: '0 16px' // モバイル端対策
     }}>
       {/* プレミアムなラベル 🏷️ */}
       <div style={{
@@ -54,7 +53,6 @@ const SurveyDescription = ({ description, renderCommentContent }) => {
         background: 'rgba(255, 255, 255, 0.9)',
         backdropFilter: 'blur(20px)',
         border: '2px solid rgba(255, 255, 255, 0.7)',
-        padding: '52px 32px 36px 32px',
         borderRadius: '28px',
         boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.08)',
         whiteSpace: 'pre-wrap',

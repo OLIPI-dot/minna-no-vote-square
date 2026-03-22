@@ -26,7 +26,7 @@ if (!url || !key) {
 const supabase = createClient(url, key);
 
 async function check() {
-    const { data, error } = await supabase.from('surveys').select('id, title, image_url, created_at').order('created_at', {ascending: false}).limit(20);
+    const { data, error } = await supabase.from('surveys').select('*').order('created_at', {ascending: false}).limit(1);
     if (error) {
         console.error(error);
         process.exit(1);

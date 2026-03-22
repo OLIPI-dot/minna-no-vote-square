@@ -31,12 +31,11 @@ function log(msg) {
 
 const RSS_FEEDS = [
     'https://news.yahoo.co.jp/rss/topics/top-picks.xml',
-    'https://wired.jp/rss/feeds/index.xml',
-    'https://www.nhk.or.jp/rss/news/shuyo.xml',
-    'https://nlab.itmedia.co.jp/rss/2.0/itlab_all.xml',
+    'https://news.yahoo.co.jp/rss/categories/it.xml',
+    'https://news.yahoo.co.jp/rss/categories/entertainment.xml',
     'https://gigazine.net/news/rss_2.0/',
-    'https://dengekionline.com/rss.xml',
-    'https://www.famitsu.com/rss/famitsu.xml'
+    'https://rss.itmedia.co.jp/rss/2.0/itlab_all.xml',
+    'https://www3.nhk.or.jp/rss/news/shuyo.xml'
 ];
 
 async function searchYouTubeVideo(query) {
@@ -282,7 +281,6 @@ async function startAutoPosting() {
                 description: finalDescription,
                 deadline: deadline.toISOString(),
                 visibility: 'public',
-                user_name: 'らび🐰',
                 is_official: true,
                 tags: news.tags || []
             }]).select();

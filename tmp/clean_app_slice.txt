@@ -1,0 +1,300 @@
+  const navigateTo = async (nextView, survey = null) => {
+    const url = new URL(window.location.origin + window.location.pathname);
+    if (nextView === 'details' && survey) {
+      if (survey.visibility === 'private' && (!user || user.id !== survey.user_id)) {
+        return alert('非公開です🔒');
+      }
+      // 🔗 OGPが確実に効くように、パスベースのURL (/s/ID) を優先するらび！
+      window.history.pushState({ surveyId: survey.id }, '', `/s/${survey.id}`);
+      setCurrentSurvey(survey);
+      setIsTimeUp(survey.deadline && new Date(survey.deadline) < new Date());
+
+      const viewKey = `last_view_${survey.id}`;
+      const lastView = parseInt(localStorage.getItem(viewKey) || '0', 10);
+      const now = Date.now();
+      if (now - lastView > VIEW_COOLDOWN_MS) {
+        localStorage.setItem(viewKey, now.toString());
+        // 🚀 非同期（Non-blocking）で実行して遷移を速くするらび！
+        supabase.rpc('increment_survey_view', { survey_id: survey.id });
+      }
+    } else if (nextView === 'list') {
+      // 🏘️ 広場に戻る時はURLをルート（/）にリセットするらび！
+      window.history.pushState({ view: 'list' }, '', '/');
+      setCurrentSurvey(null);
+      setFilterCategory('すべて'); // リストに戻る際にカテゴリフィルタをリセット
+      setFilterTag(''); // リストに戻る際にタグフィルタをリセット
+    }
+    setView(nextView);
+    window.scrollTo(0, 0);
+  };
+
+  const fetchSurveys = async (currentUser, silent = false) => {
+    if (!silent) setIsLoading(true);
+    // アンケート本体（解説文も念のため含めておくらび！）
+    const { data: sData } = await supabase.from('surveys').select('*, is_official').eq('visibility', 'public');
+
+    // ログイン中なら自分の非公開/限定公開アンケートも取得
+    let mine = [];
+    if (currentUser) {
+      let query = supabase.from('surveys').select('*').neq('visibility', 'public');
+      if (!isAdmin) {
+        query = query.eq('user_id', currentUser.id);
+      }
+      const { data: mData } = await query;
+      if (mData) mine = mData;
+    }
+
+    // 投票数は一括取得してマージ（Mapで高速化らび！）
+    const { data: oData } = await supabase.from('options').select('survey_id, votes');
+    const voteMap = {};
+    if (oData) {
+      oData.forEach(o => {
+        voteMap[o.survey_id] = (voteMap[o.survey_id] || 0) + (o.votes || 0);
+      });
+    }
+
+    const allSurveys = [...(sData || []), ...mine];
+    
+    // 👑 管理者チェックを再度行う（引数のcurrentUserベース）
+    const isActuallyAdmin = currentUser && ADMIN_EMAILS.includes(currentUser.email);
+
+    if (allSurveys.length > 0) {
+      const updatedList = allSurveys.map(s => {
+        // 💎 新しい仕様 (2026/03/19以降): DBの is_official フラグを絶対的な正とする
+        let isOfficialPattern = s.is_official === true;
+
+        // 💎 後方互換性 (2026/03/19以前のレガシー投稿用): DBフラグが無くても公式投稿だったものを救済する
+        const isLegacy = new Date(s.created_at) < new Date('2026-03-19T00:00:00Z');
+        
+        if (!isOfficialPattern && isLegacy) {
+          // 過去の公式投稿の特徴：特定のタグを持っている、またはニュース風のタイトル（【】や「」始まり）
+          const hasOfficialTag = s.tags && s.tags.some(tag => ['お知らせ', 'ニュース', '話題', '速報', '注目', '2chまとめアンテナ'].includes(tag) || tag.includes('トピックス') || tag.includes('新聞'));
+          const hasOfficialTitle = s.title && /^(【.*?】|「.*?」)/.test(s.title);
+          
+          if (hasOfficialTag || hasOfficialTitle) {
+            isOfficialPattern = true;
+          }
+        }
+
+        return {
+          ...s,
+          is_official: isOfficialPattern,
+          total_votes: voteMap[s.id] || 0,
+          comment_count: s.comment_count || 0
+        };
+      });
+      // 💎 重要: 詳細画面を開いている場合のみ、最新データで上書きする
+      // 🛡️ ガード: 直前に手動更新した場合は、DBの反映遅延を考慮して10秒間上書きを禁止する
+      setCurrentSurvey(prev => {
+        if (!prev) return null;
+        const lastUpdate = manualUpdatesRef.current[prev.id];
+        if (lastUpdate && Date.now() - lastUpdate < 10000) {
+          console.log(`🛡️ Guarding currentSurvey [${prev.id}] from stale DB data.`);
+          return prev;
+        }
+        const latest = updatedList.find(s => String(s.id) === String(prev.id));
+        return latest ? { ...latest } : prev;
+      });
+
+      // 🖼️ リスト側のステートもガードを適用しつつ更新する
+      setSurveys(prevList => {
+        return updatedList.map(newS => {
+          const lastUpdate = manualUpdatesRef.current[newS.id];
+          if (lastUpdate && Date.now() - lastUpdate < 10000) {
+            return prevList.find(s => String(s.id) === String(newS.id)) || newS;
+          }
+          return newS;
+        });
+      });
+    } else {
+      setSurveys([]);
+    }
+    if (!silent) setIsLoading(false);
+  };
+
+  useEffect(() => {
+    fetchSurveys(user);
+    refreshSidebar();
+    const ch = supabase.channel('global-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'surveys' }, () => { fetchSurveys(user, true); refreshSidebar(); })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'options' }, () => { fetchSurveys(user, true,); refreshSidebar(); })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'comments' }, () => { fetchSurveys(user, true); refreshSidebar(); })
+      .subscribe();
+    return () => supabase.removeChannel(ch);
+  }, [user]);
+
+
+  const refreshSidebar = async () => {
+    const { data: sData } = await supabase.from('surveys').select('*').eq('visibility', 'public');
+    const { data: oData } = await supabase.from('options').select('survey_id, votes');
+
+    if (sData && oData) {
+      // 💡 サイドバーからは「お知らせ」を除外する
+      const regularSurveys = sData.filter(s => !s.tags?.includes('お知らせ'));
+
+      const withStats = regularSurveys.map(s => ({
+        ...s,
+        total_votes: oData.filter(o => o.survey_id === s.id).reduce((sum, opt) => sum + (opt.votes || 0), 0),
+        comment_count: s.comment_count || 0 
+      }));
+
+      const now = new Date();
+      const next24h = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+      const endingSoon = withStats
+        .filter(s => s.deadline && new Date(s.deadline) > now && new Date(s.deadline) <= next24h)
+        .sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
+
+      // 🛡️ サイドバー/セクション用のガード適用マッパー
+      const applyGuard = (prevList) => withStats.map(s => {
+        const lastUpdate = manualUpdatesRef.current[s.id];
+        if (lastUpdate && Date.now() - lastUpdate < 10000) {
+          return prevList.find(p => String(p.id) === String(s.id)) || s;
+        }
+        return s;
+      });
+
+      setLiveSurveys(prev => applyGuard(prev).sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 10));
+      setPopularSurveys(prev => applyGuard(prev).sort((a, b) => {
+        const scoreA = (a.total_votes || 0) * SCORE_VOTE_WEIGHT + (a.view_count || 0);
+        const scoreB = (b.total_votes || 0) * SCORE_VOTE_WEIGHT + (b.view_count || 0);
+        return scoreB - scoreA;
+      }).slice(0, 10));
+      setEndingSoonSurveys(prev => {
+        const guarded = applyGuard(prev);
+        return guarded
+          .filter(s => s.deadline && new Date(s.deadline) > now && new Date(s.deadline) <= next24h)
+          .sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
+      });
+    }
+  };
+
+  useEffect(() => { refreshSidebar(); }, []);
+
+  const handleStartSurvey = async () => {
+    if (!user) return alert('ログインが必要です！');
+    if (!checkRateLimit()) return; // 🛡️ 連投チェック
+    if (!surveyTitle.trim()) return alert('お題（タイトル）を入力してください✨');
+    if (!surveyCategory) return alert('カテゴリを選択してください🍜');
+    if (setupOptions.length < 2) return alert('投票項目は2つ以上入力してください🗳️');
+
+    if (hasNGWord(surveyTitle) || setupOptions.some(hasNGWord) || surveyTags.some(hasNGWord)) {
+      return alert('NGワードが含まれているため作成できません。言葉遣いに気をつけてね🐰');
+    }
+
+    if (!deadline) return alert('⏰ いつまでアンケートを取るか、締切日時を設定してください！');
+
+    const finalImage = surveyImage.trim(); // 自動セットを廃止
+    
+    // 📺 動画（YouTube/ニコニコ）の処理
+    let processedImage = finalImage;
+    if (surveyYoutube.trim()) {
+      const parts = surveyYoutube.trim().split(/[\s,]+/).filter(Boolean);
+      const videoEntries = parts.map(part => {
+        const ytId = extractYoutubeId(part);
+        const nicoId = extractNicoId(part);
+        if (ytId && (part.includes('youtube.com') || part.includes('youtu.be') || !nicoId)) {
+          return `yt:${ytId}`;
+        } else if (nicoId) {
+          return `nico:${nicoId}`;
+        }
+        return null;
+      }).filter(Boolean);
+
+      if (videoEntries.length > 0) {
+        processedImage = videoEntries.join(',');
+      }
+    }
+
+    const finalDeadline = new Date(`${deadline}:00+09:00`).toISOString();
+    const { data, error } = await supabase.from('surveys').insert([{ 
+      title: surveyTitle, 
+      deadline: finalDeadline, 
+      user_id: user.id, 
+      image_url: processedImage, 
+      category: surveyCategory, 
+      visibility: surveyVisibility, 
+      tags: surveyTags,
+      description: surveyDescription.trim() // 📝 解説文を保存
+    }]).select();
+    if (error) {
+      alert('公開に失敗しました。エラー: ' + error.message);
+      return;
+    }
+    updateRateLimit(); // 🛡️ 作成時間を記録
+    await supabase.from('options').insert(setupOptions.map(name => ({ name, votes: 0, survey_id: data[0].id })));
+
+    // 全ての状態をリセット
+    setSurveyTitle('');
+    setSurveyCategory('');
+    setSurveyImage('');
+    setSurveyYoutube('');
+    setSurveyDescription(''); // 📝 リセット
+    setSetupOptions([]);
+    setSurveyTags([]);
+    setDeadline('');
+    setSurveyVisibility('public');
+
+    navigateTo('list');
+    fetchSurveys(user);
+  };
+
+  const handleVote = (optionId) => {
+    // 引数がオブジェクト（opt）で渡される場合とIDで渡される場合の両方に対応
+    const targetId = typeof optionId === 'object' ? optionId.id : optionId;
+    const option = options.find(o => o.id === targetId);
+    if (!option || isTimeUp || votedOption) return;
+    
+    // 🆙 投票数をDBへ反映
+    supabase.from('options').update({ votes: (option.votes || 0) + 1 }).eq('id', option.id);
+
+    // 🏆 チャッピー流：あなたは〇人目演出！
+    const currentTotal = (currentSurvey.total_votes || 0) + 1;
+    setTimeout(() => {
+      alert(`✨ 投票完了らびっ！ ✨\n\nあなたは、このアンケートの\n【 ${currentTotal} 人目 】の投票者だよ！🐰🥕💎\n\n広場に参加してくれてありがとうらびっ！`);
+    }, 500);
+
+    // 💎 UX改善: 瞬時にUIを更新する
+    localStorage.setItem(`voted_survey_${currentSurvey.id}`, String(option.id));
+    setVotedOption(String(option.id));
+
+    const updatedOptions = options.map(o => o.id === option.id ? { ...o, votes: (o.votes || 0) + 1 } : o);
+    const updatedSurvey = {
+      ...currentSurvey,
+      total_votes: currentTotal,
+      options: updatedOptions
+    };
+    setCurrentSurvey(updatedSurvey);
+    setSurveys(prev => prev.map(s => s.id === currentSurvey.id ? updatedSurvey : s));
+  };
+
+  const handleLikeSurvey = async () => {
+    if (!currentSurvey) return;
+
+    const isLiked = likedSurveys.some(id => String(id) === String(currentSurvey.id));
+    const newLikesCount = isLiked
+      ? Math.max(0, (currentSurvey.likes_count || 0) - 1)
+      : (currentSurvey.likes_count || 0) + 1;
+
+    // 🏎️ UIを先に更新（楽観的UI更新）
+    setCurrentSurvey({ ...currentSurvey, likes_count: newLikesCount });
+
+    // 一覧やランキングなどの全リストの状態も同期させる（重要！）
+    const mapper = s => String(s.id) === String(currentSurvey.id) ? { ...s, likes_count: newLikesCount } : s;
+    setSurveys(prev => prev.map(mapper));
+    setPopularSurveys(prev => prev.map(mapper));
+
+    const newLikedIds = isLiked
+      ? likedSurveys.filter(id => String(id) !== String(currentSurvey.id))
+      : [...likedSurveys, String(currentSurvey.id)];
+    setLikedSurveys(newLikedIds);
+    localStorage.setItem('liked_surveys', JSON.stringify(newLikedIds));
+
+    // 🛡️ DBを更新：RPCを使用して確実に増減させる（非同期で待ち合わせない！）
+    supabase.rpc('increment_survey_like', {
+      survey_id: currentSurvey.id,
+      increment_val: isLiked ? -1 : 1
+    });
+  };
+
+  const toggleWatch = (e, id) => {
+    e.stopPropagation();

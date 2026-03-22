@@ -1,0 +1,200 @@
+    const currentTotal = (currentSurvey.total_votes || 0) + 1;
+    setTimeout(() => {
+      alert(`✨ 投票完了らびっ！ ✨\n\nあなたは、このアンケートの\n【 ${currentTotal} 人目 】の投票者だよ！🐰🥕💎\n\n広場に参加してくれてありがとうらびっ！`);
+    }, 500);
+
+    // 💎 UX改善: 瞬時にUIを更新する
+    localStorage.setItem(`voted_survey_${currentSurvey.id}`, String(option.id));
+    setVotedOption(String(option.id));
+
+    const updatedOptions = options.map(o => o.id === option.id ? { ...o, votes: (o.votes || 0) + 1 } : o);
+    const updatedSurvey = {
+      ...currentSurvey,
+      total_votes: currentTotal,
+      options: updatedOptions
+    };
+    setCurrentSurvey(updatedSurvey);
+    setSurveys(prev => prev.map(s => s.id === currentSurvey.id ? updatedSurvey : s));
+  };
+
+  const handleLikeSurvey = async () => {
+    if (!currentSurvey) return;
+
+    const isLiked = likedSurveys.some(id => String(id) === String(currentSurvey.id));
+    const newLikesCount = isLiked
+      ? Math.max(0, (currentSurvey.likes_count || 0) - 1)
+      : (currentSurvey.likes_count || 0) + 1;
+
+    // 🏎️ UIを先に更新（楽観的UI更新）
+    setCurrentSurvey({ ...currentSurvey, likes_count: newLikesCount });
+
+    // 一覧やランキングなどの全リストの状態も同期させる（重要！）
+    const mapper = s => String(s.id) === String(currentSurvey.id) ? { ...s, likes_count: newLikesCount } : s;
+    setSurveys(prev => prev.map(mapper));
+    setPopularSurveys(prev => prev.map(mapper));
+
+    const newLikedIds = isLiked
+      ? likedSurveys.filter(id => String(id) !== String(currentSurvey.id))
+      : [...likedSurveys, String(currentSurvey.id)];
+    setLikedSurveys(newLikedIds);
+    localStorage.setItem('liked_surveys', JSON.stringify(newLikedIds));
+
+    // 🛡️ DBを更新：RPCを使用して確実に増減させる（非同期で待ち合わせない！）
+    supabase.rpc('increment_survey_like', {
+      survey_id: currentSurvey.id,
+      increment_val: isLiked ? -1 : 1
+    });
+  };
+
+  const toggleWatch = (e, id) => {
+    e.stopPropagation();
+    const newIds = watchedIds.includes(id) ? watchedIds.filter(v => v !== id) : [...watchedIds, id];
+    setWatchedIds(newIds);
+    localStorage.setItem('watched_surveys', JSON.stringify(newIds));
+  };
+
+  // 🗑️ アンケートを削除する（オーナーまたは管理者）
+  const handleDeleteSurvey = async (surveyId) => {
+    if (!window.confirm('本当に削除しますか？この操作は元に戻せません。')) return;
+
+    setIsActionLoading(true);
+    // 関連データを順番に削除（コメント -> 選択肢 -> アンケート本体）
+    await supabase.from('comments').delete().eq('survey_id', surveyId);
+    await supabase.from('options').delete().eq('survey_id', surveyId);
+    const { error } = await supabase.from('surveys').delete().eq('id', surveyId);
+    setIsActionLoading(false);
+
+    if (error) {
+      console.error("Survey delete error:", error);
+      alert('😿 アンケートの削除に失敗しました。');
+    } else {
+      setSurveys(prev => prev.filter(s => s.id !== surveyId));
+      navigateTo('list');
+      alert('🗑️ アンケートを完全に削除しました！');
+    }
+  };
+
+  // 🔄 公開設定を変更する（オーナーまたは管理者）
+  const handleUpdateVisibility = async (newVisibility) => {
+    if (!currentSurvey || !user || (!isAdmin && currentSurvey.user_id !== user.id)) return;
+    manualUpdatesRef.current[currentSurvey.id] = Date.now(); // 🛡️ ガード開始
+    setIsActionLoading(true);
+    const { data, error } = await supabase.from('surveys').update({ visibility: newVisibility }).eq('id', currentSurvey.id).select();
+    setIsActionLoading(false);
+    if (error) {
+      console.error("Update visibility error:", error);
+      return alert('変更に失敗しましたらび...');
+    }
+    if (!data || data.length === 0) {
+      console.warn("Update visibility failed: No data returned. Possible RLS issue.", { userId: user.id, surveyId: currentSurvey.id });
+      return alert('😿 保存が反映されませんでした。権限の不具合かもしれません。');
+    }
+    const merged = { ...currentSurvey, ...data[0] };
+    setCurrentSurvey(merged);
+    setSurveys(prev => prev.map(s => String(s.id) === String(currentSurvey.id) ? { ...s, ...merged } : s));
+    alert(`公開設定を「${newVisibility}」に変更しました！`);
+    // fetchSurveys(user); // 🏎️ リロードを防ぐためにコメントアウトまたは削除
+  };
+
+  // 🏷️ カテゴリを変更する（オーナーまたは管理者）
+  const handleUpdateCategory = async (newCategory) => {
+    if (!currentSurvey || !user || (!isAdmin && currentSurvey.user_id !== user.id)) return;
+    manualUpdatesRef.current[currentSurvey.id] = Date.now(); // 🛡️ ガード開始
+    setIsActionLoading(true);
+    const { data, error } = await supabase.from('surveys').update({ category: newCategory }).eq('id', currentSurvey.id).select();
+    setIsActionLoading(false);
+    if (error) {
+      console.error("Update category error:", error);
+      return alert('😿 カテゴリの変更に失敗しました。');
+    }
+    if (!data || data.length === 0) {
+      console.warn("Update category failed: No data returned.", { userId: user.id, surveyId: currentSurvey.id });
+      return alert('😿 カテゴリ保存が反映されませんでした。');
+    }
+    const merged = { ...currentSurvey, ...data[0] };
+    setCurrentSurvey(merged);
+    setSurveys(prev => prev.map(s => String(s.id) === String(currentSurvey.id) ? { ...s, ...merged } : s));
+    setIsEditingCategory(false);
+    alert(`🏷️ カテゴリを「${newCategory}」に変更しましたらびっ！`);
+    fetchSurveys(user, true); // 🏎️ サイレントに最新化
+  };
+
+  // 🏷️ タグを更新する（オーナーまたは管理者）
+  const handleUpdateTags = async () => {
+    if (!currentSurvey || !user || (!isAdmin && currentSurvey.user_id !== user.id)) return;
+    manualUpdatesRef.current[currentSurvey.id] = Date.now(); // 🛡️ ガード開始
+    setIsActionLoading(true);
+    const newTags = tagEditValue.split(/[,、，\s]+/).map(t => t.trim()).filter(t => t !== "");
+    const { data, error } = await supabase.from('surveys').update({ tags: newTags }).eq('id', currentSurvey.id).select();
+    setIsActionLoading(false);
+    if (error) {
+      console.error("Update tags error:", error);
+      return alert('😿 タグの更新に失敗しました。');
+    }
+    if (!data || data.length === 0) {
+      console.warn("Update tags failed: No data returned.", { userId: user.id, surveyId: currentSurvey.id });
+      return alert('😿 タグ保存が反映されませんでした。');
+    }
+    const merged = { ...currentSurvey, ...data[0] };
+    setCurrentSurvey(merged);
+    setSurveys(prev => prev.map(s => String(s.id) === String(currentSurvey.id) ? { ...s, ...merged } : s));
+    setIsEditingTags(false);
+    alert('🏷️ タグを更新しましたらびっ！');
+    fetchSurveys(user, true); // 🏎️ サイレントに最新化
+  };
+
+  // 📩 お問い合わせをDBに保存する
+  const handleSubmitInquiry = async () => {
+    if (!contactMessage.trim()) return alert('内容を入力してください');
+    setIsSendingInquiry(true);
+
+    try {
+      // 1. Supabase DBに保存
+      const { error: dbError } = await supabase.from('inquiries').insert([{
+        type: contactType,
+        email: contactEmail,
+        message: contactMessage
+      }]);
+      if (dbError) throw dbError;
+
+      // 2. EmailJSでGmail通知を送信
+      const serviceId = 'service_mkhbkz3';
+      const templateId = 'template_4wpor27';
+      const publicKey = 'wEjNAL8NrmlxBHc6k';
+
+      // 念のため初期化を実行
+      emailjs.init(publicKey);
+
+      try {
+        await emailjs.send(
+          serviceId,
+          templateId,
+          {
+            from_name: contactEmail || '匿名ユーザー',
+            inquiry_type: contactType,
+            message: contactMessage,
+            reply_to: contactEmail
+          }
+        );
+      } catch (e) {
+        // エラーがあってもDBには保存されているので続行
+      }
+
+      alert('お問い合わせありがとうございます！内容を確認次第、順次対応させていただきます。😊');
+      setContactMessage('');
+      setContactEmail('');
+      setShowingContact(false);
+    } catch (error) {
+      if (window.confirm('システムへの直接送信に失敗しました。従来のメールソフトを起動しますか？')) {
+        const subject = encodeURIComponent(`[アンケート広場] ${contactType}`);
+        const body = encodeURIComponent(`種別：${contactType}\n返信先：${contactEmail || 'なし'}\n\n${contactMessage}`);
+        window.open(`mailto:contact@olipi.dev?subject=${subject}&body=${body}`);
+        setShowingContact(false);
+      }
+    } finally {
+      setIsSendingInquiry(false);
+    }
+  };
+
+  // 📸 結果をテキスト化してシェア（X対応コンパクト版）
+  const handleShareResult = (type) => {

@@ -13,9 +13,9 @@ const RecommendedSection = ({ surveys, navigateTo }) => {
       animation: 'fadeInRecommend 0.8s ease'
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
-        <span style={{ fontSize: '1.6rem' }}>✨</span>
+        <span style={{ fontSize: '1.6rem' }}>🐰</span>
         <h2 style={{ fontSize: '1.25rem', fontWeight: '900', color: '#4c1d95', margin: 0 }}>
-          あなたにぴったりの話題 <span style={{ fontSize: '0.8rem', fontWeight: 'normal', opacity: 0.7, marginLeft: '8px' }}>おすすめ</span>
+          あなたにぴったりかも <span style={{ fontSize: '0.8rem', fontWeight: 'normal', opacity: 0.7, marginLeft: '8px' }}>おすすめ</span>
         </h2>
       </div>
 
@@ -52,7 +52,9 @@ const RecommendedSection = ({ surveys, navigateTo }) => {
                 gap: '10px',
                 minWidth: '220px',
                 flex: '0 0 220px',
-                scrollSnapAlign: 'start'
+                scrollSnapAlign: 'start',
+                userSelect: 'none',
+                WebkitTapHighlightColor: 'transparent'
               }}
             >
               <div style={{ width: '100%', height: '100px', borderRadius: '14px', overflow: 'hidden' }}>
@@ -83,12 +85,12 @@ const RecommendedSection = ({ surveys, navigateTo }) => {
       </div>
 
       <style>{`
-        .recommended-scroll-container::-webkit-scrollbar { height: 10px; }
+        .recommended-scroll-container::-webkit-scrollbar { height: 14px; }
         .recommended-scroll-container::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
         .recommended-scroll-container::-webkit-scrollbar-thumb { 
           background: #cbd5e1; 
           border-radius: 10px; 
-          border: 3px solid #f1f5f9;
+          border: 2px solid #f1f5f9;
           transition: all 0.3s;
         }
         .recommended-scroll-container::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
