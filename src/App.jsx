@@ -343,6 +343,7 @@ function App() {
   const [isEditingCategory, setIsEditingCategory] = useState(false);
   const [isEditingTags, setIsEditingTags] = useState(false);
   const [tagEditValue, setTagEditValue] = useState('');
+  const isVotingProcessingRef = useRef(false); // 🛡️ 投票中の連打ガード
 
   // 📡 リアルタイム人数
   const [globalOnlineCount, setGlobalOnlineCount] = useState(1);
@@ -1401,9 +1402,12 @@ function App() {
   };
 
   const handleVote = async (optionId) => {
+    if (isVotingProcessingRef.current) return; // 🛡️ 魔法の最中は受け付けないらび！
     const targetId = typeof optionId === 'object' ? optionId.id : optionId;
     const option = options.find(o => o.id === targetId);
     if (!option || isTimeUp || votedOption) return;
+
+    isVotingProcessingRef.current = true; // 🚧 ガード開始！
 
     // 🏎️ 楽観的UI更新: 瞬時に反映させるらび！
     localStorage.setItem(`voted_survey_${currentSurvey.id}`, String(option.id));
