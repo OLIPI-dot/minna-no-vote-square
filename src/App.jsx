@@ -712,6 +712,14 @@ function App() {
       setCommentName('');
       updateRateLimit();
 
+      // 📊 GA4 キーイベント: コメント投稿
+      if (window.gtag) {
+        window.gtag('event', 'post_comment', {
+          'survey_id': currentSurvey.id,
+          'survey_title': currentSurvey.title
+        });
+      }
+
       // アンケート本体のコメント数も更新
       const updatedSurvey = { ...currentSurvey, comment_count: (currentSurvey.comment_count || 0) + 1 };
       setCurrentSurvey(updatedSurvey);
@@ -1382,6 +1390,14 @@ function App() {
     // 🏆 チャッピー流：あなたは〇人目演出！
     const currentTotal = (currentSurvey.total_votes || 0) + 1;
     setTimeout(() => {
+      // 📊 GA4 キーイベント: 投票成功！らび！
+      if (window.gtag) {
+        window.gtag('event', 'vote_survey', {
+          'survey_id': currentSurvey.id,
+          'survey_title': currentSurvey.title,
+          'option_name': option.text
+        });
+      }
       alert(`✨ 投票完了らびっ！ ✨\n\nあなたは、このアンケートの\n【 ${currentTotal} 人目 】の投票者だよ！🐰🥕💎\n\n広場に参加してくれてありがとうらびっ！`);
     }, 500);
 
@@ -1623,6 +1639,14 @@ function App() {
         `計${currentSurvey.total_votes}票 👉 ${shareUrl}`,
         `#アンケート広場`,
       ].join('\n');
+      // 📊 GA4 キーイベント: 結果コピー
+      if (window.gtag) {
+        window.gtag('event', 'share_result', {
+          'method': 'copy',
+          'survey_id': currentSurvey.id,
+          'survey_title': currentSurvey.title
+        });
+      }
       navigator.clipboard.writeText(copyText).then(() => alert('コピーしました！'));
     } else if (type === 'x') {
       // 📝 X用のテキストをリッチに！らび頑張る！🐰✨
@@ -1631,6 +1655,15 @@ function App() {
         xText += `🏆 現在1位: ${topOption.name} (${Math.round(topOption.votes / currentSurvey.total_votes * 100)}%)\n`;
       }
       xText += `🔥 現在の合計: ${currentSurvey.total_votes}票！みんなはどう思う？らびっ！`;
+      
+      // 📊 GA4 キーイベント: Xでシェア
+      if (window.gtag) {
+        window.gtag('event', 'share_result', {
+          'method': 'x',
+          'survey_id': currentSurvey.id,
+          'survey_title': currentSurvey.title
+        });
+      }
       
       window.open(
         `https://twitter.com/intent/tweet?text=${encodeURIComponent(xText)}&url=${encodeURIComponent(shareUrl)}&hashtags=アンケート広場`,
@@ -1928,7 +1961,7 @@ function App() {
                   <div className="setting-item-block">
                     <label>カテゴリ:</label>
                     <div className="category-selector">
-                      {(isAdmin ? ['ニュース', 'レビュー', 'コラム', 'ネタ', 'らび', 'その他'] : ['ニュース', 'レビュー', 'コラム', 'ネタ', 'その他']).map(cat => (
+                      {(isAdmin ? ['ニュース', 'YouTuber', '話題', 'エンタメ', 'レビュー', 'コラム', 'ネタ', 'らび', 'その他'] : ['ニュース', 'YouTuber', '話題', 'エンタメ', 'レビュー', 'コラム', 'ネタ', 'その他']).map(cat => (
                         <button key={cat} className={`cat-btn ${surveyCategory === cat ? 'active' : ''}`} onClick={() => setSurveyCategory(cat)}>{cat}</button>
                       ))}
                     </div>

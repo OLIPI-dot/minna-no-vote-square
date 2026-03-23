@@ -171,7 +171,7 @@ const SurveyListView = ({
         marginBottom: '20px', WebkitOverflowScrolling: 'touch',
         scrollSnapType: 'x proximity', borderBottom: '1px solid #f1f5f9'
       }}>
-        {['すべて', 'ニュース', '話題', 'エンタメ', 'レビュー', 'コラム', 'ネタ', 'らび', 'その他'].map(cat => (
+        {['すべて', 'ニュース', 'YouTuber', '話題', 'エンタメ', 'レビュー', 'コラム', 'ネタ', 'らび', 'その他'].map(cat => (
           <button
             key={cat}
             style={{

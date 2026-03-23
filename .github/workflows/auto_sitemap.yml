@@ -7,9 +7,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'src/data/**'
-      - 'scripts/generate_sitemap.cjs'
   workflow_dispatch: # 手動実行も可能らび！
 
 permissions:
