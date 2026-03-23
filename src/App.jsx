@@ -1133,14 +1133,19 @@ function App() {
     }
 
     try {
-      const { data: sData, error: sError } = await supabase.from('surveys').select('*').eq('visibility', 'public');
+      // 🚀 爆速化: 最初は最新200件程度に絞って取得するらび！ (全件取得は重すぎる)
+      const { data: sData, error: sError } = await supabase.from('surveys')
+        .select('*')
+        .eq('visibility', 'public')
+        .order('id', { ascending: false })
+        .range(0, 199);
       if (sError) console.error("fetchSurveys error:", sError);
 
       // ログイン中なら自分の非公開/限定公開アンケートも取得
       let mine = [];
       if (currentUser) {
         let query = supabase.from('surveys').select('*').neq('visibility', 'public');
-        if (!isAdmin) {
+        if (!isActuallyAdmin) {
           query = query.eq('user_id', currentUser.id);
         }
         const { data: mData, error: mError } = await query;
@@ -1148,9 +1153,12 @@ function App() {
         if (mData) mine = mData;
       }
 
-      const voteMap = {}; // total_votesカラム導入により、一括取得は不要らび！
-
-      const allSurveys = [...(sData || []), ...mine];
+      // 🛡️ 重複排除ガード: IDをキーにしたMapで確実に1つにするらび！
+      const uniqueMap = new Map();
+      [...(sData || []), ...mine].forEach(s => {
+        if (s && s.id) uniqueMap.set(String(s.id), s);
+      });
+      const allSurveys = Array.from(uniqueMap.values());
       
       const isActuallyAdmin = currentUser && ADMIN_EMAILS.includes(currentUser.email);
 
