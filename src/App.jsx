@@ -1401,60 +1401,54 @@ function App() {
   };
 
   const handleVote = async (optionId) => {
-    // 引数がオブジェクト（opt）で渡される場合とIDで渡される場合の両方に対応
     const targetId = typeof optionId === 'object' ? optionId.id : optionId;
     const option = options.find(o => o.id === targetId);
     if (!option || isTimeUp || votedOption) return;
-    
-    // 🛡️ ガード開始 (15秒間、DBの反映遅延による巻き戻りを防ぐらび！)
-    if (currentSurvey) {
-      manualUpdatesRef.current[String(currentSurvey.id)] = Date.now();
-    }
-    
-    // 🆙 投票用RPC（Security Definer ＆ 最新の総数を返してくれるすごいやつらび！）
-    const { data: serverTotal, error: voteError } = await supabase.rpc('increment_survey_vote', {
-      survey_id_arg: currentSurvey.id,
-      option_id_arg: option.id
-    });
-    if (voteError) {
-      console.error("❌ Vote update error:", voteError);
-    } else {
-      console.log("✅ Vote update success (New Total):", serverTotal);
-      if (serverTotal !== undefined) {
-        // 🏆 サーバーの最新合計値で同期させるらび！
-        const mapper = s => String(s.id) === String(currentSurvey.id) ? { ...s, total_votes: serverTotal } : s;
-        setSurveys(prev => prev.map(mapper));
-        setPopularSurveys(prev => prev.map(mapper));
-        setCurrentSurvey(prev => prev && String(prev.id) === String(currentSurvey.id) ? { ...prev, total_votes: serverTotal } : prev);
-      }
-    }
 
-    // 🏆 チャッピー流：あなたは〇人目演出！
-    const currentTotal = (currentSurvey.total_votes || 0) + 1;
-    setTimeout(() => {
-      // 📊 GA4 キーイベント: 投票成功！らび！
-      if (window.gtag) {
-        window.gtag('event', 'vote_survey', {
-          'survey_id': currentSurvey.id,
-          'survey_title': currentSurvey.title,
-          'option_name': option.text
-        });
-      }
-      alert(`✨ 投票完了らびっ！ ✨\n\nあなたは、このアンケートの\n【 ${currentTotal} 人目 】の投票者だよ！🐰🥕💎\n\n広場に参加してくれてありがとうらびっ！`);
-    }, 500);
-
-    // 💎 UX改善: 瞬時にUIを更新する
+    // 🏎️ 楽観的UI更新: 瞬時に反映させるらび！
     localStorage.setItem(`voted_survey_${currentSurvey.id}`, String(option.id));
     setVotedOption(String(option.id));
 
+    const currentTotal = (currentSurvey.total_votes || 0) + 1;
     const updatedOptions = options.map(o => o.id === option.id ? { ...o, votes: (o.votes || 0) + 1 } : o);
     const updatedSurvey = {
       ...currentSurvey,
       total_votes: currentTotal,
       options: updatedOptions
     };
+
     setCurrentSurvey(updatedSurvey);
-    setSurveys(prev => prev.map(s => String(s.id) === String(currentSurvey.id) ? updatedSurvey : s));
+    const mapper = s => String(s.id) === String(currentSurvey.id) ? updatedSurvey : s;
+    setSurveys(prev => prev.map(mapper));
+    setPopularSurveys(prev => prev.map(mapper));
+
+    // 📊 GA4 キーイベント: 投票成功！らび！
+    if (window.gtag) {
+      window.gtag('event', 'vote_survey', {
+        'survey_id': currentSurvey.id,
+        'survey_title': currentSurvey.title,
+        'option_name': option.name || option.text
+      });
+    }
+
+    // 🛡️ ガード開始 (15秒間、DBの反映遅延による巻き戻りを防ぐらび！)
+    manualUpdatesRef.current[String(currentSurvey.id)] = Date.now();
+
+    // 🆙 裏側でDBへ反映（非同期）
+    supabase.rpc('increment_survey_vote', {
+      survey_id_arg: currentSurvey.id,
+      option_id_arg: option.id
+    }).then(({ data: serverTotal, error: voteError }) => {
+      if (voteError) {
+        console.error("❌ Vote update error:", voteError);
+      } else if (serverTotal !== undefined) {
+        // 🏆 サーバーの最新合計値で最終同期
+        const finalMapper = s => String(s.id) === String(currentSurvey.id) ? { ...s, total_votes: serverTotal } : s;
+        setSurveys(prev => prev.map(finalMapper));
+        setPopularSurveys(prev => prev.map(finalMapper));
+        setCurrentSurvey(prev => prev && String(prev.id) === String(currentSurvey.id) ? { ...prev, total_votes: serverTotal } : prev);
+      }
+    });
   };
 
   const handleLikeSurvey = async () => {
