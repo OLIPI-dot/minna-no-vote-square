@@ -1090,6 +1090,8 @@ function App() {
         if (e.state.view === 'list') {
           setView('list');
           setCurrentSurvey(null);
+          setOptions([]); // お掃除らび！
+          setVotedOption(null); // お掃除らび！
           if (e.state.scrollY !== undefined) {
             setTimeout(() => window.scrollTo(0, e.state.scrollY), 20); // 少し待ってから戻すらび！
           }
@@ -1118,6 +1120,10 @@ function App() {
       }
       // 🔗 履歴に「詳細だよ！」という確実なラベルを貼るらび！
       window.history.pushState({ view: 'details', surveyId: survey.id }, '', `/s/${survey.id}`);
+      
+      // 🏘️ 魔法の残り香をお掃除！新しいページを「真っ白」から始めるらび！
+      setOptions([]);
+      setVotedOption(null);
       setCurrentSurvey(survey);
       setIsTimeUp(survey.deadline && new Date(survey.deadline) < new Date());
 
