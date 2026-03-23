@@ -1081,7 +1081,7 @@ function App() {
   // ブラウザの戻る・進むボタンに対応するセンサー センサーを追加！
   useEffect(() => {
     if ('scrollRestoration' in window.history) {
-      window.history.scrollRestoration = 'manual';
+      window.history.scrollRestoration = 'auto';
     }
     const handlePopState = (e) => {
       console.log("↩️ popstate event fired!", e.state);
@@ -1090,14 +1090,12 @@ function App() {
           setView('list');
           setCurrentSurvey(null);
         } else if (e.state.view === 'details' && e.state.surveyId) {
-          // 詳細画面への復元が必要な場合は、既存の読み込み魔法を呼ぶらび！
           loadFromUrl();
         }
       } else {
-        // ラベルがない場合はこれまで通りURLから判断！
         loadFromUrl();
       }
-      setTimeout(() => window.scrollTo(0, 0), 10);
+      // 🚀 ブラウザの自動復元に任せるので、ここでの強制スクロールはやめるらび！
     };
     window.addEventListener('popstate', handlePopState);
     loadFromUrl(); // 初回読み込み
