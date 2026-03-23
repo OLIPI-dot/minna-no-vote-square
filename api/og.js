@@ -6,6 +6,19 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export default async function handler(req, res) {
   const { s } = req.query;
+  const userAgent = req.headers['user-agent']?.toLowerCase() || '';
+
+  // 🤖 ボット（SNSのクローラー）かどうかを判定するらび！
+  const isBot = [
+    'twitterbot', 'facebookexternalhit', 'line-poker', 'discordbot', 
+    'skypeuripreview', 'slackbot', 'googlebot', 'bingbot', 'yandexbot', 'applebot'
+  ].some(bot => userAgent.includes(bot));
+
+  // 👤 人間（ブラウザ）の場合は、メインの広場（index?s=ID）へ即座にリダイレクトするらび！
+  // これで SPA が起動して navigateTo("details", s) されるよ。
+  if (!isBot && s) {
+    return res.redirect(302, `/?s=${s}`);
+  }
 
   if (!s) {
     return res.status(404).send('Not Found');
