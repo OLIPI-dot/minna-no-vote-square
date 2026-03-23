@@ -1033,13 +1033,17 @@ function App() {
         surveyId = window.location.pathname.split('/')[2];
       }
 
+      console.log("🔍 loadFromUrl triggered. surveyId:", surveyId, "Path:", window.location.pathname);
+
       // 🛡️ 無限ループ防止ガード: すでに読み込み済みなら何もしないらび！
       if (currentSurvey && String(currentSurvey.id) === String(surveyId)) {
+        console.log("🛡️ loadFromUrl: Already on target survey. currentView:", view);
         if (view !== 'details') setView('details');
         return;
       }
 
       if (!surveyId || surveyId === 'null' || surveyId === 'undefined') {
+        console.log("🏘️ loadFromUrl: Returning to list view. prevView:", view);
         if (view !== 'list') {
           setView('list');
           setCurrentSurvey(null);
@@ -1079,7 +1083,8 @@ function App() {
     if ('scrollRestoration' in window.history) {
       window.history.scrollRestoration = 'manual';
     }
-    const handlePopState = () => {
+    const handlePopState = (e) => {
+      console.log("↩️ popstate event fired! State:", e.state);
       loadFromUrl();
       setTimeout(() => window.scrollTo(0, 0), 10);
     };
