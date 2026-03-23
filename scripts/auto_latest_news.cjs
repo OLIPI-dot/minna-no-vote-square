@@ -308,15 +308,16 @@ async function startAutoPosting() {
         }
     }
 
-    // 🛡️ SEO強化: 重複チェック (過去100件まで拡大 & 正規化マッチング)
+    // 🛡️ SEO強化: 重複チェック (過去1000件まで拡大 & 正規化マッチング)
     const { data: recentSurveys } = await supabase
         .from('surveys')
         .select('title')
         .order('created_at', { ascending: false })
-        .limit(100);
+        .limit(1000);
 
-    const normalize = (t) => (t || '').replace(/[\s\t\n\r、。！？！？！？!?,.．．…—―-]/g, '').toLowerCase();
+    const normalize = (t) => (t || '').replace(/[\s\t\n\r、。！？「」『』“”"‘’!?,.．．…—―-]/g, '').toLowerCase();
     const recentNormTitles = new Set(recentSurveys?.map(s => normalize(s.title)) || []);
+    const recentFullTitles = new Set(recentSurveys?.map(s => (s.title || '').trim()) || []);
 
     let count = 0;
     const categoryCounts = {};
