@@ -896,13 +896,6 @@ function App() {
     // ガード1: 詳細画面なのに対象アンケートがまだ読み込まれていない場合はスキップ
     if (view === 'details' && !currentSurvey) return;
 
-    // 🔄 URL統一魔法: ?s=ID で来たら /s/ID にリダイレクトするらび！
-    const params = new URLSearchParams(window.location.search);
-    const sId = params.get('s');
-    if (sId) {
-      window.history.replaceState(null, '', `/s/${sId}`);
-    }
-
     window.scrollTo(0, 0);
 
     // 🔍 SEOメタタグとタイトルの更新
