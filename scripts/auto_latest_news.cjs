@@ -344,6 +344,12 @@ async function startAutoPosting() {
                 imageUrl = 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=1000';
             }
 
+            // 🛡️ おりぴさんの指示: 動画（または代替画像）がない場合は投稿を作成しないらび！
+            if (!imageUrl) {
+                log(`[Skip] 動画または画像が見つからないためスキップらび: ${news.title}`);
+                continue;
+            }
+
             if (IS_DRY_RUN) {
                 log(`[DRY RUN] 投稿: ${news.title} [${news.category}] Tags:[${news.tags.join(', ')}]`);
                 count++;

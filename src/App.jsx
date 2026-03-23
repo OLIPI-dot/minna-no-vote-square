@@ -63,7 +63,7 @@ const CATEGORY_ICON_STYLE = {
   "話題": { icon: "✨", color: "#8b5cf6" },
   "エンタメ": { icon: "🎭", color: "#ec4899" },
   "レビュー": { icon: "⭐", color: "#f59e0b" },
-  "コラム": { icon: "🖋️", color: "#6b7280" },
+  "コラム": { icon: "🖊️", color: "#3b82f6" },
   "ネタ": { icon: "😂", color: "#f97316" },
   "らび": { icon: "🐰", color: "#f472b6" },
   "その他": { icon: "🏷️", color: "#94a3b8" },
@@ -1155,8 +1155,25 @@ function App() {
           }
 
           const sId = String(s.id);
+
+          // 🏆 判定の正規化 (DB側の誤爆データをフロントで救済するらび！)
+          let effectiveCategory = s.category || 'その他';
+          const titleSafe = s.title || '';
+          const tagsSafe = s.tags || [];
+
+          if (titleSafe.includes('【コラム】') || tagsSafe.includes('コラム')) {
+            effectiveCategory = 'コラム';
+          } else if (titleSafe.includes('【レビュー】') || tagsSafe.includes('レビュー')) {
+            effectiveCategory = 'レビュー';
+          } else if (titleSafe.includes('【ネタ】') || tagsSafe.includes('ネタ')) {
+            effectiveCategory = 'ネタ';
+          } else if (titleSafe.includes('【話題】') || tagsSafe.includes('話題')) {
+            effectiveCategory = '話題';
+          }
+
           return {
             ...s,
+            category: effectiveCategory, // 以降の全コンポーネントでこの正規化後のカテゴリを使うらび
             is_official: isOfficialPattern,
             total_votes: voteMap[sId] ?? s.total_votes ?? 0,
             likes_count: s.likes_count ?? 0,

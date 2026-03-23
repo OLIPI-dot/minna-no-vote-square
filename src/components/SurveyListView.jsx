@@ -39,6 +39,7 @@ const SurveyListView = ({
   recommendedSurveys,
 }) => {
   const ITEMS_PER_PAGE = 15;
+  const listRef = React.useRef(null);
 
   // ⚡ useMemoによりソート・フィルタの計算結果をキャッシュ化。filter/sortはレンダーのたびに実行されず、必要な時だけ実行される。
   const trendingHeadlineSurveys = React.useMemo(() => {
@@ -323,7 +324,7 @@ const SurveyListView = ({
       )}
 
       {/* 📋 アンケートリスト */}
-      <div className="survey-list">
+      <div className="survey-list" ref={listRef}>
         {isLoading ? (
           <div className="empty-msg">読み込み中...🐰🥕</div>
         ) : (() => {
@@ -406,11 +407,29 @@ const SurveyListView = ({
                           </div>
                         </div>
                       ) : (
-                        <div className="category-icon-thumb" style={{
-                          background: catStyle.color, border: `2px solid ${catStyle.color}44`,
-                          display: 'flex', alignItems: 'center', justifyContent: 'center'
+                        <div className="category-badge-placeholder" style={{
+                          flex: '0 0 auto',
+                          marginRight: '16px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          minWidth: '100px'
                         }}>
-                          <div style={{ fontSize: '2.8rem' }}>{catStyle.icon}</div>
+                          <div className="thumb-category-badge" style={{
+                            color: catStyle.color,
+                            border: `1.5px solid ${catStyle.color}88`,
+                            background: 'rgba(255, 255, 255, 0.95)',
+                            padding: '6px 14px',
+                            fontSize: '0.9rem',
+                            borderRadius: '20px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            boxShadow: `0 4px 12px ${catStyle.color}15`
+                          }}>
+                            <span style={{ fontSize: '1.2em' }}>{catStyle.icon}</span>
+                            <span>{s.category || 'その他'}</span>
+                          </div>
                         </div>
                       )}
 
@@ -521,7 +540,14 @@ const SurveyListView = ({
                 return true;
               }).length / ITEMS_PER_PAGE
           )}
-          onPageChange={p => { setCurrentPage(p); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+          onPageChange={p => { 
+            setCurrentPage(p); 
+            if (listRef.current) {
+              const yOffset = -120; // ヘッダーやフィルターバーの分を考慮して調整
+              const y = listRef.current.getBoundingClientRect().top + window.pageYOffset + yOffset;
+              window.scrollTo({ top: y, behavior: 'smooth' });
+            }
+          }}
         />
       </div>
     </>
