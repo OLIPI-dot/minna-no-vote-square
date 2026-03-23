@@ -1444,6 +1444,7 @@ function App() {
       survey_id_arg: currentSurvey.id,
       option_id_arg: option.id
     }).then(({ data: serverTotal, error: voteError }) => {
+      isVotingProcessingRef.current = false; // ✅ 終わったらガードを解くらび！
       if (voteError) {
         console.error("❌ Vote update error:", voteError);
       } else if (serverTotal !== undefined) {
