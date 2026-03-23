@@ -1033,9 +1033,17 @@ function App() {
         surveyId = window.location.pathname.split('/')[2];
       }
 
+      // 🛡️ 無限ループ防止ガード: すでに読み込み済みなら何もしないらび！
+      if (currentSurvey && String(currentSurvey.id) === String(surveyId)) {
+        if (view !== 'details') setView('details');
+        return;
+      }
+
       if (!surveyId || surveyId === 'null' || surveyId === 'undefined') {
-        setView('list');
-        setCurrentSurvey(null);
+        if (view !== 'list') {
+          setView('list');
+          setCurrentSurvey(null);
+        }
         if (categoryFilter) setFilterCategory(categoryFilter);
         if (tagFilter) setFilterTag(tagFilter);
         return;
