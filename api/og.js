@@ -35,7 +35,7 @@ export default async function handler(req, res) {
 
     const title = `📊「${survey.title}」| みんなのアンケート広場`;
     const description = survey.description || '匿名で気軽に投票・本音が集まるアンケートコミュニティ。あなたの意見を教えてください！';
-    const siteUrl = `https://minna-no-vote-square.vercel.app/?s=${s}`;
+    const siteUrl = `https://minna-no-vote-square.vercel.app/s/${s}`;
 
     // 🤖 ロボット専用の軽量メタページを生成
     const html = `<!DOCTYPE html>
@@ -65,7 +65,7 @@ export default async function handler(req, res) {
   <script>
     // magic=1 の時はデバッグのためにリダイレクトしない
     if (!window.location.search.includes('magic=1')) {
-      window.location.href = "/?s=${s}";
+      window.location.href = `/s/${s}`;
     } else {
       console.log("Debug mode: Redirection skipped.");
     }
