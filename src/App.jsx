@@ -1097,20 +1097,22 @@ function App() {
       const now = Date.now();
       if (now - lastView > VIEW_COOLDOWN_MS) {
         localStorage.setItem(viewKey, now.toString());
-        // 🚀 SQL関数 (increment_survey_view) が Security Definer ＆ 最新の数を返すように強化されたらび！
-        const { data: serverCount, error: rpcError } = await supabase.rpc('increment_survey_view', { survey_id_arg: survey.id });
-        if (rpcError) {
-          console.error("❌ View increment error:", rpcError);
-        } else {
-          console.log("✅ View increment success (New Count):", serverCount);
-          // 🏆 サーバーから返ってきた最新数値を即座に反映！
-          if (serverCount !== undefined) {
-             const mapper = s => String(s.id) === String(survey.id) ? { ...s, view_count: serverCount } : s;
-             setSurveys(prev => prev.map(mapper));
-             setPopularSurveys(prev => prev.map(mapper));
-             setCurrentSurvey(prev => prev && String(prev.id) === String(survey.id) ? { ...prev, view_count: serverCount } : prev);
+        // 🚀 非同期で実行して、ナビゲーションをブロックしないらび！
+        (async () => {
+          const { data: serverCount, error: rpcError } = await supabase.rpc('increment_survey_view', { survey_id_arg: survey.id });
+          if (rpcError) {
+            console.error("❌ View increment error:", rpcError);
+          } else {
+            console.log("✅ View increment success (New Count):", serverCount);
+            // 🏆 サーバーから返ってきた最新数値を即座に反映！
+            if (serverCount !== undefined) {
+               const mapper = s => String(s.id) === String(survey.id) ? { ...s, view_count: serverCount } : s;
+               setSurveys(prev => prev.map(mapper));
+               setPopularSurveys(prev => prev.map(mapper));
+               setCurrentSurvey(prev => prev && String(prev.id) === String(survey.id) ? { ...prev, view_count: serverCount } : prev);
+            }
           }
-        }
+        })();
       }
     } else if (nextView === 'list') {
       // 🏘️ 広場に戻る時はURLをルート（/）にリセットするらび！
