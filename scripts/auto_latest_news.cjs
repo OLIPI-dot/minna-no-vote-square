@@ -89,7 +89,7 @@ function classifyNews(title, description) {
 
     // 0. YouTuber (特定のサイト or キーワード)
     const isYouTuberSite = /logtube\.jp|realsound\.jp\/tech/.test(description || '');
-    if (isYouTuberSite || /(youtuber|youtube|ユーチューバー|配信者|実況者|ヒカキン|hikakin|はじめしゃちょー|ヒカル|フィッシャーズ|東海オンエア|スカイピース|コムドット|平成フラミンゴ|キヨ|レトルト|ぽきん|ポッキー|兄者弟者|壱百満天原サロメ|にじさんじ|ホロライブ|vtuber|ブレイキングダウン|朝倉未来)/i.test(textLower)) {
+    if (isYouTuberSite || /(youtuber|youtube|ユーチューバー|配信者|実況者|ヒカキン|hikakin|はじめしゃちょー|ヒカル|フィッシャーズ|東海オンエア|スカイピース|コムドット|平成フラミンゴ|キヨ|レトルト|ぽきん|ポッキー|兄者弟者|壱百満天原サロメ|にじさんじ|ホロライブ|vtuber|ブレイキングダウン|朝倉未来|ばんばんざい|中町綾|とうあ|しなこ|むくえな|すとぷり|騎士a|ちょんまげ小僧|バンカラジオ|フォーエイト|48|いれいす|あざみ|あまぷた|アンプタック)/i.test(textLower)) {
         scores['YouTuber'] += 100;
     }
 
