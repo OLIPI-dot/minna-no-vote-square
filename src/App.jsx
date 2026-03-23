@@ -1076,6 +1076,9 @@ function App() {
 
   // ブラウザの戻る・進むボタンに対応するセンサー センサーを追加！
   useEffect(() => {
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
     const handlePopState = () => {
       loadFromUrl();
       setTimeout(() => window.scrollTo(0, 0), 10);
