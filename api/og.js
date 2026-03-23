@@ -65,7 +65,7 @@ export default async function handler(req, res) {
   <script>
     // magic=1 の時はデバッグのためにリダイレクトしない
     if (!window.location.search.includes('magic=1')) {
-      window.location.href = `/s/${s}`;
+      window.location.href = "/s/${s}";
     } else {
       console.log("Debug mode: Redirection skipped.");
     }
