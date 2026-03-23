@@ -258,20 +258,32 @@ async function startAutoPosting() {
         }
     }
 
-    // 重複チェック
-    const { data: recentSurveys } = await supabase.from('surveys').select('title').order('created_at', { ascending: false }).limit(20);
-    const recentTitles = new Set(recentSurveys?.map(s => s.title) || []);
+    // 🛡️ SEO強化: 重複チェック (過去100件まで拡大 & 正規化マッチング)
+    const { data: recentSurveys } = await supabase
+        .from('surveys')
+        .select('title')
+        .order('created_at', { ascending: false })
+        .limit(100);
+
+    const normalize = (t) => (t || '').replace(/[\s\t\n\r、。！？！？！？!?,.．．…—―-]/g, '').toLowerCase();
+    const recentNormTitles = new Set(recentSurveys?.map(s => normalize(s.title)) || []);
 
     let count = 0;
     const categoryCounts = {};
 
     for (const news of allNews) {
-        if (count >= 10) break;
-        if (recentTitles.has(news.title)) continue;
+        if (count >= 8) break; // 💡 投稿数を少し絞って質を上げるらび
+        
+        // 重複チェック
+        if (recentNormTitles.has(normalize(news.title))) continue;
+
+        // 📝 内容が薄すぎるものはスキップ (SEO対策)
+        if (!news.description || news.description.length < 50) continue;
 
         try {
             const cat = news.category;
-            if (categoryCounts[cat] >= (cat === 'ニュース' ? 3 : 1)) continue;
+            // 💡 1回の実行で各カテゴリの数を制限
+            if (categoryCounts[cat] >= (cat === 'ニュース' ? 2 : 1)) continue;
 
             // YouTube検索
             let video = await searchYouTubeVideo(news.title);
