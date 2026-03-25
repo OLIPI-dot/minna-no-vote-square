@@ -2232,8 +2232,6 @@ function App() {
                 likedSurveys={likedSurveys}
                 user={user}
                 isAdmin={isAdmin}
-                isEditingCategory={isEditingCategory}
-                setIsEditingCategory={setIsEditingCategory}
                 isEditingTags={isEditingTags}
                 setIsEditingTags={setIsEditingTags}
                 tagEditValue={tagEditValue}
