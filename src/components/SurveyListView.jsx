@@ -41,6 +41,8 @@ const SurveyListView = ({
   debouncedSearchQuery,
   searchStats = { categories: {}, official: 0, user: 0 },
   supabase,
+  baseCategories = [],
+  filterCategories = [],
 }) => {
   const ITEMS_PER_PAGE = 15;
   const listRef = React.useRef(null);
@@ -165,7 +167,7 @@ const SurveyListView = ({
         marginBottom: '20px', WebkitOverflowScrolling: 'touch',
         scrollSnapType: 'x proximity', borderBottom: '1px solid #f1f5f9'
       }}>
-        {['すべて', 'ニュース', 'YouTuber', '話題', 'エンタメ', 'レビュー', 'コラム', 'ネタ', 'らび', 'その他'].map(cat => (
+        {filterCategories.map(cat => (
           <button
             key={cat}
             style={{

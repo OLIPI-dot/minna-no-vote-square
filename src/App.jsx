@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-// Deploy Kick: 2026-03-25 13:07 🚀🐰
+// Deploy Kick: 2026-03-26 18:45 🚀🐰 (Category Fix Forced)
 import { createClient } from '@supabase/supabase-js';
 import emailjs from '@emailjs/browser';
 import FooterModals from './components/FooterModals';
@@ -62,15 +62,21 @@ const CATEGORY_ICON_STYLE = {
   "ニュース": { icon: "⚡", color: "#0ea5e9" },
   "話題": { icon: "✨", color: "#8b5cf6" },
   "エンタメ": { icon: "🎭", color: "#ec4899" },
+  "芸能": { icon: "🌟", color: "#a855f7" }, // 🎤 から調整
   "レビュー": { icon: "⭐", color: "#f59e0b" },
   "コラム": { icon: "🖊️", color: "#3b82f6" },
   "ネタ": { icon: "😂", color: "#f97316" },
   "YouTuber": { icon: "📺", color: "#ef4444" },
-  "芸能": { icon: "✨", color: "#8b5cf6" },
   "らび": { icon: "🐰", color: "#f472b6" },
   "その他": { icon: "🏷️", color: "#94a3b8" },
   "マイアンケート": { icon: "👤", color: "#94a3b8" }
 };
+
+// 🌏 アプリ全体で使う基本カテゴリリスト！一箇所で管理するらび！🥕
+const BASE_CATEGORIES = ['ニュース', '芸能', 'YouTuber', '話題', 'エンタメ', 'レビュー', 'コラム', 'ネタ', 'らび', 'その他'];
+const FILTER_CATEGORIES = ['すべて', ...BASE_CATEGORIES];
+
+// 🚀 Last Deploy: 2026-03-26 18:48:00 (Force Refresh for Category Logic)
 
 const formatWithDay = (dateStr) => {
   if (!dateStr) return '';
@@ -1247,7 +1253,8 @@ function App() {
           }
 
           // 💡 カテゴリの正規化（存在しない古いカテゴリを適切に読み替えるらび！）
-          const effectiveCategory = (s.category === 'YouTuber' || s.category === '話題' || s.category === 'エンタメ' || s.category === 'レビュー' || s.category === 'コラム' || s.category === 'ネタ' || s.category === 'ニュース' || s.category === '芸能' || s.category === 'らび')
+          const isStandardCategory = BASE_CATEGORIES.includes(s.category);
+          const effectiveCategory = isStandardCategory
                                    ? s.category 
                                    : ((s.title || '').includes('【コラム】') ? 'コラム' : 
                                       (s.title || '').includes('【レビュー】') ? 'レビュー' :
@@ -2157,6 +2164,8 @@ function App() {
                 supabase={supabase}
                 recommendedSurveys={recommendedSurveys}
                 searchStats={searchStats}
+                baseCategories={BASE_CATEGORIES}
+                filterCategories={FILTER_CATEGORIES}
               />
             )}
 
@@ -2185,7 +2194,7 @@ function App() {
                   <div className="setting-item-block">
                     <label>カテゴリ:</label>
                     <div className="category-selector">
-                      {(isAdmin ? ['ニュース', 'YouTuber', '話題', 'エンタメ', 'レビュー', 'コラム', 'ネタ', 'らび', 'その他'] : ['ニュース', 'YouTuber', '話題', 'エンタメ', 'レビュー', 'コラム', 'ネタ', 'その他']).map(cat => (
+                      {BASE_CATEGORIES.filter(cat => isAdmin || cat !== 'らび').map(cat => (
                         <button key={cat} className={`cat-btn ${surveyCategory === cat ? 'active' : ''}`} onClick={() => setSurveyCategory(cat)}>{cat}</button>
                       ))}
                     </div>
@@ -2302,6 +2311,7 @@ function App() {
                 supabase={supabase}
                 setSurveys={setSurveys}
                 relatedSurveys={relatedSurveys}
+                baseCategories={BASE_CATEGORIES}
               />
             )}
           </div>

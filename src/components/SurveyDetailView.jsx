@@ -133,7 +133,8 @@ const SurveyDetailView = ({
   supabase,
   setFilterTag,
   setActiveTab,
-  setSurveys
+  setSurveys,
+  baseCategories = []
 }) => {
   if (!currentSurvey) return <div className="empty-msg">読み込み中...</div>;
 
@@ -305,7 +306,7 @@ const SurveyDetailView = ({
             {isEditingCategory && (
               <div className="edit-panel" style={{ width: '100%', marginTop: '15px', padding: '15px', background: '#fff', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center' }}>
-                  {(isAdmin ? ['ニュース', 'YouTuber', '話題', 'エンタメ', 'レビュー', 'コラム', 'ネタ', 'らび', 'その他'] : ['ニュース', 'YouTuber', '話題', 'エンタメ', 'レビュー', 'コラム', 'ネタ', 'その他']).map(cat => (
+                  {baseCategories.filter(cat => isAdmin || cat !== 'らび').map(cat => (
                     <button key={cat} onClick={() => handleUpdateCategory(cat)} className={`cat-btn ${currentSurvey.category === cat ? 'active' : ''}`}>{cat}</button>
                   ))}
                 </div>

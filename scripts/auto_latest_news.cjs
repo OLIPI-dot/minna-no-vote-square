@@ -339,13 +339,6 @@ async function startAutoPosting() {
 
                 if (!title || !link) continue;
 
-                // 📝 説明文が短すぎる（切り詰められている可能性が高い）場合はOGPから取得を試みるらび！
-                if (!description || description.length < 200) {
-                    const ogpDesc = await fetchOgpDescription(link);
-                    if (ogpDesc && ogpDesc.length > (description || '').length) {
-                        description = ogpDesc;
-                    }
-                }
 
                 const cat = classifyNews(title, description);
                 const tags = generateTags(title, description);
@@ -428,8 +421,20 @@ async function startAutoPosting() {
             continue;
         }
 
-        // 📝 内容が薄すぎるものはスキップ (SEO対策)
-        if (!news.description || news.description.length < 50) continue;
+        // 📝 内容が薄すぎる場合は、ここで初めてOGPから最新の情報を取得するらび！（メモリ節約の「遅延取得」魔法！🥕✨）
+        let effectiveDescription = news.description;
+        if (!effectiveDescription || effectiveDescription.length < 200) {
+            log(`[Lazy OGP] 内容が薄いため再取得を試みます: ${news.title}`);
+            const ogpData = await fetchOgpDescription(news.link);
+            if (ogpData && ogpData.description && ogpData.description.length > (effectiveDescription || '').length) {
+                effectiveDescription = ogpData.description;
+            }
+        }
+
+        if (!effectiveDescription || effectiveDescription.length < 50) {
+            log(`[Skip] 内容が不十分です: ${news.title}`);
+            continue;
+        }
 
         try {
             const cat = news.category;
@@ -472,7 +477,7 @@ async function startAutoPosting() {
                 return lastPunct > limit * 0.5 ? sub.slice(0, lastPunct + 1) : sub;
             };
 
-            const truncatedDescription = smartTruncate(news.description || '', 600);
+            const truncatedDescription = smartTruncate(effectiveDescription || '', 600);
 
             // 📝 説明文の末尾に「[続きを読む](URL)」を挿入するらび！ (UI側で装飾されるよ)
             const finalDescription = truncatedDescription + `\n\n[続きを読む](${news.link})`;
