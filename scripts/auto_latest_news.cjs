@@ -85,6 +85,7 @@ function classifyNews(title, description) {
         'コラム': 0,
         'ネタ': 0,
         'YouTuber': 0,
+        '芸能': 0,
         'らび': 0
     };
 
@@ -105,10 +106,10 @@ function classifyNews(title, description) {
         }
     } else if (/(ヒカキン|hikakin|はじめしゃちょー|ヒカル|フィッシャーズ|東海オンエア|スカイピース|コムドット|平成フラミンゴ|キヨ|レトルト|ぽきん|ポッキー|兄者弟者|壱百満天原サロメ|にじさんじ|ホロライブ|vtuber|ブレイキングダウン|朝倉未来|ばんばんざい|中町綾|とうあ|しなこ|むくえな|すとぷり|騎士a|ちょんまげ小僧|バンカラジオ|フォーエイト|48|いれいす|あざみ|あまぷた|アンプタック|キヨ|レトルト|牛沢|ガッチマン|加藤純一|うんこちゃん|もこう|shaka|関優太|stylishnoob|kuzuha|葛葉|叶|ぺこら|マリン|サロメ|三枝明那|ローレン|不破湊|湊あくあ|キズナアイ|桐崎栄二|ウチら3姉妹|水溜りボンド|pds|めぐみ|瀬戸弘司|カズチャンネル|よりひと|コレコレ|ポケカメン|まぜ太|あっと|てるとくん|ばぁう|そうま|しゆん)/i.test(textLower)) {
         // 🛡️ 芸能人・有名人フィルタ: YouTuberとしても有名だが、俳優・アイドル等の側面が強い人はエンタメを優先
-        if (/(前田敦子|指原莉乃|中川翔子|本田翼|広瀬アリス|橋本環奈|川口春奈|江頭)/.test(textLower)) {
-            scores['エンタメ'] += 80;
-            scores['話題'] += 40;
-            scores['YouTuber'] += 30; // 💡 完全に0にはしないが、順位を下げるらび！
+        if (/(前田敦子|指原莉乃|中川翔子|本田翼|広瀬アリス|橋本環奈|川口春奈|江頭|柏木由紀|入山杏奈|アイナ|aina|bish|ビッシュ)/i.test(textLower)) {
+            scores['芸能'] += 150; // 💡 芸能カテゴリを絶対優先にするらび！
+            scores['エンタメ'] += 40;
+            scores['YouTuber'] = 0; // 🛑 ここにマッチした場合はYouTuber得点をゼロにする強気ガードらび！
         } else {
             scores['YouTuber'] += 100; // 専業YouTuberなら自信を持って！
         }
@@ -124,9 +125,10 @@ function classifyNews(title, description) {
         scores['ニュース'] += 60;
     }
 
-    // 2. エンタメ (芸能, 映画, 音楽, アニメ, ドラマ)
-    if (/(芸能|映画|音楽|アニメ|ドラマ|出演|放送|主演|監督|ライブ|アイドル|舞台|声優|紅白|結婚|離婚|熱愛|ジャニーズ|akb|坂道|卒業)/.test(textLower)) {
-        scores['エンタメ'] += 60; // 💡 芸能系は強めに盛り上げるらび！
+    // 2. 芸能・エンタメ (映画, 音楽, アニメ, ドラマ)
+    if (/(芸能|タレント|俳優|女優|歌手|アーティスト|アイドル|結成|解散|出演|放送|主演|監督|ライブ|舞台|声優|紅白|結婚|離婚|熱愛|ジャニーズ|akb|坂道|卒業)/.test(textLower)) {
+        scores['芸能'] += 70;
+        scores['エンタメ'] += 50;
     }
 
     // 3. 話題・ニュース・衝撃 (号泣, ショット, 反響, sns, 衝撃)
@@ -167,9 +169,9 @@ function classifyNews(title, description) {
     }
 
     // 🛡️ 最終防御: 芸能ニュースでかつ「話題」や「エンタメ」に振り分けたいケース
-    if (finalCategory === 'ニュース' && /(芸能|アイドル|女優|俳優|歌手)/.test(textLower)) {
+    if ((finalCategory === 'ニュース' || finalCategory === 'YouTuber') && /(芸能|アイドル|女優|俳優|歌手|タレント)/.test(textLower)) {
         if (/(話題|反響|ショット|私服|家族|愛猫)/.test(textLower)) finalCategory = '話題';
-        else finalCategory = 'エンタメ';
+        else finalCategory = '芸能';
     }
 
     return finalCategory;
@@ -217,7 +219,9 @@ function generateTags(title, content) {
         { name: '東海オンエア', keywords: ['東海オンエア', 'てつや', 'しばゆー', 'りょう', 'としみつ', 'ゆめまる', '虫眼鏡'] },
         { name: 'フィッシャーズ', keywords: ['フィッシャーズ', 'fischers', 'シルク'] },
         { name: 'コムドット', keywords: ['コムドット', 'やまと'] },
-        { name: 'にじさんじ', keywords: ['にじさんじ', 'nijisanji', '葛葉', '叶', 'サロメ'] },
+        { name: 'にじさんじ', keywords: ['にじさんじ', 'nijisanji', '葛葉', 'サロメ'] },
+        // 💡 '叶' は単体だと「叶わない」などに反応しすぎるので、カタカナの「カナエ」や文脈で判断するらび！
+        { name: '叶', keywords: ['vtuber 叶', 'にじさんじ 叶', 'かなえさん'] },
         { name: 'ホロライブ', keywords: ['ホロライブ', 'hololive', 'ぺこら', 'マリン', 'フブキ'] },
         { name: 'VTuber', keywords: ['vtuber', 'ブイチューバー', 'バーチャルyoutuber'] },
         { name: 'Apple', keywords: ['apple', 'iphone', 'ipad', 'macbook', 'mac mini', 'mac studio', 'imac', 'apple watch', 'iwatch', 'ios', 'macos'] },
@@ -233,6 +237,7 @@ function generateTags(title, content) {
         { name: 'Amazon', keywords: ['amazon', 'kindle', 'prime', 'aws'] },
         { name: 'イーロン・マスク', keywords: ['マスク', 'musk', 'tesla', 'spacex', 'x.com'] },
         { name: '浪川大輔', keywords: ['浪川大輔', '浪川'] },
+        { name: '芸能', keywords: ['芸能', 'タレント', '俳優', '女優', 'アイドル'] },
         { name: 'FAX', keywords: ['fax', 'ファックス'] },
         { name: 'イヤホン', keywords: ['イヤホン', 'ヘッドホン', 'オーディオ'] }
     ];

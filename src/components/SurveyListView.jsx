@@ -188,9 +188,8 @@ const SurveyListView = ({
               setFilterCategory(cat);
               setFilterTag('');
               setView('list');
-              const url = new URL(window.location);
+              const url = new URL('/', window.location.origin);
               if (cat && cat !== 'すべて') url.searchParams.set('c', cat);
-              else url.searchParams.delete('c');
               url.searchParams.delete('t');
               url.searchParams.delete('s');
               window.history.pushState({}, '', url);
@@ -267,9 +266,9 @@ const SurveyListView = ({
             onClick={() => {
               const nextTag = filterTag === tag ? '' : tag;
               setFilterTag(nextTag);
-              const url = new URL(window.location);
+              const url = new URL('/', window.location.origin);
               if (nextTag) url.searchParams.set('t', nextTag);
-              else url.searchParams.delete('t');
+              url.searchParams.delete('c');
               url.searchParams.delete('s');
               window.history.pushState({}, '', url);
             }}

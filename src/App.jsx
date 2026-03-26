@@ -66,6 +66,7 @@ const CATEGORY_ICON_STYLE = {
   "コラム": { icon: "🖊️", color: "#3b82f6" },
   "ネタ": { icon: "😂", color: "#f97316" },
   "YouTuber": { icon: "📺", color: "#ef4444" },
+  "芸能": { icon: "✨", color: "#8b5cf6" },
   "らび": { icon: "🐰", color: "#f472b6" },
   "その他": { icon: "🏷️", color: "#94a3b8" },
   "マイアンケート": { icon: "👤", color: "#94a3b8" }
@@ -1086,7 +1087,16 @@ function App() {
       setIsTimeUp(sv.deadline && new Date(sv.deadline) < new Date());
       setOptions([]);
       setVotedOption(null);
-      window.history.replaceState({ view: 'details', surveyId: sv.id }, '', window.location.href);
+      
+      // 🔗 URLを /s/ID 形式に統一するらび！
+      const normalizedPath = `/s/${sv.id}`;
+      if (window.location.pathname !== normalizedPath || window.location.search.includes('s=')) {
+        console.log("🔗 loadFromUrl: Normalizing URL to", normalizedPath);
+        window.history.replaceState({ view: 'details', surveyId: sv.id }, '', normalizedPath);
+      } else {
+        window.history.replaceState({ view: 'details', surveyId: sv.id }, '', window.location.href);
+      }
+
       setView('details');
       const { data: preOpts } = await supabase.from('options').select('*').eq('survey_id', sv.id).order('id', { ascending: true });
       if (preOpts) setOptions(preOpts);
@@ -1237,7 +1247,7 @@ function App() {
           }
 
           // 💡 カテゴリの正規化（存在しない古いカテゴリを適切に読み替えるらび！）
-          const effectiveCategory = (s.category === 'YouTuber' || s.category === '話題' || s.category === 'エンタメ' || s.category === 'レビュー' || s.category === 'コラム' || s.category === 'ネタ' || s.category === 'ニュース' || s.category === 'らび')
+          const effectiveCategory = (s.category === 'YouTuber' || s.category === '話題' || s.category === 'エンタメ' || s.category === 'レビュー' || s.category === 'コラム' || s.category === 'ネタ' || s.category === 'ニュース' || s.category === '芸能' || s.category === 'らび')
                                    ? s.category 
                                    : ((s.title || '').includes('【コラム】') ? 'コラム' : 
                                       (s.title || '').includes('【レビュー】') ? 'レビュー' :
@@ -2232,6 +2242,8 @@ function App() {
                 likedSurveys={likedSurveys}
                 user={user}
                 isAdmin={isAdmin}
+                isEditingCategory={isEditingCategory}
+                setIsEditingCategory={setIsEditingCategory}
                 isEditingTags={isEditingTags}
                 setIsEditingTags={setIsEditingTags}
                 tagEditValue={tagEditValue}
