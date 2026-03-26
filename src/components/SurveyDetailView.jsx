@@ -231,12 +231,29 @@ const SurveyDetailView = ({
         </div>
         {currentSurvey.tags && currentSurvey.tags.length > 0 && (
           <div className="detail-tags-row" style={{ marginTop: '25px', marginBottom: '15px', display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
-            {currentSurvey.tags.map((t, i) => (
-              <span key={i} className="tag-bubble clickable" onClick={() => { setFilterTag(t); setActiveTab('all'); navigateTo('list'); }} 
-                style={{ cursor: 'pointer', background: '#f1f5f9', color: '#475569', padding: '5px 15px', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 'bold', border: '1px solid #e2e8f0', transition: 'all 0.2s' }}>
-                #{t}
-              </span>
-            ))}
+            {currentSurvey.tags.map((t, i) => {
+              const isLocked = t.startsWith('[L]');
+              const tagName = isLocked ? t.substring(3) : t;
+              return (
+                <span key={i} className="tag-bubble clickable" onClick={() => { setFilterTag(tagName); setActiveTab('all'); navigateTo('list'); }} 
+                  style={{ 
+                    cursor: 'pointer', 
+                    background: isLocked ? '#fef2f2' : '#f1f5f9', 
+                    color: isLocked ? '#b91c1c' : '#475569', 
+                    padding: '5px 15px', 
+                    borderRadius: '20px', 
+                    fontSize: '0.85rem', 
+                    fontWeight: 'bold', 
+                    border: isLocked ? '1px solid #fecaca' : '1px solid #e2e8f0', 
+                    transition: 'all 0.2s',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '4px'
+                  }}>
+                  #{tagName}{isLocked && <span title="ロックされています (編集不可)" style={{ fontSize: '0.75rem' }}>🔒</span>}
+                </span>
+              );
+            })}
           </div>
         )}
         {currentSurvey.deadline && (
@@ -272,13 +289,17 @@ const SurveyDetailView = ({
       </div>
 
       {/* 🛡️ 管理パネル (チャッピー・アルゴリズム) */}
-      {(user && (currentSurvey.user_id === user.id || isAdmin)) && (
+      {user && (
          <div className="admin-actions">
-            <span style={{ fontWeight: 'bold', color: '#64748b' }}>🛠️ 管理者メニュー</span>
+            <span style={{ fontWeight: 'bold', color: '#64748b' }}>🏷️ タグ機能</span>
             <div className="admin-btn-group">
-              <button onClick={() => setIsEditingCategory(true)} className="admin-btn">🏷️ カテゴリ変更</button>
               <button onClick={() => setIsEditingTags(true)} className="admin-btn"># タグ編集</button>
-              <button onClick={() => handleDeleteSurvey(currentSurvey.id)} className="admin-btn delete">🗑️ 削除</button>
+              {(isAdmin || currentSurvey.user_id === user.id) && (
+                <>
+                  <button onClick={() => setIsEditingCategory(true)} className="admin-btn">🏷️ カテゴリ変更</button>
+                  <button onClick={() => handleDeleteSurvey(currentSurvey.id)} className="admin-btn delete">🗑️ 削除</button>
+                </>
+              )}
             </div>
             
             {isEditingCategory && (
@@ -294,13 +315,28 @@ const SurveyDetailView = ({
 
             {isEditingTags && (
               <div className="edit-panel" style={{ width: '100%', marginTop: '15px', padding: '15px', background: '#fff', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
-                <input type="text" value={tagEditValue} onChange={e => setTagEditValue(e.target.value)} placeholder="タグを入力 (カンマ区切り)" style={{ width: '100%', padding: '10px', borderRadius: '10px', border: '1px solid #cbd5e1', marginBottom: '10px' }} />
+                <div style={{ marginBottom: '10px', fontSize: '0.9rem', color: '#64748b', lineHeight: '1.4' }}>
+                  タグを入力してね（カンマ、スペース、改行区切り）<br/>
+                  {(isAdmin || currentSurvey.user_id === user.id) ? (
+                    <span style={{ color: '#ef4444', fontWeight: 'bold' }}>※ロックしたいタグには [L] を先頭につけてね（例: [L]ニュース）</span>
+                  ) : (
+                    <span>※🔒マークのタグは削除・変更できないよ</span>
+                  )}
+                </div>
+                <textarea 
+                  className="admin-textarea"
+                  value={tagEditValue} 
+                  onChange={e => setTagEditValue(e.target.value)} 
+                  placeholder="例: アニメ, ニュース, [L]公式" 
+                  style={{ width: '100%', minHeight: '100px', padding: '12px', borderRadius: '12px', border: '2px solid #e2e8f0', marginBottom: '10px', fontSize: '1rem', outline: 'none' }} 
+                />
                 <div style={{ display: 'flex', gap: '10px' }}>
-                  <button onClick={handleUpdateTags} style={{ flex: 1, padding: '10px', background: '#7c3aed', color: '#fff', borderRadius: '10px', border: 'none', fontWeight: 'bold' }}>保存</button>
                   <button onClick={() => setIsEditingTags(false)} style={{ flex: 1, padding: '10px', background: '#f1f5f9', color: '#475569', borderRadius: '10px', border: 'none' }}>中止</button>
+                  <button onClick={handleUpdateTags} style={{ flex: 2, padding: '10px', background: '#7c3aed', color: '#fff', borderRadius: '10px', border: 'none', fontWeight: 'bold' }}>タグを保存する</button>
                 </div>
               </div>
             )}
+
          </div>
       )}
 

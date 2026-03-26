@@ -1739,29 +1739,48 @@ function App() {
     fetchSurveys(user, true); // 🏎️ サイレントに最新化
   };
 
-  // 🏷️ タグを更新する（オーナーまたは管理者）
+  // 🏷️ タグを更新する（だれでも編集可能だが、ロックされたタグは保護する）
   const handleUpdateTags = async () => {
-    if (!currentSurvey || !user || (!isAdmin && currentSurvey.user_id !== user.id)) return;
-    manualUpdatesRef.current[String(currentSurvey.id)] = Date.now(); // 🛡️ ガード開始 (15秒)
+    if (!currentSurvey || !user) return;
+    manualUpdatesRef.current[String(currentSurvey.id)] = Date.now(); // 🛡️ ガード開始
     setIsActionLoading(true);
-    const newTags = tagEditValue.split(/[,、，\s]+/).map(t => t.trim()).filter(t => t !== "");
-    const { data, error } = await supabase.from('surveys').update({ tags: newTags }).eq('id', currentSurvey.id).select();
+
+    const inputTags = tagEditValue.split(/[,、，\s\n]+/).map(t => t.trim()).filter(t => t !== "");
+    let finalTags = [...inputTags];
+
+    // 🔒 ロック管理
+    if (!isAdmin && currentSurvey.user_id !== user.id) {
+      // 一般ユーザーの場合：
+      // 1. 既存のロックタグを強制的に維持する
+      const existingLocked = (currentSurvey.tags || []).filter(t => t.startsWith('[L]'));
+      existingLocked.forEach(lt => {
+        if (!finalTags.includes(lt)) {
+          finalTags.push(lt); // 消されてたら戻す
+        }
+      });
+      // 2. 新しく [L] をつけることは禁止（勝手にロックさせない）
+      finalTags = finalTags.map(t => t.startsWith('[L]') && !existingLocked.includes(t) ? t.replace(/^\[L\]/, '') : t);
+    }
+
+    const { data, error } = await supabase.from('surveys').update({ tags: finalTags }).eq('id', currentSurvey.id).select();
     setIsActionLoading(false);
+    
     if (error) {
       console.error("Update tags error:", error);
       return alert('😿 タグの更新に失敗しました。');
     }
     if (!data || data.length === 0) {
-      console.warn("Update tags failed: No data returned.", { userId: user.id, surveyId: currentSurvey.id });
       return alert('😿 タグ保存が反映されませんでした。');
     }
+
     const merged = { ...currentSurvey, ...data[0] };
     setCurrentSurvey(merged);
     setSurveys(prev => prev.map(s => String(s.id) === String(currentSurvey.id) ? { ...s, ...merged } : s));
     setIsEditingTags(false);
     alert('🏷️ タグを更新しましたらびっ！');
-    fetchSurveys(user, true); // 🏎️ サイレントに最新化
+    fetchSurveys(user, true);
   };
+
 
   // 📩 お問い合わせをDBに保存する
   const handleSubmitInquiry = async () => {
