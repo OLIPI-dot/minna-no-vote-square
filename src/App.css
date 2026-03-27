@@ -3483,3 +3483,35 @@ button:active, .clickable:active {
     opacity: 0;
   }
 }
+
+/* =========================================================
+   🐰 AdSense & Sponsor Box Optimizations (CLS zero)
+   ========================================================= */
+
+.adsense-container-wrapper {
+  margin: 24px 0;
+  text-align: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 📱 スマホ時 (自動で縦長になりやすいので高めに予約) */
+@media (max-width: 768px) {
+  .adsense-container-wrapper { min-height: 280px; }
+}
+
+/* 💻 PC時 (幅広バナーになることが多いので低めに予約) */
+@media (min-width: 769px) {
+  .adsense-container-wrapper { min-height: 120px; }
+}
+
+/* 広告が読み込まれたらプレースホルダー(応援ボタン)を隠す魔法✨ */
+.adsense-container-wrapper:has(ins[data-ad-status="unfilled"]) .ads-placeholder {
+  display: flex !important;
+}
+.adsense-container-wrapper:has(ins[data-ad-status="filled"]) .ads-placeholder {
+  display: none !important;
+}

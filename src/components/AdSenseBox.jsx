@@ -56,15 +56,15 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null }) => {
   }, []);
 
   return (
-    <div className="adsense-container-wrapper" style={{ margin: '24px 0', textAlign: 'center', position: 'relative' }}>
+    <div className="adsense-container-wrapper">
       <div className="ads-placeholder" style={{
         background: 'linear-gradient(135deg, #fff5f7 0%, #ffffff 100%)',
         border: '3px dashed #ec4899', borderRadius: '24px',
         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
         padding: '28px', color: '#64748b', fontSize: '0.9rem',
         boxShadow: '0 10px 40px rgba(236, 72, 153, 0.12)',
-        zIndex: 1,
-        minHeight: '220px', // 🚀 CLS対策：高さを確保しておくらび！
+        width: '100%',
+        height: '100%',
         transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
       }}>
         {affiliateType === 'ofuse' ? (
@@ -109,7 +109,7 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null }) => {
         )}
       </div>
       <ins className="adsbygoogle"
-        style={{ display: 'block', position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 0, pointerEvents: 'none' }}
+        style={{ display: 'block', width: '100%' }}
         data-ad-client="ca-pub-9429738476925701"
         data-ad-slot={slot}
         data-ad-format={format}
