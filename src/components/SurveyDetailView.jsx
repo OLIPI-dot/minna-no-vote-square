@@ -412,7 +412,7 @@ const SurveyDetailView = ({
                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem', color: '#94a3b8' }}>
                        <span>🗳️ {s.total_votes || 0} 票</span>
                        <div style={{ display: 'flex', gap: '4px' }}>
-                         {s.tags?.slice(0, 2).map((t, i) => (
+                         {s.tags?.filter(t => !t.startsWith('_STAMP:')).slice(0, 2).map((t, i) => (
                            <span key={i} style={{ background: '#f8fafc', padding: '1px 6px', borderRadius: '6px', fontSize: '0.7rem' }}>#{t}</span>
                          ))}
                        </div>
@@ -477,17 +477,18 @@ const SurveyDetailView = ({
          </div>
       )}
 
-      {/* 🎨 スタンプペタペタエリアらび！ */}
-      <div className="stamp-peta-peta-area" style={{ 
-        marginTop: '30px', 
-        textAlign: 'center', 
-        background: 'rgba(248, 250, 252, 0.5)', 
-        padding: '20px', 
-        borderRadius: '24px', 
-        border: '1px solid #f1f5f9',
-        position: 'relative', // 🚩 エフェクトの基準にするらび！
-        overflow: 'visible'
-      }}>
+      {/* 🎨 スタンプペタペタエリアらび！ (機能保留のため非表示) */}
+      {false && (
+        <div className="stamp-peta-peta-area" style={{ 
+          marginTop: '30px', 
+          textAlign: 'center', 
+          background: 'rgba(248, 250, 252, 0.5)', 
+          padding: '20px', 
+          borderRadius: '24px', 
+          border: '1px solid #f1f5f9',
+          position: 'relative', // 🚩 エフェクトの基準にするらび！
+          overflow: 'visible'
+        }}>
         {/* 🪄 浮き出るエフェクトたち */}
         {effects.map(eff => (
           <div key={eff.id} className="floating-stamp-effect" style={{
@@ -516,6 +517,7 @@ const SurveyDetailView = ({
               onClick={() => handleSurveyReaction(stamp.id)}
               className="stamp-btn"
               title={stamp.label}
+              aria-label={stamp.label}
               style={{
                 background: '#fff',
                 border: '2px solid #f1f5f9',
@@ -546,7 +548,8 @@ const SurveyDetailView = ({
             </button>
           ))}
         </div>
-      </div>
+        </div>
+      )}
 
       <div className="share-result-area" style={{ marginTop: '40px', display: 'flex', justifyContent: 'center', gap: '12px' }}>
         <button className={`like-survey-btn ${likedSurveys.some(id => String(id) === String(currentSurvey.id)) ? 'liked' : ''}`} onClick={handleLikeSurvey} style={{ background: likedSurveys.some(id => String(id) === String(currentSurvey.id)) ? '#ec4899' : '#fbcfe8', color: likedSurveys.some(id => String(id) === String(currentSurvey.id)) ? 'white' : '#be185d', padding: '12px 28px', borderRadius: '30px', fontWeight: 'bold', border: 'none' }}>
@@ -614,7 +617,7 @@ const SurveyDetailView = ({
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem', color: '#94a3b8' }}>
                       <span>🗳️ {s.total_votes || 0} 票</span>
                       <div style={{ display: 'flex', gap: '4px' }}>
-                        {s.tags?.slice(0, 2).map((t, i) => (
+                        {s.tags?.filter(t => !t.startsWith('_STAMP:')).slice(0, 2).map((t, i) => (
                           <span key={i} onClick={(e) => { e.stopPropagation(); setFilterTag(t); setActiveTab('all'); navigateTo('list'); }}
                             style={{ background: '#f8fafc', padding: '1px 6px', borderRadius: '6px', fontSize: '0.7rem', cursor: 'pointer' }}>#{t}</span>
                         ))}
@@ -636,6 +639,63 @@ const SurveyDetailView = ({
             }
             .related-scroll-container::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
           `}</style>
+        </div>
+      )}
+
+      {/* 🚀 前後のアンケートへのナビゲーション（カード形式） */}
+      {(adjacentSurveys.prev || adjacentSurveys.next) && (
+        <div className="adjacent-nav-section" style={{ marginTop: '50px', paddingTop: '30px', borderTop: '2px solid #f1f5f9' }}>
+          <h3 style={{ fontSize: '1.2rem', fontWeight: '900', color: '#1e293b', marginBottom: '20px', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+            <span>📖</span> 前後のアンケートもチェックらび！
+          </h3>
+          <div className="adjacent-cards-container" style={{ display: 'flex', justifyContent: 'center', gap: '20px', flexWrap: 'wrap' }}>
+            {[
+              { type: 'next', label: '← 次のアンケート ✨', data: adjacentSurveys.next },
+              { type: 'prev', label: '前のアンケート 📜 →', data: adjacentSurveys.prev }
+            ].filter(nav => nav.data).map(nav => {
+               const s = nav.data;
+               let thumb = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400';
+               if (s.image_url) {
+                 const parts = s.image_url.split(',')[0].trim();
+                 if (parts.startsWith('yt:')) thumb = `https://img.youtube.com/vi/${parts.substring(3)}/mqdefault.jpg`;
+                 else if (parts.startsWith('nico:')) thumb = '/nico_fallback.jpg';
+                 else thumb = parts;
+               } else if (s.youtube_id) {
+                 thumb = `https://img.youtube.com/vi/${s.youtube_id}/mqdefault.jpg`;
+               }
+
+               return (
+                  <div key={s.id} className="adjacent-card" onClick={() => navigateTo('details', s)} style={{
+                    background: '#fff', borderRadius: '20px', overflow: 'hidden', cursor: 'pointer',
+                    boxShadow: '0 4px 15px rgba(0,0,0,0.05)', transition: 'all 0.3s ease',
+                    border: '1px solid #f1f5f9', width: '280px', flex: '0 0 280px', textAlign: 'left'
+                  }} onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 12px 25px rgba(0,0,0,0.1)'; }} onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.05)'; }}>
+                    <div style={{ background: '#f8fafc', padding: '8px 15px', fontSize: '0.85rem', fontWeight: 'bold', color: '#7c3aed', borderBottom: '1px solid #f1f5f9' }}>
+                      {nav.label}
+                    </div>
+                    <div style={{ width: '100%', height: '140px', overflow: 'hidden', position: 'relative' }}>
+                      <img src={thumb} alt={s.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <div style={{ position: 'absolute', bottom: '10px', right: '10px', background: 'rgba(255,255,255,0.9)', padding: '2px 8px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 'bold', color: '#64748b' }}>
+                        {s.category}
+                      </div>
+                    </div>
+                    <div style={{ padding: '15px' }}>
+                      <div style={{ fontWeight: 'bold', fontSize: '0.95rem', lineHeight: '1.4', marginBottom: '10px', height: '2.8em', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+                        {s.title}
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem', color: '#94a3b8' }}>
+                        <span>🗳️ {s.total_votes || 0} 票</span>
+                        <div style={{ display: 'flex', gap: '4px' }}>
+                          {s.tags?.filter(t => !t.startsWith('_STAMP:')).slice(0, 2).map((t, i) => (
+                            <span key={i} style={{ background: '#f8fafc', padding: '1px 6px', borderRadius: '6px', fontSize: '0.7rem' }}>#{t}</span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+             })}
+          </div>
         </div>
       )}
 
@@ -704,6 +764,7 @@ const SurveyDetailView = ({
                       className="report-btn"
                       onClick={() => handleReportContent(c.id, 'comment')}
                       title="通報"
+                      aria-label="不適切なコメントを通報"
                       style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', fontSize: '1rem', opacity: 0.7 }}
                     >
                       🚩
