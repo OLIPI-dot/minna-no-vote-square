@@ -84,7 +84,11 @@ const SurveyListView = ({
         {user ? (
           <div className="user-info">
             {user.user_metadata?.avatar_url && (
-              <img src={user.user_metadata.avatar_url} className="user-avatar" alt="avatar" />
+              <img 
+                src={user.user_metadata.avatar_url} 
+                className="user-avatar" 
+                alt={`${user.user_metadata?.full_name || 'ユーザー'}さんのアバター`} 
+              />
             )}
             <span className="user-name">
               {user.user_metadata?.full_name || user.email.split('@')[0]}さん
@@ -124,12 +128,14 @@ const SurveyListView = ({
           value={searchQuery}
           onChange={e => setSearchQuery(e.target.value)}
           className="search-input"
+          aria-label="アンケートを検索"
         />
         {searchQuery && (
           <button 
             className="search-clear" 
             onClick={() => setSearchQuery('')}
             title="検索をクリア"
+            aria-label="検索内容をクリア"
           >
             ✕
           </button>
@@ -393,7 +399,7 @@ const SurveyListView = ({
                   const entries = s.image_url.split(',').map(v => v.trim()).filter(Boolean);
                   const yt = entries.find(v => v.startsWith('yt:'));
                   const nico = entries.find(v => v.startsWith('nico:'));
-                  if (yt) thumbSrc = `https://img.youtube.com/vi/${yt.substring(3)}/hqdefault.jpg`;
+                  if (yt) thumbSrc = `https://img.youtube.com/vi/${yt.substring(3)}/mqdefault.jpg`;
                   else if (nico) {
                     const fullId = nico.substring(5);
                     const numericId = fullId.replace(/^[a-z]+/, '');
@@ -426,8 +432,11 @@ const SurveyListView = ({
                             borderRadius: 'inherit'
                           }} />
                           <img
-                            src={thumbSrc} alt="サムネイル"
-                            className="survey-item-thumb" loading="lazy"
+                            src={thumbSrc} 
+                            alt={`${s.title} のサムネイル`}
+                            className="survey-item-thumb" 
+                            loading={idx < 2 ? "eager" : "lazy"}
+                            {...(idx < 2 ? { fetchpriority: "high" } : {})}
                             onLoad={e => e.target.classList.add('ready')}
                             onError={e => {
                                if (!e.target.src.includes('nico_fallback.jpg')) {
@@ -493,6 +502,7 @@ const SurveyListView = ({
                             <button
                               className={`watch-star-btn ${watchedIds.includes(s.id) ? 'active' : ''}`}
                               onClick={e => toggleWatch(e, s.id)}
+                              aria-label={watchedIds.includes(s.id) ? "ウォッチリストから削除" : "ウォッチリストに追加"}
                             >{watchedIds.includes(s.id) ? '★' : '☆'}</button>
                             <span className={`status-badge ${isEnded ? 'ended' : 'active'}`}>
                               {isEnded ? '終了' : '受付中'}

@@ -15,7 +15,7 @@ const Sidebar = ({
   return (
     <div className="live-feed-sidebar">
       <div className="sidebar-section-card" style={{ marginBottom: '24px', background: 'linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%)', border: '1px solid #ddd6fe' }}>
-        <div className="live-feed-title" style={{ color: '#7c3aed', marginBottom: '8px' }}>📡 広場の状況</div>
+        <h3 className="live-feed-title" style={{ color: '#7c3aed', marginBottom: '8px', fontSize: '1.1rem', borderLeft: '5px solid #7c3aed', paddingLeft: '12px' }}>📡 広場の状況</h3>
         <div style={{ fontSize: '0.9rem', color: '#4c1d95', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span style={{ position: 'relative', display: 'inline-block', width: '10px', height: '10px', background: '#10b981', borderRadius: '50%', boxShadow: '0 0 8px #10b981' }}></span>
           いま {globalOnlineCount} 人が広場にいます 🐰✨
@@ -23,12 +23,20 @@ const Sidebar = ({
       </div>
 
       <div className="sidebar-section-card" style={{ marginBottom: '24px', border: '2px solid #fee2e2' }}>
-        <div className="live-feed-title" style={{ color: '#e11d48' }}>⏰ もうすぐ終了！</div>
+        <h3 className="live-feed-title" style={{ color: '#e11d48' }}>⏰ もうすぐ終了！</h3>
         <div className="live-feed-content">
           {endingSoonSurveys.length > 0 ? (
             <>
               {(showAllEndingSoon ? endingSoonSurveys : endingSoonSurveys.slice(0, 4)).map(s => (
-                <div key={s.id} className="live-item clickable" onClick={() => navigateTo('details', s)}>
+                <div 
+                  key={s.id} 
+                  className="live-item clickable" 
+                  onClick={() => navigateTo('details', s)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyPress={(e) => e.key === 'Enter' && navigateTo('details', s)}
+                  aria-label={`${s.title} の詳細を見る`}
+                >
                   <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>{s.title}</div>
                   <div style={{ fontSize: '0.8rem', color: '#e11d48', background: '#fff1f2', display: 'inline-block', padding: '2px 8px', borderRadius: '12px' }}>
                     〆: {formatWithDay(s.deadline)}
@@ -52,20 +60,36 @@ const Sidebar = ({
         </div>
       </div>
       <div className="sidebar-section-card">
-        <div className="live-feed-title">✨ 広場の最新ニュース</div>
+        <h3 className="live-feed-title">✨ 広場の最新ニュース</h3>
         <div className="live-feed-content">
           {liveSurveys.map(s => (
-            <div key={s.id} className="live-item clickable" onClick={() => navigateTo('details', s)}>
+            <div 
+              key={s.id} 
+              className="live-item clickable" 
+              onClick={() => navigateTo('details', s)}
+              role="button"
+              tabIndex={0}
+              onKeyPress={(e) => e.key === 'Enter' && navigateTo('details', s)}
+              aria-label={`${s.title} の詳細を見る`}
+            >
               <strong>{s.title}</strong> が公開されました！
             </div>
           ))}
         </div>
       </div>
       <div className="sidebar-section-card" style={{ marginTop: '24px' }}>
-        <div className="live-feed-title">🔥 人気ランキング</div>
+        <h3 className="live-feed-title">🔥 人気ランキング</h3>
         <div className="live-feed-content">
           {popularSurveys.map((s, idx) => (
-            <div key={s.id} className="live-item popular clickable" onClick={() => navigateTo('details', s)}>
+            <div 
+              key={s.id} 
+              className="live-item popular clickable" 
+              onClick={() => navigateTo('details', s)}
+              role="button"
+              tabIndex={0}
+              onKeyPress={(e) => e.key === 'Enter' && navigateTo('details', s)}
+              aria-label={`${idx + 1}位: ${s.title} の詳細を見る`}
+            >
               <span className="rank-label" style={idx > 2 ? { fontSize: '0.85rem', fontWeight: 'bold', color: '#64748b', minWidth: '24px', textAlign: 'center' } : {}}>
                 {idx === 0 ? '👑' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `${idx + 1}位`}
               </span>

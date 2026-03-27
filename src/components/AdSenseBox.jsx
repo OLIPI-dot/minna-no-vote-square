@@ -25,20 +25,34 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null }) => {
   ];
 
   const [rec, setRec] = useState(() => RECOMMENDATIONS[Math.floor(Math.random() * RECOMMENDATIONS.length)]);
+  const [isAnimateHeart, setIsAnimateHeart] = useState(false);
+
+  const handleSupport = () => {
+    setIsAnimateHeart(true);
+    setTimeout(() => setIsAnimateHeart(false), 600);
+    window.open('https://ofuse.me/olipi', '_blank');
+  };
   
   useEffect(() => {
-    const initAd = () => {
-      try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) { }
-    };
-    if (window.adsbygoogle && Array.isArray(window.adsbygoogle)) {
-      initAd(); 
-    } else {
-      const script = document.createElement('script');
-      script.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9429738476925701";
-      script.async = true; script.crossOrigin = "anonymous";
-      script.onload = initAd;
-      document.head.appendChild(script);
-    }
+    // 🚀 TBT大幅改善: AdSense読み込みを 3000ms 遅延させて初期表示のJSブロックを回避するらび！
+    const timerId = setTimeout(() => {
+      const initAd = () => {
+        try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) { }
+      };
+      if (window.adsbygoogle && Array.isArray(window.adsbygoogle)) {
+        initAd(); 
+      } else if (!document.querySelector('script[src*="adsbygoogle.js"]')) {
+        const script = document.createElement('script');
+        script.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9429738476925701";
+        script.async = true; script.crossOrigin = "anonymous";
+        script.onload = initAd;
+        document.head.appendChild(script);
+      } else {
+        initAd();
+      }
+    }, 3000);
+
+    return () => clearTimeout(timerId);
   }, []);
 
   return (
@@ -58,10 +72,33 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null }) => {
             <div style={{ fontSize: '1.5rem', marginBottom: '8px' }}>💖</div>
             <div style={{ fontWeight: 'bold', color: '#db2777' }}>らび＆おりぴを応援！</div>
             <div style={{ fontSize: '0.8rem', opacity: 0.8, marginTop: '4px' }}>いつも広場を使ってくれてありがとう！<br />100円から応援できるらび🥕</div>
-            <a href="https://ofuse.me/olipi" target="_blank" rel="noopener noreferrer" className="affiliate-btn ofuse-btn" style={{
-              marginTop: '12px', padding: '8px 20px', background: '#db2777', color: '#fff', borderRadius: '20px', textDecoration: 'none', fontWeight: 'bold', fontSize: '0.85rem',
-              display: 'inline-block', position: 'relative', zIndex: 20
-            }}>OFUSEで応援する 🥕✨</a>
+            <button 
+              className="support-heart-btn" 
+              onClick={handleSupport}
+              aria-label="このアンケートを応援する"
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: '5px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'transform 0.2s ease',
+                WebkitTapHighlightColor: 'transparent',
+                marginTop: '12px' // Added to maintain similar spacing as original link
+              }}
+              onMouseDown={e => e.currentTarget.style.transform = 'scale(0.8)'}
+              onMouseUp={e => e.currentTarget.style.transform = 'scale(1.1)'}
+              onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+            >
+              <div 
+                className={`support-heart-icon ${isAnimateHeart ? 'pop' : ''}`}
+                style={{ fontSize: '1.8rem', color: '#ff4b5c', filter: 'drop-shadow(0 2px 4px rgba(255,75,92,0.2))' }}
+              >
+                ❤️
+              </div>
+            </button>
           </div>
         ) : (
           <div style={{ position: 'relative', zIndex: 10 }}>

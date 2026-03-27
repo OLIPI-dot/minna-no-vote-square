@@ -47,7 +47,7 @@ const TrendingHeadline = ({ surveys, navigateTo }) => {
     const entries = s.image_url.split(',').map(v => v.trim()).filter(Boolean);
     const yt = entries.find(v => v.startsWith('yt:'));
     const nico = entries.find(v => v.startsWith('nico:'));
-    if (yt) thumbSrc = `https://img.youtube.com/vi/${yt.substring(3)}/hqdefault.jpg`;
+    if (yt) thumbSrc = `https://img.youtube.com/vi/${yt.substring(3)}/mqdefault.jpg`;
     else if (nico) thumbSrc = `https://snapshot.cdn.nicovideo.jp/snapshots/i/${nico.substring(5)}`;
     else if (entries[0]) thumbSrc = entries[0];
   }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback, lazy, Suspense } from 'react';
 // Deploy Kick: 2026-03-26 18:45 🚀🐰 (Category Fix Forced)
 import { createClient } from '@supabase/supabase-js';
 import emailjs from '@emailjs/browser';
@@ -143,8 +143,8 @@ function App() {
     setCurrentPage(1);
   }, [sortMode, searchQuery, filterCategory, filterTag, popularMode]);
 
-  // ▼ページネーションUIコンポーネント
-  const Pagination = ({ current, total, onPageChange }) => {
+  // ▼ページネーションUIコンポーネント (メモ化してパフォーマンス向上らび！✨)
+  const Pagination = useCallback(({ current, total, onPageChange }) => {
     if (total <= 1) return null;
     const pages = [];
     for (let i = 1; i <= total; i++) {
@@ -155,17 +155,38 @@ function App() {
       }
     }
     return (
-      <div className="pagination-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', marginTop: '32px', marginBottom: '16px', width: '100%' }}>
-        <button onClick={() => { onPageChange(Math.max(1, current - 1)); }} disabled={current === 1} style={{ background: 'none', border: 'none', cursor: current === 1 ? 'default' : 'pointer', color: current === 1 ? '#cbd5e1' : '#475569', fontSize: '1.2rem', padding: '4px 8px' }}>&lt;</button>
+      <nav className="pagination-container" aria-label="ページ選択" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', marginTop: '32px', marginBottom: '16px', width: '100%' }}>
+        <button 
+          onClick={() => { onPageChange(Math.max(1, current - 1)); }} 
+          disabled={current === 1} 
+          aria-label="前のページへ"
+          style={{ background: 'none', border: 'none', cursor: current === 1 ? 'default' : 'pointer', color: current === 1 ? '#cbd5e1' : '#475569', fontSize: '1.2rem', padding: '4px 8px' }}
+        >
+          &lt;
+        </button>
         {pages.map((p, i) => (
-          <button key={i} onClick={() => { if (p !== '...') { onPageChange(p); } }} disabled={p === '...'} style={{ background: p === current ? '#8b5cf6' : 'none', color: p === current ? '#fff' : (p === '...' ? '#94a3b8' : '#475569'), border: 'none', borderRadius: '50%', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: p === '...' ? 'default' : 'pointer', fontWeight: p === current ? 'bold' : 'normal', fontSize: '1rem', transition: 'all 0.2s', boxShadow: p === current ? '0 2px 4px rgba(139,92,246,0.3)' : 'none' }}>
+          <button 
+            key={i} 
+            onClick={() => { if (p !== '...') { onPageChange(p); } }} 
+            disabled={p === '...'} 
+            aria-label={p === '...' ? undefined : `${p}ページ目`}
+            aria-current={p === current ? 'page' : undefined}
+            style={{ background: p === current ? '#8b5cf6' : 'none', color: p === current ? '#fff' : (p === '...' ? '#94a3b8' : '#475569'), border: 'none', borderRadius: '50%', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: p === '...' ? 'default' : 'pointer', fontWeight: p === current ? 'bold' : 'normal', fontSize: '1rem', transition: 'all 0.2s', boxShadow: p === current ? '0 2px 4px rgba(139,92,246,0.3)' : 'none' }}
+          >
             {p}
           </button>
         ))}
-        <button onClick={() => { onPageChange(Math.min(total, current + 1)); }} disabled={current === total} style={{ background: 'none', border: 'none', cursor: current === total ? 'default' : 'pointer', color: current === total ? '#cbd5e1' : '#475569', fontSize: '1.2rem', padding: '4px 8px' }}>&gt;</button>
-      </div>
+        <button 
+          onClick={() => { onPageChange(Math.min(total, current + 1)); }} 
+          disabled={current === total} 
+          aria-label="次のページへ"
+          style={{ background: 'none', border: 'none', cursor: current === total ? 'default' : 'pointer', color: current === total ? '#cbd5e1' : '#475569', fontSize: '1.2rem', padding: '4px 8px' }}
+        >
+          &gt;
+        </button>
+      </nav>
     );
-  };
+  }, []);
 
   // 📝 モーダル管理の状態
   const [showingTerms, setShowingTerms] = useState(false);

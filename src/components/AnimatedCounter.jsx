@@ -22,7 +22,15 @@ const AnimatedCounter = ({ value }) => {
     }, 100); // 100ms 間隔に緩和らび！
     return () => clearInterval(timer);
   }, [value]);
-  return <span className="count-animate">{displayValue}</span>;
+  return (
+    <span 
+      className="count-animate" 
+      aria-live="polite" 
+      aria-atomic="true"
+    >
+      {displayValue}
+    </span>
+  );
 };
 
 export default AnimatedCounter;
