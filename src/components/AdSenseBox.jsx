@@ -50,6 +50,7 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null }) => {
         padding: '28px', color: '#64748b', fontSize: '0.9rem',
         boxShadow: '0 10px 40px rgba(236, 72, 153, 0.12)',
         zIndex: 1,
+        minHeight: '220px', // 🚀 CLS対策：高さを確保しておくらび！
         transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
       }}>
         {affiliateType === 'ofuse' ? (

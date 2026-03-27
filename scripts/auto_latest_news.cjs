@@ -90,13 +90,13 @@ function classifyNews(title, description) {
     };
 
     // 🛡️ 大手テック・ガジェット配信サイトの保護 (誤ってYouTuberにならないようにするらび！)
-    const isTrustedTechSite = /watch\.impress\.co\.jp|itmedia\.co\.jp|mynavi\.jp|ascii\.jp|gizmodo\.jp|phileweb\.com|digitallife\.jp/.test(description || '');
+    const isTrustedTechSite = /watch\.impress\.co\.jp|itmedia\.co\.jp|mynavi\.jp|ascii\.jp|gizmodo\.jp|phileweb\.com|digitallife\.jp|realsound\.jp\/tech/.test(description || '');
     if (isTrustedTechSite) {
-        scores['ニュース'] += 80;
+        scores['ニュース'] += 100; // 💡 強くニュース扱いにする
     }
 
     // 0. YouTuber (特定のサイト or キーワード)
-    const isYouTuberSite = /logtube\.jp|realsound\.jp\/tech/.test(description || '');
+    const isYouTuberSite = /logtube\.jp/.test(description || '');
     if (isYouTuberSite) {
         // 💡 サイト名だけで決めつけず、本文にYouTube要素があるか確認らび！
         if (/(youtuber|youtube|ユーチューバー|配信者|実況者|動画撮影|動画投稿|チャンネル登録)/i.test(textLower)) {
@@ -111,12 +111,20 @@ function classifyNews(title, description) {
             scores['エンタメ'] += 40;
             scores['YouTuber'] = 0; // 🛑 ここにマッチした場合はYouTuber得点をゼロにする強気ガードらび！
         } else {
-            scores['YouTuber'] += 100; // 専業YouTuberなら自信を持って！
+            // 💡 テックサイトなら、有名人名があってもニュース性を重んじる
+            if (isTrustedTechSite) {
+                scores['YouTuber'] += 30; 
+                scores['ニュース'] += 80;
+            } else {
+                scores['YouTuber'] += 100; 
+            }
         }
     } else if (/(youtuber|youtube|ユーチューバー|配信者|実況者|動画撮影|動画投稿|チャンネル登録)/i.test(textLower)) {
         // 大手テックサイトなら、キーワードだけではYouTuberにしないらび
         if (!isTrustedTechSite) {
             scores['YouTuber'] += 30; 
+        } else {
+            scores['ニュース'] += 50;
         }
     }
 

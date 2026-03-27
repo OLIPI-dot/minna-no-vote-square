@@ -1,15 +1,9 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, lazy, Suspense } from 'react';
 // Deploy Kick: 2026-03-26 18:45 🚀🐰 (Category Fix Forced)
 import { createClient } from '@supabase/supabase-js';
 import emailjs from '@emailjs/browser';
 import FooterModals from './components/FooterModals';
-import SurveyListView from './components/SurveyListView';
-import SurveyDetailView from './components/SurveyDetailView';
-import Sidebar from './components/Sidebar';
-import CountdownTimer from './components/CountdownTimer';
 import AnimatedCounter from './components/AnimatedCounter';
-import AdSenseBox from './components/AdSenseBox';
-import SiteConceptSection from './components/SiteConceptSection';
 import {
   ADMIN_EMAILS,
   NG_WORDS,
@@ -25,6 +19,14 @@ import {
   SCORE_VOTE_WEIGHT
 } from './constants';
 import './App.css';
+
+// 🚀 コード分割（遅延読み込み）で初期ロードを高速化らび！
+const Sidebar = lazy(() => import('./components/Sidebar'));
+const SurveyListView = lazy(() => import('./components/SurveyListView'));
+const SurveyDetailView = lazy(() => import('./components/SurveyDetailView'));
+const SiteConceptSection = lazy(() => import('./components/SiteConceptSection'));
+const AdSenseBox = lazy(() => import('./components/AdSenseBox'));
+const CountdownTimer = lazy(() => import('./components/CountdownTimer'));
 
 // Supabaseの初期設定
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -1900,7 +1902,8 @@ function App() {
 
           <div className="survey-card">
             {view === 'list' && (
-              <SurveyListView
+              <Suspense fallback={<div className="survey-card" style={{ height: '800px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff' }}>⌛ 広場を読み込み中...</div>}>
+                <SurveyListView
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
                 sortMode={sortMode}
@@ -1948,8 +1951,9 @@ function App() {
                 recommendedSurveys={recommendedSurveys}
                 searchStats={searchStats}
                 baseCategories={BASE_CATEGORIES}
-                filterCategories={FILTER_CATEGORIES}
-              />
+                  filterCategories={FILTER_CATEGORIES}
+                />
+              </Suspense>
             )}
 
             {view === 'create' && (
@@ -2038,7 +2042,8 @@ function App() {
             )}
 
             {view === 'details' && currentSurvey && (
-              <SurveyDetailView
+              <Suspense fallback={<div className="survey-card" style={{ height: '800px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff' }}>⌛ 詳細を読み込み中...</div>}>
+                <SurveyDetailView
                 currentSurvey={currentSurvey}
                 setCurrentSurvey={setCurrentSurvey}
                 surveyOnlineCount={surveyOnlineCount}
@@ -2098,12 +2103,14 @@ function App() {
                 adjacentSurveys={adjacentSurveys}
                 handleSurveyReaction={handleSurveyReaction}
                 lastReactionEvent={lastReactionEvent}
-                STAMPS={STAMPS}
-              />
+                  STAMPS={STAMPS}
+                />
+              </Suspense>
             )}
           </div>
 
-          <Sidebar 
+          <Suspense fallback={<div className="live-feed-sidebar" style={{ minWidth: '320px', background: 'rgba(255,255,255,0.5)', borderRadius: '24px', height: '100vh' }}></div>}>
+            <Sidebar 
             liveSurveys={liveSurveys_derived}
             popularSurveys={popularSurveys_derived}
             endingSoonSurveys={endingSoonSurveys_derived}
@@ -2112,8 +2119,9 @@ function App() {
             navigateTo={navigateTo}
             globalOnlineCount={globalOnlineCount}
             formatWithDay={formatWithDay}
-            AnimatedCounter={AnimatedCounter}
-          />
+              AnimatedCounter={AnimatedCounter}
+            />
+          </Suspense>
         </div>
       </div>
 
