@@ -133,10 +133,59 @@ const SurveyDetailView = ({
   supabase,
   setFilterTag,
   setActiveTab,
+  handleSurveyReaction,
+  STAMPS,
   setSurveys,
+  lastReactionEvent,
+  adjacentSurveys = { prev: null, next: null },
   baseCategories = []
 }) => {
   if (!currentSurvey) return <div className="empty-msg">読み込み中...</div>;
+
+  // 🎨 スタンプリアクションの集計ロジックらび！
+  const stampReactions = React.useMemo(() => {
+    const counts = {};
+    (STAMPS || []).forEach(s => counts[s.id] = 0);
+    
+    (currentSurvey.tags || []).forEach(t => {
+      if (t.startsWith('_STAMP:')) {
+        const parts = t.split(':');
+        if (parts.length >= 3) {
+          const sId = parts[1];
+          const count = parseInt(parts[2]) || 0;
+          if (counts.hasOwnProperty(sId)) {
+            counts[sId] = count;
+          }
+        }
+      }
+    });
+    return counts;
+  }, [currentSurvey.tags, STAMPS]);
+
+  // 🪄 「ボワッ」とエフェクト用の状態管理らび！
+  const [effects, setEffects] = React.useState([]);
+  const lastEventRef = React.useRef(null);
+
+  React.useEffect(() => {
+    if (lastReactionEvent && lastReactionEvent !== lastEventRef.current) {
+      lastEventRef.current = lastReactionEvent;
+      const stamp = (STAMPS || []).find(s => s.id === lastReactionEvent.stampId);
+      if (stamp) {
+        const id = Math.random().toString(36).substring(2, 9);
+        const newEffect = {
+          id,
+          src: stamp.src,
+          label: stamp.label,
+          left: 30 + Math.random() * 40, // 中央付近からランダムに
+          bottom: 20 + Math.random() * 20
+        };
+        setEffects(prev => [...prev, newEffect]);
+        setTimeout(() => {
+          setEffects(prev => prev.filter(e => e.id !== id));
+        }, 2000); // 2秒で消える魔法らび！
+      }
+    }
+  }, [lastReactionEvent, STAMPS]);
 
   const titlePart = (currentSurvey.tags?.includes('お知らせ') && currentSurvey.title?.includes('||')) 
     ? currentSurvey.title.split('||')[0].trim() 
@@ -175,7 +224,22 @@ const SurveyDetailView = ({
               {/* 動画がない、あるいは画像も表示したい場合（現在は動画優先で、動画がない時のみ画像を表示する構成が一般的ですが、複数対応） */}
               {videoEntries.length === 0 && imageEntries.length > 0 && (
                 <div className="image-display-container" style={{ textAlign: 'center' }}>
-                  <img src={imageEntries[0]} alt="survey-visual" style={{ width: '100%', borderRadius: '24px', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }} />
+                  <img 
+                    src={imageEntries[0]} 
+                    alt="survey-visual" 
+                    fetchpriority="high"
+                    loading="eager"
+                    style={{ 
+                      width: '100%', 
+                      height: 'auto',
+                      minHeight: '200px', // 枠を確保してCLS（ガクつき）を防止
+                      aspectRatio: '16/9', // アスペクト比を固定してガクつきを防止
+                      objectFit: 'cover',
+                      borderRadius: '24px', 
+                      boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
+                      backgroundColor: '#f1f5f9'
+                    }} 
+                  />
                 </div>
               )}
 
@@ -232,7 +296,7 @@ const SurveyDetailView = ({
         </div>
         {currentSurvey.tags && currentSurvey.tags.length > 0 && (
           <div className="detail-tags-row" style={{ marginTop: '25px', marginBottom: '15px', display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
-            {currentSurvey.tags.map((t, i) => {
+            {currentSurvey.tags.filter(t => !t.startsWith('_STAMP:')).map((t, i) => {
               const isLocked = t.startsWith('[L]');
               const tagName = isLocked ? t.substring(3) : t;
               return (
@@ -271,7 +335,7 @@ const SurveyDetailView = ({
       />
 
       <div className="options-container">
-        {options.map((opt, index) => {
+        {options.length > 0 ? options.map((opt, index) => {
           const perc = isTotalVotes > 0 ? Math.round((opt.votes / isTotalVotes) * 100) : 0;
           return (
             <div key={opt.id} className="result-bar-container">
@@ -286,8 +350,80 @@ const SurveyDetailView = ({
               ) : <button className="option-button" onClick={() => handleVote(opt)}>{opt.name.startsWith(`${index + 1}.`) ? opt.name : `${index + 1}. ${opt.name}`}</button>}
             </div>
           );
-        })}
+        }) : (
+          <div className="options-loading" style={{ textAlign: 'center', padding: '30px', color: '#94a3b8', fontStyle: 'italic' }}>
+             🗳️ 投票項目を読み込み中らび...✨
+          </div>
+        )}
       </div>
+
+      {/* 🚀 前後のアンケートへのナビゲーション（カード形式にアップグレードらび！） */}
+      {(adjacentSurveys.prev || adjacentSurveys.next) && (
+        <div className="adjacent-nav-section" style={{ marginTop: '50px', paddingTop: '30px', borderTop: '2px solid #f1f5f9' }}>
+          <h3 style={{ fontSize: '1.2rem', fontWeight: '900', color: '#1e293b', marginBottom: '20px', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+            <span>📖</span> 前後のアンケートもチェックらび！
+          </h3>
+          <div className="adjacent-cards-container" style={{ display: 'flex', justifyContent: 'center', gap: '20px', flexWrap: 'wrap' }}>
+            {[
+              { type: 'next', label: '← 次のアンケート ✨', data: adjacentSurveys.next },
+              { type: 'prev', label: '前のアンケート 📜 →', data: adjacentSurveys.prev }
+            ].filter(nav => nav.data).map(nav => {
+               const s = nav.data;
+               let thumb = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400';
+               if (s.image_url) {
+                 const parts = s.image_url.split(',')[0].trim();
+                 if (parts.startsWith('yt:')) thumb = `https://img.youtube.com/vi/${parts.substring(3)}/mqdefault.jpg`;
+                 else if (parts.startsWith('nico:')) thumb = '/nico_fallback.jpg'; // 以前決めたフォールバックらび！
+                 else thumb = parts;
+               } else if (s.youtube_id) {
+                 thumb = `https://img.youtube.com/vi/${s.youtube_id}/mqdefault.jpg`;
+               }
+
+               return (
+                 <div key={s.id} className="related-card" onClick={() => navigateTo('details', s)} style={{
+                   background: '#fff', borderRadius: '20px', overflow: 'hidden', cursor: 'pointer',
+                   boxShadow: '0 4px 15px rgba(0,0,0,0.05)', transition: 'all 0.3s ease',
+                   border: '2px solid #f1f5f9',
+                   width: '100%',
+                   maxWidth: '280px',
+                   flex: '1 1 280px',
+                   userSelect: 'none',
+                   WebkitTapHighlightColor: 'transparent',
+                   position: 'relative'
+                 }} onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 12px 25px rgba(0,0,0,0.1)'; }} onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.05)'; }}>
+                   <div style={{ 
+                     position: 'absolute', top: '10px', left: '10px', zIndex: 2, 
+                     background: nav.type === 'next' ? 'rgba(124, 58, 237, 0.9)' : 'rgba(71, 85, 105, 0.9)', 
+                     color: 'white', padding: '4px 12px', borderRadius: '30px', fontSize: '0.75rem', fontWeight: '900', backdropFilter: 'blur(4px)',
+                     boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
+                   }}>
+                     {nav.label}
+                   </div>
+                   <div style={{ width: '100%', height: '140px', overflow: 'hidden', position: 'relative' }}>
+                     <img src={thumb} alt={s.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                     <div style={{ position: 'absolute', bottom: '10px', right: '10px', background: 'rgba(255,255,255,0.9)', padding: '2px 8px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 'bold', color: '#64748b' }}>
+                       {s.category}
+                     </div>
+                   </div>
+                   <div style={{ padding: '15px' }}>
+                     <div style={{ fontWeight: 'bold', fontSize: '0.95rem', lineHeight: '1.4', marginBottom: '10px', height: '2.8em', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+                       {s.title}
+                     </div>
+                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem', color: '#94a3b8' }}>
+                       <span>🗳️ {s.total_votes || 0} 票</span>
+                       <div style={{ display: 'flex', gap: '4px' }}>
+                         {s.tags?.slice(0, 2).map((t, i) => (
+                           <span key={i} style={{ background: '#f8fafc', padding: '1px 6px', borderRadius: '6px', fontSize: '0.7rem' }}>#{t}</span>
+                         ))}
+                       </div>
+                     </div>
+                   </div>
+                 </div>
+               );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* 🛡️ 管理パネル (チャッピー・アルゴリズム) */}
       {user && (
@@ -340,6 +476,77 @@ const SurveyDetailView = ({
 
          </div>
       )}
+
+      {/* 🎨 スタンプペタペタエリアらび！ */}
+      <div className="stamp-peta-peta-area" style={{ 
+        marginTop: '30px', 
+        textAlign: 'center', 
+        background: 'rgba(248, 250, 252, 0.5)', 
+        padding: '20px', 
+        borderRadius: '24px', 
+        border: '1px solid #f1f5f9',
+        position: 'relative', // 🚩 エフェクトの基準にするらび！
+        overflow: 'visible'
+      }}>
+        {/* 🪄 浮き出るエフェクトたち */}
+        {effects.map(eff => (
+          <div key={eff.id} className="floating-stamp-effect" style={{
+            position: 'absolute',
+            left: `${eff.left}%`,
+            bottom: `${eff.bottom}%`,
+            pointerEvents: 'none',
+            zIndex: 100,
+            transform: 'translate(-50%, 0)'
+          }}>
+            {eff.src ? (
+              <img src={eff.src} alt="effect" style={{ width: '60px', height: '60px', objectFit: 'contain' }} />
+            ) : (
+              <span style={{ fontSize: '3rem' }}>{eff.label}</span>
+            )}
+          </div>
+        ))}
+
+        <p style={{ fontSize: '0.9rem', color: '#64748b', fontWeight: '900', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+          <span>✨</span> みんなでスタンプをペタペタするらび！
+        </p>
+        <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '10px' }}>
+          {(STAMPS || []).map(stamp => (
+            <button 
+              key={stamp.id} 
+              onClick={() => handleSurveyReaction(stamp.id)}
+              className="stamp-btn"
+              title={stamp.label}
+              style={{
+                background: '#fff',
+                border: '2px solid #f1f5f9',
+                borderRadius: '50px',
+                padding: stamp.src ? '6px 14px' : '8px 16px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                cursor: 'pointer',
+                transition: 'all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.03)',
+                userSelect: 'none',
+                WebkitTapHighlightColor: 'transparent',
+                position: 'relative',
+                zIndex: 1
+              }}
+              onMouseOver={e => { e.currentTarget.style.transform = 'scale(1.1) translateY(-2px)'; e.currentTarget.style.borderColor = '#7c3aed'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(124, 58, 237, 0.15)'; }}
+              onMouseOut={e => { e.currentTarget.style.transform = 'scale(1) translateY(0)'; e.currentTarget.style.borderColor = '#f1f5f9'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.03)'; }}
+            >
+              {stamp.src ? (
+                <img src={stamp.src} alt={stamp.label} style={{ width: '28px', height: '28px', objectFit: 'contain' }} />
+              ) : (
+                <span style={{ fontSize: '1.4rem' }}>{stamp.label}</span>
+              )}
+              <span style={{ fontSize: '0.9rem', fontWeight: '900', color: '#475569' }}>
+                <AnimatedCounter value={stampReactions[stamp.id] || 0} />
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
 
       <div className="share-result-area" style={{ marginTop: '40px', display: 'flex', justifyContent: 'center', gap: '12px' }}>
         <button className={`like-survey-btn ${likedSurveys.some(id => String(id) === String(currentSurvey.id)) ? 'liked' : ''}`} onClick={handleLikeSurvey} style={{ background: likedSurveys.some(id => String(id) === String(currentSurvey.id)) ? '#ec4899' : '#fbcfe8', color: likedSurveys.some(id => String(id) === String(currentSurvey.id)) ? 'white' : '#be185d', padding: '12px 28px', borderRadius: '30px', fontWeight: 'bold', border: 'none' }}>

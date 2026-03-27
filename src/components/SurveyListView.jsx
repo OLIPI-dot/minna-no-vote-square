@@ -514,16 +514,18 @@ const SurveyListView = ({
 
                         {s.tags && s.tags.length > 0 && (
                           <div className="tag-bubble-row">
-                            {s.tags.map(tag => (
-                              <span
-                                key={tag}
-                                className={`tag-bubble ${filterTag === tag ? 'active' : ''}`}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setFilterTag(filterTag === tag ? '' : tag);
-                                }}
-                              >#{tag}</span>
-                            ))}
+                            {s.tags
+                              .filter(tag => !tag.startsWith('_STAMP:'))
+                              .map(tag => (
+                                <span
+                                  key={tag}
+                                  className={`tag-bubble ${filterTag === tag ? 'active' : ''}`}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setFilterTag(filterTag === tag ? '' : tag);
+                                  }}
+                                >#{tag}</span>
+                              ))}
                           </div>
                         )}
                       </div>
