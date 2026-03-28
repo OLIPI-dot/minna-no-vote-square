@@ -79,7 +79,7 @@ function App() {
   const [surveyCategory, setSurveyCategory] = useState('');
   const [setupOptions, setSetupOptions] = useState([]);
   const [surveyVisibility, setSurveyVisibility] = useState('public');
-  const [sortMode, setSortMode] = useState('today'); // デフォルトを今日のものに変更らび！
+  const [sortMode, setSortMode] = useState('latest'); // 🚀 デフォルトは「新着順」に戻すらび！
   const [popularMode, setPopularMode] = useState('trending');
   const [filterCategory, setFilterCategory] = useState('すべて');
   const [tempOption, setTempOption] = useState('');
@@ -931,7 +931,8 @@ function App() {
 
   // 📥 アンケートデータを取得する (サーバーサイド・ページネーション & フィルタ対応)
   const fetchSurveys = async (currentUser, silent = false, page = 1, category = null, query = '', currentTab = 'official', sort = 'latest', pop = 'trending') => {
-    const isFirstLoad = !silent && page === 1 && !category && !query && currentTab === 'official' && sort === 'latest';
+    // 🚀 Early Fetch を使う条件: 初回ロード ＆ フィルタなし ＆ 新着順
+    const isFirstLoad = !silent && page === 1 && (!category || category === 'すべて') && !query && activeTab === 'official' && sort === 'latest';
     
     if (!silent) {
        setIsLoading(true);
