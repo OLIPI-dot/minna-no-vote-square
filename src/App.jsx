@@ -1,8 +1,15 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback, lazy, Suspense } from 'react';
 // Deploy Kick: 2026-03-26 18:45 🚀🐰 (Category Fix Forced)
 import { createClient } from '@supabase/supabase-js';
-import FooterModals from './components/FooterModals';
-import AnimatedCounter from './components/AnimatedCounter';
+// 🚀 コンポーネントの遅延読み込みで初期バンドルを極限まで削るらび！
+const Sidebar = lazy(() => import('./components/Sidebar'));
+const SurveyListView = lazy(() => import('./components/SurveyListView'));
+const SurveyDetailView = lazy(() => import('./components/SurveyDetailView'));
+const SiteConceptSection = lazy(() => import('./components/SiteConceptSection'));
+const AdSenseBox = lazy(() => import('./components/AdSenseBox'));
+const CountdownTimer = lazy(() => import('./components/CountdownTimer'));
+const FooterModals = lazy(() => import('./components/FooterModals'));
+const AnimatedCounter = lazy(() => import('./components/AnimatedCounter'));
 import {
   ADMIN_EMAILS,
   NG_WORDS,
@@ -19,13 +26,6 @@ import {
 } from './constants';
 import './App.css';
 
-// 🚀 コード分割（遅延読み込み）で初期ロードを高速化らび！
-const Sidebar = lazy(() => import('./components/Sidebar'));
-const SurveyListView = lazy(() => import('./components/SurveyListView'));
-const SurveyDetailView = lazy(() => import('./components/SurveyDetailView'));
-const SiteConceptSection = lazy(() => import('./components/SiteConceptSection'));
-const AdSenseBox = lazy(() => import('./components/AdSenseBox'));
-const CountdownTimer = lazy(() => import('./components/CountdownTimer'));
 
 // Supabaseの初期設定
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -2214,16 +2214,18 @@ function App() {
         <div className="footer-bottom">© 2026 アンケート広場 / Powered by olipi projects</div>
       </footer>
 
-      <FooterModals
-        showingTerms={showingTerms} setShowingTerms={setShowingTerms}
-        showingPrivacy={showingPrivacy} setShowingPrivacy={setShowingPrivacy}
-        showingAbout={showingAbout} setShowingAbout={setShowingAbout}
-        showingContact={showingContact} setShowingContact={setShowingContact}
-        contactType={contactType} setContactType={setContactType}
-        contactEmail={contactEmail} setContactEmail={setContactEmail}
-        contactMessage={contactMessage} setContactMessage={setContactMessage}
-        isSendingInquiry={isSendingInquiry} handleSubmitInquiry={handleSubmitInquiry}
-      />
+      <Suspense fallback={null}>
+        <FooterModals
+          showingTerms={showingTerms} setShowingTerms={setShowingTerms}
+          showingPrivacy={showingPrivacy} setShowingPrivacy={setShowingPrivacy}
+          showingAbout={showingAbout} setShowingAbout={setShowingAbout}
+          showingContact={showingContact} setShowingContact={setShowingContact}
+          contactType={contactType} setContactType={setContactType}
+          contactEmail={contactEmail} setContactEmail={setContactEmail}
+          contactMessage={contactMessage} setContactMessage={setContactMessage}
+          isSendingInquiry={isSendingInquiry} handleSubmitInquiry={handleSubmitInquiry}
+        />
+      </Suspense>
     </div>
   );
 }
