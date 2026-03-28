@@ -66,7 +66,14 @@ function App() {
   const [myReactions, setMyReactions] = useState(() => JSON.parse(localStorage.getItem('my_reactions') || '{}'));
   const [isActionLoading, setIsActionLoading] = useState(false);
   const [lastReactionEvent, setLastReactionEvent] = useState(null); // 📡 リアルタイム・エフェクト用らび！
-  const [isAdmin, setIsAdmin] = useState(false);
+  const isAdmin = useMemo(() => {
+    if (!user) return false;
+    // 🛡️ Supabase OAuth では email が user.email のほか user_metadata.email に入る場合もあるため両方チェック
+    const email = user.email || user.user_metadata?.email || '';
+    const result = ADMIN_EMAILS.includes(email);
+    console.log('🛡️ isAdmin check:', { email, result });
+    return result;
+  }, [user]);
   const [totalOfficialCount, setTotalOfficialCount] = useState(0); // 📊 公式の総件数
   const [totalUserCount, setTotalUserCount] = useState(0); // 📊 ユーザー投稿の総件数
   const [liveSurveys, setLiveSurveys] = useState([]);
@@ -956,7 +963,9 @@ function App() {
         window.__INITIAL_DATA_PROMISE__ = null; // 一度使ったらクリア
         count = sData ? sData.length : 0; // 暫定カウント
       }
-      const isActuallyAdmin = currentUser && ADMIN_EMAILS.includes(currentUser.email);
+      const email = user?.email || user?.user_metadata?.email || '';
+      const isActuallyAdmin = user && ADMIN_EMAILS.includes(email);
+      console.log("🛡️ isAdmin Check (fetchSurveys):", { email, isActuallyAdmin });
       const ITEMS_PER_PAGE = 15;
       const start = (page - 1) * ITEMS_PER_PAGE;
       const end = start + ITEMS_PER_PAGE - 1;
@@ -1042,6 +1051,11 @@ function App() {
             } else if (sort === 'ended') {
               const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
               q = q.or(`deadline.lt.${now.toISOString()},created_at.lt.${thirtyDaysAgo.toISOString()}`);
+            } else if (sort === 'latest' || sort === 'today' || sort === 'popular') {
+              // 🕒 通常リストでは終了したものを除外する条件をカウントにも反映させるらび！
+              q = q.or(`deadline.is.null,deadline.gt.${now.toISOString()}`);
+              const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+              q = q.gte('created_at', thirtyDaysAgo.toISOString());
             }
             return q;
           };
@@ -1963,7 +1977,10 @@ function App() {
                 setFilterTag={setFilterTag}
                 setView={setView}
                 activeTab={activeTab}
-                setActiveTab={setActiveTab}
+                setActiveTab={(tab) => {
+                  setActiveTab(tab);
+                  setCurrentPage(1); // 📄 タブ切り替え時は確実に1ページ目に戻すらび！
+                }}
                 totalOfficialCount={totalOfficialCount}
                 totalUserCount={totalUserCount}
                 surveys={filteredBaseSurveys}

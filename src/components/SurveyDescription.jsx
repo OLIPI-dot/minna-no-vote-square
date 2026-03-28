@@ -75,22 +75,24 @@ const SurveyDescription = ({ description, renderCommentContent }) => {
         <div style={{ 
           position: 'relative', 
           zIndex: 1, 
-          maxHeight: '320px', // ここを少し広げて600文字程度まで対応
+          maxHeight: '1000px', // おりぴさんリクエスト: 表示範囲を大幅に拡大らび！✨
           overflow: 'hidden',
           marginBottom: displayLink ? '32px' : '0',
           color: '#334155'
         }}>
           {cleanBody}
-          {/* 下部でジワ〜ッと消えていくエフェクトらび！✨ */}
-          <div style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: '100px', // グラデーションも少し広げてより滑らかに
-            background: 'linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.95) 90%)',
-            pointerEvents: 'none'
-          }} />
+          {/* 下部でジワ〜ッと消えていくエフェクトらび！✨ (長文の時だけ意味があるように調整) */}
+          {cleanBody.length > 500 && (
+            <div style={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: '80px', 
+              background: 'linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.95) 90%)',
+              pointerEvents: 'none'
+            }} />
+          )}
         </div>
 
         {/* 🔗 プレミアム・ソースボタン */}

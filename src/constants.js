@@ -41,14 +41,13 @@ export const CATEGORY_ICON_STYLE = {
   "レビュー": { icon: "⭐", color: "#f59e0b" },
   "コラム": { icon: "🖊️", color: "#3b82f6" },
   "ネタ": { icon: "😂", color: "#f97316" },
-  "YouTuber": { icon: "📺", color: "#ef4444" },
   "らび": { icon: "🐰", color: "#f472b6" },
   "その他": { icon: "🏷️", color: "#94a3b8" },
   "マイアンケート": { icon: "👤", color: "#94a3b8" }
 };
 
 // 🌏 アプリ全体で使う基本カテゴリリスト
-export const BASE_CATEGORIES = ['ニュース', '芸能', 'YouTuber', '話題', 'エンタメ', 'レビュー', 'コラム', 'ネタ', 'らび', 'その他'];
+export const BASE_CATEGORIES = ['ニュース', '芸能', '話題', 'エンタメ', 'レビュー', 'コラム', 'ネタ', 'らび', 'その他'];
 export const FILTER_CATEGORIES = ['すべて', ...BASE_CATEGORIES];
 
 // 🎨 スタンプリアクションの定義
