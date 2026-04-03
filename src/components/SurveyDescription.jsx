@@ -75,20 +75,20 @@ const SurveyDescription = ({ description, renderCommentContent }) => {
         <div style={{ 
           position: 'relative', 
           zIndex: 1, 
-          maxHeight: '800px', // おりぴさんリクエスト: たっぷり表示らび！✨
+          maxHeight: '1200px', // たっぷり表示しつつ、しきい値を超えたらフェードアウトらび！
           overflow: 'hidden',
           marginBottom: displayLink ? '32px' : '0',
           color: '#334155'
         }}>
           {cleanBody}
-          {/* 下部でジワ〜ッと消えていくエフェクトらび！✨ (長文の時だけ表示するように修正らび！) */}
-          {cleanBody.length > 500 && (
+          {/* 下部でジワ〜ッと消えていくエフェクトらび！✨ (200文字を超えたら発動するよ！) */}
+          {cleanBody.length > 200 && (
             <div style={{
               position: 'absolute',
               bottom: 0,
               left: 0,
               right: 0,
-              height: '120px', 
+              height: '160px', 
               background: 'linear-gradient(to bottom, transparent, rgba(255, 255, 255, 1) 90%)',
               pointerEvents: 'none'
             }} />
