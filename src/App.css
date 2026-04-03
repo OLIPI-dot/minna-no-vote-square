@@ -123,7 +123,7 @@ body {
   }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1240px) {
   .nav-sidebar-left {
     flex: 0 0 160px;
   }
@@ -178,10 +178,17 @@ body {
 @media (min-width: 1024px) {
   .survey-card {
     max-width: 1100px;
-    padding: 45px;
-    border-radius: 32px;
+    padding: 30px; /* タブレット空きスペース確保のため少しスリム化らび！ */
+    border-radius: 28px;
     border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.04);
+  }
+}
+
+@media (min-width: 1240px) {
+  .survey-card {
+    padding: 45px;
+    border-radius: 32px;
   }
 }
 
@@ -194,12 +201,12 @@ body {
 
 @media (min-width: 1024px) {
   .live-feed-sidebar {
-    flex: 0 0 240px;
+    flex: 0 0 240px; /* タブレット時はスリムにしてメインを広げるらび！ */
     width: auto;
   }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1240px) {
   .live-feed-sidebar {
     flex: 0 0 320px;
   }
@@ -670,7 +677,15 @@ body {
 
   .survey-item-content {
     /* ➡️ 右側のリアクションボタン群と被らないようにコンテンツに右パディングを適用 */
-    padding-right: 220px !important;
+    /* 🚀 重要な改善：画面幅に応じて余白を調整するらび！ */
+    padding-right: 60px !important; 
+    min-width: 0 !important;
+  }
+  
+  @media (min-width: 1400px) {
+    .survey-item-content {
+      padding-right: 220px !important;
+    }
   }
 
   .survey-item-title {
@@ -756,17 +771,30 @@ body {
 
 @media (min-width: 768px) {
   .video-thumb-wrapper {
+    flex: 0 0 160px !important; /* タブレットでは少しスリムにらび！ */
+    width: 160px !important;
+    margin-right: 20px !important;
+    gap: 12px !important;
+  }
+  .survey-item-thumb {
+    width: 160px !important;
+    height: 160px !important;
+    flex: 0 0 160px !important;
+    border-radius: 20px !important;
+    margin-right: 0 !important;
+  }
+}
+
+@media (min-width: 1240px) {
+  .video-thumb-wrapper {
     flex: 0 0 200px !important;
     width: 200px !important;
     margin-right: 32px !important;
-    gap: 14px !important;
   }
   .survey-item-thumb {
     width: 200px !important;
     height: 200px !important;
     flex: 0 0 200px !important;
-    border-radius: 24px !important;
-    margin-right: 0 !important;
   }
 }
 
