@@ -269,6 +269,12 @@
         <priority>0.6</priority>
       </url>
   <url>
+        <loc>https://minna-no-vote-square.vercel.app/s/2129</loc>
+        <lastmod>2026-04-03</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+      </url>
+  <url>
         <loc>https://minna-no-vote-square.vercel.app/s/563</loc>
         <lastmod>2026-03-22</lastmod>
         <changefreq>weekly</changefreq>
@@ -325,6 +331,12 @@
   <url>
         <loc>https://minna-no-vote-square.vercel.app/s/559</loc>
         <lastmod>2026-03-22</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+      </url>
+  <url>
+        <loc>https://minna-no-vote-square.vercel.app/s/2130</loc>
+        <lastmod>2026-04-03</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
       </url>
@@ -397,6 +409,12 @@
   <url>
         <loc>https://minna-no-vote-square.vercel.app/s/647</loc>
         <lastmod>2026-03-23</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+      </url>
+  <url>
+        <loc>https://minna-no-vote-square.vercel.app/s/2116</loc>
+        <lastmod>2026-04-03</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
       </url>
@@ -6006,24 +6024,6 @@
       </url>
   <url>
         <loc>https://minna-no-vote-square.vercel.app/s/1608</loc>
-        <lastmod>2026-03-30</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-      </url>
-  <url>
-        <loc>https://minna-no-vote-square.vercel.app/s/1463</loc>
-        <lastmod>2026-03-29</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-      </url>
-  <url>
-        <loc>https://minna-no-vote-square.vercel.app/s/1602</loc>
-        <lastmod>2026-03-30</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-      </url>
-  <url>
-        <loc>https://minna-no-vote-square.vercel.app/s/1606</loc>
         <lastmod>2026-03-30</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
