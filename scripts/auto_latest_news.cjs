@@ -155,7 +155,7 @@ async function fetchRichData(url) {
         const mainParagraphs = pMatches
             .map(m => stripHtml(m[1]))
             .filter(txt => txt.length > 30 && !txt.includes('JavaScript'))
-            .slice(0, 3); // おりぴさん安心安全モード: 冒頭3つに絞るらび！
+            .slice(0, 2); // おりぴさん黄金バランスモード: 2つに絞るらび！
 
         let richDescription = mainParagraphs.join('\n\n');
         
