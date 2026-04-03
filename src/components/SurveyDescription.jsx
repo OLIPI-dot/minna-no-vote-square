@@ -47,14 +47,15 @@ const SurveyDescription = ({ description, renderCommentContent }) => {
       </div>
 
       <div className="survey-description-box" style={{
-        fontSize: '1.1rem',
-        color: '#1e293b',
-        lineHeight: '2.1',
-        background: 'rgba(255, 255, 255, 0.9)',
+        fontSize: '1.05rem', // 少しだけ小さくして、高級感を出すよ
+        color: '#334155', // 目に優しい落ち着いた色
+        lineHeight: '2.2', // さらなる解放感！
+        letterSpacing: '0.04em', // 文字を詰まらせない魔法らび！
+        background: 'rgba(255, 255, 255, 0.95)',
         backdropFilter: 'blur(20px)',
-        border: '2px solid rgba(255, 255, 255, 0.7)',
+        border: '1px solid rgba(148, 163, 184, 0.2)',
         borderRadius: '28px',
-        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.08)',
+        boxShadow: '0 20px 40px -10px rgba(0, 0, 0, 0.05)',
         whiteSpace: 'pre-wrap',
         textAlign: 'justify',
         position: 'relative',

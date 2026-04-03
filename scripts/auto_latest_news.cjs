@@ -77,7 +77,7 @@ async function searchYouTubeVideo(query) {
 
 function stripHtml(str) {
     if (!str) return '';
-    return str
+    let text = str
         .replace(/<!\[CDATA\[|\]\]>/g, '')
         .replace(/<[^>]*>?/gm, '')
         .replace(/&nbsp;/g, ' ')
@@ -86,8 +86,23 @@ function stripHtml(str) {
         .replace(/&gt;/g, '>')
         .replace(/&quot;/g, '"')
         .replace(/&#39;/g, "'")
-        .replace(/\s+/g, ' ')
-        .trim();
+        .replace(/\s+/g, ' ');
+
+    // 🧹 オリジナル・ノイズフィルターらびっ！
+    const noisePatterns = [
+        /【この記事に関する別の画像を見る】/g,
+        /\[関連記事\]/g,
+        /【関連記事】/g,
+        /\[ 続きを読む \]/g,
+        /…続きを[読よ]む/g,
+        /\[Photo\]/g,
+        /■[ 　]*詳細はこちら/g,
+        /（[^）]*編集部）/g,
+        /（取材協力：[^）]*）/g
+    ];
+    noisePatterns.forEach(p => text = text.replace(p, ''));
+
+    return text.trim();
 }
 
 /**
