@@ -84,7 +84,6 @@ function classifyNews(title, description) {
         'レビュー': 0,
         'コラム': 0,
         'ネタ': 0,
-        'YouTuber': 0,
         '芸能': 0,
         'らび': 0
     };
@@ -95,34 +94,21 @@ function classifyNews(title, description) {
         scores['ニュース'] += 100; // 💡 強くニュース扱いにする
     }
 
-    // 0. YouTuber (特定のサイト or キーワード)
+    // 0. YouTuber (特定のサイト or キーワード) -> 今後はエンタメか話題に振り分けるらび！
     const isYouTuberSite = /logtube\.jp/.test(description || '');
     if (isYouTuberSite) {
-        // 💡 サイト名だけで決めつけず、本文にYouTube要素があるか確認らび！
-        if (/(youtuber|youtube|ユーチューバー|配信者|実況者|動画撮影|動画投稿|チャンネル登録)/i.test(textLower)) {
-            scores['YouTuber'] += 100;
-        } else {
-            scores['ニュース'] += 50; // ITニュース寄りにする
-        }
+        scores['エンタメ'] += 50; 
+        scores['話題'] += 50;
     } else if (/(ヒカキン|hikakin|はじめしゃちょー|ヒカル|フィッシャーズ|東海オンエア|スカイピース|コムドット|平成フラミンゴ|キヨ|レトルト|ぽきん|ポッキー|兄者弟者|壱百満天原サロメ|にじさんじ|ホロライブ|vtuber|ブレイキングダウン|朝倉未来|ばんばんざい|中町綾|とうあ|しなこ|むくえな|すとぷり|騎士a|ちょんまげ小僧|バンカラジオ|フォーエイト|48|いれいす|あざみ|あまぷた|アンプタック|キヨ|レトルト|牛沢|ガッチマン|加藤純一|うんこちゃん|もこう|shaka|関優太|stylishnoob|kuzuha|葛葉|叶|ぺこら|マリン|サロメ|三枝明那|ローレン|不破湊|湊あくあ|キズナアイ|桐崎栄二|ウチら3姉妹|水溜りボンド|pds|めぐみ|瀬戸弘司|カズチャンネル|よりひと|コレコレ|ポケカメン|まぜ太|あっと|てるとくん|ばぁう|そうま|しゆん)/i.test(textLower)) {
-        // 🛡️ 芸能人・有名人フィルタ: YouTuberとしても有名だが、俳優・アイドル等の側面が強い人はエンタメを優先
         if (/(前田敦子|指原莉乃|中川翔子|本田翼|広瀬アリス|橋本環奈|川口春奈|江頭|柏木由紀|入山杏奈|アイナ|aina|bish|ビッシュ|生田絵梨花|仲野太賀|若葉竜也|モデルプレス|オリコン|日刊スポーツ|スポニチ|報知|mantanweb|サンケイスポーツ)/i.test(textLower)) {
-            scores['芸能'] += 180; // 💡 芸能カテゴリを圧倒的優先にするらび！
+            scores['芸能'] += 180;
             scores['話題'] += 50;
-            scores['YouTuber'] = 0; // 🛑 YouTuber判定を完全に封印するらび！
         } else {
-            // 💡 テックサイトなら、有名人名があってもニュース性を重んじる
-            if (isTrustedTechSite) {
-                scores['YouTuber'] += 30; 
-                scores['ニュース'] += 80;
-            } else {
-                scores['YouTuber'] += 100; 
-            }
+            scores['エンタメ'] += 100; // 💡 YouTuberカテゴリの代わりにエンタメらび！
         }
     } else if (/(youtuber|youtube|ユーチューバー|配信者|実況者|動画撮影|動画投稿|チャンネル登録)/i.test(textLower)) {
-        // 大手テックサイトなら、キーワードだけではYouTuberにしないらび
         if (!isTrustedTechSite) {
-            scores['YouTuber'] += 30; 
+            scores['エンタメ'] += 30; 
         } else {
             scores['ニュース'] += 50;
         }
@@ -177,7 +163,7 @@ function classifyNews(title, description) {
     }
 
     // 🛡️ 最終防御: 芸能ニュースでかつ「話題」や「エンタメ」に振り分けたいケース
-    if ((finalCategory === 'ニュース' || finalCategory === 'YouTuber') && /(芸能|アイドル|女優|俳優|歌手|タレント)/.test(textLower)) {
+    if (finalCategory === 'ニュース' && /(芸能|アイドル|女優|俳優|歌手|タレント)/.test(textLower)) {
         if (/(話題|反響|ショット|私服|家族|愛猫)/.test(textLower)) finalCategory = '話題';
         else finalCategory = '芸能';
     }
@@ -429,13 +415,13 @@ async function startAutoPosting() {
             continue;
         }
 
-        // 📝 内容が薄すぎる場合は、ここで初めてOGPから最新の情報を取得するらび！（メモリ節約の「遅延取得」魔法！🥕✨）
+        // 📝 内容が薄すぎる場合は、ここで初めてOGPから最新の情報を取得するらび！（しきい値を400文字に上げたよ！）
         let effectiveDescription = news.description;
-        if (!effectiveDescription || effectiveDescription.length < 200) {
+        if (!effectiveDescription || effectiveDescription.length < 400) {
             log(`[Lazy OGP] 内容が薄いため再取得を試みます: ${news.title}`);
             const ogpData = await fetchOgpDescription(news.link);
-            if (ogpData && ogpData.description && ogpData.description.length > (effectiveDescription || '').length) {
-                effectiveDescription = ogpData.description;
+            if (ogpData && ogpData.length > (effectiveDescription || '').length) {
+                effectiveDescription = ogpData;
             }
         }
 
@@ -470,8 +456,8 @@ async function startAutoPosting() {
             const deadline = new Date();
             deadline.setDate(deadline.getDate() + 7);
 
-            // 📝 説明文を少し長めにしつつ、キリのいいところで切る魔法 🪄
-            const smartTruncate = (text, limit = 600) => {
+            // 📝 説明文をもっとたっぷり載せるために 1200文字まで緩和するらび！ 🪄
+            const smartTruncate = (text, limit = 1200) => {
                 if (!text || text.length <= limit) return text;
                 const sub = text.slice(0, limit);
                 // 文末（。！？）を探して、そこで切るらび！
@@ -485,7 +471,7 @@ async function startAutoPosting() {
                 return lastPunct > limit * 0.5 ? sub.slice(0, lastPunct + 1) : sub;
             };
 
-            const truncatedDescription = smartTruncate(effectiveDescription || '', 600);
+            const truncatedDescription = smartTruncate(effectiveDescription || '', 1200);
 
             // 📝 説明文の末尾に「[続きを読む](URL)」を挿入するらび！ (UI側で装飾されるよ)
             const finalDescription = truncatedDescription + `\n\n[続きを読む](${news.link})`;

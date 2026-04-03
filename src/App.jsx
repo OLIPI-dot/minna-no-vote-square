@@ -68,10 +68,16 @@ function App() {
   const [lastReactionEvent, setLastReactionEvent] = useState(null); // 📡 リアルタイム・エフェクト用らび！
   const isAdmin = useMemo(() => {
     if (!user) return false;
-    // 🛡️ Supabase OAuth では email が user.email のほか user_metadata.email に入る場合もあるため両方チェック
-    const email = user.email || user.user_metadata?.email || '';
-    const result = ADMIN_EMAILS.includes(email);
-    console.log('🛡️ isAdmin check:', { email, result });
+    // 🛡️ Supabase OAuth 各プロバイダからのメールアドレス取得を強化らび！
+    const email = (
+      user.email || 
+      user.user_metadata?.email || 
+      user.app_metadata?.email || 
+      ''
+    ).toLowerCase().trim();
+    
+    const result = ADMIN_EMAILS.some(e => e.toLowerCase().trim() === email);
+    console.log('🛡️ isAdmin check detail:', { detectedEmail: email, isAdmin: result });
     return result;
   }, [user]);
   const [totalOfficialCount, setTotalOfficialCount] = useState(0); // 📊 公式の総件数

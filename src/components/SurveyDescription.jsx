@@ -21,7 +21,7 @@ const SurveyDescription = ({ description, renderCommentContent }) => {
   return (
     <div className="survey-description-container" style={{
       margin: '0 auto 50px auto',
-      maxWidth: '860px',
+      maxWidth: '1100px', // おりぴさんリクエスト: 広々と見せるらび！✨
       position: 'relative',
     }}>
       {/* プレミアムなラベル 🏷️ */}
@@ -75,21 +75,21 @@ const SurveyDescription = ({ description, renderCommentContent }) => {
         <div style={{ 
           position: 'relative', 
           zIndex: 1, 
-          maxHeight: '1000px', // おりぴさんリクエスト: 表示範囲を大幅に拡大らび！✨
+          maxHeight: '800px', // おりぴさんリクエスト: たっぷり表示らび！✨
           overflow: 'hidden',
           marginBottom: displayLink ? '32px' : '0',
           color: '#334155'
         }}>
           {cleanBody}
-          {/* 下部でジワ〜ッと消えていくエフェクトらび！✨ (長文の時だけ意味があるように調整) */}
+          {/* 下部でジワ〜ッと消えていくエフェクトらび！✨ (長文の時だけ表示するように修正らび！) */}
           {cleanBody.length > 500 && (
             <div style={{
               position: 'absolute',
               bottom: 0,
               left: 0,
               right: 0,
-              height: '80px', 
-              background: 'linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.95) 90%)',
+              height: '120px', 
+              background: 'linear-gradient(to bottom, transparent, rgba(255, 255, 255, 1) 90%)',
               pointerEvents: 'none'
             }} />
           )}
