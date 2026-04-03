@@ -154,8 +154,8 @@ async function fetchRichData(url) {
         const pMatches = [...html.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/gi)];
         const mainParagraphs = pMatches
             .map(m => stripHtml(m[1]))
-            .filter(txt => txt.length > 30 && !txt.includes('JavaScript') && !txt.includes('クリック'))
-            .slice(0, 5); // 冒頭5つくらいを取得
+            .filter(txt => txt.length > 30 && !txt.includes('JavaScript'))
+            .slice(0, 3); // おりぴさん安心安全モード: 冒頭3つに絞るらび！
 
         let richDescription = mainParagraphs.join('\n\n');
         
@@ -221,13 +221,18 @@ async function startAutoPosting() {
 
             const tags = generateTags(news.title, richData.description, cat);
             const options = generateOptions(cat, news.title, richData.description);
+            
+            // 🏷️ 出典元をタイトルから抜き出すらび！
+            const sourceMatch = news.title.match(/[（\(](.*?)[）\)]$/);
+            const sourceName = sourceMatch ? sourceMatch[1] : 'ニュース';
+            const finalDesc = `${richData.description}\n\n（出典：${sourceName}）\n\n[続きを読む](${news.link})`;
 
             log(`🚀 プレミアム投稿準備OK: ${news.title} (${cat}) [Options: ${options.slice(0, 2).join(',')}...]`);
             if (!IS_DRY_RUN) {
                 const deadline = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
                 const { data: sData, error: sErr } = await supabase.from('surveys').insert([{
                     title: news.title,
-                    description: richData.description + '\n\n[続きを読む](' + news.link + ')',
+                    description: finalDesc,
                     category: cat,
                     image_url: imageUrl,
                     user_id: '86819a93-5182-4299-906d-74d3202996e3',
