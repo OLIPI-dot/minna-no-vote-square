@@ -347,12 +347,12 @@ async function startAutoPosting() {
     }
 
     // 🛡️ SEO強化: 重複チェック (URL ＆ タイトル正規化)
-    // 過去1000件のタイトルと説明文を取得してURLを抽出するらび！
+    // 過去2000件のタイトルと説明文を取得してURLを抽出するらび！（SEO向上のため範囲拡大）
     const { data: recentSurveys } = await supabase
         .from('surveys')
         .select('title, description')
         .order('created_at', { ascending: false })
-        .limit(1000);
+        .limit(2000);
 
     // タイトルの正規化関数 (記号や空白を消して小文字に)
     const normalize = (t) => {
@@ -379,23 +379,23 @@ async function startAutoPosting() {
     const now = new Date();
     const jstHour = (now.getUTCHours() + 9) % 24;
     
-    let maxPosts = 8;
+    let maxPosts = 2; // 基本は1回につき2件まで（少数精鋭らび！）
     let maxPerCategory = 1;
-    let newsMax = 2;
+    let newsMax = 1;
 
     if (jstHour >= 19 && jstHour <= 23) {
-        // ✨ 夜のゴールデンタイム！一気に盛り上げるらび！
-        maxPosts = 15;
-        maxPerCategory = 3;
-        newsMax = 4;
-    } else if (jstHour === 12 || (jstHour >= 7 && jstHour <= 8)) {
-        // 🍱 ランチ or 朝の通勤タイム！多めに流すらび！
-        maxPosts = 12;
+        // ✨ 夜のゴールデンタイム！少し多めにするけど、最大5件に抑えるらび！
+        maxPosts = 5;
         maxPerCategory = 2;
         newsMax = 3;
-    } else if (jstHour >= 2 && jstHour <= 5) {
-        // 😴 深夜はお休みモードらび…
+    } else if (jstHour === 12 || (jstHour >= 7 && jstHour <= 8)) {
+        // 🍱 ランチ or 朝の通勤タイム！最大3件！
         maxPosts = 3;
+        maxPerCategory = 1;
+        newsMax = 2;
+    } else if (jstHour >= 2 && jstHour <= 5) {
+        // 😴 深夜はお休みモードらび…最大1件！
+        maxPosts = 1;
         maxPerCategory = 1;
         newsMax = 1;
     }
