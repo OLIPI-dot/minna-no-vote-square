@@ -42,15 +42,13 @@ const RSS_FEEDS = [
  */
 async function searchYouTubeVideo(query) {
     try {
-        // 1. 検索クエリを「ピカピカ」に掃除するらび！ (配信元名や余計な情報を消すよ)
         let cleanQuery = query
-            .replace(/\(.*?\)|（.*?）|【.*?】|\[.*?\]/g, '') // カッコの中身（配信元など）を消す
-            .replace(/（[^）]*$|【[^】]*$|\[[^\]]*$/g, '') // 閉じ忘れカッコを消す
-            .replace(/ - .*?$/g, '') // ハイフン以降のニュースサイト名を消す
-            .replace(/[、。・]/g, ' ') // 読点などを空白に変えてマッチしやすくする
+            .replace(/\(.*?\)|（.*?）|【.*?】|\[.*?\]/g, '')
+            .replace(/（[^）]*$|【[^】]*$|\[[^\]]*$/g, '')
+            .replace(/ - .*?$/g, '')
+            .replace(/[、。・]/g, ' ')
             .trim();
 
-        // 検索ワードが短くなりすぎないように調整
         const refined = cleanQuery.length < 10 ? `${cleanQuery} ニュース` : `${cleanQuery} ニュース`;
         
         log(`🔎 YouTube検索開始: [${refined}]`);
@@ -61,9 +59,6 @@ async function searchYouTubeVideo(query) {
             }
         });
         const html = res.data;
-        
-        // 2. 「videoRenderer」を狙い撃ちして、最初の動画情報を抜き出すらび！ (おすすめ棚を回避するよ)
-        // 💡 最初の videoRenderer オブジェクトを探す
         const videoMatches = [...html.matchAll(/"videoRenderer":\{"videoId":"([a-zA-Z0-9_-]{11})".*?"title":\{"runs":\[\{"text":"(.*?)"\}\]/g)];
         
         if (videoMatches.length > 0) {
@@ -73,7 +68,6 @@ async function searchYouTubeVideo(query) {
             
             log(`📺 見つかった動画: "${videoTitle}" (ID: ${videoId})`);
 
-            // 3. 確信度チェック！ (ニュースタイトルの重要な言葉が動画タイトルに含まれているか？)
             const mainKeywords = cleanQuery.split(/\s+/).filter(w => w.length >= 2);
             const matchCount = mainKeywords.filter(k => videoTitle.includes(k)).length;
             const matchRate = matchCount / (mainKeywords.length || 1);
@@ -82,7 +76,7 @@ async function searchYouTubeVideo(query) {
                 log(`✅ 確信度OK! (キーワード一致: ${matchCount}/${mainKeywords.length})`);
                 return `yt:${videoId}`;
             } else {
-                log(`⚠️ 確信度が低いためスキップらび: ${matchRate.toFixed(2)} (タイトルが合いません)`);
+                log(`⚠️ 確信度が低いためスキップらび: ${matchRate.toFixed(2)} (不一致)`);
             }
         } else {
             log(`❌ 動画が見つかりませんでしたらび…`);
@@ -111,31 +105,55 @@ function stripHtml(str) {
         .trim();
 }
 
+/**
+ * 🏷️ 記事から豊富なタグを自動生成するらび！
+ */
+function generateTags(title, description, category) {
+    const text = (title + ' ' + (description || ''));
+    const tags = [category]; // 1. カテゴリを必ずタグにするらび！
+
+    // 2. 配信元をタグとして抽出するらび！（スポーツ報知、ITmediaなど）
+    const sourceMatch = title.match(/[（\(](.*?)[）\)]$/);
+    if (sourceMatch) {
+        tags.push(sourceMatch[1]);
+    }
+
+    // 3. キーワード辞書によるタグ付けらびっ！
+    const keywordDictionary = {
+        'エンタメ': ['映画', 'ドラマ', 'アニメ', '音楽', 'ライブ', 'アイドル', 'タレント', '披露宴', '結婚', '俳優', '女優', '声優', 'インスタ', '出演'],
+        '経済': ['経済', '投資', '証券', '暗号資産', '仮想通貨', 'ビットコイン', '金融', '取引所', '改定', '追加'],
+        'テクノロジー': ['AI', '最新', 'ガジェット', 'iPhone', 'スマートフォン', 'OS', 'アップデート', '発表', '発売'],
+        '話題': ['SNS', 'Twitter', 'X', '炎上', '論争', '話題に', '流行'],
+        'スポーツ': ['野球', 'サッカー', '移籍', '勝利', '引退', '復帰', '優勝'],
+        '社会': ['事件', '事故', '政治', '裁判', '逮捕', '検討', '指針'],
+        'YouTuber': ['YouTube', 'YouTuber', 'ユーチューバー', '動画配信', '実況', 'VTuber']
+    };
+
+    for (const [tag, words] of Object.entries(keywordDictionary)) {
+        words.forEach(w => {
+            if (text.includes(w)) tags.push(tag);
+        });
+    }
+
+    // 重複を消して、きれいなタグの配列を返すよ！
+    return [...new Set(tags)].filter(t => t);
+}
+
 function classifyNews(title, description) {
     const textLower = (title + ' ' + (description || '')).toLowerCase();
     const scores = {
         'ニュース': 10,
         'エンタメ': 0,
         '話題': 0,
-        'レビュー': 0,
-        'コラム': 0,
-        'ネタ': 0,
-        '芸能': 0,
-        'らび': 0
+        '芸能': 0
     };
     const isTrustedTechSite = /watch\.impress\.co\.jp|itmedia\.co\.jp|mynavi\.jp|ascii\.jp|gizmodo\.jp|phileweb\.com|digitallife\.jp|realsound\.jp\/tech/.test(description || '');
     if (isTrustedTechSite) scores['ニュース'] += 100;
-    const isYouTuberSite = /logtube\.jp/.test(description || '');
-    if (isYouTuberSite) scores['エンタメ'] += 50; 
     const keywords = {
-        'エンタメ': ['映画', 'ドラマ', 'アニメ', '音楽', 'ライブ', 'アイドル', 'タレント', '披露宴', '結婚', '離婚', 'ファン', 'イベント', '漫画', 'マンガ', 'コミック', 'ゲーム', 'youtuber', 'ユーチューバー', '動画配信', '実況', 'vtuber', 'tiktok'],
-        '話題': ['sns', 'ネットで', 'バズ', '炎上', '論争', '話題に', '流行', 'Twitter', 'ツイッター', 'Instagram', 'インスタ', 'Threads'],
+        'エンタメ': ['映画', 'ドラマ', 'アニメ', '音楽', 'アイドル', 'タレント', '漫画', 'ゲーム'],
+        '話題': ['sns', 'ネットで', 'バズ', '炎上', '流行', 'Twitter', 'インスタ'],
         'ニュース': ['政治', '経済', '社会', '事件', '事故', '国際', '科学', '医療'],
-        'レビュー': ['レビュー', '使ってみた', '試用', '検証', '実機'],
-        'コラム': ['コラム', '解説', '考察', '考え方', 'まとめ'],
-        'ネタ': ['面白', '爆笑', '衝撃', '驚き'],
-        '芸能': ['週刊誌', '熱愛', '破局', '引退', '復帰', '舞台挨拶'],
-        'らび': ['ウサギ', 'うさぎ', '可愛い', '癒やし']
+        '芸能': ['週刊誌', '熱愛', '破局', '引退', '復帰', '舞台挨拶']
     };
     for (const [cat, words] of Object.entries(keywords)) {
         words.forEach(w => { if (textLower.includes(w)) scores[cat] += 10; });
@@ -146,32 +164,32 @@ function classifyNews(title, description) {
     return top[0];
 }
 
-function generateTags(title, description) {
-    const text = (title + ' ' + (description || ''));
-    const tags = [];
-    if (text.includes('YouTube') || text.includes('YouTuber') || /youtuber|ユーチューバー/i.test(text)) tags.push('YouTuber');
-    if (text.includes('SNS') || text.includes('Twitter') || text.includes('公式')) tags.push('SNS');
-    if (text.includes('最新') || text.includes('話題')) tags.push('話題');
-    if (text.includes('映画') || text.includes('ドラマ')) tags.push('エンタメ');
-    return [...new Set(tags)];
-}
-
-async function fetchOgpDescription(url) {
+/**
+ * 🖼️ ニュースサイトから「本物の画像（OGP）」と詳細を取得する機能らび！
+ */
+async function fetchOgpData(url) {
     try {
         const res = await axios.get(url, { timeout: 10000 });
         const html = res.data;
+        
+        // 解説文の取得
         const ogDesc = html.match(/<meta property="og:description" content="([^"]+)"/i);
-        if (ogDesc) return stripHtml(ogDesc[1]);
         const metaDesc = html.match(/<meta name="description" content="([^"]+)"/i);
-        if (metaDesc) return stripHtml(metaDesc[1]);
+        const description = stripHtml(ogDesc?.[1] || metaDesc?.[1] || '');
+
+        // アイキャッチ画像（OGP）の取得らび！
+        const ogImage = html.match(/<meta property="og:image" content="([^"]+)"/i);
+        const image = ogImage?.[1] || null;
+
+        return { description, image };
     } catch (e) {
         log(`[OGP Fetch Error] ${url} -> ${e.message}`);
     }
-    return null;
+    return { description: null, image: null };
 }
 
 async function startAutoPosting() {
-    log('🚀 自動投稿エンジン起動らび！ ' + (IS_DRY_RUN ? ' (DRY RUN MODE)' : ''));
+    log('🚀 自動投稿エンジン起動らび！ (タグ＆画像強化版) ' + (IS_DRY_RUN ? ' (DRY RUN MODE)' : ''));
     let allNews = [];
     for (const feed of RSS_FEEDS) {
         try {
@@ -189,95 +207,75 @@ async function startAutoPosting() {
                     const link = item.match(/<link>([\s\S]*?)<\/link>/)?.[1];
                     let description = stripHtml(item.match(/<description>([\s\S]*?)<\/description>/)?.[1]);
                     if (!title || !link) continue;
-                    const cat = classifyNews(title, description);
-                    const tags = generateTags(title, description);
-                    allNews.push({ title, link, description, category: cat, tags });
+                    const category = classifyNews(title, description);
+                    allNews.push({ title, link, description, category });
                 } catch (itemError) {
-                    log(`⚠️ ニュース項目の解析に失敗したけど、次へ進むらび: ${itemError.message}`);
+                    log(`⚠️ 解析失敗: ${itemError.message}`);
                 }
             }
         } catch (feedError) {
-            log(`❌ フィード取得に失敗したけど、他のフィードを試すらび: ${feed} -> ${feedError.message}`);
+            log(`❌ フィード取得失敗: ${feed} -> ${feedError.message}`);
         }
     }
+
     const { data: recentSurveys } = await supabase
         .from('surveys')
         .select('title, description')
         .order('created_at', { ascending: false })
         .limit(2000);
-    const normalize = (t) => {
-        let text = t || '';
-        text = text.replace(/^【(速報|更新|最新|注目|重要)】/i, '');
-        text = text.replace(/^\[(新着|修正|告知)\]/i, '');
-        return text.replace(/[\s\t\n\r、。！？「」『』“”"‘’!?,.．．…—―‐－\(\)（）\[\]［］【】]/g, '').toLowerCase();
-    };
+
+    const normalize = (t) => (t || '').replace(/[\s\t\n\r、。！？「」『』“”"‘’!?,.．．…—―‐－\(\)（）\[\]［］【】]/g, '').toLowerCase();
     const recentNormTitles = new Set(recentSurveys?.map(s => normalize(s.title)) || []);
     const recentLinks = new Set(recentSurveys?.map(s => {
         const match = s.description?.match(/\[続きを読む\]\((.*?)\)/);
         return match ? match[1].trim() : null;
     }).filter(l => l) || []);
+
     let count = 0;
     const categoryCounts = {};
     const now = new Date();
     const jstHour = (now.getUTCHours() + 9) % 24;
     let maxPosts = 2;
-    let maxPerCategory = 1;
-    let newsMax = 1;
-    if (jstHour >= 19 && jstHour <= 23) {
-        maxPosts = 5;
-        maxPerCategory = 2;
-        newsMax = 3;
-    } else if (jstHour === 12 || (jstHour >= 7 && jstHour <= 8)) {
-        maxPosts = 3;
-        maxPerCategory = 1;
-        newsMax = 2;
-    } else if (jstHour >= 2 && jstHour <= 5) {
-        maxPosts = 1;
-        maxPerCategory = 1;
-        newsMax = 1;
-    }
-    log(`[Dynamic Limit] JST ${jstHour}時なので、最大 ${maxPosts}件（ニュースは${newsMax}件まで）投稿するらび！`);
+    if (jstHour >= 19 && jstHour <= 23) maxPosts = 5;
+    else if (jstHour === 12 || (jstHour >= 7 && jstHour <= 8)) maxPosts = 3;
+
     for (const news of allNews) {
         if (count >= maxPosts) break; 
-        if (recentLinks.has(news.link.trim())) {
-            log(`[Skip] URLが重複しています: ${news.title}`);
-            continue;
-        }
-        const normCurrent = normalize(news.title);
-        if (recentNormTitles.has(normCurrent)) {
-            log(`[Skip] タイトルが実質的に重複しています: ${news.title}`);
-            continue;
-        }
-        let effectiveDescription = news.description;
-        if (!effectiveDescription || effectiveDescription.length < 400) {
-            log(`[Lazy OGP] 内容が薄いため再取得を試みます: ${news.title}`);
-            const ogpData = await fetchOgpDescription(news.link);
-            if (ogpData && ogpData.length > (effectiveDescription || '').length) {
-                effectiveDescription = ogpData;
-            }
-        }
+        if (recentLinks.has(news.link.trim())) continue;
+        if (recentNormTitles.has(normalize(news.title))) continue;
+
+        // 🖼️ 本物の画像と詳細情報を深掘りするらび！
+        log(`🔍 詳細を深掘り中: ${news.title}`);
+        const ogpData = await fetchOgpData(news.link);
+        let effectiveDescription = ogpData.description || news.description;
+        
         if (!effectiveDescription || effectiveDescription.length < 50) {
-            log(`[Skip] 内容が不十分です: ${news.title}`);
+            log(`[Skip] 内容が不十分らび: ${news.title}`);
             continue;
         }
+
         try {
             const cat = news.category;
-            const isNewsLike = (cat === 'ニュース' || cat === 'その他');
-            const currentCatMax = (isNewsLike ? newsMax : maxPerCategory);
-            if (categoryCounts[cat] >= currentCatMax) continue;
+            if (categoryCounts[cat] >= 2) continue;
+
+            // 🎥 動画の確信度チェック！
+            let imageUrl = await searchYouTubeVideo(news.title);
             
-            // ✨ 動画検索の質が上がったらびっ！
-            let video = await searchYouTubeVideo(news.title);
-            let imageUrl = video || '';
-            
-            if (!imageUrl && news.category === 'ニュース') {
-                imageUrl = 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=1000';
-            }
+            // 🖼️ 動画が見つからなかったら、本物のOGP画像を使うよ！
             if (!imageUrl) {
-                log(`[Skip] 画像/動画が見つかりません: ${news.title}`);
-                continue;
+                if (ogpData.image) {
+                    log(`✨ 本物の画像(OGP)を採用らび！: ${ogpData.image}`);
+                    imageUrl = ogpData.image;
+                } else {
+                    log(`💡 最終手段のプレースホルダを採用らびっ。`);
+                    imageUrl = 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=1000';
+                }
             }
-            log(`🚀 投稿準備OK: ${news.title} (${cat})`);
+
+            // 🏷️ 賑やかなタグを作るらび！
+            const tags = generateTags(news.title, effectiveDescription, cat);
+
+            log(`🚀 投稿準備OK: ${news.title} (${cat}) [Tags: ${tags.join(', ')}]`);
             if (!IS_DRY_RUN) {
                 const deadline = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
                 const { data: sData, error: sErr } = await supabase.from('surveys').insert([{
@@ -288,7 +286,7 @@ async function startAutoPosting() {
                     user_id: '86819a93-5182-4299-906d-74d3202996e3',
                     is_official: true,
                     visibility: 'public',
-                    tags: news.tags,
+                    tags: tags,
                     deadline
                 }]).select();
                 if (sErr) throw sErr;
@@ -300,7 +298,7 @@ async function startAutoPosting() {
                 ]);
                 log(`✅ 投稿成功らび！: ${news.title}`);
             } else {
-                log(`[DRY RUN] 投稿: ${news.title} [${cat}]`);
+                log(`[DRY RUN] 投稿: ${news.title} [${cat}] tags:[${tags.join(', ')}]`);
             }
             count++;
             categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
