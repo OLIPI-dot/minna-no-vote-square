@@ -31,24 +31,25 @@ if (!url || !key) {
 }
 
 async function generateSitemap() {
-    console.log('探検開始！アンケートの道しるべ（サイトマップ）を作るよ！🐰🗺️');
-    const res = await fetch(`${url}/rest/v1/surveys?visibility=eq.public&select=id,created_at`, {
-        headers: {
-            'apikey': key,
-            'Authorization': `Bearer ${key}`
+    try {
+        console.log('探検開始！アンケートの道しるべ（サイトマップ）を作るよ！🐰🗺️');
+        const res = await fetch(`${url}/rest/v1/surveys?visibility=eq.public&select=id,created_at`, {
+            headers: {
+                'apikey': key,
+                'Authorization': `Bearer ${key}`
+            }
+        });
+
+        if (!res.ok) {
+            console.error('アンケートの取得に失敗したらび…', await res.text());
+            return;
         }
-    });
 
-    if (!res.ok) {
-        console.error('アンケートの取得に失敗したらび…', await res.text());
-        return;
-    }
+        const surveys = await res.json();
+        console.log(`✅ ${surveys.length} 件のアンケートを見つけたよ！`);
 
-    const surveys = await res.json();
-    console.log(`✅ ${surveys.length} 件のアンケートを見つけたよ！`);
-
-    const now = new Date().toISOString().split('T')[0];
-    let xml = `<?xml version="1.0" encoding="UTF-8"?>
+        const now = new Date().toISOString().split('T')[0];
+        let xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- メインページ -->
   <url>
@@ -80,21 +81,28 @@ async function generateSitemap() {
   </url>
 `;
 
-    surveys.forEach(survey => {
-        const date = new Date(survey.created_at).toISOString().split('T')[0];
-        xml += `  <url>
-    <loc>${SITE_URL}/s/${survey.id}</loc>
-    <lastmod>${date}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>\n`;
-    });
+        surveys.forEach(survey => {
+            try {
+                const date = new Date(survey.created_at).toISOString().split('T')[0];
+                xml += `  <url>
+        <loc>${SITE_URL}/s/${survey.id}</loc>
+        <lastmod>${date}</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+      </url>\n`;
+            } catch (e) {
+                console.warn(`⚠️ アンケートID ${survey.id} の処理をスキップらび:`, e.message);
+            }
+        });
 
-    xml += `</urlset>`;
+        xml += `</urlset>`;
 
-    const outputPath = path.join(__dirname, '../public/sitemap.xml');
-    fs.writeFileSync(outputPath, xml);
-    console.log(`✨ サイトマップが完成したよ！場所: ${outputPath} 🐰🥕`);
+        const outputPath = path.join(__dirname, '../public/sitemap.xml');
+        fs.writeFileSync(outputPath, xml);
+        console.log(`✨ サイトマップが完成したよ！場所: ${outputPath} 🐰🥕`);
+    } catch (err) {
+        console.error('💥 サイトマップ作成中に致命的なエラーが発生したらび…', err);
+    }
 }
 
 generateSitemap().catch(console.error);

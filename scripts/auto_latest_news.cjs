@@ -327,19 +327,22 @@ async function startAutoPosting() {
             const items = res.data.match(/<item>([\s\S]*?)<\/item>/g) || [];
 
             for (const item of items) {
-                const title = stripHtml(item.match(/<title>([\s\S]*?)<\/title>/)?.[1]);
-                const link = item.match(/<link>([\s\S]*?)<\/link>/)?.[1];
-                let description = stripHtml(item.match(/<description>([\s\S]*?)<\/description>/)?.[1]);
+                try {
+                    const title = stripHtml(item.match(/<title>([\s\S]*?)<\/title>/)?.[1]);
+                    const link = item.match(/<link>([\s\S]*?)<\/link>/)?.[1];
+                    let description = stripHtml(item.match(/<description>([\s\S]*?)<\/description>/)?.[1]);
 
-                if (!title || !link) continue;
+                    if (!title || !link) continue;
 
-
-                const cat = classifyNews(title, description);
-                const tags = generateTags(title, description);
-                allNews.push({ title, link, description, category: cat, tags });
+                    const cat = classifyNews(title, description);
+                    const tags = generateTags(title, description);
+                    allNews.push({ title, link, description, category: cat, tags });
+                } catch (itemError) {
+                    log(`⚠️ ニュース項目の解析に失敗したけど、次へ進むらび: ${itemError.message}`);
+                }
             }
         } catch (e) {
-            log(`RSS取得失敗: ${feed} -> ${e.message}`);
+            log(`❌ フィード取得に失敗したけど、他のフィードを試すらび: ${feed} -> ${e.message}`);
         }
     }
 
