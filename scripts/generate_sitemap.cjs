@@ -3,10 +3,7 @@ const path = require('path');
 
 // 環境変数の取得
 const getEnv = (key) => {
-    // 1. すでに環境変数にあるならそれを使う（GitHub Actionsなど）
     if (process.env[key]) return process.env[key];
-
-    // 2. なければ .env 系ファイルを探すらび！
     let envFile = '';
     const locations = [
         path.join(__dirname, '../.env.local'),
@@ -14,7 +11,6 @@ const getEnv = (key) => {
         path.join(__dirname, '.env.local'),
         path.join(__dirname, '.env')
     ];
-
     for (const loc of locations) {
         if (fs.existsSync(loc)) {
             envFile = fs.readFileSync(loc, 'utf8');
@@ -36,8 +32,6 @@ if (!url || !key) {
 
 async function generateSitemap() {
     console.log('探検開始！アンケートの道しるべ（サイトマップ）を作るよ！🐰🗺️');
-
-    // 1. 公開設定のアンケートを全件取得
     const res = await fetch(`${url}/rest/v1/surveys?visibility=eq.public&select=id,created_at`, {
         headers: {
             'apikey': key,
@@ -53,7 +47,6 @@ async function generateSitemap() {
     const surveys = await res.json();
     console.log(`✅ ${surveys.length} 件のアンケートを見つけたよ！`);
 
-    // 2. サイトマップの組み立て
     const now = new Date().toISOString().split('T')[0];
     let xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -71,6 +64,11 @@ async function generateSitemap() {
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>${SITE_URL}/contact.html</loc>
+    <lastmod>${now}</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>${SITE_URL}/terms.html</loc>
     <lastmod>${now}</lastmod>
     <priority>0.3</priority>
@@ -82,12 +80,11 @@ async function generateSitemap() {
   </url>
 `;
 
-    // 3. 各アンケートのURLを追加
-    surveys.forEach(sv => {
-        const lastmod = sv.created_at ? sv.created_at.split('T')[0] : now;
+    surveys.forEach(survey => {
+        const date = new Date(survey.created_at).toISOString().split('T')[0];
         xml += `  <url>
-    <loc>${SITE_URL}/s/${sv.id}</loc>
-    <lastmod>${lastmod}</lastmod>
+    <loc>${SITE_URL}/s/${survey.id}</loc>
+    <lastmod>${date}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>\n`;
@@ -95,11 +92,9 @@ async function generateSitemap() {
 
     xml += `</urlset>`;
 
-    // 4. ファイル保存
-    const sitemapPath = path.join(__dirname, '../public/sitemap.xml');
-    fs.writeFileSync(sitemapPath, xml);
-    console.log(`✨ サイトマップの更新が完了したよ！ [${sitemapPath}]`);
-    console.log('これで検索エンジンのボットさんも迷わず来れるね！らびっ！🐰🌈');
+    const outputPath = path.join(__dirname, '../public/sitemap.xml');
+    fs.writeFileSync(outputPath, xml);
+    console.log(`✨ サイトマップが完成したよ！場所: ${outputPath} 🐰🥕`);
 }
 
 generateSitemap().catch(console.error);
