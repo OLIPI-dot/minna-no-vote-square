@@ -2210,6 +2210,11 @@ function App() {
                 <li onClick={() => setShowingTerms(true)} className="footer-link-item">📖 利用規約</li>
                 <li onClick={() => setShowingPrivacy(true)} className="footer-link-item">📄 プライバシーポリシー</li>
                 <li onClick={() => setShowingContact(true)} className="footer-link-item">📩 お問い合わせ</li>
+                <li className="footer-link-item">
+                  <a href="/sitemap.xml" target="_blank" style={{ color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    🗺️ サイトマップ
+                  </a>
+                </li>
               </ul>
             </div>
             <div className="footer-link-group">

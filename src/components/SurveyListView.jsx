@@ -242,7 +242,7 @@ const SurveyListView = ({
         scrollSnapType: 'x proximity',
         scrollbarWidth: 'thin'
       }}>
-        {['Switch', 'PS5', 'Steam', 'AI', 'グルメ', 'アニメ', 'VTuber', 'スマホ', 'ライフハック', '映画', 'マンガ', 'ライフスタイル', '経済'].map(tag => (
+        {['ゲーム', 'Switch', 'PS5', 'Steam', 'AI', 'グルメ', 'アニメ', 'VTuber', 'スマホ', 'ライフハック', '映画', 'マンガ', 'ライフスタイル', '経済'].map(tag => (
           <span
             key={tag}
             className={`tag-bubble ${filterTag === tag ? 'active' : ''}`}

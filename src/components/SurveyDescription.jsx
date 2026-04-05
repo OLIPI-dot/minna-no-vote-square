@@ -1,7 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
+import SourcePreviewModal from './SourcePreviewModal';
 
 const SurveyDescription = ({ description, renderCommentContent }) => {
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  
   if (!description) return null;
+
+  // 🛡️ サイト内表示（iframe）が禁止されているドメインのリストらび！
+  const isIframeRestricted = (url) => {
+    if (!url) return true;
+    const restrictedDomains = [
+      'yahoo.co.jp',
+      'famitsu.com',
+      '4gamer.net',
+      'gamespark.jp',
+      'automaton-media.com',
+      'youtube.com',
+      'ign.com'
+    ];
+    return restrictedDomains.some(domain => url.includes(domain));
+  };
 
   // 🔗 説明文の中からリンクを救出するらび！ [テキスト](URL) 形式を最優先、なければ生のURLを探すよ。
   const mdMatch = description.match(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/);
@@ -11,8 +29,9 @@ const SurveyDescription = ({ description, renderCommentContent }) => {
     ? { text: mdMatch[1], url: mdMatch[2] } 
     : (rawMatch ? { text: '出典元（詳細を見る）', url: rawMatch[0] } : null);
   
+  const isRestricted = displayLink ? isIframeRestricted(displayLink.url) : false;
+
   // 📝 リンク部分を本文から隠して、ボタンとして別に表示するよ。
-  // 本文中にあるリンク（Markdown・生のURL両方）をすべて非表示にするらび。
   let cleanBody = description
     .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '')
     .replace(/https?:\/\/[^\s)]+/g, '')
@@ -21,7 +40,7 @@ const SurveyDescription = ({ description, renderCommentContent }) => {
   return (
     <div className="survey-description-container" style={{
       margin: '0 auto 50px auto',
-      maxWidth: '1100px', // おりぴさんリクエスト: 広々と見せるらび！✨
+      maxWidth: '1100px',
       position: 'relative',
     }}>
       {/* プレミアムなラベル 🏷️ */}
@@ -47,10 +66,10 @@ const SurveyDescription = ({ description, renderCommentContent }) => {
       </div>
 
       <div className="survey-description-box" style={{
-        fontSize: '1.05rem', // 少しだけ小さくして、高級感を出すよ
-        color: '#334155', // 目に優しい落ち着いた色
-        lineHeight: '2.2', // さらなる解放感！
-        letterSpacing: '0.04em', // 文字を詰まらせない魔法らび！
+        fontSize: '1.05rem',
+        color: '#334155',
+        lineHeight: '2.2',
+        letterSpacing: '0.04em',
         background: 'rgba(255, 255, 255, 0.95)',
         backdropFilter: 'blur(20px)',
         border: '1px solid rgba(148, 163, 184, 0.2)',
@@ -61,7 +80,6 @@ const SurveyDescription = ({ description, renderCommentContent }) => {
         position: 'relative',
         fontFamily: "'Inter', 'Noto Sans JP', sans-serif"
       }}>
-        {/* 装飾的な背景アート 🎨 */}
         <div style={{
           position: 'absolute',
           bottom: '-30px',
@@ -72,17 +90,16 @@ const SurveyDescription = ({ description, renderCommentContent }) => {
           pointerEvents: 'none'
         }} />
 
-        {/* 本文 💡 (おりぴさんリクエスト: 読みやすさ重視のホワイトアウト) */}
+        {/* 本文 💡 */}
         <div style={{ 
           position: 'relative', 
           zIndex: 1, 
-          maxHeight: '180px', // おりぴさんリクエスト: 5行分くらいでピタッと止めるらび！
+          maxHeight: '180px',
           overflow: 'hidden',
           marginBottom: displayLink ? '32px' : '0',
           color: '#334155'
         }}>
           {cleanBody}
-          {/* 下部でジワ〜ッと消えていくエフェクトらび！✨ (長めの時に自動で掛かるよ) */}
           {cleanBody.length > 100 && (
             <div style={{
               position: 'absolute',
@@ -90,51 +107,63 @@ const SurveyDescription = ({ description, renderCommentContent }) => {
               left: 0,
               right: 0,
               height: '100px', 
-              background: 'linear-gradient(to bottom, transparent 0%, rgba(255, 255, 255, 1) 85%)',
+              background: 'linear-gradient(to bottom, transparent 0%, rgba(255, 255, 255, 1) 100%)',
               pointerEvents: 'none'
             }} />
           )}
         </div>
 
-        {/* 🔗 プレミアム・ソースボタン */}
+        {/* 🔗 スマート・ソースボタン */}
         {displayLink && (
           <div style={{ textAlign: 'center' }}>
-            <a
-              href={displayLink.url}
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              onClick={() => isRestricted ? window.open(displayLink.url, '_blank') : setIsPreviewOpen(true)}
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '12px',
                 padding: '14px 32px',
-                background: 'linear-gradient(135deg, #7c3aed, #6366f1)',
+                background: isRestricted 
+                  ? 'linear-gradient(135deg, #475569, #1e293b)' // 外部用は少し落ち着いた色に
+                  : 'linear-gradient(135deg, #7c3aed, #6366f1)', // 内部用は鮮やか、らび！
                 borderRadius: '18px',
                 color: 'white',
                 fontSize: '0.95rem',
                 fontWeight: 'bold',
                 textDecoration: 'none',
                 transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-                boxShadow: '0 10px 20px rgba(124, 58, 237, 0.25)',
+                boxShadow: '0 10px 20px rgba(0, 0, 0, 0.15)',
                 cursor: 'pointer',
                 border: 'none'
               }}
               onMouseOver={(e) => {
                 e.currentTarget.style.transform = 'translateY(-4px) scale(1.03)';
-                e.currentTarget.style.boxShadow = '0 15px 30px rgba(124, 58, 237, 0.4)';
+                e.currentTarget.style.boxShadow = '0 15px 30px rgba(0, 0, 0, 0.2)';
               }}
               onMouseOut={(e) => {
                 e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                e.currentTarget.style.boxShadow = '0 10px 20px rgba(124, 58, 237, 0.25)';
+                e.currentTarget.style.boxShadow = '0 10px 20px rgba(0, 0, 0, 0.15)';
               }}
             >
-              <span>🌐</span>
-              <span>続きを読む（出典元に飛びます）</span>
+              <span>{isRestricted ? '🚀' : '🌐'}</span>
+              <span>
+                {isRestricted ? '出典サイトで詳しく読む（外部）' : 'このサイト内でサクッと読む'}
+              </span>
               <span style={{ fontSize: '1.2em' }}>›</span>
-            </a>
+            </button>
           </div>
         )}
       </div>
+
+      {/* 🖼️ アプリ内プレビューモーダル（許可サイトのみ） */}
+      {displayLink && !isRestricted && (
+        <SourcePreviewModal 
+          isOpen={isPreviewOpen} 
+          onClose={() => setIsPreviewOpen(false)} 
+          url={displayLink.url} 
+          title={cleanBody.substring(0, 30) + '...'} 
+        />
+      )}
     </div>
   );
 };
