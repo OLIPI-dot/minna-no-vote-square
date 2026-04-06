@@ -16,7 +16,14 @@ const SurveyDescription = ({ description, renderCommentContent }) => {
       'gamespark.jp',
       'automaton-media.com',
       'youtube.com',
-      'ign.com'
+      'ign.com',
+      'kai-you.net',
+      'mdpr.jp',
+      'natalie.mu',
+      'mantan-web.jp',
+      'phileweb.com',
+      'impress.co.jp',
+      'dengekionline.com'
     ];
     return restrictedDomains.some(domain => url.includes(domain));
   };
