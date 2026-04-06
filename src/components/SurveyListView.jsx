@@ -416,7 +416,13 @@ const SurveyListView = ({
                       }}
                     >
                       {thumbSrc ? (
-                        <div className="video-thumb-wrapper" style={{ position: 'relative' }}>
+                        <div className="video-thumb-wrapper" style={{ position: 'relative' }}
+                          ref={el => {
+                            if (!el) return;
+                            // 画像エラー時にwrapperごと隠してカテゴリバッジに切り替えるらび
+                            el._hideOnError = true;
+                          }}
+                        >
                           <div className="category-icon-thumb placeholder-base" style={{
                             position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
                             background: catStyle.color, opacity: 0.1, zIndex: 0,
@@ -430,11 +436,8 @@ const SurveyListView = ({
                             {...(idx < 4 ? { fetchpriority: "high" } : {})}
                             onLoad={e => e.target.classList.add('ready')}
                             onError={e => {
-                               if (!e.target.src.includes('nico_fallback.jpg')) {
-                                 e.target.src = '/assets/images/nico_fallback.jpg';
-                               } else {
-                                 e.target.style.display = 'none';
-                               }
+                               const wrapper = e.target.closest('.video-thumb-wrapper');
+                               if (wrapper) wrapper.style.display = 'none';
                              }}
                             style={{ position: 'relative', zIndex: 1 }}
                           />

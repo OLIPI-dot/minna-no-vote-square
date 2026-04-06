@@ -154,9 +154,9 @@ function generateTags(title, description, category) {
     const dict = {
         '経済': ['経済', '投資', '証券', '暗号資産', '仮想通貨', 'ビットコイン', '日経平均', '円安'],
         'テクノロジー': ['人工知能', 'ガジェット', 'iPhone', 'スマートフォン', 'iOS', 'Android', 'パソコン', 'Apple', 'Google'],
-        'エンタメ': ['映画', 'ドラマ', 'アニメ', '音楽', 'アイドル', 'タレント', 'コミック', 'マンガ', 'VTuber', 'YouTuber', '声優'],
+        'エンタメ': ['映画', 'ドラマ', 'アニメ', '音楽', 'アイドル', 'コミック', 'マンガ', 'VTuber', 'YouTuber', '声優'],
         'ゲーム': ['PS5', 'Switch', 'Steam', 'Nintendo', 'PlayStation', 'ゲーミング', 'eスポーツ', '攻略', 'インディーゲーム', 'RPG'],
-        '芸能': ['結婚', '熱愛', '退所', 'デビュー', '引退', '不倫', '交際']
+        '芸能': ['結婚', '熱愛', '退所', 'デビュー', '引退', '不倫', '交際', 'タレント', '俳優', '女優']
     };
     for (const [tag, words] of Object.entries(dict)) {
         words.forEach(w => { if (text.toLowerCase().includes(w.toLowerCase())) tags.push(tag); });
@@ -218,9 +218,8 @@ function classifyNews(title, description) {
     const textLower = (title + ' ' + (description || '')).toLowerCase();
     const scores = { 'ニュース': 10, 'エンタメ': 0, '話題': 0, '芸能': 0, 'ゲーム': 0 };
     const keywords = {
-        'エンタメ': ['映画', 'ドラマ', 'アニメ', '音楽', 'アイドル', 'タレント', '漫画', 'コミック', '声優', 'youtube', 'vtuber', '動画配信', '実況'],
-        '芸能': ['芸能', 'ジャニーズ', '不倫', '結婚', '熱愛', '退所', 'スター', '俳優', '女優'],
-        '話題': ['sns', 'ネットで', 'バズ', '炎上', '流行', 'x', 'twitter', 'tiktok', 'インスタ'],
+        'エンタメ': ['映画', 'ドラマ', 'アニメ', '音楽', 'アイドル', '漫画', 'コミック', '声優', 'youtube', 'vtuber', '動画配信', '実況'],
+        '芸能': ['芸能', 'ジャニーズ', '不倫', '結婚', '熱愛', '退所', 'スター', '俳優', '女優', 'タレント', '芸人'],        '話題': ['sns', 'ネットで', 'バズ', '炎上', '流行', 'x', 'twitter', 'tiktok', 'インスタ'],
         'ニュース': ['政治', '経済', '社会', '事件', '事故', '科学', '国際', '物価'],
         'ゲーム': ['ps5', 'switch', 'steam', 'ゲーム', 'プレイステーション', 'ニンテンドー', 'esports', 'rpg', 'fps', 'インディーゲーム']
     };
@@ -228,7 +227,6 @@ function classifyNews(title, description) {
         words.forEach(w => { if (textLower.includes(w)) scores[cat] += 20; });
     }
     // 🎬 出典サイトによる優先度調整
-    if (textLower.includes('natalie.mu') || textLower.includes('mantan-web')) scores['エンタメ'] += 30;
     if (textLower.includes('mdpr.jp')) scores['芸能'] += 30;
     if (textLower.includes('kai-you.net')) scores['話題'] += 30;
     if (textLower.includes('denfaminicogamer')) scores['ゲーム'] += 30;
