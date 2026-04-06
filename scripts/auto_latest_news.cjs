@@ -153,10 +153,10 @@ function generateTags(title, description, category) {
     if (sourceMatch) tags.push(sourceMatch[1]);
 
     const dict = {
-        '経済': ['経済', '投資', '証券', '暗号資産', '仮想通貨', 'ビットコイン', '金融'],
-        'テクノロジー': ['AI', '最新', 'ガジェット', 'iPhone', 'スマートフォン', 'OS', 'アップデート'],
+        '経済': ['経済', '投資', '証券', '暗号資産', '仮想通貨', 'ビットコイン', '日経平均', '円安'],
+        'テクノロジー': ['AI', 'ガジェット', 'iPhone', 'スマートフォン', 'iOS', 'Android', 'PC', 'パソコン', 'Apple', 'Google'],
         'エンタメ': ['映画', 'ドラマ', 'アニメ', '音楽', 'アイドル', 'タレント', 'コミック', 'マンガ', 'VTuber', 'YouTuber', '声優'],
-        'ゲーム': ['PS5', 'Switch', 'Steam', 'ゲーム', '発売', 'アプデ', 'eスポーツ', '攻略', '新作', 'インディー'],
+        'ゲーム': ['PS5', 'Switch', 'Steam', 'Nintendo', 'PlayStation', 'ゲーミング', 'eスポーツ', '攻略', 'インディーゲーム', 'RPG'],
         '芸能': ['結婚', '熱愛', '退所', 'デビュー', '引退', '不倫', '交際']
     };
     for (const [tag, words] of Object.entries(dict)) {
@@ -223,7 +223,7 @@ function classifyNews(title, description) {
         '芸能': ['芸能', 'ジャニーズ', '不倫', '結婚', '熱愛', '退所', 'スター', '俳優', '女優'],
         '話題': ['sns', 'ネットで', 'バズ', '炎上', '流行', 'x', 'twitter', 'tiktok', 'インスタ'],
         'ニュース': ['政治', '経済', '社会', '事件', '事故', '科学', '国際', '物価'],
-        'ゲーム': ['ps5', 'switch', 'steam', 'ゲーム', '発売', 'アプデ', '新作', 'ゲーミング', 'ハード', 'esports']
+        'ゲーム': ['ps5', 'switch', 'steam', 'ゲーム', 'プレイステーション', 'ニンテンドー', 'esports', 'rpg', 'fps', 'インディーゲーム']
     };
     for (const [cat, words] of Object.entries(keywords)) {
         words.forEach(w => { if (textLower.includes(w)) scores[cat] += 20; });
