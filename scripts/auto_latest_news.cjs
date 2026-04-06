@@ -30,14 +30,19 @@ function log(msg) {
 }
 
 const RSS_FEEDS = [
-    'https://news.yahoo.co.jp/rss/topics/top-picks.xml',
-    'https://news.yahoo.co.jp/rss/categories/it.xml',
-    'https://news.yahoo.co.jp/rss/categories/entertainment.xml',
+    'http://kai-you.net/contents/feed.rss',
+    'https://mdpr.jp/rss/attention.xml',
+    'https://natalie.mu/comic/rss/news',
+    'https://natalie.mu/music/rss/news',
+    'https://mantan-web.jp/rss/index.rdf',
+    'https://news.denfaminicogamer.jp/feed',
     'https://logtube.jp/feed/',
-    'https://realsound.jp/tech/index.xml',
-    'https://www.4gamer.net/rss/news_topics.xml',
     'https://www.gamespark.jp/rss20/index.rdf',
-    'https://www.famitsu.com/rss/fcom_all.rdf'
+    'https://www.famitsu.com/rss/fcom_all.rdf',
+    'https://www.4gamer.net/rss/news_topics.xml',
+    'https://news.yahoo.co.jp/rss/categories/entertainment.xml',
+    'https://news.yahoo.co.jp/rss/categories/it.xml',
+    'https://news.yahoo.co.jp/rss/topics/top-picks.xml'
 ];
 
 /**
@@ -108,15 +113,15 @@ function stripHtml(str) {
     return text.trim();
 }
 
-/**
- * 🗳️ ニュースの内容に合わせた「感情豊かな選択肢」を生成するらび！
- */
 function generateOptions(category, title, description) {
     const text = (title + ' ' + (description || '')).toLowerCase();
     
-    // 1. エンタメ・話題系
-    if (category === 'エンタメ' || category === '話題' || text.includes('楽しみ') || text.includes('期待')) {
-        return ['楽しみ！・期待してる', '気になる・見てみたい', 'あまり興味ない', '正直、微妙…'];
+    // 1. エンタメ・話題・動画配信系
+    if (category === 'エンタメ' || category === '芸能' || text.includes('youTube') || text.includes('vtuber') || text.includes('楽しみ')) {
+        if (text.includes('vtuber') || text.includes('youtuber') || text.includes('ライブ配信')) {
+            return ['推し！・応援してる', '気になる・見てみたい', 'あまり知らない', '自分には合わないかな'];
+        }
+        return ['神作の予感！・期待', '気になる・見てみたい', 'あまり興味ない', '正直、微妙かも…'];
     }
     
     // 2. 驚き・事件・ショック系
@@ -129,12 +134,12 @@ function generateOptions(category, title, description) {
         return ['賛成・良いと思う', '反対・良くないと思う', 'どちらとも言えない', 'もっと詳しく知りたい'];
     }
 
-    // 4. ゲーム系（NEWらび！）🎮
-    if (category === 'ゲーム' || text.includes('ゲーム') || text.includes('発売') || text.includes('攻略')) {
-        return ['速攻で遊ぶ！・買う', '面白そう！気になる', '期待してたのと違うかも', 'あまりゲームはしない'];
+    // 4. ゲーム系🎮
+    if (category === 'ゲーム' || text.includes('ゲーム') || text.includes('発売') || text.includes('攻略') || text.includes('アプデ')) {
+        return ['即買い！・遊ぶ', '面白そう！気になる', '期待してたのと違うかも', 'あまりゲームはしない'];
     }
 
-    // 5. デフォルト（以前の「いい感じ」セットらび！）
+    // 5. デフォルト
     return ['賛成・良いと思う', '微妙・う〜ん…', 'とりあえず考えない', '興味がある・興奮！'];
 }
 
@@ -150,13 +155,12 @@ function generateTags(title, description, category) {
     const dict = {
         '経済': ['経済', '投資', '証券', '暗号資産', '仮想通貨', 'ビットコイン', '金融'],
         'テクノロジー': ['AI', '最新', 'ガジェット', 'iPhone', 'スマートフォン', 'OS', 'アップデート'],
-        'エンタメ': ['映画', 'ドラマ', 'アニメ', '音楽', 'アイドル', 'タレント'],
-        '社会': ['事件', '事故', '政治', '裁判', '逮捕'],
-        'ゲーム': ['PS5', 'Switch', 'Steam', 'ゲーム', '発売', 'アプデ', 'eスポーツ', '攻略', 'ハード', '新作'],
-        'YouTuber': ['YouTube', 'YouTuber', '動画配信', '実況']
+        'エンタメ': ['映画', 'ドラマ', 'アニメ', '音楽', 'アイドル', 'タレント', 'コミック', 'マンガ', 'VTuber', 'YouTuber', '声優'],
+        'ゲーム': ['PS5', 'Switch', 'Steam', 'ゲーム', '発売', 'アプデ', 'eスポーツ', '攻略', '新作', 'インディー'],
+        '芸能': ['結婚', '熱愛', '退所', 'デビュー', '引退', '不倫', '交際']
     };
     for (const [tag, words] of Object.entries(dict)) {
-        words.forEach(w => { if (text.includes(w)) tags.push(tag); });
+        words.forEach(w => { if (text.toLowerCase().includes(w.toLowerCase())) tags.push(tag); });
     }
     return [...new Set(tags)].filter(t => t);
 }
@@ -185,12 +189,18 @@ async function fetchRichData(url) {
 
         // 2. 本文（<p>タグ）を深掘りして「たっぷり感」を出すらび！
         // Yahooなどは記事本体を見に行っているので、もっとたくさん取っても大丈夫！
-        const pLimit = url.includes('yahoo.co.jp') ? 6 : 3; 
+        // 🚨 修正: ただしページ下部のナビゲーションなど「ゲーム」「総合」といったキーワードを拾わないため、厳しめにフィルターするらび！
+        const pLimit = url.includes('yahoo.co.jp') ? 4 : 3; 
 
         const pMatches = [...html.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/gi)];
         const mainParagraphs = pMatches
             .map(m => stripHtml(m[1]))
-            .filter(txt => txt.length > 25 && !txt.includes('JavaScript') && !txt.includes('アプリ') && !txt.includes('トピックス'))
+            .filter(txt => txt.length > 25 && 
+                    !txt.includes('JavaScript') && 
+                    !txt.includes('アプリ') && 
+                    !txt.includes('トピックス') && 
+                    !txt.includes('ログイン') &&
+                    !txt.match(/総合 | ニュース | エンタメ /)) // 総合メニュー等のフィルター
             .slice(0, pLimit);
 
         let richDescription = mainParagraphs.join('\n\n');
@@ -209,22 +219,33 @@ function classifyNews(title, description) {
     const textLower = (title + ' ' + (description || '')).toLowerCase();
     const scores = { 'ニュース': 10, 'エンタメ': 0, '話題': 0, '芸能': 0, 'ゲーム': 0 };
     const keywords = {
-        'エンタメ': ['映画', 'ドラマ', 'アニメ', '音楽', 'アイドル', '芸能'],
-        '話題': ['sns', 'ネットで', 'バズ', '炎上', '流行', 'x'],
-        'ニュース': ['政治', '経済', '社会', '事件', '事故', '科学'],
-        'ゲーム': ['ps5', 'switch', 'steam', 'ゲーム', '発売', 'アプデ', '新作', 'ゲーミング']
+        'エンタメ': ['映画', 'ドラマ', 'アニメ', '音楽', 'アイドル', 'タレント', '漫画', 'コミック', '声優', 'youtube', 'vtuber', '動画配信', '実況'],
+        '芸能': ['芸能', 'ジャニーズ', '不倫', '結婚', '熱愛', '退所', 'スター', '俳優', '女優'],
+        '話題': ['sns', 'ネットで', 'バズ', '炎上', '流行', 'x', 'twitter', 'tiktok', 'インスタ'],
+        'ニュース': ['政治', '経済', '社会', '事件', '事故', '科学', '国際', '物価'],
+        'ゲーム': ['ps5', 'switch', 'steam', 'ゲーム', '発売', 'アプデ', '新作', 'ゲーミング', 'ハード', 'esports']
     };
     for (const [cat, words] of Object.entries(keywords)) {
-        words.forEach(w => { if (textLower.includes(w)) scores[cat] += 10; });
+        words.forEach(w => { if (textLower.includes(w)) scores[cat] += 20; });
     }
+    // 🎬 出典サイトによる優先度調整
+    if (textLower.includes('natalie.mu') || textLower.includes('mantan-web')) scores['エンタメ'] += 30;
+    if (textLower.includes('mdpr.jp')) scores['芸能'] += 30;
+    if (textLower.includes('kai-you.net')) scores['話題'] += 30;
+    if (textLower.includes('denfaminicogamer')) scores['ゲーム'] += 30;
+
     const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
     return sorted[0][1] === 0 ? 'その他' : sorted[0][0];
 }
 
 async function startAutoPosting() {
-    log('🚀 プレミアム自動投稿エンジン 起動らびっ！！ (長文リッチ＆感情ボタン対応版) ' + (IS_DRY_RUN ? ' (DRY RUN)' : ''));
+    log('🚀 プレミアム自動投稿エンジン 起動らびっ！！ (長文リッチ＆エンタメ強化版) ' + (IS_DRY_RUN ? ' (DRY RUN)' : ''));
+    
+    // 🎲 フィードの取得順をシャッフルして、いつも同じサイトに偏らないようにするらび！
+    const shuffledFeeds = [...RSS_FEEDS].sort(() => Math.random() - 0.5);
+    
     let allNews = [];
-    for (const feed of RSS_FEEDS) {
+    for (const feed of shuffledFeeds) {
         try {
             const response = await axios.get(feed, { timeout: 30000, headers: { 'User-Agent': 'Mozilla/5.0' } });
             const feedData = response.data;
@@ -243,8 +264,9 @@ async function startAutoPosting() {
     const recentNormTitles = new Set(recentSurveys?.map(s => normalize(s.title)) || []);
 
     let count = 0;
+    const POST_LIMIT = 4; // 1回4件まで増やすらび！
     for (const news of allNews) {
-        if (count >= 2) break; // 1回2件まで
+        if (count >= POST_LIMIT) break;
         if (recentNormTitles.has(normalize(news.title))) continue;
 
         log(`🔍 リード文をリッチ化中: ${news.title}`);

@@ -430,7 +430,17 @@ const SurveyDetailView = ({
          <div className="admin-actions">
             <span style={{ fontWeight: 'bold', color: '#64748b' }}>🏷️ タグ機能</span>
             <div className="admin-btn-group">
-              <button onClick={() => setIsEditingTags(true)} className="admin-btn"># タグ編集</button>
+              <button 
+                onClick={() => {
+                  setIsEditingTags(true);
+                  if (setTagEditValue) {
+                    setTagEditValue((currentSurvey?.tags || []).filter(t => !t.startsWith('_STAMP:')).join(', '));
+                  }
+                }} 
+                className="admin-btn"
+              >
+                # タグ編集
+              </button>
               {(isAdmin || currentSurvey.user_id === user.id) && (
                 <>
                   <button onClick={() => setIsEditingCategory(true)} className="admin-btn">🏷️ カテゴリ変更</button>
