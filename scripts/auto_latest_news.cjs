@@ -151,10 +151,9 @@ function generateTags(title, description, category) {
     const tags = [category];
     const sourceMatch = title.match(/[（\(](.*?)[）\)]$/);
     if (sourceMatch) tags.push(sourceMatch[1]);
-
     const dict = {
         '経済': ['経済', '投資', '証券', '暗号資産', '仮想通貨', 'ビットコイン', '日経平均', '円安'],
-        'テクノロジー': ['AI', 'ガジェット', 'iPhone', 'スマートフォン', 'iOS', 'Android', 'PC', 'パソコン', 'Apple', 'Google'],
+        'テクノロジー': ['人工知能', 'ガジェット', 'iPhone', 'スマートフォン', 'iOS', 'Android', 'パソコン', 'Apple', 'Google'],
         'エンタメ': ['映画', 'ドラマ', 'アニメ', '音楽', 'アイドル', 'タレント', 'コミック', 'マンガ', 'VTuber', 'YouTuber', '声優'],
         'ゲーム': ['PS5', 'Switch', 'Steam', 'Nintendo', 'PlayStation', 'ゲーミング', 'eスポーツ', '攻略', 'インディーゲーム', 'RPG'],
         '芸能': ['結婚', '熱愛', '退所', 'デビュー', '引退', '不倫', '交際']
