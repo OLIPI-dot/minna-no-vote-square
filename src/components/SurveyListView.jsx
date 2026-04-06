@@ -396,7 +396,9 @@ const SurveyListView = ({
                     const numericId = fullId.replace(/^[a-z]+/, '');
                     thumbSrc = `https://nicovideo.cdn.nimg.jp/thumbnails/${numericId}/${numericId}`;
                   }
-                  else if (entries[0]) thumbSrc = entries[0]; // コロンが含まれていても画像URLなら採用
+                  // ✅ ニュース記事のOGP画像URL（プレーンURL）は除外！
+                  // ほぼ全てのニュースサイトがホットリンクをブロックして白い四角になるため。
+                  // YouTube/ニコニコの動画だけサムネを使うらびっ！
                 }
 
                 return (
