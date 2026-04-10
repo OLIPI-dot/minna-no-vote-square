@@ -1163,6 +1163,57 @@ function App() {
     }
   };
 
+  // 📡 サイドバー専用のグローバル取得魔法！ (どのページにいても広場全体の活気を届けるらび！)
+  const fetchSidebarData = async () => {
+    try {
+      console.log("📡 fetchSidebarData: Fetching global sidebar data...");
+      const now = new Date();
+      const next24h = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+
+      // 1. 新着 (最新10件)
+      const { data: latest } = await supabase
+        .from('surveys')
+        .select('*')
+        .eq('visibility', 'public')
+        .not('tags', 'cs', '{"お知らせ"}')
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      // 2. 人気 (とりあえず単純に投票数順の上位10件 + ランダム要素のスコアリングは手元でらび！)
+      const { data: popular } = await supabase
+        .from('surveys')
+        .select('*')
+        .eq('visibility', 'public')
+        .not('tags', 'cs', '{"お知らせ"}')
+        .order('total_votes', { ascending: false })
+        .limit(10);
+
+      // 3. もうすぐ終了 (24時間以内。全件取得！)
+      const { data: ending } = await supabase
+        .from('surveys')
+        .select('*')
+        .eq('visibility', 'public')
+        .gt('deadline', now.toISOString())
+        .lte('deadline', next24h.toISOString())
+        .order('deadline', { ascending: true });
+
+      if (latest) setLiveSurveys(latest);
+      if (popular) setPopularSurveys(popular);
+      if (ending) setEndingSoonSurveys(ending);
+      
+      console.log(`✅ fetchSidebarData: Done. (Live:${latest?.length}, Popular:${popular?.length}, Ending:${ending?.length})`);
+    } catch (err) {
+      console.error("❌ fetchSidebarData CRASHED:", err);
+    }
+  };
+
+  // 初回ロード時と、10分おきにサイドバーを更新する魔法
+  useEffect(() => {
+    fetchSidebarData();
+    const interval = setInterval(fetchSidebarData, 10 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   useEffect(() => {
     if ('scrollRestoration' in window.history) {
       window.history.scrollRestoration = 'auto';
@@ -1358,28 +1409,12 @@ function App() {
   }, [user, currentPage, filterCategory, debouncedSearchQuery, activeTab, sortMode, popularMode]);
 
 
-  // 📡 サイドバー用の派生データ（DBリクエストを節約するためにステートから計算！）
+  // 📡 サイドバー用の派生データ（※以前はここで計算していたが、グローバル取得に移行したためお役御免らび！）
+  /*
   const { liveSurveys_derived, popularSurveys_derived, endingSoonSurveys_derived } = useMemo(() => {
-    const now = new Date();
-    const next24h = new Date(now.getTime() + 24 * 60 * 60 * 1000);
-    // surveys ステートには現在のページの 15件しかない可能性があるので、
-    // サイドバーには全件を見せたいけど、とりあえず手元の surveys から計算するらび（爆速化のため）
-    // もし全件から計算したいなら、別途 sidebar 用に 30件だけ取得する refreshSidebar を残してもいいけど、
-    // 今は負荷軽減を最優先するらび！
-    const regular = surveys.filter(s => s.visibility === 'public' && !s.tags?.includes('お知らせ'));
-
-    return {
-      liveSurveys_derived: [...regular].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 10),
-      popularSurveys_derived: [...regular].sort((a, b) => {
-        const scoreA = (a.total_votes || 0) * SCORE_VOTE_WEIGHT + (a.view_count || 0);
-        const scoreB = (b.total_votes || 0) * SCORE_VOTE_WEIGHT + (b.view_count || 0);
-        return scoreB - scoreA;
-      }).slice(0, 10),
-      endingSoonSurveys_derived: [...regular]
-        .filter(s => s.deadline && new Date(s.deadline) > now && new Date(s.deadline) <= next24h)
-        .sort((a, b) => new Date(a.deadline) - new Date(b.deadline))
-    };
+    ...
   }, [surveys]);
+  */
 
   // 旧 refreshSidebar はお役御免らび！
   // useEffect(() => { refreshSidebar(); }, []);
@@ -2181,9 +2216,9 @@ function App() {
 
           <Suspense fallback={<div className="live-feed-sidebar" style={{ minWidth: '320px', background: 'rgba(255,255,255,0.5)', borderRadius: '24px', height: '100vh' }}></div>}>
             <Sidebar 
-            liveSurveys={liveSurveys_derived}
-            popularSurveys={popularSurveys_derived}
-            endingSoonSurveys={endingSoonSurveys_derived}
+            liveSurveys={liveSurveys}
+            popularSurveys={popularSurveys}
+            endingSoonSurveys={endingSoonSurveys}
             showAllEndingSoon={showAllEndingSoon}
             setShowAllEndingSoon={setShowAllEndingSoon}
             navigateTo={navigateTo}

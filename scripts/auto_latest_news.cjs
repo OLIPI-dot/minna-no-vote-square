@@ -148,20 +148,59 @@ function generateOptions(category, title, description) {
  */
 function generateTags(title, description, category) {
     const text = (title + ' ' + (description || ''));
-    const tags = [category];
+    const tags = new Set([category]); // 最初はカテゴリを入れるらび
+    
+    // 🏷️ 出典元を抽出（(CNET Japan)など）
     const sourceMatch = title.match(/[（\(](.*?)[）\)]$/);
-    if (sourceMatch) tags.push(sourceMatch[1]);
-    const dict = {
-        '経済': ['経済', '投資', '証券', '暗号資産', '仮想通貨', 'ビットコイン', '日経平均', '円安'],
-        'テクノロジー': ['人工知能', 'ガジェット', 'iPhone', 'スマートフォン', 'iOS', 'Android', 'パソコン', 'Apple', 'Google'],
-        'エンタメ': ['映画', 'ドラマ', 'アニメ', '音楽', 'アイドル', 'コミック', 'マンガ', 'VTuber', 'YouTuber', '声優'],
-        'ゲーム': ['PS5', 'Switch', 'Steam', 'Nintendo', 'PlayStation', 'ゲーミング', 'eスポーツ', '攻略', 'インディーゲーム', 'RPG'],
-        '芸能': ['結婚', '熱愛', '退所', 'デビュー', '引退', '不倫', '交際', 'タレント', '俳優', '女優']
+    if (sourceMatch) tags.add(sourceMatch[1]);
+
+    // 🔍 キーワード辞書を大幅強化！見つかった単語そのものをタグとして採用するらび！
+    const keywordMap = {
+        // 🎮 ゲーム
+        'PS5': 'PS5', 'Switch': 'Switch', 'Steam': 'Steam', 'Xbox': 'Xbox', '任天堂': '任天堂', 'Nintendo': '任天堂',
+        'PlayStation': 'PlayStation', '新作': '新作', 'アプデ': 'アプデ', 'アップデート': 'アプデ', 'DLC': 'DLC',
+        'モンハン': 'モンハン', 'ポケモン': 'ポケモン', 'FF14': 'FF14', 'ドラクエ': 'ドラクエ', 'ウマ娘': 'ウマ娘',
+        'オープンワールド': 'オープンワールド', 'RPG': 'RPG', 'FPS': 'FPS', '格ゲー': '格ゲー', 'eスポーツ': 'eスポーツ',
+        // 🚀 テクノロジー
+        'AI': 'AI', 'ChatGPT': 'ChatGPT', '人工知能': 'AI', 'iPhone': 'iPhone', 'Android': 'Android',
+        'Google': 'Google', 'Apple': 'Apple', 'Meta': 'Meta', 'ガジェット': 'ガジェット', 'スマホ': 'スマホ',
+        // 🎬 エンタメ
+        'アニメ': 'アニメ', '映画': '映画', '音楽': '音楽', 'アイドル': 'アイドル', 'ライブ': 'ライブ',
+        'VTuber': 'VTuber', 'YouTuber': 'YouTuber', 'コミック': 'マンガ', 'マンガ': 'マンガ', '漫画': 'マンガ',
+        '声優': '声優', '主演': '主演', 'ドラマ': 'ドラマ', '実写': '実写化', 'コラボ': 'コラボ',
+        // 🌈 芸能・社会
+        '結婚': '結婚', '熱愛': '熱愛', '引退': '引退', 'デビュー': 'デビュー', '解散': '解散',
+        '期間限定': '期間限定', '新発売': '新発売', 'グルメ': 'グルメ', 'スイーツ': 'スイーツ',
+        '発表': '発表', '解禁': '解禁', '緊急': '緊急', '衝撃': '衝撃', '話題': '話題'
     };
-    for (const [tag, words] of Object.entries(dict)) {
-        words.forEach(w => { if (text.toLowerCase().includes(w.toLowerCase())) tags.push(tag); });
+
+    // テキストをスキャンしてタグを増やすらび
+    for (const [kw, tagName] of Object.entries(keywordMap)) {
+        if (text.toLowerCase().includes(kw.toLowerCase())) {
+            tags.add(tagName);
+        }
     }
-    return [...new Set(tags)].filter(t => t);
+
+    let finalTags = Array.from(tags).filter(t => t);
+
+    // 🏷️ 最低2つ以上にする魔法！1つしかない場合は、カテゴリに合わせた賑やかしタグを添えるらび
+    if (finalTags.length < 2) {
+        const fallback = {
+            'ゲーム': '最新作',
+            'ニュース': '最新ニュース',
+            'エンタメ': 'エンタメ情報',
+            '芸能': 'トピックス',
+            '話題': 'トレンド',
+            'その他': '注目'
+        };
+        const extra = fallback[category] || '注目';
+        if (!finalTags.includes(extra)) finalTags.push(extra);
+        // 万が一まだ1つの場合は「アンケート」で賑やかすらび
+        if (finalTags.length < 2) finalTags.push('アンケート');
+    }
+
+    // 重複を消して、多すぎないように最大6〜7個くらいに調整するらび
+    return finalTags.slice(0, 7);
 }
 
 /**
@@ -253,7 +292,9 @@ async function startAutoPosting() {
                 if (!title || !link) continue;
                 allNews.push({ title, link });
             }
-        } catch (e) { log(`❌ フィード取得失敗: ${feed} -> ${e.message}`); }
+        } catch (e) {
+            log(`❌ フィード取得失敗: ${feed} -> ${e.message}`);
+        }
     }
 
     const { data: recentSurveys } = await supabase.from('surveys').select('title, description').order('created_at', { ascending: false }).limit(500);
