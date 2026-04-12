@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import SourcePreviewModal from './SourcePreviewModal';
 
-const SurveyDescription = ({ description, renderCommentContent }) => {
+const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   
   if (!description) return null;
@@ -23,7 +23,8 @@ const SurveyDescription = ({ description, renderCommentContent }) => {
       'mantan-web.jp',
       'phileweb.com',
       'impress.co.jp',
-      'dengekionline.com'
+      'dengekionline.com',
+      'denfaminicogamer.jp'
     ];
     return restrictedDomains.some(domain => url.includes(domain));
   };
@@ -38,10 +39,20 @@ const SurveyDescription = ({ description, renderCommentContent }) => {
   
   const isRestricted = displayLink ? isIframeRestricted(displayLink.url) : false;
 
-  // 📝 リンク部分を本文から隠して、ボタンとして別に表示するよ。
+  // 📝 らびのコメントを抽出して装飾するらび！
+  const labiCommentMatch = description.match(/🐰 \*\*らびの視点：\*\*([\s\S]*?)(?=---\n|\[\[|$)/);
+  const labiComment = labiCommentMatch ? labiCommentMatch[1].trim() : null;
+
+  // 🧩 秘密の答え（SECRET_ANSWER）を救出するらび！
+  const secretAnswerMatch = description.match(/\[\[SECRET_ANSWER:([\s\S]*?)\]\]/);
+  const secretAnswer = secretAnswerMatch ? secretAnswerMatch[1].trim() : null;
+  
+  // らびのコメントを除いた後の本文（および出典元URLの抽出）
   let cleanBody = description
-    .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '')
-    .replace(/https?:\/\/[^\s)]+/g, '')
+    .replace(/🐰 \*\*らびの視点：\*\*[\s\S]*?(---\n|\[\[|$)/, '') // らびのコメントを削除
+    .replace(/\[\[SECRET_ANSWER:[\s\S]*?\]\]/g, '')               // 秘密の答えを削除
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '')         // リンク形式を削除
+    .replace(/https?:\/\/[^\s)]+/g, '')                            // 生URLを削除
     .trim();
 
   return (
@@ -69,14 +80,14 @@ const SurveyDescription = ({ description, renderCommentContent }) => {
         letterSpacing: '0.08em'
       }}>
         <span style={{ fontSize: '1.2rem' }}>💎</span>
-        <span>解説 / ソース元</span>
+        <span>解説 / ニュース解説</span>
       </div>
 
       <div className="survey-description-box" style={{
         fontSize: '1.05rem',
         color: '#334155',
-        lineHeight: '2.2',
-        letterSpacing: '0.04em',
+        lineHeight: '2',
+        letterSpacing: '0.02em',
         background: 'rgba(255, 255, 255, 0.95)',
         backdropFilter: 'blur(20px)',
         border: '1px solid rgba(148, 163, 184, 0.2)',
@@ -85,39 +96,72 @@ const SurveyDescription = ({ description, renderCommentContent }) => {
         whiteSpace: 'pre-wrap',
         textAlign: 'justify',
         position: 'relative',
+        padding: '40px',
         fontFamily: "'Inter', 'Noto Sans JP', sans-serif"
       }}>
-        <div style={{
-          position: 'absolute',
-          bottom: '-30px',
-          right: '-30px',
-          width: '180px',
-          height: '180px',
-          background: 'radial-gradient(circle, rgba(139, 92, 246, 0.05), transparent 70%)',
-          pointerEvents: 'none'
-        }} />
+        {/* 🐰 らびの吹き出しエリア（独自コンテンツ強調！） */}
+        {labiComment && (
+          <div style={{
+            background: '#fff5f7',
+            padding: '25px',
+            borderRadius: '24px',
+            marginBottom: '30px',
+            border: '2px solid #ffccd5',
+            position: 'relative',
+            fontSize: '1.1rem',
+            color: '#be185d',
+            boxShadow: 'inset 0 2px 10px rgba(255,182,193,0.2)'
+          }}>
+            <div style={{ fontWeight: 'bold', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ fontSize: '1.4rem' }}>🐰</span>
+              <span>守護霊「らび」のコメント</span>
+            </div>
+            {labiComment}
+            <div style={{
+              position: 'absolute', bottom: '-12px', left: '40px', width: '24px', height: '24px',
+              background: '#fff5f7', borderRight: '2px solid #ffccd5', borderBottom: '2px solid #ffccd5',
+              transform: 'rotate(45deg)'
+            }} />
+          </div>
+        )}
+
+        {/* 🧩 秘密の答えエリア（クイズ・なぞなぞ機能！） */}
+        {secretAnswer && (
+          <div style={{
+            background: isTimeUp ? 'linear-gradient(135deg, #f0fdf4, #dcfce7)' : '#f8fafc',
+            padding: '30px',
+            borderRadius: '24px',
+            marginBottom: '30px',
+            border: isTimeUp ? '3px solid #22c55e' : '3px dashed #cbd5e1',
+            textAlign: 'center',
+            position: 'relative',
+            overflow: 'hidden'
+          }}>
+            {!isTimeUp ? (
+              <div style={{ color: '#64748b' }}>
+                <span style={{ fontSize: '1.5rem', display: 'block', marginBottom: '10px' }}>🔐</span>
+                <strong style={{ fontSize: '1.2rem', color: '#475569' }}>正解は締切後に発表されるらび！</strong><br/>
+                それまで、みんな本音で投票してほしいらびっ！carrot!
+              </div>
+            ) : (
+              <div style={{ animation: 'fadeIn 1s ease-out' }}>
+                <span style={{ fontSize: '0.9rem', color: '#16a34a', fontWeight: 'bold', display: 'block', marginBottom: '5px' }}>🎉 正解発表！らび！！</span>
+                <div style={{ fontSize: '1.5rem', fontWeight: '900', color: '#15803d', lineHeight: '1.4' }}>
+                  {secretAnswer}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* 本文 💡 */}
         <div style={{ 
           position: 'relative', 
           zIndex: 1, 
-          maxHeight: '180px',
-          overflow: 'hidden',
           marginBottom: displayLink ? '32px' : '0',
           color: '#334155'
         }}>
           {cleanBody}
-          {cleanBody.length > 100 && (
-            <div style={{
-              position: 'absolute',
-              bottom: 0,
-              left: 0,
-              right: 0,
-              height: '100px', 
-              background: 'linear-gradient(to bottom, transparent 0%, rgba(255, 255, 255, 1) 100%)',
-              pointerEvents: 'none'
-            }} />
-          )}
         </div>
 
         {/* 🔗 スマート・ソースボタン */}

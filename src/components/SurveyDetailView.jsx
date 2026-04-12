@@ -284,11 +284,13 @@ const SurveyDetailView = ({
           {currentSurvey.category && (
             <span style={{ 
               background: (CATEGORY_ICON_STYLE[currentSurvey.category]?.color || '#3b82f6') + '15', 
-              padding: '4px 12px', 
+              padding: '6px 16px', 
               borderRadius: '20px', 
               color: CATEGORY_ICON_STYLE[currentSurvey.category]?.color || '#3b82f6', 
-              fontWeight: 'bold',
-              border: `1.5px solid ${CATEGORY_ICON_STYLE[currentSurvey.category]?.color || '#3b82f6'}44`
+              fontWeight: '900',
+              fontSize: '0.9rem',
+              border: `2px solid ${CATEGORY_ICON_STYLE[currentSurvey.category]?.color || '#3b82f6'}33`,
+              boxShadow: '0 4px 10px rgba(0,0,0,0.03)'
             }}>
               {CATEGORY_ICON_STYLE[currentSurvey.category]?.icon || '🏷️'} {currentSurvey.category}
             </span>
@@ -332,22 +334,71 @@ const SurveyDetailView = ({
       <SurveyDescription 
         description={descPart} 
         renderCommentContent={renderCommentContent} 
+        isTimeUp={isTimeUp}
       />
 
       <div className="options-container">
         {options.length > 0 ? options.map((opt, index) => {
           const perc = isTotalVotes > 0 ? Math.round((opt.votes / isTotalVotes) * 100) : 0;
+          const isWinner = options.length > 1 && opt.votes === Math.max(...options.map(o => o.votes)) && opt.votes > 0;
+
           return (
-            <div key={opt.id} className="result-bar-container">
+            <div key={opt.id} className="result-bar-container" style={{ marginBottom: '16px' }}>
               {votedOption || isTimeUp ? (
                 <>
-                  <div className="result-info">
-                    <span className="choice-name">{(opt.name.startsWith(`${index + 1}.`) ? opt.name : `${index + 1}. ${opt.name}`) + (String(votedOption) === String(opt.id) ? ' ✅' : '')}</span>
-                    <span className="vote-count-meta"><span className="vote-count-num"><AnimatedCounter value={opt.votes || 0} />票</span><span className="vote-count-perc">({perc}%)</span></span>
+                  <div className="result-info" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', alignItems: 'center' }}>
+                    <span className="choice-name" style={{ fontWeight: isWinner ? '900' : 'bold', color: isWinner ? '#7c3aed' : '#334155', fontSize: '1.05rem' }}>
+                      {isWinner && <span style={{ marginRight: '6px' }}>🏆</span>}
+                      {(opt.name.startsWith(`${index + 1}.`) ? opt.name : `${index + 1}. ${opt.name}`) + (String(votedOption) === String(opt.id) ? ' ✅' : '')}
+                    </span>
+                    <span className="vote-count-meta" style={{ fontSize: '0.9rem', color: '#64748b' }}>
+                      <span className="vote-count-num" style={{ fontWeight: 'bold', color: isWinner ? '#7c3aed' : '#64748b' }}>
+                        <AnimatedCounter value={opt.votes || 0} />票
+                      </span>
+                      <span className="vote-count-perc" style={{ marginLeft: '8px', opacity: 0.8 }}>({perc}%)</span>
+                    </span>
                   </div>
-                  <div className="result-bar-bg"><div className="result-bar-fill" style={{ width: `${perc}%` }}></div></div>
+                  <div className="result-bar-bg" style={{ height: '14px', background: '#f1f5f9', borderRadius: '10px', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
+                    <div className="result-bar-fill" style={{ 
+                      width: `${perc}%`, 
+                      height: '100%', 
+                      background: isWinner ? 'linear-gradient(90deg, #7c3aed, #ec4899)' : 'linear-gradient(90deg, #94a3b8, #cbd5e1)',
+                      borderRadius: '10px',
+                      transition: 'width 1s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                      boxShadow: isWinner ? '0 0 10px rgba(124, 58, 237, 0.3)' : 'none'
+                    }}></div>
+                  </div>
                 </>
-              ) : <button className="option-button" onClick={() => handleVote(opt)}>{opt.name.startsWith(`${index + 1}.`) ? opt.name : `${index + 1}. ${opt.name}`}</button>}
+              ) : (
+                <button className="option-button" onClick={() => handleVote(opt)} style={{
+                  width: '100%',
+                  padding: '18px 25px',
+                  borderRadius: '18px',
+                  border: '2px solid #e2e8f0',
+                  background: 'white',
+                  fontSize: '1.1rem',
+                  fontWeight: 'bold',
+                  color: '#334155',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                  textAlign: 'left',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px'
+                }} onMouseOver={e => {
+                  e.currentTarget.style.transform = 'translateX(8px)';
+                  e.currentTarget.style.borderColor = '#7c3aed';
+                  e.currentTarget.style.color = '#7c3aed';
+                  e.currentTarget.style.background = '#f5f3ff';
+                }} onMouseOut={e => {
+                  e.currentTarget.style.transform = 'translateX(0)';
+                  e.currentTarget.style.borderColor = '#e2e8f0';
+                  e.currentTarget.style.color = '#334155';
+                  e.currentTarget.style.background = 'white';
+                }}>
+                  {opt.name.startsWith(`${index + 1}.`) ? opt.name : `${index + 1}. ${opt.name}`}
+                </button>
+              )}
             </div>
           );
         }) : (
@@ -356,6 +407,27 @@ const SurveyDetailView = ({
           </div>
         )}
       </div>
+
+      {/* 🚀 動画連携応援メッセージ（おりぴさんの戦略サポート！） */}
+      {votedOption && (
+        <div style={{
+          marginTop: '30px',
+          padding: '25px',
+          background: 'linear-gradient(135deg, #fdf2f8, #f5f3ff)',
+          borderRadius: '24px',
+          border: '2px dashed #7c3aed33',
+          textAlign: 'center',
+          animation: 'fadeInUp 0.6s ease-out'
+        }}>
+          <div style={{ fontSize: '1.5rem', marginBottom: '10px' }}>🎬 ✨</div>
+          <h4 style={{ margin: '0 0 10px 0', color: '#7c3aed', fontWeight: '900' }}>あなたの1票が動画になるかも！？</h4>
+          <p style={{ margin: 0, fontSize: '0.95rem', color: '#64748b', lineHeight: '1.6' }}>
+            このアンケートの結果やみんなのコメントは、<br/>
+            YouTubeやTikTokの動画で紹介される可能性があるらび！<br/>
+            <strong>「面白い！」と思った意見はピックアップされるかも！？</strong>✨
+          </p>
+        </div>
+      )}
 
       {/* 🚀 前後のアンケートへのナビゲーション（カード形式にアップグレードらび！） */}
       {(adjacentSurveys.prev || adjacentSurveys.next) && (

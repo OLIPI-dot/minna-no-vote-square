@@ -319,10 +319,36 @@ async function startAutoPosting() {
             const tags = generateTags(news.title, richData.description, cat);
             const options = generateOptions(cat, news.title, richData.description);
             
+            // 🐰 らびの一言（独自コメント）をランダムに生成して独自性を出すらび！
+            const labiComments = {
+                'ゲーム': [
+                    'この新作、らびもすごく気になってるらび！みんなの期待度が知りたいらびっ！🎮✨',
+                    '最新のゲーム情報はいつもワクワクするらびね！広場のみんなはどう遊ぶらび？',
+                    'アプデや新作のニュースは、ゲーマーの血が騒ぐらび！正直な感想を聞かせてほしいらび！'
+                ],
+                'エンタメ': [
+                    '推し活は人生のビタミンらび！みんなの熱い想いを投票でぶつけてほしいらび！🎬🌟',
+                    '話題のニュース、広場のみんなで盛り上がりたいらび！1タップで教えてね！',
+                    'らびもこっそりチェックしてる話題らび！みんなはどう感じてるらび？'
+                ],
+                '話題': [
+                    'SNSで話題のこれ、実際どうなの！？らびもみんなの本心が知りたいらびに！🔥',
+                    'トレンドの波に乗り遅れないように、広場でみんなの意見を見てみるらび！',
+                    'これは議論が分かれそうな話題らびね…。本音で投票してほしいらび！'
+                ],
+                'ニュース': [
+                    '世の中の動きを、広場のみんなで真面目に考えてみたいらび。あなたの一票が大事らび！',
+                    'これからの暮らしに関わりそうなニュースらびね。みんなはどう受け止めるらび？',
+                    '難しいニュースも、広場のアンケートでみんなの空気感を感じてみたいらび。'
+                ]
+            };
+            const comments = labiComments[cat] || ['広場のみんなで、この話題について本音を話し合いたいらび！🥕✨'];
+            const randomComment = comments[Math.floor(Math.random() * comments.length)];
+
             // 🏷️ 出典元をタイトルから抜き出すらび！
             const sourceMatch = news.title.match(/[（\(](.*?)[）\)]$/);
             const sourceName = sourceMatch ? sourceMatch[1] : 'ニュース';
-            const finalDesc = `${richData.description}\n\n（出典：${sourceName}）\n\n[続きを読む](${news.link})`;
+            const finalDesc = `🐰 **らびの視点：**\n${randomComment}\n\n---\n\n${richData.description}\n\n（出典：${sourceName}）\n\n[続きを読む](${news.link})`;
 
             log(`🚀 プレミアム投稿準備OK: ${news.title} (${cat}) [Options: ${options.slice(0, 2).join(',')}...]`);
             if (!IS_DRY_RUN) {

@@ -107,6 +107,7 @@ function App() {
   const [likedSurveys, setLikedSurveys] = useState(() => JSON.parse(localStorage.getItem('liked_surveys') || '[]')); // 👍 いいね履歴
   const [surveyYoutube, setSurveyYoutube] = useState(''); // 📺 YouTube動画URL
   const [surveyDescription, setSurveyDescription] = useState(''); // 📝 解説文 / 参考URL
+  const [surveyAnswer, setSurveyAnswer] = useState(''); // 🧩 正解・答え合わせの解説
   const [activeTab, setActiveTab] = useState('official'); // ⚖️ 'official' or 'user'
   const [searchStats, setSearchStats] = useState({ categories: {}, official: 0, user: 0, sortModes: { today: 0, latest: 0, ended: 0, popular: 0 } }); // 🔍 検索ヒット数統計
   const [adjacentSurveys, setAdjacentSurveys] = useState({ prev: null, next: null }); // 🔍 前後のアンケート
@@ -1468,7 +1469,9 @@ function App() {
       category: surveyCategory, 
       visibility: surveyVisibility, 
       tags: surveyTags,
-      description: surveyDescription.trim() // 📝 解説文を保存
+      description: surveyAnswer.trim() 
+        ? `${surveyDescription.trim()}\n\n[[SECRET_ANSWER:${surveyAnswer.trim()}]]` 
+        : surveyDescription.trim() // 📝 解説文と正解を統合して保存らび！
     }]).select();
     if (error) {
       alert('公開に失敗しました。エラー: ' + error.message);
@@ -1483,6 +1486,7 @@ function App() {
     setSurveyImage('');
     setSurveyYoutube('');
     setSurveyDescription(''); // 📝 リセット
+    setSurveyAnswer(''); // 🧩 リセット
     setSetupOptions([]);
     setSurveyTags([]);
     setDeadline('');
@@ -2051,6 +2055,7 @@ function App() {
                 deadline={deadline} setDeadline={setDeadline}
                 surveyTags={surveyTags} setSurveyTags={setSurveyTags}
                 tempTag={tempTag} setTempTag={setTempTag}
+                surveyAnswer={surveyAnswer} setSurveyAnswer={setSurveyAnswer}
                 handleStartSurvey={handleStartSurvey}
                 supabase={supabase}
                 recommendedSurveys={recommendedSurveys}
@@ -2082,6 +2087,17 @@ function App() {
                   <div className="setting-item-block">
                     <label>📺 YouTube/ニコニコ動画（URL）:</label>
                     <input className="title-input" value={surveyYoutube} onChange={e => setSurveyYoutube(e.target.value)} placeholder="例：https://www.youtube.com/watch?v=..." />
+                  </div>
+                  <div className="setting-item-block">
+                    <label>🧩 正解・答え合わせ（なぞなぞ用）:</label>
+                    <textarea 
+                      className="title-input" 
+                      style={{ minHeight: '80px', resize: 'vertical', fontFamily: 'inherit', border: '2px dashed #7c3aed66', background: '#f5f3ff' }}
+                      value={surveyAnswer} 
+                      onChange={e => setSurveyAnswer(e.target.value)} 
+                      placeholder="例：正解は「ニンジン」でした！🥕 理由は、らびの主食だからです！" 
+                    />
+                    <small style={{ color: '#64748b', marginTop: '5px', display: 'block' }}>※ ここに書いた内容は、アンケート締切後に自動で公開されますらび！🐰✨</small>
                   </div>
                   <div className="setting-item-block">
                     <label>カテゴリ:</label>
@@ -2230,56 +2246,70 @@ function App() {
         </div>
       </div>
 
-      <footer className="main-footer">
-        <div className="footer-content">
-          <div className="footer-about">
-            <h4>📢 アンケート広場について</h4>
-            <p>アンケート広場は、誰でもかんたんに匿名（またはGoogleログイン）でアンケートを作成・投票できる場所です。<br />
-              みんなの「ちょっと気になる」を集めて、楽しく意見を共有しましょう！</p>
+      <footer className="main-footer" style={{ padding: '60px 20px', background: '#f8fafc', borderTop: '1px solid #e2e8f0' }}>
+        <div className="footer-content" style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', flexWrap: 'wrap', gap: '40px' }}>
+          <div className="footer-about" style={{ flex: '2 1 400px' }}>
+            <h4 style={{ fontSize: '1.2rem', color: '#1e293b', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span>🥕</span> みんなのアンケート広場
+            </h4>
+            <p style={{ color: '#64748b', lineHeight: '1.8', fontSize: '0.95rem' }}>
+              ここは、匿名で集まる本音が明日の世界を少しだけ面白くする場所です。<br />
+              最新ニュースから趣味の話題まで、AI守護霊「らび」と一緒に、安心して意見を共有できるコミュニティを目指しています。
+            </p>
           </div>
-          <div className="footer-links">
-            <div className="footer-link-group">
-              <h5>📚 サイト情報</h5>
-              <ul>
-                <li onClick={() => setShowingAbout(true)} className="footer-link-item">🌟 このサイトについて</li>
-                <li onClick={() => setShowingTerms(true)} className="footer-link-item">📖 利用規約</li>
-                <li onClick={() => setShowingPrivacy(true)} className="footer-link-item">📄 プライバシーポリシー</li>
-                <li onClick={() => setShowingContact(true)} className="footer-link-item">📩 お問い合わせ</li>
-                <li className="footer-link-item">
-                  <a href="/sitemap.xml" target="_blank" style={{ color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    🗺️ サイトマップ
-                  </a>
-                </li>
+          
+          <div className="footer-links" style={{ flex: '3 1 500px', display: 'flex', flexWrap: 'wrap', gap: '30px' }}>
+            <div className="footer-link-group" style={{ flex: '1 1 150px' }}>
+              <h5 style={{ color: '#1e293b', marginBottom: '15px', fontWeight: 'bold' }}>📚 コンテンツ</h5>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                <li style={{ marginBottom: '10px' }}><a href="/about.html" style={{ color: '#64748b', textDecoration: 'none' }}>🌟 当サイトについて</a></li>
+                <li onClick={() => setShowingTerms(true)} style={{ marginBottom: '10px', color: '#64748b', cursor: 'pointer' }}>📖 利用規約</li>
+                <li onClick={() => setShowingPrivacy(true)} style={{ marginBottom: '10px', color: '#64748b', cursor: 'pointer' }}>📄 プライバシーポリシー</li>
+                <li onClick={() => setShowingContact(true)} style={{ marginBottom: '10px', color: '#64748b', cursor: 'pointer' }}>📩 お問い合わせ</li>
               </ul>
             </div>
-            <div className="footer-link-group">
-              <h5>💡 使い方・ルール</h5>
-              <ul>
-                <li>不適切な投稿は控えてね</li>
-                <li>楽しく安全に使いましょう</li>
-                <li>限定公開なら身内だけで楽しめるよ</li>
+
+            <div className="footer-link-group" style={{ flex: '1 1 150px' }}>
+              <h5 style={{ color: '#1e293b', marginBottom: '15px', fontWeight: 'bold' }}>🧭 ナビゲート</h5>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                <li onClick={() => { setView('list'); setSortMode('latest'); }} style={{ marginBottom: '10px', color: '#64748b', cursor: 'pointer' }}>🆕 新着アンケート</li>
+                <li onClick={() => { setView('list'); setSortMode('popular'); }} style={{ marginBottom: '10px', color: '#64748b', cursor: 'pointer' }}>🔥 人気の話題</li>
+                <li style={{ marginBottom: '10px' }}><a href="/sitemap.xml" target="_blank" style={{ color: '#64748b', textDecoration: 'none' }}>🗺️ サイトマップ</a></li>
               </ul>
             </div>
           </div>
         </div>
 
-        {/* 🥕 らびの応援コーナー */}
+        {/* 🥕 クリエイター支援 ＆ らびの応援コーナー */}
         <div className="footer-support-section" style={{
-          padding: '20px', borderTop: '1px solid rgba(226, 232, 240, 0.6)',
-          textAlign: 'center', background: 'linear-gradient(to right, transparent, #fff5f7, transparent)'
+          maxWidth: '800px', margin: '40px auto 0 auto', padding: '30px', 
+          borderRadius: '32px', background: 'linear-gradient(135deg, #fff, #f5f3ff)',
+          border: '1px solid #e2e8f0', textAlign: 'center',
+          boxShadow: '0 10px 30px rgba(0,0,0,0.03)'
         }}>
-          <p style={{ margin: '0 0 10px 0', fontSize: '0.9rem', color: '#ec4899', fontWeight: 'bold' }}>🐰 うさぎのらびを応援する 🥕</p>
-          <a href="https://ofuse.me/olipi" target="_blank" rel="noopener noreferrer" className="footer-ofuse-btn" style={{
-            display: 'inline-block', padding: '10px 24px', background: '#db2777', color: '#fff',
-            borderRadius: '30px', textDecoration: 'none', fontWeight: 'bold', fontSize: '1rem',
-            boxShadow: '0 4px 12px rgba(219, 39, 119, 0.3)', transition: 'transform 0.2s'
-          }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'}
-            onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}>
-            OFUSEで応援メッセージを送る ✨
-          </a>
+          <p style={{ margin: '0 0 15px 0', fontSize: '1rem', color: '#ec4899', fontWeight: '900' }}>🐰 うさぎのらび ＆ おりぴプロジェクトを応援！ 🥕</p>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '15px', flexWrap: 'wrap' }}>
+            <a href="https://ofuse.me/olipi" target="_blank" rel="noopener noreferrer" style={{
+              display: 'inline-block', padding: '12px 30px', background: '#db2777', color: '#fff',
+              borderRadius: '100px', textDecoration: 'none', fontWeight: 'bold', fontSize: '1rem',
+              boxShadow: '0 4px 15px rgba(219, 39, 119, 0.3)', transition: 'all 0.2s'
+            }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'}
+              onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}>
+              OFUSEで応援を送る ✨
+            </a>
+            <button onClick={() => setShowingAbout(true)} style={{
+              padding: '12px 30px', background: '#fff', color: '#7c3aed',
+              borderRadius: '100px', border: '2px solid #7c3aed', fontWeight: 'bold', fontSize: '1rem',
+              cursor: 'pointer', transition: 'all 0.2s'
+            }}>
+              もっと詳しく知る 🥕
+            </button>
+          </div>
         </div>
 
-        <div className="footer-bottom">© 2026 アンケート広場 / Powered by olipi projects</div>
+        <div className="footer-bottom" style={{ textAlign: 'center', marginTop: '40px', color: '#94a3b8', fontSize: '0.85rem' }}>
+          © 2026 みんなのアンケート広場 / Produced by OLIPI-dot Project
+        </div>
       </footer>
 
       <Suspense fallback={null}>
