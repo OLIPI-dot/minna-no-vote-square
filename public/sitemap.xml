@@ -3185,6 +3185,18 @@
         <priority>0.6</priority>
       </url>
   <url>
+        <loc>https://minna-no-vote-square.vercel.app/s/2835</loc>
+        <lastmod>2026-04-15</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+      </url>
+  <url>
+        <loc>https://minna-no-vote-square.vercel.app/s/2836</loc>
+        <lastmod>2026-04-15</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+      </url>
+  <url>
         <loc>https://minna-no-vote-square.vercel.app/s/2015</loc>
         <lastmod>2026-04-03</lastmod>
         <changefreq>weekly</changefreq>
@@ -3217,6 +3229,18 @@
   <url>
         <loc>https://minna-no-vote-square.vercel.app/s/2781</loc>
         <lastmod>2026-04-14</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+      </url>
+  <url>
+        <loc>https://minna-no-vote-square.vercel.app/s/2837</loc>
+        <lastmod>2026-04-15</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+      </url>
+  <url>
+        <loc>https://minna-no-vote-square.vercel.app/s/2838</loc>
+        <lastmod>2026-04-15</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
       </url>
@@ -6000,30 +6024,6 @@
       </url>
   <url>
         <loc>https://minna-no-vote-square.vercel.app/s/2262</loc>
-        <lastmod>2026-04-06</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-      </url>
-  <url>
-        <loc>https://minna-no-vote-square.vercel.app/s/2261</loc>
-        <lastmod>2026-04-06</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-      </url>
-  <url>
-        <loc>https://minna-no-vote-square.vercel.app/s/1955</loc>
-        <lastmod>2026-04-02</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-      </url>
-  <url>
-        <loc>https://minna-no-vote-square.vercel.app/s/1958</loc>
-        <lastmod>2026-04-02</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-      </url>
-  <url>
-        <loc>https://minna-no-vote-square.vercel.app/s/2259</loc>
         <lastmod>2026-04-06</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
