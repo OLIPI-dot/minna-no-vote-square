@@ -25,6 +25,18 @@ const url = getEnv('VITE_SUPABASE_URL');
 const key = getEnv('VITE_SUPABASE_ANON_KEY');
 const SITE_URL = 'https://minna-no-vote-square.vercel.app';
 
+const escapeXml = (unsafe) => {
+    return (unsafe || '').replace(/[<>&"']/g, (c) => {
+        switch (c) {
+            case '<': return '&lt;';
+            case '>': return '&gt;';
+            case '&': return '&amp;';
+            case '"': return '&quot;';
+            case "'": return '&apos;';
+        }
+    });
+};
+
 if (!url || !key) {
     console.error('Environment variables missing!');
     process.exit(1);
@@ -97,9 +109,9 @@ async function generateSitemap() {
 
         xml += `</urlset>`;
 
-        const outputPath = path.join(__dirname, '../public/sitemap.xml');
+        const outputPath = path.join(__dirname, '../public/sitemap_surveys.xml');
         fs.writeFileSync(outputPath, xml);
-        console.log(`✨ サイトマップが完成したよ！場所: ${outputPath} 🐰🥕`);
+        console.log(`✨ サーベイ用サイトマップが完成したよ！場所: ${outputPath} 🐰🥕`);
     } catch (err) {
         console.error('💥 サイトマップ作成中に致命的なエラーが発生したらび…', err);
     }

@@ -634,7 +634,7 @@ function App() {
 
         const { error } = await supabase.from('comments').insert([{
           survey_id: currentSurvey.id,
-          user_name: "らび🐰(AI)",
+          user_name: "守護霊らび",
           content: reply,
           user_id: null,
           edit_key: "labi_bot"
@@ -1187,6 +1187,8 @@ function App() {
         .eq('visibility', 'public')
         .not('tags', 'cs', '{"お知らせ"}')
         .order('total_votes', { ascending: false })
+        .order('view_count', { ascending: false })
+        .order('likes_count', { ascending: false })
         .limit(10);
 
       // 3. もうすぐ終了 (24時間以内。全件取得！)

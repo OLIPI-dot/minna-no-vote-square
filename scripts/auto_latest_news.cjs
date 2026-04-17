@@ -30,19 +30,26 @@ function log(msg) {
 }
 
 const RSS_FEEDS = [
+    // 🥇 ニュース・時事・総合（最優先らび！）
+    'https://news.yahoo.co.jp/rss/topics/top-picks.xml',
+    'https://news.yahoo.co.jp/rss/categories/it.xml',
+    'https://mantan-web.jp/rss/index.rdf',
     'http://kai-you.net/contents/feed.rss',
+    
+    // 🥈 エンタメ・トレンド
     'https://mdpr.jp/rss/attention.xml',
+    'https://news.yahoo.co.jp/rss/categories/entertainment.xml',
     'https://natalie.mu/comic/rss/news',
     'https://natalie.mu/music/rss/news',
-    'https://mantan-web.jp/rss/index.rdf',
+    
+    // 🥉 ゲーム・サブカル
     'https://news.denfaminicogamer.jp/feed',
-    'https://logtube.jp/feed/',
     'https://www.gamespark.jp/rss20/index.rdf',
     'https://www.famitsu.com/rss/fcom_all.rdf',
     'https://www.4gamer.net/rss/news_topics.xml',
-    'https://news.yahoo.co.jp/rss/categories/entertainment.xml',
-    'https://news.yahoo.co.jp/rss/categories/it.xml',
-    'https://news.yahoo.co.jp/rss/topics/top-picks.xml'
+    
+    // 🏷️ その他
+    'https://logtube.jp/feed/'
 ];
 
 /**
@@ -255,7 +262,7 @@ async function fetchRichData(url) {
 
 function classifyNews(title, description) {
     const textLower = (title + ' ' + (description || '')).toLowerCase();
-    const scores = { 'ニュース': 10, 'エンタメ': 0, '話題': 0, '芸能': 0, 'ゲーム': 0 };
+    const scores = { 'ニュース': 30, 'エンタメ': 0, '話題': 0, '芸能': 0, 'ゲーム': 0 }; // ニュースに底上げスコアを付与らび！🥕🛡️
     const keywords = {
         'エンタメ': ['映画', 'ドラマ', 'アニメ', '音楽', 'アイドル', '漫画', 'コミック', '声優', 'youtube', 'vtuber', '動画配信', '実況'],
         '芸能': ['芸能', 'ジャニーズ', '不倫', '結婚', '熱愛', '退所', 'スター', '俳優', '女優', 'タレント', '芸人'],        '話題': ['sns', 'ネットで', 'バズ', '炎上', '流行', 'x', 'twitter', 'tiktok', 'インスタ'],
@@ -277,11 +284,13 @@ function classifyNews(title, description) {
 async function startAutoPosting() {
     log('🚀 プレミアム自動投稿エンジン 起動らびっ！！ (長文リッチ＆エンタメ強化版) ' + (IS_DRY_RUN ? ' (DRY RUN)' : ''));
     
-    // 🎲 フィードの取得順をシャッフルして、いつも同じサイトに偏らないようにするらび！
-    const shuffledFeeds = [...RSS_FEEDS].sort(() => Math.random() - 0.5);
+    // 🎲 ニュース系フィード（上位4件）を固定し、残りをシャッフルして多様性を出すらび！
+    const priorityFeeds = RSS_FEEDS.slice(0, 4);
+    const otherFeeds = RSS_FEEDS.slice(4).sort(() => Math.random() - 0.5);
+    const orderedFeeds = [...priorityFeeds, ...otherFeeds];
     
     let allNews = [];
-    for (const feed of shuffledFeeds) {
+    for (const feed of orderedFeeds) {
         try {
             const response = await axios.get(feed, { timeout: 30000, headers: { 'User-Agent': 'Mozilla/5.0' } });
             const feedData = response.data;
@@ -289,7 +298,24 @@ async function startAutoPosting() {
             for (const item of items) {
                 const title = stripHtml(item.match(/<title>([\s\S]*?)<\/title>/)?.[1]);
                 const link = item.match(/<link>([\s\S]*?)<\/link>/)?.[1];
+                const pubDateStr = item.match(/<pubDate>([\s\S]*?)<\/pubDate>/)?.[1] || item.match(/<dc:date>([\s\S]*?)<\/dc:date>/)?.[1];
+                
                 if (!title || !link) continue;
+
+                // 🕒 鮮度チェック: 24時間以内の記事だけを採用するらび！
+                if (pubDateStr) {
+                    const pubDate = new Date(pubDateStr);
+                    const now = new Date();
+                    const diffMs = now - pubDate;
+                    if (diffMs > 24 * 60 * 60 * 1000) {
+                        // log(`⏳ 古い記事をスキップ: ${title} (${pubDate.toLocaleString()})`);
+                        continue;
+                    }
+                } else {
+                    // 日付が取れない場合、不確実なのでスキップするのが安全らび
+                    continue;
+                }
+
                 allNews.push({ title, link });
             }
         } catch (e) {
@@ -302,7 +328,7 @@ async function startAutoPosting() {
     const recentNormTitles = new Set(recentSurveys?.map(s => normalize(s.title)) || []);
 
     let count = 0;
-    const POST_LIMIT = 4; // 1回4件まで増やすらび！
+    const POST_LIMIT = 12; // 1回12件まで大幅増量！ ニュース大盛りらびっ！！🥕🚀🔥
     for (const news of allNews) {
         if (count >= POST_LIMIT) break;
         if (recentNormTitles.has(normalize(news.title))) continue;
@@ -348,7 +374,7 @@ async function startAutoPosting() {
             // 🏷️ 出典元をタイトルから抜き出すらび！
             const sourceMatch = news.title.match(/[（\(](.*?)[）\)]$/);
             const sourceName = sourceMatch ? sourceMatch[1] : 'ニュース';
-            const finalDesc = `🐰 **らびの視点：**\n${randomComment}\n\n---\n\n${richData.description}\n\n（出典：${sourceName}）\n\n[続きを読む](${news.link})`;
+            const finalDesc = `🐰 **守護霊らびの視点：**\n${randomComment}\n\n---\n\n${richData.description}\n\n（出典：${sourceName}）\n\n[続きを読む](${news.link})`;
 
             log(`🚀 プレミアム投稿準備OK: ${news.title} (${cat}) [Options: ${options.slice(0, 2).join(',')}...]`);
             if (!IS_DRY_RUN) {
