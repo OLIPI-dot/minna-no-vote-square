@@ -111,6 +111,7 @@ function App() {
   const [activeTab, setActiveTab] = useState('official'); // ⚖️ 'official' or 'user'
   const [searchStats, setSearchStats] = useState({ categories: {}, official: 0, user: 0, sortModes: { today: 0, latest: 0, ended: 0, popular: 0 } }); // 🔍 検索ヒット数統計
   const [adjacentSurveys, setAdjacentSurveys] = useState({ prev: null, next: null }); // 🔍 前後のアンケート
+  const [viewMode, setViewMode] = useState(() => localStorage.getItem('view_mode') || 'list'); // 📱 'list' or 'grid'らび！
 
   // 📺 YouTube URLからIDを抽出する魔法
   const extractYoutubeId = (input) => {
@@ -156,6 +157,10 @@ function App() {
   useEffect(() => {
     setCurrentPage(1);
   }, [sortMode, searchQuery, filterCategory, filterTag, popularMode, activeTab]);
+
+  useEffect(() => {
+    localStorage.setItem('view_mode', viewMode);
+  }, [viewMode]);
 
   // ▼ページネーションUIコンポーネント (メモ化してパフォーマンス向上らび！✨)
   const Pagination = useCallback(({ current, total, onPageChange }) => {
@@ -738,7 +743,10 @@ function App() {
     // ガード1: 詳細画面なのに対象アンケートがまだ読み込まれていない場合はスキップ
     if (view === 'details' && !currentSurvey) return;
 
-    window.scrollTo(0, 0);
+    // 🚀 スクロール復元魔法の強化：リスト画面に戻る時以外は一番上へ
+    if (view !== 'list') {
+      window.scrollTo(0, 0);
+    }
 
     // 🔍 SEOメタタグとタイトルの更新
     const pageTitle = currentSurvey
@@ -973,7 +981,7 @@ function App() {
       const email = user?.email || user?.user_metadata?.email || '';
       const isActuallyAdmin = user && ADMIN_EMAILS.includes(email);
       console.log("🛡️ isAdmin Check (fetchSurveys):", { email, isActuallyAdmin });
-      const ITEMS_PER_PAGE = 15;
+      const ITEMS_PER_PAGE = viewMode === 'grid' ? 40 : 15;
       const start = (page - 1) * ITEMS_PER_PAGE;
       const end = start + ITEMS_PER_PAGE - 1;
 
@@ -1246,91 +1254,72 @@ function App() {
   }, [user]); // userが変わった時も再チェック
 
   const navigateTo = async (nextView, survey = null) => {
-    // 現在のスクロール位置を「しおり」として記録するらび！
-    if (view === 'list') {
-      window.history.replaceState({ view: 'list', scrollY: window.pageYOffset }, '', window.location.href);
-    }
+    // 現在のスクロール位置を「しおり」として保存らび！
+    const currentScroll = window.pageYOffset;
 
     if (nextView === 'details' && survey) {
       if (survey.visibility === 'private' && (!user || user.id !== survey.user_id)) {
         return alert('非公開です🔒');
       }
 
-      // ⚡ ラグ解消のため、即座に表示を切り替えるらび！
-      setView('details');
-      setTimeout(() => window.scrollTo(0, 0), 10);
+      // 📍 リストに戻った時のために、今の位置を履歴に刻むらび
+      window.history.replaceState({ ...window.history.state, scrollY: currentScroll }, '', window.location.href);
 
-      // 🔗 履歴に「詳細だよ！」という確実なラベルを貼るらび！
+      setView('details');
       window.history.pushState({ view: 'details', surveyId: survey.id }, '', `/s/${survey.id}`);
       
-      // 🏘️ 魔法の残り香をお掃除！新しいページを「真っ白」から始めるらび！
       setOptions([]);
       setVotedOption(null);
       setCurrentSurvey(survey);
-      setAdjacentSurveys({ prev: null, next: null }); // 前後も一旦リセット
+      setAdjacentSurveys({ prev: null, next: null });
       setIsTimeUp(survey.deadline && new Date(survey.deadline) < new Date());
 
-      console.log("🚀 navigateTo: Navigating to details for survey:", survey.id);
-
-      // 🏆 非同期で続きを取得するらび！（これでラグが消えるよ！）
+      // (非同期取得は省略せず維持...)
       (async () => {
-        // 💫 もし渡されたアンケートデータが不完全（id, titleしかない等）なら、ここで情報を補完するらび！
         if (!survey.created_at || survey.youtube_id === undefined) {
            const { data: fullSv } = await supabase.from('surveys').select('*').eq('id', survey.id).single();
            if (fullSv) {
              setCurrentSurvey(fullSv);
-             survey = fullSv; // 以降の処理（前後取得）のために更新
+             survey = fullSv;
              setIsTimeUp(fullSv.deadline && new Date(fullSv.deadline) < new Date());
            }
         }
-
-        // 1. オプションの取得
         const { data: preOpts } = await supabase.from('options').select('*').eq('survey_id', survey.id).order('id', { ascending: true });
-        if (preOpts) {
-          setOptions(preOpts);
-        }
+        if (preOpts) setOptions(preOpts);
         setVotedOption(localStorage.getItem(`voted_survey_${survey.id}`));
-
-        // 2. 前後のアンケートを取得（回遊性アップらび！）
         try {
           const [prevRes, nextRes] = await Promise.all([
             supabase.from('surveys').select('*').eq('visibility', 'public').lt('created_at', survey.created_at).order('created_at', { ascending: false }).limit(1).maybeSingle(),
             supabase.from('surveys').select('*').eq('visibility', 'public').gt('created_at', survey.created_at).order('created_at', { ascending: true }).limit(1).maybeSingle()
           ]);
           setAdjacentSurveys({ prev: prevRes.data, next: nextRes.data });
-        } catch (err) {
-          console.error("❌ Failed to fetch adjacent surveys:", err);
-        }
+        } catch (err) {}
       })();
 
+      // 閲覧数カウントアップ
       const viewKey = `last_view_${survey.id}`;
       const lastView = parseInt(localStorage.getItem(viewKey) || '0', 10);
-      const now = Date.now();
-      if (now - lastView > VIEW_COOLDOWN_MS) {
-        localStorage.setItem(viewKey, now.toString());
-        // 🚀 非同期で実行して、ナビゲーションをブロックしないらび！
-        (async () => {
-          const { data: serverCount, error: rpcError } = await supabase.rpc('increment_survey_view', { survey_id_arg: survey.id });
-          if (rpcError) {
-            console.error("❌ View increment error:", rpcError);
-          } else if (serverCount !== undefined) {
-             const mapper = s => String(s.id) === String(survey.id) ? { ...s, view_count: serverCount } : s;
-             setSurveys(prev => prev.map(mapper));
-             setPopularSurveys(prev => prev.map(mapper));
-             setCurrentSurvey(prev => prev && String(prev.id) === String(survey.id) ? { ...prev, view_count: serverCount } : prev);
-          }
-        })();
+      if (Date.now() - lastView > VIEW_COOLDOWN_MS) {
+        localStorage.setItem(viewKey, Date.now().toString());
+        supabase.rpc('increment_survey_view', { survey_id_arg: survey.id });
       }
-      return; // ⚡ これ以降の setView は不要らび！
+      return;
     } else if (nextView === 'list') {
-      // 🏘️ 広場に戻る時は「広場だよ！」というラベルを貼ってURLをリセット！
+      // 🏘️ 広場に戻る
+      const lastState = window.history.state;
       window.history.pushState({ view: 'list' }, '', '/');
       setCurrentSurvey(null);
-      setFilterCategory('すべて'); // リストに戻る際にカテゴリフィルタをリセット
-      setFilterTag(''); // リストに戻る際にタグフィルタをリセット
+      setFilterCategory('すべて');
+      setFilterTag('');
+      setView('list');
+
+      // 📍 もし履歴にスクロール位置があれば戻すらび！
+      if (lastState && lastState.scrollY !== undefined) {
+        setTimeout(() => window.scrollTo(0, lastState.scrollY), 50);
+      }
+      return;
     }
     setView(nextView);
-    setTimeout(() => window.scrollTo(0, 0), 10);
   };
 
   // 🔄 検索クエリの連打（ガタつき）を防ぐためのデバウンス処理らび！
@@ -2063,7 +2052,9 @@ function App() {
                 recommendedSurveys={recommendedSurveys}
                 searchStats={searchStats}
                 baseCategories={BASE_CATEGORIES}
-                  filterCategories={FILTER_CATEGORIES}
+                filterCategories={FILTER_CATEGORIES}
+                viewMode={viewMode}
+                setViewMode={setViewMode}
                 />
               </Suspense>
             )}

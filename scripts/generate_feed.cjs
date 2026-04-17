@@ -37,6 +37,11 @@ const escapeXml = (unsafe) => {
     });
 };
 
+// 🧼 XML1.0で許容されない制御文字を削ぎ落とすらび！✨
+const sanitizeXml = (str) => {
+    return (str || '').replace(/[^\x09\x0A\x0D\x20-\uD7FF\uE000-\uFFFD\u10000-\u10FFFF]/g, '');
+};
+
 if (!url || !key) {
     console.error('Environment variables missing!');
     process.exit(1);
@@ -77,18 +82,18 @@ async function generateFeed() {
             const date = new Date(survey.created_at).toISOString();
             const cleanDesc = (survey.description || '').replace(/<[^>]*>?/gm, '').substring(0, 200) + '...';
             atom += `  <entry>
-    <title>${escapeXml(survey.title)}</title>
+    <title>${escapeXml(sanitizeXml(survey.title))}</title>
     <link href="${SITE_URL}/s/${survey.id}"/>
     <id>${SITE_URL}/s/${survey.id}</id>
     <updated>${date}</updated>
-    <summary>${escapeXml(cleanDesc)}</summary>
+    <summary>${escapeXml(sanitizeXml(cleanDesc))}</summary>
   </entry>\n`;
         });
 
         atom += `</feed>`;
 
         const outputPath = path.join(__dirname, '../public/atom.xml');
-        fs.writeFileSync(outputPath, atom);
+        fs.writeFileSync(outputPath, atom, 'utf8');
         console.log(`✨ Atomフィードが完成したよ！場所: ${outputPath} 🐰🛰️`);
     } catch (err) {
         console.error('💥 フィード作成中にエラーが発生したらび…', err);

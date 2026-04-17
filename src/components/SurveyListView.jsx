@@ -43,8 +43,9 @@ const SurveyListView = ({
   supabase,
   baseCategories = [],
   filterCategories = [],
+  viewMode, setViewMode,
 }) => {
-  const ITEMS_PER_PAGE = 15;
+  const ITEMS_PER_PAGE = viewMode === 'grid' ? 40 : 15;
   const listRef = React.useRef(null);
 
   // ⚡ useMemoによりソート・フィルタの計算結果をキャッシュ化。filter/sortはレンダーのたびに実行されず、必要な時だけ実行される。
@@ -147,6 +148,7 @@ const SurveyListView = ({
             setSortMode('mine');
           }}
         >👤 マイアンケート</button>
+        
       </div>
 
       {sortMode === 'popular' && (
@@ -303,7 +305,7 @@ const SurveyListView = ({
       )}
 
       {/* ⚖️ 公式・ユーザー切り替えタブ (常に表示してレイアウトを安定させるらび！) */}
-      <div className="official-tab-navigation" style={{ display: 'flex', gap: '16px', marginBottom: '24px', borderBottom: '2px solid #f1f5f9', paddingBottom: '4px' }}>
+      <div className="official-tab-navigation" style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px', borderBottom: '2px solid #f1f5f9', paddingBottom: '4px', width: '100%' }}>
           <button
             onClick={() => setActiveTab('official')}
             className={`tab-btn ${activeTab === 'official' ? 'active' : ''}`}
@@ -333,10 +335,37 @@ const SurveyListView = ({
           >
             👥 みんなの投稿 ({totalUserCount})
           </button>
+
+          {/* 📱 レイアウト切替（ニコニコ風らび！） */}
+          <div className="layout-switcher">
+            <button 
+              className={`layout-btn ${viewMode === 'list' ? 'active' : ''}`} 
+              onClick={() => setViewMode('list')}
+              title="リスト表示"
+            >
+              <svg viewBox="0 0 24 24" width="20" height="20">
+                <rect x="3" y="4" width="18" height="2" fill="currentColor"/>
+                <rect x="3" y="11" width="18" height="2" fill="currentColor"/>
+                <rect x="3" y="18" width="18" height="2" fill="currentColor"/>
+              </svg>
+            </button>
+            <button 
+              className={`layout-btn ${viewMode === 'grid' ? 'active' : ''}`} 
+              onClick={() => setViewMode('grid')}
+              title="グリッド表示"
+            >
+              <svg viewBox="0 0 24 24" width="20" height="20">
+                <rect x="3" y="3" width="8" height="8" rx="1" fill="currentColor"/>
+                <rect x="13" y="3" width="8" height="8" rx="1" fill="currentColor"/>
+                <rect x="3" y="13" width="8" height="8" rx="1" fill="currentColor"/>
+                <rect x="13" y="13" width="8" height="8" rx="1" fill="currentColor"/>
+              </svg>
+            </button>
+          </div>
       </div>
 
       {/* 📋 アンケートリスト */}
-      <div className="survey-list" ref={listRef}>
+      <div className={`survey-list view-${viewMode}`} ref={listRef}>
         {isLoading ? (
           <div className="skeleton-container" style={{ width: '100%', minHeight: '500px' }}>
             {[...Array(15)].map((_, n) => (
@@ -446,7 +475,7 @@ const SurveyListView = ({
                             border: `1.5px solid ${catStyle.color}44`,
                             background: 'rgba(255, 255, 255, 0.95)', zIndex: 2
                           }}>
-                            <span style={{ fontSize: '1.2em' }}>{catStyle.icon}</span>
+                            <span style={{ fontSize: '1em' }}>{catStyle.icon}</span>
                             <span>{s.category || 'その他'}</span>
                           </div>
                         </div>
@@ -479,7 +508,11 @@ const SurveyListView = ({
 
                       <div className="survey-item-content">
                         <div className="survey-item-info">
-                          <span className="survey-item-title" style={{
+                          <span className="survey-item-title" style={viewMode === 'grid' ? {
+                            backgroundColor: 'transparent', padding: '0', borderRadius: '0',
+                            display: 'block', marginBottom: '4px', boxShadow: 'none',
+                            border: 'none', color: '#333'
+                          } : {
                             backgroundColor: 'transparent', padding: '4px 0', borderRadius: '0',
                             display: 'block', marginBottom: '10px', boxShadow: 'none',
                             border: 'none', color: '#1e293b'

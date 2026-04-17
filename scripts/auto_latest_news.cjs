@@ -366,15 +366,10 @@ async function startAutoPosting() {
                     '世の中の動きを、広場のみんなで真面目に考えてみたいらび。あなたの一票が大事らび！',
                     'これからの暮らしに関わりそうなニュースらびね。みんなはどう受け止めるらび？',
                     '難しいニュースも、広場のアンケートでみんなの空気感を感じてみたいらび。'
-                ]
-            };
-            const comments = labiComments[cat] || ['広場のみんなで、この話題について本音を話し合いたいらび！🥕✨'];
-            const randomComment = comments[Math.floor(Math.random() * comments.length)];
-
             // 🏷️ 出典元をタイトルから抜き出すらび！
             const sourceMatch = news.title.match(/[（\(](.*?)[）\)]$/);
             const sourceName = sourceMatch ? sourceMatch[1] : 'ニュース';
-            const finalDesc = `🐰 **守護霊らびの視点：**\n${randomComment}\n\n---\n\n${richData.description}\n\n（出典：${sourceName}）\n\n[続きを読む](${news.link})`;
+            const finalDesc = `${richData.description}\n\n（出典：${sourceName}）\n\n[続きを読む](${news.link})`;
 
             log(`🚀 プレミアム投稿準備OK: ${news.title} (${cat}) [Options: ${options.slice(0, 2).join(',')}...]`);
             if (!IS_DRY_RUN) {

@@ -37,6 +37,11 @@ const escapeXml = (unsafe) => {
     });
 };
 
+// 🧼 XML1.0で許容されない制御文字を削ぎ落とすらび！✨
+const sanitizeXml = (str) => {
+    return (str || '').replace(/[^\x09\x0A\x0D\x20-\uD7FF\uE000-\uFFFD\u10000-\u10FFFF]/g, '');
+};
+
 if (!url || !key) {
     console.error('Environment variables missing!');
     process.exit(1);
@@ -110,7 +115,7 @@ async function generateSitemap() {
         xml += `</urlset>`;
 
         const outputPath = path.join(__dirname, '../public/sitemap_surveys.xml');
-        fs.writeFileSync(outputPath, xml);
+        fs.writeFileSync(outputPath, xml, 'utf8');
         console.log(`✨ サーベイ用サイトマップが完成したよ！場所: ${outputPath} 🐰🥕`);
     } catch (err) {
         console.error('💥 サイトマップ作成中に致命的なエラーが発生したらび…', err);

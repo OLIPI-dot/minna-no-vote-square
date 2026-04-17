@@ -5,7 +5,7 @@
       "headers": [
         {
           "key": "Content-Type",
-          "value": "application/xml"
+          "value": "application/xml; charset=utf-8"
         },
         {
           "key": "Cache-Control",
@@ -18,7 +18,7 @@
       "headers": [
         {
           "key": "Content-Type",
-          "value": "application/atom+xml"
+          "value": "application/atom+xml; charset=utf-8"
         },
         {
           "key": "Cache-Control",
