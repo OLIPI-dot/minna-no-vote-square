@@ -4,11 +4,114 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-04-19T22:41:33.864Z</updated>
+  <updated>2026-04-19T23:42:04.778Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>日立、OT機器の出荷前セキュリティ検査を効率化する技術を開発(クラウド Watch)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/3454"/>
+    <id>https://minna-no-vote-square.vercel.app/s/3454</id>
+    <updated>2026-04-19T23:42:02.120Z</updated>
+    <summary>株式会社日立製作所（以下、日立）は17日、工場や電力設備などで使われるOT機器の出荷前セキュリティ検査を、機密情報を外部に渡さず、通信帯域に制限がある（10Mbps～100Mbps）環境でも効率的に実施できる技術を開発したと発表した。 日立は開発の背景として、工場や電力設備などの重要インフラを狙ったサイバー攻撃の増加により、OT機器にはより高度なセキュリティ対策が求められており、特に、製品出荷前に...</summary>
+  </entry>
+  <entry>
+    <title>マイクロソフトが 4 月のセキュリティ情報公開、悪用の事実を確認済みの脆弱性が 1 件(ScanNetSecurity)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/3453"/>
+    <id>https://minna-no-vote-square.vercel.app/s/3453</id>
+    <updated>2026-04-19T23:42:00.686Z</updated>
+    <summary>1コメント1件 独立行政法人 情報処理推進機構（IPA）は4月15日、「Microsoft 製品の脆弱性対策について(2026年4月)」を発表した。一般社団法人JPCERT コーディネーションセンター（JPCERT/CC）も「2026年4月マイクロソフトセキュリティ更新プログラムに関する注意喚起」を発表している。これは、マイクロソフトが2026年4月度のセキュリティ更新プログラムを公開したことを受...</summary>
+  </entry>
+  <entry>
+    <title>GROWI に格納型 XSS の脆弱性(ScanNetSecurity)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/3452"/>
+    <id>https://minna-no-vote-square.vercel.app/s/3452</id>
+    <updated>2026-04-19T23:41:59.288Z</updated>
+    <summary>独立行政法人情報処理推進機構（IPA）および一般社団法人JPCERT コーディネーションセンター（JPCERT/CC）は4月15日、GROWIにおける格納型クロスサイトスクリプティングの脆弱性について「Japan Vulnerability Notes（JVN）」で発表した。齋藤徳秀氏が報告を行っている。影響を受けるシステムは以下の通り。
+
+GROWI v7.4.6 およびそれより前のバージョン
+...</summary>
+  </entry>
+  <entry>
+    <title>Adobe Acrobat および Reader に脆弱性(ScanNetSecurity)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/3451"/>
+    <id>https://minna-no-vote-square.vercel.app/s/3451</id>
+    <updated>2026-04-19T23:41:57.859Z</updated>
+    <summary>独立行政法人情報処理推進機構（IPA）および一般社団法人JPCERT コーディネーションセンター（JPCERT/CC）は4月15日、Adobe Acrobat および Reader の脆弱性について発表した。影響を受けるシステムは以下の通り。
+
+Adobe Acrobat DC Continuous（26.001.21411）およびそれ以前（Windows、macOS） Adobe Acrobat...</summary>
+  </entry>
+  <entry>
+    <title>Yahoo!メール、なりすましメールにブランドアイコンが表示される事象の注意喚起(ScanNetSecurity)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/3450"/>
+    <id>https://minna-no-vote-square.vercel.app/s/3450</id>
+    <updated>2026-04-19T23:41:55.809Z</updated>
+    <summary>6コメント6件 LINEヤフー株式会社は4月14日、なりすましメールにブランドアイコンが表示されているものがある事象について、注意喚起を発表した。
+
+同社によると、本来は安全を証明するための「正規の認証情報」を、悪意ある第三者がコピーして再利用するという特殊な攻撃が確認されており、「このメールは◯◯より送信されたことが確認されています」というブランドアイコンやブランドカラーが表示されているメールの...</summary>
+  </entry>
+  <entry>
+    <title>LTVを重視しすぎる落とし穴。収益が伸びない原因は「財務指標」と「行動指標」のズレにある(ネットショップ担当者フォーラム)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/3449"/>
+    <id>https://minna-no-vote-square.vercel.app/s/3449</id>
+    <updated>2026-04-19T23:41:54.427Z</updated>
+    <summary>1コメント1件リピートEC・通販を実施している企業から、「LTV（顧客生涯価値）が低くて利益が出ない。どう改善すればいいのか」という相談を受けることは少なくありません。ECに携わる人であれば、一度は同じような悩みに触れたことがあるのではないでしょうか。LTV以外に回転率などもきちんと見ているのに、収益性を改善しきれない――。こうした状況は決して珍しいものではありません。ではどこを見れば収益は改善で...</summary>
+  </entry>
+  <entry>
+    <title>Anthropic、AIの安全性を自律的に研究を行う「AI自律アライメント研究者」を公開(ビジネス＋IT)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/3448"/>
+    <id>https://minna-no-vote-square.vercel.app/s/3448</id>
+    <updated>2026-04-19T23:41:52.907Z</updated>
+    <summary>Anthropicは2026年4月14日、AI自身がAIの安全性研究を自律的に遂行するシステム「Automated Alignment Researchers」の研究結果を公開した。特定のアライメント課題において、人間研究者のスコアを大幅に上回る成果を達成した。AIが仮説立案から実験、結果分析までを反復することで、研究プロセスの一部を自動化する枠組みである。 【図版付き記事はこちら】Anthrop...</summary>
+  </entry>
+  <entry>
+    <title>日本郵便、一部地域間で「ゆうパケット」の配送をスピードUP。「翌々日」→「翌日」配達に改善(ネットショップ担当者フォーラム)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/3447"/>
+    <id>https://minna-no-vote-square.vercel.app/s/3447</id>
+    <updated>2026-04-19T23:41:51.488Z</updated>
+    <summary>日本郵便の「ゆうパケット」サービスページのトップ画面（画像は編集部がキャプチャ）
+
+日本郵便は5月10日から、小型荷物サービス「ゆうパケット」について一部地域間の配送リードタイムを見直す。これまで「翌々日配達」としていた一部区間で引き受ける荷物について、「翌日配達」に短縮する。
+
+対象地域（引受地域または宛先地域）は千葉県、東京都、埼玉県、神奈川県、静岡県、愛知県、滋賀県、京都府（一部地域）、大阪...</summary>
+  </entry>
+  <entry>
+    <title>東野圭吾最大の問題作 実写映画化</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/3446"/>
+    <id>https://minna-no-vote-square.vercel.app/s/3446</id>
+    <updated>2026-04-19T23:41:49.468Z</updated>
+    <summary>62コメント62件(C) 2027「殺人の門」製作委員会
+
+国内累計発行部数1億部を突破した東野圭吾の傑作にして最大の問題作「殺人の門」が、山崎賢人（「崎」はたつさきが正式）と松下洸平のダブル主演で実写映画化され、2027年2月19日の公開が決定した。友情と殺意が絡み合う、禁断のミステリーだ。 【画像】山崎賢人×松下洸平W主演『殺人の門』場面写真 “親友”の人生を狂わせる男・倉持を山崎賢人が、そん...</summary>
+  </entry>
+  <entry>
+    <title>村上宗隆8号 シーズン58発ペース</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/3445"/>
+    <id>https://minna-no-vote-square.vercel.app/s/3445</id>
+    <updated>2026-04-19T23:41:47.639Z</updated>
+    <summary>204コメント204件ゴジキさんが推薦中＜アスレチックス・ホワイトソックス＞7回、2試合連発となる7号ソロを放った村上はベンチでチームメートとハイタッチ（AP）
+
+◇ア・リーグ ホワイトソックス ― アスレチックス（2026年4月19日 サクラメント） 【写真あり】川崎宗則「ムネリンズ」自主トレ2ショ公開「刺激になりました」ファン歓喜！ ホワイトソックスの村上宗隆内野手（26）が19日（日本時間2...</summary>
+  </entry>
+  <entry>
+    <title>死亡男児 同級生に「父が大嫌い」</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/3444"/>
+    <id>https://minna-no-vote-square.vercel.app/s/3444</id>
+    <updated>2026-04-19T23:41:45.740Z</updated>
+    <summary>1405コメント1405件安達優季容疑者（高校の卒業アルバムから）
+
+京都府南丹市で市立園部小の安達結希さん（11）の遺体が遺棄され、死体遺棄の疑いで父親の安達優季容疑者（37）が逮捕された事件で、結希さんが同級生に「お父さんが嫌い」と不満を漏らしていたことが20日、学校関係者への取材で分かった。府警は結希さんが虐待を受けたとの相談は把握していないとしており、家庭内の人間関係など背景を捜査する。 ...</summary>
+  </entry>
+  <entry>
+    <title>石油節約呼びかけるべき64% ANN</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/3443"/>
+    <id>https://minna-no-vote-square.vercel.app/s/3443</id>
+    <updated>2026-04-19T23:41:43.888Z</updated>
+    <summary>384コメント384件All Nippon NewsNetwork(ANN)
+
+イラン情勢の緊張が続くなか、石油の消費量を減らすために政府が節電や節約の呼び掛けを行うべきと考える人が6割を超えることがANNの世論調査で分かりました。 ANNは18日、19日に世論調査を行いました。 節電や節約の呼び掛けについて「行うべき」という人は64％で、「行うべきではない」が26％でした。 イラン情勢を受けた生...</summary>
+  </entry>
   <entry>
     <title>GUGA、人的資本戦略の先進事例を表彰する「GenAI HR Awards 2026」を企業・教育・公共など4部門で開催(クラウド Watch)</title>
     <link href="https://minna-no-vote-square.vercel.app/s/3442"/>
@@ -326,109 +429,5 @@
     <id>https://minna-no-vote-square.vercel.app/s/3405</id>
     <updated>2026-04-19T17:07:44.844Z</updated>
     <summary>37コメント37件▼近影に驚きの声続々 2019年に人気漫画家と結婚し、23年に体調不良で活動休止も…。45歳タレントの〝激変〟した姿に注目が集まっている。 【写真あり】〝激変〟姿…「まって大丈夫⁉」「こんな痩せてて衝撃…」「何があったの⁉」 3日に生放送された情報・報道番組「CATCHY」(琉球朝日放送)に登場したのは壇蜜。大きなリボンや花柄が印象的となっている衣装を身に纏った上品な姿で出演した...</summary>
-  </entry>
-  <entry>
-    <title>「あえて見せてるの？」くら寿司でノリノリ〝見えとるやん〟タンクトップ姿で〝横チラ〟&amp;〝タトゥー〟第2子出産から4年...あびる優に「大丈夫？」「寒くないの」(西スポWEB OTTO！)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/3404"/>
-    <id>https://minna-no-vote-square.vercel.app/s/3404</id>
-    <updated>2026-04-19T17:07:43.748Z</updated>
-    <summary>50コメント50件▼〝チラ見せ〟＆〝タトゥー〟 くら寿司でノリノリでビールと寿司を楽しむタレントあびる優(39)=福岡県生まれ=の姿が話題になっている。 【写真あり】〝横チラ〟&amp;〝タトゥー〟…「あえて見せてるの？」「大丈夫？」「寒くないの」 胸元が大きくあいた黒のタンクトップ姿で、腕のタトゥーを堂々と披露し、横からインナーと思われるレースも見える大胆な姿で、「東京で初めてくら寿司」とテンション高く...</summary>
-  </entry>
-  <entry>
-    <title>京本大我は“天然”＆桜田ひよりは“食いしん坊”互いのギャップを発見 相性バッチリコンビが狙うは『M‐1』出場？【インタビュー】(オリコン)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/3403"/>
-    <id>https://minna-no-vote-square.vercel.app/s/3403</id>
-    <updated>2026-04-19T17:07:42.343Z</updated>
-    <summary>Prime Video独占配信ドラマ『憧れの作家は人間じゃありませんでした』に出演する京本大我、桜田ひより 撮影：山崎美蔓（※崎＝たつさき） （C）ORICON NewS inc.
-
-SixTONESの京本大我が主演を務めるPrime Video独占配信ドラマ『憧れの作家は人間じゃありませんでした』が5月4日からスタートする。吸血鬼で小説家の御崎禅を演じる京本と、そんな御崎に翻弄される新米編集者・...</summary>
-  </entry>
-  <entry>
-    <title>『銀魂』作者・空知英秋の7年ぶり新連載開始 再びコメディ『2年B組 勇者デストロイヤーず』(オリコン)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/3402"/>
-    <id>https://minna-no-vote-square.vercel.app/s/3402</id>
-    <updated>2026-04-19T17:07:40.470Z</updated>
-    <summary>4コメント4件空知英秋氏の新連載『2年B組 勇者デストロイヤーず』開始＝『週刊少年ジャンプ』表紙 （C）週刊少年ジャンプ2026年21号／集英社
-
-漫画『銀魂』で知られる漫画家・空知英秋氏の新連載『2年B組 勇者デストロイヤーず』が、本日20日発売の『週刊少年ジャンプ』21号でスタートした。空知氏の新連載は、2019年6月の『銀魂』完結以来、約7年ぶりで、再びコメディ作品となっている。 【画像】主...</summary>
-  </entry>
-  <entry>
-    <title>祝「大神」発売20周年！ 幾度となくナカツクニを救い、その度に号泣した筆者が語り尽くす(GAME Watch)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/3401"/>
-    <id>https://minna-no-vote-square.vercel.app/s/3401</id>
-    <updated>2026-04-19T17:07:39.071Z</updated>
-    <summary>「世界を救う」という体験をさせてくれるゲームは星の数ほどある。しかし「世界を癒し、花を咲かせる」という体験で、これほどまでにプレーヤーの心を浄化し、温かい涙で満たしてくれるゲームが、ほかにどれだけあるだろうか。 【画像】画像は「大神 絶景版」のもの ※画像提供：カプコン（以下同） 2006年4月20日、カプコンからプレイステーション 2向けに発売されたアクションアドベンチャー「大神」。本日、202...</summary>
-  </entry>
-  <entry>
-    <title>食玩「ピクミン マスコット&amp;フルーツグミ２（2025リニューアル）」本日より再販(GAME Watch)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/3400"/>
-    <id>https://minna-no-vote-square.vercel.app/s/3400</id>
-    <updated>2026-04-19T17:07:37.525Z</updated>
-    <summary>バンダイは、食玩「ピクミン マスコット&amp;フルーツグミ２（2025リニューアル）」の再販売を4月20日より開始する。価格は385円。全国量販店の菓子売場等にて販売される。
-
-「まって大丈夫⁉」「こんな痩せてて衝撃…」壇蜜〝激変〟姿に騒然「何があったの⁉」「最近あまり見ないと思ったら」「上品なイメージは健在」
-
-2ミスチル桜井和寿のモノマネタレント、事務所解雇・車内泊暮らしを告白「生活ギリギリ」 過去...</summary>
-  </entry>
-  <entry>
-    <title>TVアニメ「ジョジョの奇妙な冒険」より「ブックマークコレクション ジョジョの奇妙な冒険 Vol.1」本日発売！(HOBBY Watch)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/3399"/>
-    <id>https://minna-no-vote-square.vercel.app/s/3399</id>
-    <updated>2026-04-19T17:07:36.121Z</updated>
-    <summary>バンダイは、雑貨「ブックマークコレクション ジョジョの奇妙な冒険 Vol.1」を4月20日に発売する。価格は110円。
-
-「まって大丈夫⁉」「こんな痩せてて衝撃…」壇蜜〝激変〟姿に騒然「何があったの⁉」「最近あまり見ないと思ったら」「上品なイメージは健在」
-
-2ミスチル桜井和寿のモノマネタレント、事務所解雇・車内泊暮らしを告白「生活ギリギリ」 過去に離婚も
-
-3「あえて見せてるの？」くら寿司でノリ...</summary>
-  </entry>
-  <entry>
-    <title>「ザ、ザ、ザ、ザブトン！」井口資仁さん〝超巨大ヒラメ〟釣り上げショットに大反響「エラだけで顔くらいある」「エグっ！でかっ！」(西スポWEB OTTO！)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/3398"/>
-    <id>https://minna-no-vote-square.vercel.app/s/3398</id>
-    <updated>2026-04-19T17:07:34.241Z</updated>
-    <summary>6コメント6件▼〝自己ベスト更新〟で船上で笑顔 元プロ野球選手の井口資仁さんが、自身の釣果記録を大幅に塗り替える〝超巨大ヒラメ〟を釣り上げ話題になっている。 【写真あり】〝超巨大ヒラメ〟釣り上げショット…「ザ、ザブトン！」「エラだけで顔くらいある」 「時化の為ヒラメ、マハタ釣りに変更」とインスタグラムに投稿し「コンディションは良くありませんでしたがヒラメの自己ベスト更新!! 84cm 5.45kg...</summary>
-  </entry>
-  <entry>
-    <title>SixTONES京本大我、役作りで6kg減量 桜田ひよりが目撃した“美しい演技”とは【「憧れの作家は人間じゃありませんでした」インタビュー前編】(モデルプレス)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/3397"/>
-    <id>https://minna-no-vote-square.vercel.app/s/3397</id>
-    <updated>2026-04-19T17:07:32.606Z</updated>
-    <summary>モデルプレスのインタビューに応じた京本大我、桜田ひより
-
-【モデルプレス＝2026/04/20】5月4日よりPrime Videoにて独占配信されるドラマ「憧れの作家は人間じゃありませんでした」で主演を務めるSixTONESの京本大我（きょうもと・たいが／31）、共演の桜田ひより（さくらだ・ひより／23）にインタビュー。前編では、今作ならではの役作りのこだわり、現場でのエピソードなどたっぷりと語っ...</summary>
-  </entry>
-  <entry>
-    <title>東映元東京撮影所長の幸田清さん死去、94歳 「二百三高地」「大日本帝国」などヒット作手掛ける(日刊スポーツ)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/3396"/>
-    <id>https://minna-no-vote-square.vercel.app/s/3396</id>
-    <updated>2026-04-19T17:07:30.704Z</updated>
-    <summary>4月11日に老衰で亡くなった、東映の元取締役東京撮影所長の幸田清さん（東映提供）
-
-東映は20日、元取締役東京撮影所長の幸田清（こうだ・きよし）さんが老衰のため11日に亡くなったと発表した。94歳だった。通夜・告別式は、既に執り行われた。 【写真】企画した「二百三高地」 幸田さんは1955年（昭30）に東映に入社し、72年に東京撮影所長と取締役に就任し、ともに84年まで在任した。主な企画作品は、舛...</summary>
-  </entry>
-  <entry>
-    <title>元東映取締役の幸田清氏が老衰で死去 94歳 主な企画作品に「二百三高地」「大日本帝国」「日本海大海戦 海ゆかば」(中日スポーツ)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/3395"/>
-    <id>https://minna-no-vote-square.vercel.app/s/3395</id>
-    <updated>2026-04-19T17:07:29.057Z</updated>
-    <summary>東映で取締役や東京撮影所長を務めた幸田清（こうだ・きよし）氏が11日、老衰のため死去、94歳。通夜・告別式は既に執り行った。 1955年に東映入社。72年に東京撮影所長、取締役にそれぞれ就任し、84年まで務めた。主な企画作品に「二百三高地」（80年）、「大日本帝国」（82年）、「日本海大海戦 海ゆかば」（83年）。
-
-「まって大丈夫⁉」「こんな痩せてて衝撃…」壇蜜〝激変〟姿に騒然「何があったの⁉」...</summary>
-  </entry>
-  <entry>
-    <title>【SixTONES京本大我＆桜田ひよりインタビュー後編】2人で“お笑いコンビ”結成？「トリッキーだから」互いへのリスペクト語る(モデルプレス)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/3394"/>
-    <id>https://minna-no-vote-square.vercel.app/s/3394</id>
-    <updated>2026-04-19T16:03:34.069Z</updated>
-    <summary>【モデルプレス＝2026/04/20】5月4日よりPrime Videoにて独占配信されるドラマ「憧れの作家は人間じゃありませんでした」で主演を務めるSixTONESの京本大我（きょうもと・たいが／31）と、共演の桜田ひより（さくらだ・ひより／23）にインタビュー。後編では、初共演とは思えないほど息の合った掛け合いを見せる2人の、お互いの印象や意外な素顔、そして撮影を支え合った信頼関係に迫る。 【...</summary>
-  </entry>
-  <entry>
-    <title>「原因は加熱式たばこ」焼け焦げた収集車両…清掃員芸人の〝注意喚起〟に反響「あわや大惨事！」「改めて周知徹底を」(西スポWEB OTTO！)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/3393"/>
-    <id>https://minna-no-vote-square.vercel.app/s/3393</id>
-    <updated>2026-04-19T16:03:32.496Z</updated>
-    <summary>2コメント2件▼プラスチック回収車で火災 ごみ清掃員として働く、お笑いコンビ「マシンガンズ」の滝沢秀一の〝注意喚起〟に反響が寄せられている。 【写真】真っ黒に焼け焦げた〝加熱式たばこ〟 東京都足立区出身の滝沢は、地元・足立区役所の公式Xが「本日、プラスチックの中に混入した加熱式たばこが原因となり収集車両の火災が発生しました」と伝えた投稿をリポスト。「以前からモバイルバッテリーの見た目がプラなので、...</summary>
   </entry>
 </feed>
