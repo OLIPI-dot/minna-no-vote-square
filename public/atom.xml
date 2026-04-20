@@ -4,11 +4,131 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-04-20T22:51:02.556Z</updated>
+  <updated>2026-04-20T23:50:10.470Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>生成AI時代、マーケターのキャリアに「最短ルート」はあるのか(Web担当者Forum)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/3598"/>
+    <id>https://minna-no-vote-square.vercel.app/s/3598</id>
+    <updated>2026-04-20T23:50:07.282Z</updated>
+    <summary>みなさん、こんにちは。瀬川（@motoy0shi）です。
+
+3年近く続けたこの連載も今回が最終回です。そこで今回は、マーケターのキャリアについて考えてみたいと思います。 駆け出しの若手マーケターと話していると、よくこんな質問を受けます。 「最短で、成果を出せるマーケターになるにはどうしたらよいですか？」 「マーケターになるためには、どんな勉強をしたらよいですか？」 確かに、マーケティングは専門性が...</summary>
+  </entry>
+  <entry>
+    <title>GoogleがGeminiの活用で不正広告の99%以上を配信開始前に特定、83億件をブロック(Web担当者Forum)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/3597"/>
+    <id>https://minna-no-vote-square.vercel.app/s/3597</id>
+    <updated>2026-04-20T23:50:05.576Z</updated>
+    <summary>2コメント2件Googleは2025年の広告安全性に関する年次報告書「Google Ads Safety Report 2025年版」を4月17日に公開した。生成AIの「Gemini」を搭載したツールの導入により、ポリシーに違反する広告の99%以上を配信開始前に特定・ブロックすることが可能になった。2025年1年間でブロックまたは削除した広告は83億件以上、停止したアカウントは2490万件にのぼる...</summary>
+  </entry>
+  <entry>
+    <title>トライベックが「AIO診断」サービス開始、AI時代に求められる企業情報発信を支援(Web担当者Forum)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/3596"/>
+    <id>https://minna-no-vote-square.vercel.app/s/3596</id>
+    <updated>2026-04-20T23:50:03.985Z</updated>
+    <summary>デジタルマーケティング支援・DXプラットフォーム事業のトライベックは4月20日、企業サイトのAI最適化(AIO)を支援する「AIO診断」の提供を開始したと発表した。企業サイトなどのオウンドメディアを対象に、生成AIやAI検索による企業情報の伝わり方を診断する。企業情報がどのようにAIに理解・整理・参照されうるかをユーザー起点で評価し、課題の可視化と改善の方向性を整理したレポートを提供する。
+
+画一...</summary>
+  </entry>
+  <entry>
+    <title>Dropboxから3つのChatGPT向けアプリ ファイル操作・検索・日程調整が「チャットで完結」(アスキー)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/3595"/>
+    <id>https://minna-no-vote-square.vercel.app/s/3595</id>
+    <updated>2026-04-20T23:50:01.862Z</updated>
+    <summary>「アナウンサー界に激震」「安住アナも…」NHKの“あるルール変更”で、民放アナにも衝撃走る
+
+2100年間使い続けられる「固体型原子力電池」発売へ
+
+3ソフトバンク新料金プランに乗り換えるべき？ 「ペイトク2」「テイガク無制限」「ミニフィット2」のお得度を検証
+
+4同じ「HDD」メーカーでも“当たり外れ”あり？ モデル別で明暗、ドライブ故障率の違い
+
+（出典：アスキー）
+
+[続きを読む](http...</summary>
+  </entry>
+  <entry>
+    <title>Salesforce、MulesoftのAIエージェント管理機能「Agent Fabric」を拡張(クラウド Watch)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/3594"/>
+    <id>https://minna-no-vote-square.vercel.app/s/3594</id>
+    <updated>2026-04-20T23:50:00.104Z</updated>
+    <summary>米Salesforceは現地時間4月15日、データ統合プラットフォーム「MuleSoft」のAIエージェント管理機能「Agent Fabric」を拡張すると発表した。これにより、急速に進化するマルチベンダーAI環境において、信頼性の高いAIエージェントのコントロールプレーンが利用できるとしている。 新機能では、Agent Scannerの拡張により、AIエージェントの自動検出機能がMCPサーバーや...</summary>
+  </entry>
+  <entry>
+    <title>ホームセンターのDCMが構築を計画する新ECサイトとは？ AI検索＋従業員のデバイス端末にも機能搭載＋倍以上の品ぞろえを実現(ネットショップ担当者フォーラム)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/3593"/>
+    <id>https://minna-no-vote-square.vercel.app/s/3593</id>
+    <updated>2026-04-20T23:49:58.382Z</updated>
+    <summary>新ECサイトはAI検索や関連商品の自動提案、店舗受取の強化に加え、通常店舗の倍以上の品ぞろえをめざす（画像はIR資料から編集部がキャプチャ）
+
+新ECサイトでは、通常店舗の倍以上の品ぞろえをめざすほか、AIを活用した検索機能や関連商品の自動提案機能、店舗サービスとの連携強化機能などを実装し、店舗とデジタルを横断した購買体験の向上を実現する。
+
+「アナウンサー界に激震」「安住アナも…」NHKの“ある...</summary>
+  </entry>
+  <entry>
+    <title>クラダシ、Integrityと合弁会社を設立し空き家再生事業を開始。社会課題解決を「食」から「住」へ拡張、成長戦略の一環で(ネットショップ担当者フォーラム)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/3592"/>
+    <id>https://minna-no-vote-square.vercel.app/s/3592</id>
+    <updated>2026-04-20T23:49:56.090Z</updated>
+    <summary>クラダシは4月17日、未活用資産による「住宅ロス」の削減に向けた空き家再生事業「Kuradashi Estate」を開始すると発表した。 不動産の売買・仲介事業などを手がけるIntegrityとの共同出資する合弁会社「株式会社Nestia」を4月22日に設立する。代表者はクラダシ代表取締役社長CEOの河村晃平氏。出資比率はクラダシが51%、Integrityが49%。 ■ 対象領域を「食」から「住...</summary>
+  </entry>
+  <entry>
+    <title>ド軍激震 投手のディアスがIL入り</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/3591"/>
+    <id>https://minna-no-vote-square.vercel.app/s/3591</id>
+    <updated>2026-04-20T23:49:53.519Z</updated>
+    <summary>49コメント49件前回登板は1死も取れず降板ドジャースのエドウィン・ディアス【写真：ロイター】
+
+米大リーグ・ドジャースは20日（日本時間21日）、守護神エドウィン・ディアス投手を負傷者リスト（IL）入りさせたと発表した。右肘の関節遊離体（通称：ネズミ）の除去手術を受ける予定で、後半戦の復帰を目指すという。今季ここまで7試合に登板して1勝4セーブ、防御率10.50だった。 【画像】「娘ちゃんデカく...</summary>
+  </entry>
+  <entry>
+    <title>甲子園カメラマン席 改修検討へ</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/3590"/>
+    <id>https://minna-no-vote-square.vercel.app/s/3590</id>
+    <updated>2026-04-20T23:49:51.527Z</updated>
+    <summary>18日、打球を追いカメラマン席に転落する福永（撮影・亀井 直樹）（スポーツニッポン新聞社）
+
+「スロースリップ発生か」専門家は続発を警戒 青森で震度5強
+
+テレ朝お天気お姉さん26歳、白ニット×黒スカート姿が「スタイル抜群」「めっちゃ可愛い」 デジタル写真集も昨年発売
+
+今日21日は黄砂が広く飛来 花粉とのダブル影響に注意 症状悪化や洗濯物など対策を
+
+（出典：ニュース）
+
+[続きを読む](htt...</summary>
+  </entry>
+  <entry>
+    <title>米労働長官辞任へ 事実上の更迭か</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/3589"/>
+    <id>https://minna-no-vote-square.vercel.app/s/3589</id>
+    <updated>2026-04-20T23:49:49.391Z</updated>
+    <summary>152コメント152件TBS NEWS DIG Powered by JNN
+
+アメリカのホワイトハウスは閣僚のデレマー労働長官が辞任すると明らかにしました。業務中に飲酒をした問題などが指摘されていて、事実上の更迭とみられます。 【写真を見る】トランプ氏 自身をキリストに？SNSに画像投稿→支持層から批判で削除 ホワイトハウスのチャン広報部長は20日、「X」に投稿し、「デレマー労働長官は民間部門の...</summary>
+  </entry>
+  <entry>
+    <title>スロースリップ発生か 三陸沖地震</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/3588"/>
+    <id>https://minna-no-vote-square.vercel.app/s/3588</id>
+    <updated>2026-04-20T23:49:47.211Z</updated>
+    <summary>218コメント218件北海道・三陸沖の巨大地震想定震源域と今回の震源
+
+20日、三陸沖で発生したマグニチュード（M）7・7の地震。専門家は、周辺の地震活動が活発化していると口をそろえ、警戒を呼び掛けた。 【チェックリストで確認】後発地震注意情報が出たらどうする? 京都大防災研究所の西村卓也教授（測地学）は「太平洋プレートと陸側のプレートの境界で起こる逆断層型の地震。昨年から活動が高まっている海溝型...</summary>
+  </entry>
+  <entry>
+    <title>黄砂が広く飛来予想 花粉にも注意</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/3587"/>
+    <id>https://minna-no-vote-square.vercel.app/s/3587</id>
+    <updated>2026-04-20T23:49:41.945Z</updated>
+    <summary>今日21日(火)は中国大陸からの黄砂が、午後にかけて日本列島の広い範囲に飛来する見込みです。花粉の飛散もわずかながら続く中、黄砂も飛来することにより、症状の悪化や洗濯物など生活への影響に注意が必要です。
+
+今日21日(火)は、中国大陸からの黄砂が午後にかけて、広い範囲で飛来するでしょう。朝は西日本や北陸から北海道の日本海側を中心に黄砂が飛来し、午後にかけて、東海や関東、北海道の太平洋側にも広がる見...</summary>
+  </entry>
   <entry>
     <title>「アナウンサー界に激震」「安住アナも…」NHKの“あるルール変更”で、民放アナにも衝撃走る(ハフポスト日本版)</title>
     <link href="https://minna-no-vote-square.vercel.app/s/3586"/>
@@ -376,125 +496,5 @@ Circle（サークル）が発行するステーブルコインUSDコイン（US
 2iPhone 16 Pro MaxからiPhone 17 Proへ。僕がたった1年でダウングレードした理由
 
 3「Pixel 10a」と「Pixel 10」どちらを選...</summary>
-  </entry>
-  <entry>
-    <title>アップル「AirPods Pro 3」など10％オフに アースデイプロモーション開始(アスキー)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/3548"/>
-    <id>https://minna-no-vote-square.vercel.app/s/3548</id>
-    <updated>2026-04-20T17:09:33.821Z</updated>
-    <summary>1コメント1件アップルは4月16日、特定の条件を満たすと「AirPods」やアップル純正アクセサリーを10%割引で購入できる「2026アースデイプロモーション」の開催を公表した。期間は2026年4月16日から5月16日までを予定している。
-
-2100年間使い続けられる「固体型原子力電池」発売へ
-
-3音楽サブスクにお金払い続けますか？ 中古iPodの人気がグングン上昇中の理由
-
-4PayPay、4自...</summary>
-  </entry>
-  <entry>
-    <title>身の回りのもの、どれくらい“見えない数値”が出てる？ 測ってみた(アスキー)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/3547"/>
-    <id>https://minna-no-vote-square.vercel.app/s/3547</id>
-    <updated>2026-04-20T17:09:32.374Z</updated>
-    <summary>1コメント1件目に見えない放射線や電界・磁界の強さをFNIRSI「GC-03」で数値化！ 身近なものでイロイロ試してみました 【もっと写真を見る】
-
-目に見えないものを数値化し、教えてくれるのが計測器。DIYシーンなら、電流や電圧を測るのにテスターを使いますし、普段過ごす環境を気にしている人なら、温度計や湿度計、さらに騒音計やCO2濃度測定器などを持っている人もいるでしょう。 こういった目に見えな...</summary>
-  </entry>
-  <entry>
-    <title>俺のハートにぶっ刺さり！ 何でもできるポータブルCDプレーヤー兼DAC「DM15 R2R」が超カッコいい(アスキー)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/3546"/>
-    <id>https://minna-no-vote-square.vercel.app/s/3546</id>
-    <updated>2026-04-20T17:09:30.766Z</updated>
-    <summary>6コメント6件サブスク全盛の今、あえてCDを選ぶ贅沢を。「カチリ」と鳴る物理スイッチの快感、盤面が回る視覚的なロマン。192個の精密抵抗器が奏でる音は、効率だけを追い求める毎日に、確かな温もりと没入感を運んでくれる。 令和に降臨した平成を叩き起こすポータブルCDプレーヤー
-
-『私的My推しガジェット』 はアスキーの各編集者が個人的に推しなガジェットを紹介していくレビュー企画です。 CDプレーヤーを...</summary>
-  </entry>
-  <entry>
-    <title>リモートワークは福利厚生なの？ ITエンジニアが本当に欲しい福利厚生第1位となる(アスキー)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/3545"/>
-    <id>https://minna-no-vote-square.vercel.app/s/3545</id>
-    <updated>2026-04-20T17:09:29.388Z</updated>
-    <summary>3コメント3件ITエンジニアが欲しいと答えた福利厚生、その第一位は……。 ITエンジニアが「本当に欲しがっている」福利厚生とは？
-
-住宅手当や家賃補助、資格の取得支援制度にストックオプション報酬。就職時や転職時、重視する人も多い福利厚生。「うちの会社は家賃が出るんだけど」「福利厚生でランチ代を浮かせてて〜」なんて、ちょっとした会話の種になることもある福利厚生。 「人気の福利厚生」と聞いて、どんなも...</summary>
-  </entry>
-  <entry>
-    <title>Nothingの新作は色もカメラもスゴい アプリもノーコードで作れちゃう 学割も展開予定(BCN)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/3544"/>
-    <id>https://minna-no-vote-square.vercel.app/s/3544</id>
-    <updated>2026-04-20T17:09:27.975Z</updated>
-    <summary>「Nintendo Switch 2」は買いやすくなったのか？ 販売店が悪戦苦闘した転売対策の「その後」を追う
-
-2iPhone 16 Pro MaxからiPhone 17 Proへ。僕がたった1年でダウングレードした理由
-
-3「Pixel 10a」と「Pixel 10」どちらを選ぶ？ 実機比較で分かった「約5万円差の価値」と「明確な違い」
-
-4Ankerの新作が賢い。機種を判別して最効率で充電し...</summary>
-  </entry>
-  <entry>
-    <title>まずは一番の問題点を改善！ となると…やるべきはアンプDSPの導入［音を良くする“初級鉄板プラン”をプロが伝授］(レスポンス)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/3543"/>
-    <id>https://minna-no-vote-square.vercel.app/s/3543</id>
-    <updated>2026-04-20T17:09:26.493Z</updated>
-    <summary>『エモーション（福岡県粕屋町）』にて製作されたオーディオカーの一例。
-
-純正オーディオシステムの音に物足りなさを覚えているのなら、システムアップを検討しよう。ここでは、その具体的かつ有効な初級プランを全国の有名「カーオーディオ・プロショップ」に訊き、紹介している。 【画像全3枚】 今回は、福岡県粕屋町にて店舗を構える実力ショップ、『エモーション』の橋本さんに話を訊いた。 ◆アンプDSPを追加すれば...</summary>
-  </entry>
-  <entry>
-    <title>Strategyのセイラー氏、「さらに大規模な」BTC購入を示唆──配当金の月2回支払いを提案した直後(NADA NEWS)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/3542"/>
-    <id>https://minna-no-vote-square.vercel.app/s/3542</id>
-    <updated>2026-04-20T17:09:24.871Z</updated>
-    <summary>1コメント1件Strategyのセイラー氏、「さらに大規模な」BTC購入を示唆──配当金の月2回支払いを提案した直後
-
-Strategy（ストラテジー）のMichael Saylor（マイケル・セイラー）氏は4月19日、Xに「Think Even ₿igger（さらに大きく考えよう）」と投稿し、同社のビットコイン（BTC）購入履歴チャートを添付した。セイラー氏は過去にも購入発表の前日に同様の投稿を...</summary>
-  </entry>
-  <entry>
-    <title>三陸沖の地震で通信各社が「災害用伝言サービス」を運用開始 気象庁は避難継続を呼び掛け(ITmedia NEWS)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/3541"/>
-    <id>https://minna-no-vote-square.vercel.app/s/3541</id>
-    <updated>2026-04-20T17:09:23.222Z</updated>
-    <summary>4月20日の午後4時52分ごろに三陸沖で発生した震度5強の地震により、通信各社が災害用伝言サービスの運用を始めた。NTT東西の「災害用伝言ダイヤル（171）」「災害用伝言版（web171）」をはじめ、NTTドコモ、KDDI、ソフトバンク、楽天モバイルの携帯各社も「災害伝言板」を運用している。 【その他の画像】テレビ各局は通常番組に変えて津波情報を放送している ・NTT東西（web171） ・NTT...</summary>
-  </entry>
-  <entry>
-    <title>JPYC、メタプラネットらから28億円の追加資金調達へ──シリーズB累計調達額は約46億円に(NADA NEWS)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/3540"/>
-    <id>https://minna-no-vote-square.vercel.app/s/3540</id>
-    <updated>2026-04-20T17:09:21.713Z</updated>
-    <summary>1コメント1件JPYC、メタプラネットらから28億円の追加資金調達へ──シリーズB累計調達額は約46億円に
-
-2100年間使い続けられる「固体型原子力電池」発売へ
-
-3音楽サブスクにお金払い続けますか？ 中古iPodの人気がグングン上昇中の理由
-
-4PayPay、4自治体で最大30％還元キャンペーン 2026年6月以降
-
-（出典：NADA NEWS）
-
-[続きを読む](https://news.y...</summary>
-  </entry>
-  <entry>
-    <title>ソフトバンク、国産LLM「Sarashina」の法人向けサービスを6月開始へ(ビジネス＋IT)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/3539"/>
-    <id>https://minna-no-vote-square.vercel.app/s/3539</id>
-    <updated>2026-04-20T17:09:19.807Z</updated>
-    <summary>ソフトバンクは、自社開発の大規模言語モデル（LLM）「Sarashina」を活用した企業向けの業務支援サービスを2026年6月より順次開始する。日本オラクルのインフラ技術を利用してソフトバンクの国内データセンターで運用を行い、企業が機密データを安全に扱える「データ主権（ソブリン性）」を確保する。 【図版付き記事はこちら】ソフトバンク、国産LLM「Sarashina」の法人向けサービスを開始へ（画像...</summary>
-  </entry>
-  <entry>
-    <title>IT人材不足の中小企業へ ナイスモバイル、ファーウェイのWi-Fi 7対応ネットワークブランドを国内展開(アスキー)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/3538"/>
-    <id>https://minna-no-vote-square.vercel.app/s/3538</id>
-    <updated>2026-04-20T15:54:09.126Z</updated>
-    <summary>1コメント1件Web会議ソリューションを展開するナイスモバイルは、 2026年4月20日、ファーウェイ（華為技術）の中小企業向けネットワークソリューションブランド 「HUAWEI eKit」 の国内販売・サポート窓口対応を開始した。 【もっと写真を見る】
-
-Web会議ソリューションを展開するナイスモバイルは、 2026年4月20日、ファーウェイ（Huawei）の中小企業向けネットワークソリューショ...</summary>
-  </entry>
-  <entry>
-    <title>１０９シネマズプレミアム新宿、「スター・ウォーズ」シリーズ一挙上映を4/24から開始。アナログ盤サントラの試聴イベントも(PHILE WEB)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/3537"/>
-    <id>https://minna-no-vote-square.vercel.app/s/3537</id>
-    <updated>2026-04-20T15:54:07.455Z</updated>
-    <summary>1コメント1件「スター・ウォーズ」シリーズ一挙上映企画の一環
-
-１０９シネマズプレミアム新宿は、同館の開業3周年、ならびに5月22日（金）の映画『スター・ウォーズ／マンダロリアン・アンド・グローグー』公開を記念し、4月24日（金）から5月7日（木）にかけて「スター・ウォーズ」シリーズ一挙上映企画を開催する。 「スター・ウォーズ」シリーズのサントラがアナログ盤で新発売 中でも5月4日（月・祝）の「ス...</summary>
   </entry>
 </feed>
