@@ -47,6 +47,16 @@ const SurveyListView = ({
 }) => {
   const ITEMS_PER_PAGE = viewMode === 'grid' ? 40 : 15;
   const listRef = React.useRef(null);
+  const [copyStatus, setCopyStatus] = React.useState('📜 タイトルをコピー');
+
+  const handleCopyPageTitles = () => {
+    if (!surveys || surveys.length === 0) return;
+    const titles = surveys.map(s => s.title).join('\n');
+    navigator.clipboard.writeText(titles).then(() => {
+      setCopyStatus('✅ コピーしました！');
+      setTimeout(() => setCopyStatus('📜 タイトルをコピー'), 2000);
+    });
+  };
 
   // ⚡ useMemoによりソート・フィルタの計算結果をキャッシュ化。filter/sortはレンダーのたびに実行されず、必要な時だけ実行される。
   const trendingHeadlineSurveys = React.useMemo(() => {
@@ -82,12 +92,8 @@ const SurveyListView = ({
                 alt={`${user.user_metadata?.full_name || 'ユーザー'}さんのアバター`} 
               />
             )}
-            <span className="user-name">
-              {user.user_metadata?.full_name || user.email.split('@')[0]}さん
-            </span>
-            <button className="logout-button" onClick={() => supabase.auth.signOut()}>ログアウト</button>
-          </div>
-        ) : (
+    </div>
+  ) : (
           <button
             className="google-login-btn"
           onClick={() => supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin } })}

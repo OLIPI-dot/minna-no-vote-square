@@ -101,12 +101,7 @@ async function generateSitemap() {
         surveys.forEach(survey => {
             try {
                 const date = new Date(survey.created_at).toISOString().split('T')[0];
-                xml += `  <url>
-        <loc>${SITE_URL}/s/${survey.id}</loc>
-        <lastmod>${date}</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-      </url>\n`;
+                xml += `  <url>\n    <loc>${SITE_URL}/s/${survey.id}</loc>\n    <lastmod>${date}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.6</priority>\n  </url>\n`;
             } catch (e) {
                 console.warn(`⚠️ アンケートID ${survey.id} の処理をスキップらび:`, e.message);
             }
