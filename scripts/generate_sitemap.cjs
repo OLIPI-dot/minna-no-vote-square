@@ -109,7 +109,7 @@ async function generateSitemap() {
 
         xml += `</urlset>`;
 
-        const outputPath = path.join(__dirname, '../public/sitemap_surveys.xml');
+        const outputPath = path.join(__dirname, '../public/sitemap_surveys_v2.xml');
         fs.writeFileSync(outputPath, xml, 'utf8');
         console.log(`✨ サーベイ用サイトマップが完成したよ！場所: ${outputPath} 🐰🥕`);
     } catch (err) {

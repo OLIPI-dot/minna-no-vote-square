@@ -12,7 +12,7 @@ async function generateSitemapIndex() {
         let xml = `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
-    <loc>${SITE_URL}/sitemap_surveys.xml</loc>
+    <loc>${SITE_URL}/sitemap_surveys_v2.xml</loc>
     <lastmod>${now}</lastmod>
   </sitemap>
 </sitemapindex>`;
