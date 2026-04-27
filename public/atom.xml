@@ -4,11 +4,109 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-04-27T17:08:14.626Z</updated>
+  <updated>2026-04-27T21:07:35.328Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>Aave、Kelp悪用者の3万ETHを「DeFi United」へ送金するようArbitrumに提案(NADA NEWS)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/4738"/>
+    <id>https://minna-no-vote-square.vercel.app/s/4738</id>
+    <updated>2026-04-27T21:07:32.634Z</updated>
+    <summary>Aave、Kelp悪用者の3万ETHを「DeFi United」へ送金するようArbitrumに提案
+
+Aave Labs（アーベ・ラボ）は4月26日、Arbitrum（アービトラム）DAOに対し、Kelp DAO攻撃に関連して凍結された約7350万ドル（約117億6000万円、1ドル=160円換算）相当の3万765ETHの凍結を解除し、rsETHの復旧と保有者への補償を目的とする基金「DeFi ...</summary>
+  </entry>
+  <entry>
+    <title>修理費で13万円超えも 折りたたみスマホに「端末保険」が事実上必須といえる理由(ITmedia Mobile)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/4737"/>
+    <id>https://minna-no-vote-square.vercel.app/s/4737</id>
+    <updated>2026-04-27T21:07:30.873Z</updated>
+    <summary>18コメント18件日本市場にも多様な折りたたみスマートフォンが登場している。写真は2025年にY!mobileから発売されたZTE製の「nubia Fold」
+
+折りたたみスマートフォンは国内では大手3キャリアやY!mobile、オープン市場でも販売されており、入手しやすくなった。Galaxy Foldの登場から間もなく7年。3つ折りタイプも登場して話題になりつつあるが、依然として扱いには注意が必...</summary>
+  </entry>
+  <entry>
+    <title>マウス、95W対応USB Type-Cや有線LAN搭載の31.5型WQHDモニター(PC Watch)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/4736"/>
+    <id>https://minna-no-vote-square.vercel.app/s/4736</id>
+    <updated>2026-04-27T21:07:29.014Z</updated>
+    <summary>マウスコンピューターは4月24日、USB Type-C接続/給電対応の31.5型WQHD(2,560×1,440ドット)液晶モニター「ProLite XUB3297QSNP-B1J」を発売した。直販価格は5万930円。 ProLite XUB3297QSNP-B1Jは、最大95Wの給電/映像入力/データ転送に対応するUSB Type-Cポートを備えた31.5型液晶モニター。USB Type-AやU...</summary>
+  </entry>
+  <entry>
+    <title>NTT、AIネイティブ基盤「AIOWN」展開 データセンター規模を3倍に(Impress Watch)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/4735"/>
+    <id>https://minna-no-vote-square.vercel.app/s/4735</id>
+    <updated>2026-04-27T21:07:26.962Z</updated>
+    <summary>NTTは27日、AI活用の急速な拡大を背景に、AI活用の進展に合わせたリソース最適化・オペレーションを実現するAIネイティブインフラ「AIOWN」の展開を発表した。AIの用途に応じてGPUやネットワーク、電力などを最適に配分する次世代インフラとして推進する。
+
+「4カ月上昇中のRubyを抑えた」いま最も単価が高い言語とは フリーランス案件調査
+
+2チャットＧＰＴ、東大理３「首席合格」…昨年の合格圏...</summary>
+  </entry>
+  <entry>
+    <title>Algomatic、企業のAI変革（AX）を推進するための基盤強化を目的とした専門組織を設立(窓の杜)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/4734"/>
+    <id>https://minna-no-vote-square.vercel.app/s/4734</id>
+    <updated>2026-04-27T21:07:25.369Z</updated>
+    <summary>（株）Algomaticは4月23日、企業のAI変革（AX）を推進するための基盤強化を目的とし、専門組織「AI駆動開発センター」および「AXガバナンスセンター」を新たに設立したと発表した。AIを活用したソフトウェア開発の効率化と、安全性の確保を両立させる体制を整えることで、企業の持続的な成長を支援する。 【画像】「AI駆動開発センター」と「AXガバナンスセンター」、ステークホルダーの関係 近年、企...</summary>
+  </entry>
+  <entry>
+    <title>「KB5083769」で導入の新しいリモートデスクトップ接続（RDP）ファイルの警告に不具合(窓の杜)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/4733"/>
+    <id>https://minna-no-vote-square.vercel.app/s/4733</id>
+    <updated>2026-04-27T21:07:23.596Z</updated>
+    <summary>2026年4月のセキュリティパッチ「KB5083769」以降、リモートデスクトップ接続のセキュリティを強化するため、RDPファイルを開く際に追加の警告メッセージが表示されるようになっている。しかし、これが場合によっては正しく表示されないことがあるようだ。米Microsoftが4月23日（現地時間）、サポートドキュメントをアップデートして明らかにした。 【画像】RDPファイルを初めて開いたときの案内...</summary>
+  </entry>
+  <entry>
+    <title>「4カ月上昇中のRubyを抑えた」いま最も単価が高い言語とは フリーランス案件調査(＠IT)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/4732"/>
+    <id>https://minna-no-vote-square.vercel.app/s/4732</id>
+    <updated>2026-04-27T21:07:21.900Z</updated>
+    <summary>エンジニア向けのインターネット求人サービスを展開するINSTANTROOMは2026年2月12日、案件検索サイト「フリーランスボード」における、2026年2月のフリーランス案件の単価に関する市場動向の調査結果を発表した。 開発言語別の月額平均単価 同調査は、2026年2月6日時点における43万8990件の掲載案件を対象に行われた。その結果、2026年2月のフリーランス案件の月額平均単価は75.7万...</summary>
+  </entry>
+  <entry>
+    <title>競合はAWSやAzureではない--グーグル・クラウド三上社長が語るAIエージェント時代の市場定義(ZDNET Japan)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/4731"/>
+    <id>https://minna-no-vote-square.vercel.app/s/4731</id>
+    <updated>2026-04-27T21:07:19.834Z</updated>
+    <summary>競合はAWSやAzureではない--グーグル・クラウド三上社長が語るAIエージェント時代の市場定義の画像
+
+パブリッククラウド市場は、長らくAmazon Web Services（AWS）、Microsoft、Google Cloudの3社が市場を育て、その規模を拡大させてきた。いわば「3大パブリッククラウド」だ。しかし、グーグル・クラウド・ジャパン 日本代表の三上智子氏は、「市場の定義が変わって...</summary>
+  </entry>
+  <entry>
+    <title>IPA、ゴールデンウィークに向けたセキュリティ対策を呼びかけ(INTERNET Watch)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/4730"/>
+    <id>https://minna-no-vote-square.vercel.app/s/4730</id>
+    <updated>2026-04-27T21:07:17.725Z</updated>
+    <summary>独立行政法人情報処理推進機構（IPA）は、「2026年度 ゴールデンウィークにおける情報セキュリティに関する注意喚起」を発表した。ここでは、企業や組織向けにネットワーク貫通型攻撃への対策を呼びかけている。 ネットワーク貫通型攻撃とは、企業や組織のネットワークとインターネットとの境界に設置されるセキュリティ製品、具体的にはルーターやVPN機器の脆弱性が狙われる攻撃を指し、特定企業を狙って関係者を装っ...</summary>
+  </entry>
+  <entry>
+    <title>”映え”より気にすべきもの 漫画「1週間後に生成AIで恥をかく新入社員」【残り3日】(ITmedia NEWS)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/4729"/>
+    <id>https://minna-no-vote-square.vercel.app/s/4729</id>
+    <updated>2026-04-27T21:07:15.625Z</updated>
+    <summary>いよいよ新生活シーズン。期待と不安を胸に、新たな一歩を踏み出した新社会人の方も多いでしょう。多くの企業はいまAI一色。いかにAI活用を進め、業務を効率化するかに執心しています。新卒社員にもAIの活用を求める会社も少なくありません。 【漫画を全部読む】 すでに就職活動などで生成AIに触れたことがある人もいるでしょうし、中には一般的な社会人より使いこなしている人もいるかもしれません。一方でまだなじみが...</summary>
+  </entry>
+  <entry>
+    <title>世界の暗号資産ETP、ビットコインが牽引して4週連続の流入：CoinShares(NADA NEWS)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/4728"/>
+    <id>https://minna-no-vote-square.vercel.app/s/4728</id>
+    <updated>2026-04-27T21:07:14.178Z</updated>
+    <summary>世界の暗号資産ETP、ビットコインが牽引して4週連続の流入：CoinShares
+
+CoinShares（コインシェアーズ）が4月27日に公開した週次レポートによると、世界の暗号資産ETP（上場取引型金融商品）には先週、12億ドル（約1920億円、1ドル=160円換算）の資金が流入し、4週連続の増加を記録した。運用資産総額（AUM）は1550億ドル（約24兆8000億円）に達し、2月1日以来の高水...</summary>
+  </entry>
+  <entry>
+    <title>子どもに勤めてほしい企業ランキング1位は？ 親が望む“最低年収”も判明【リスクモンスター調べ】(Web担当者Forum)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/4727"/>
+    <id>https://minna-no-vote-square.vercel.app/s/4727</id>
+    <updated>2026-04-27T21:07:11.450Z</updated>
+    <summary>リスクモンスターは、「お子さん／お孫さんに勤めてほしい企業」に関する調査を実施した。全国の父母・祖父母800人を対象に、子ども・孫に就職してほしい企業や、企業選びで重視する点などを聞いている。 本調査は今回で14回目となる。
+
+調査によると、子どもや孫に勤めてほしい企業の1位は「地方公務員」（11.4％）、2位は「国家公務員」（11.3％）となった。3位は「トヨタ自動車」（9.0％）、4位は「任天...</summary>
+  </entry>
   <entry>
     <title>士郎正宗デザインマウスが発売延期。船便遅延の影響で(PC Watch)</title>
     <link href="https://minna-no-vote-square.vercel.app/s/4726"/>
@@ -362,115 +460,5 @@ iPhone 18 Proシリーズ、今より分厚くなりそうな予感がします
     <id>https://minna-no-vote-square.vercel.app/s/4689</id>
     <updated>2026-04-27T11:23:28.638Z</updated>
     <summary>国内外のオーディオメーカーを取り扱う青森のショップ・オーディオパル シラトリは、5月23日／24日に「青森オーディオフェア&amp;展示即売会」を開催する。入場料は無料で、マエダアリーナ1階スポーツラウンジで開催される。同イベントは、国内外の多彩なブランドが集結し、機器の試聴や購入ができるオーディオ展示即売イベント。会場には2つの試聴室が設けられ、時間帯ごとに各ブランドの製品を試聴できるプログラムが用意さ...</summary>
-  </entry>
-  <entry>
-    <title>Googleの「AIレッドチーム」が戦略を初公開、攻撃者観点から脆弱性を検証(ビジネス＋IT)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/4688"/>
-    <id>https://minna-no-vote-square.vercel.app/s/4688</id>
-    <updated>2026-04-27T11:23:27.344Z</updated>
-    <summary>Googleは、人工知能（AI）システムに対するサイバー攻撃の脅威に対処するため、「AIレッドチーム」の取り組みと戦略を初めて公開した。このチームは、攻撃者の視点から自社のAI製品やモデルの脆弱性を検証し、安全性を高める役割を担う。最近発表された「Secure AI Framework（SAIF）」を推進する上での中核的な機能と位置付けられており、高度化するAIへの攻撃手法に先回りして対応する体制...</summary>
-  </entry>
-  <entry>
-    <title>村田製作所、8.8万件の情報漏えいか 2月の不正アクセスで(ITmedia NEWS)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/4687"/>
-    <id>https://minna-no-vote-square.vercel.app/s/4687</id>
-    <updated>2026-04-27T11:23:26.112Z</updated>
-    <summary>はてな株に売り殺到、終日値付かず “11億円流出”ショックで
-
-2100均グッズで英語の授業を「やりやすく」⇨小学校教員の発想に「素敵」「マネします」と反響
-
-4ピザ2枚を1回のオーブンで一気に焼く裏技⇨「賢すぎん？」「半世紀以上生きてて気付きませんでした」と大反響
-
-5「note」社長が55万株を市場売却、好決算後に株価急反落 本人の裁量は介在していないと説明
-
-（出典：ITmedia NEWS...</summary>
-  </entry>
-  <entry>
-    <title>ホンダ「オデッセイ」カラーのスマホケースが登場、自動車用塗料でリアルな色を再現 6578円(ITmedia Mobile)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/4686"/>
-    <id>https://minna-no-vote-square.vercel.app/s/4686</id>
-    <updated>2026-04-27T11:23:24.411Z</updated>
-    <summary>エンターテインメントマーケティングは、4月27日に自動車用塗料を使って実車のカラーを再現したiPhone／スマートフォンケースへホンダの「オデッセイ」を追加した。価格は6578円。 【画像】オブシダンブルー・パールのイメージ 本製品は自動車用の塗料とコーティング剤を使用し、実車の色や質感を再現したケース。CMYKのインクで印刷するのではなく実車のカラー番号を元に自動車用塗料を調色し、リアルな色を再...</summary>
-  </entry>
-  <entry>
-    <title>【安すぎて心配レベル】ワークマンのリカバリーウェアでオジサンは本当に回復するのか検証してみた(アスキー)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/4685"/>
-    <id>https://minna-no-vote-square.vercel.app/s/4685</id>
-    <updated>2026-04-27T11:23:23.065Z</updated>
-    <summary>ワークマンのリカバリーウェア「メディヒール」のレビューです。遠赤外線で血行を促進し疲労回復をサポートする一般医療機器ながら、約2000円という破格の安さが魅力です。着て寝るだけで睡眠の質向上や疲労ケアが期待できる、コスパ最強の部屋着としてオススメしています。 着るだけで疲れがとれるリカバリーウェアがスゴイ！
-
-『私的My推しガジェット』 はアスキーの各編集者が個人的に推しなガジェットを紹介していく...</summary>
-  </entry>
-  <entry>
-    <title>新しい「Windows Update」が始動 ～待たせない、何回もしない、忙しいときは後回し(窓の杜)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/4684"/>
-    <id>https://minna-no-vote-square.vercel.app/s/4684</id>
-    <updated>2026-04-27T11:23:21.804Z</updated>
-    <summary>米Microsoftは4月24日（現地時間）、新しい「Windows Update」のテストを開始した。今年3月に約束した改善を実際にテストできる。 【画像】OOBE（OSの初期セットアップ）。これまでは「Windows Update」のチェックと適用が必須で、長い時間待たされることがあった 新しい「Windows Update」は、アップデートに関わる混乱を減らすことと、ユーザーの意思を尊重する...</summary>
-  </entry>
-  <entry>
-    <title>細木数子氏が激昂 HGが語る裏側</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/4683"/>
-    <id>https://minna-no-vote-square.vercel.app/s/4683</id>
-    <updated>2026-04-27T11:23:20.538Z</updated>
-    <summary>245コメント245件レイザーラモンHG＃1レイザーラモンHG
-
-2005年、腰を振りながら「フォー!」と叫ぶ“ハードゲイ”キャラで一世を風靡したレイザーラモンHG氏。その人気絶頂期に出演した細木数子さんの冠番組『ズバリ言うわよ!』で持ちネタを披露した際、細木さんから「気持ち悪い!」「無礼な態度はやめなさい!」と一喝され、スタジオは凍てついた空気に包まれた。 【画像】「心の中では泣いてました」細木...</summary>
-  </entry>
-  <entry>
-    <title>「風呂キャンセル」防ぐ鍵は</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/4682"/>
-    <id>https://minna-no-vote-square.vercel.app/s/4682</id>
-    <updated>2026-04-27T11:23:18.357Z</updated>
-    <summary>995コメント995件井上智介さんが推薦中（FNNプライムオンライン）
-
-数年前より話題になった言葉「風呂キャン」。“風呂キャンセル”、つまりお風呂に入りたいが、面倒に感じて結局入らずに寝てしまうことを指す言葉だ。風呂キャンに悩む人（風呂キャン界隈）には、どのような特徴があるのか。そして、どうすれば風呂キャンを脱することができるのか。認知行動療法を専門とする臨床心理士の中島美鈴さん（中島心理相談所...</summary>
-  </entry>
-  <entry>
-    <title>歯の治療で2歳児死亡 有罪確定へ</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/4681"/>
-    <id>https://minna-no-vote-square.vercel.app/s/4681</id>
-    <updated>2026-04-27T11:23:16.848Z</updated>
-    <summary>ダイエット成功・りんごちゃん「めっちゃ痩せて…」激変姿にフォロワー騒然「どちら様？」「倖田來未さん」
-
-３３歳で高校入学した「ぱーてぃーちゃん」信子 別人のような姿に衝撃「わからなかった」“徳川家康の末裔”
-
-79歳の千昌夫 「女房と」18歳年下の外国人妻と密着2S 「お似合い」「ラブラブ」の声
-
-全貌が見えてきた「未来の名古屋駅」 東側駅前広場のデザイン計画発表 2階デッキを“あえて半分”にする...</summary>
-  </entry>
-  <entry>
-    <title>「主婦年金」縮小方向 識者は懸念</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/4680"/>
-    <id>https://minna-no-vote-square.vercel.app/s/4680</id>
-    <updated>2026-04-27T11:23:15.241Z</updated>
-    <summary>1603コメント1603件日本維新の会は第三号被保険者制度の「段階的な廃止」を訴えてきた
-
-「4月13日、自民党と日本維新の会は社会保障改革を巡る実務者協議で、“主婦年金”を縮小していく方向で一致しました。日本維新の会は第3号被保険者制度の廃止を公約に掲げてきましたから、見直しが一気に進むとみられます」（全国紙記者） 【写真あり】日本社会を支えてきたのが主婦の労働力 現行制度では、会社員など厚生年...</summary>
-  </entry>
-  <entry>
-    <title>大槌山火事 健康不安などの影響も</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/4679"/>
-    <id>https://minna-no-vote-square.vercel.app/s/4679</id>
-    <updated>2026-04-27T11:23:13.463Z</updated>
-    <summary>延焼が続く大槌町の山林火災。大量の灰と煙による健康被害の懸念など住民生活への影響も広がっています。 26日、吉里吉里地区で撮影された消火活動の様子です。地面の一部から火が上がり、頭上からは時折火の粉が落ちてきます。足元が不安定な急斜面で懸命な消火活動が続いています。 消防団副団長歩き 「ザクザクザクザク」「きのうは夕方、炎が見えてたからね」 大槌町消防団の芳賀潤さんです。消防団の副団長を務め、自ら...</summary>
-  </entry>
-  <entry>
-    <title>「本当は上司は近くにいてほしい」そんなこと言われたら嬉しくて毎日出社したくなっちゃいませんか？(アスキー)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/4678"/>
-    <id>https://minna-no-vote-square.vercel.app/s/4678</id>
-    <updated>2026-04-27T09:22:43.305Z</updated>
-    <summary>上司は近くの席にいてくれた方が安心。そう考える人が意外に（？）多いようです。 上司には、近くの席に座っていてほしいと思う人が意外に（？）多いらしい。
-
-部下を持つ皆さん、「上司には近くにいてほしいんです」——そんなこと言われたら、悪い気はしませんよね？ 嬉しくて毎日出社したくなっちゃいませんか？ 距離を保つマネジメントや、フラットな関係性が重視されるいまの時代。上司と部下のあいだには、どこか「近づ...</summary>
-  </entry>
-  <entry>
-    <title>「洋服を選ぶように、自分らしく時間をコーディネートする」1日の過ごし方が変わる新しい時間術(アスキー)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/4677"/>
-    <id>https://minna-no-vote-square.vercel.app/s/4677</id>
-    <updated>2026-04-27T09:22:41.704Z</updated>
-    <summary>「時間がない」「いつも何かに追われている」「休むことに罪悪感がある」。そう感じているミドル世代女性は少なくない。しかし問題は、時間の量ではないと話すのは時間術の専門家（タイムコーディネーター）の吉武麻子さん。今回は吉武さんにタイムコーディネートの概要や「時間がない」と感じる原因、ミドル世代女性が陥りやすい日常を聞いた。 【もっと写真を見る】
-
-「時間がない」「いつも何かに追われている」「休むことに...</summary>
   </entry>
 </feed>
