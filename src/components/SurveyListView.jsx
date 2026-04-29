@@ -92,8 +92,18 @@ const SurveyListView = ({
                 alt={`${user.user_metadata?.full_name || 'ユーザー'}さんのアバター`} 
               />
             )}
-    </div>
-  ) : (
+            <button 
+              className="logout-button"
+              onClick={() => {
+                if (window.confirm('ログアウトしますか？')) {
+                  supabase.auth.signOut();
+                }
+              }}
+            >
+              ログアウト
+            </button>
+          </div>
+        ) : (
           <button
             className="google-login-btn"
           onClick={() => supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin } })}
