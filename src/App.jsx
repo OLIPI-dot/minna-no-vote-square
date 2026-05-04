@@ -1000,7 +1000,24 @@ function App() {
       console.log(`🔍 fetchSurveys: STAGE 1 - Fetching page ${page} (range: ${start}-${end}, sort: ${sort}, query: "${query}")...`);
       
       // 1. 公開アンケートの取得（フィルタ適用）
-      let baseQuery = supabase.from('surveys').select('*', { count: 'exact' }).eq('visibility', 'public');
+      let baseQuery = supabase.from('surveys').select('*', { count: 'exact' });
+      
+      if (sort === 'mine') {
+        if (currentUser) {
+          baseQuery = baseQuery.eq('user_id', currentUser.id);
+        } else {
+          baseQuery = baseQuery.eq('id', '00000000-0000-0000-0000-000000000000'); // 空結果にするためのダミー
+        }
+      } else if (sort === 'watching') {
+        const localWatched = JSON.parse(localStorage.getItem('watched_surveys') || '[]');
+        if (localWatched.length > 0) {
+          baseQuery = baseQuery.in('id', localWatched);
+        } else {
+          baseQuery = baseQuery.eq('id', '00000000-0000-0000-0000-000000000000');
+        }
+      } else {
+        baseQuery = baseQuery.eq('visibility', 'public');
+      }
       
       // 🏷️ カテゴリフィルタ（カテゴリが選ばれている時は、検索中であってもそのカテゴリ内を探すのが自然らびに！）
       if (category && category !== 'すべて') {
@@ -1008,12 +1025,12 @@ function App() {
       }
       
       // 📢 タブフィルタ (公式 vs ユーザー投稿)
-      // ⚡ 検索中（文字が入っている時）は、見逃しを防ぐために全タブから探すようにするらび！
-      // それ以外の通常時は、今見ているタブの設定をしっかり守るらびに。
-      if (currentTab === 'official') {
-        baseQuery = baseQuery.eq('is_official', true);
-      } else if (currentTab === 'user') {
-        baseQuery = baseQuery.eq('is_official', false);
+      if (sort !== 'mine' && sort !== 'watching') {
+        if (currentTab === 'official') {
+          baseQuery = baseQuery.eq('is_official', true);
+        } else if (currentTab === 'user') {
+          baseQuery = baseQuery.eq('is_official', false);
+        }
       }
 
       // 🔍 検索クエリの適用
@@ -1100,7 +1117,7 @@ function App() {
 
       // ログイン中なら自分の非公開/限定公開アンケートも別枠で取得（とりあえず最新20件）
       let mine = [];
-      if (currentUser && page === 1 && !category && !query) {
+      if (currentUser && page === 1 && !category && !query && sort !== 'mine') {
         console.log("🔍 fetchSurveys: STAGE 2 - Fetching private/limited surveys for user:", currentUser.id);
         let mQuery = supabase.from('surveys').select('*').neq('visibility', 'public');
         if (!isActuallyAdmin) {
