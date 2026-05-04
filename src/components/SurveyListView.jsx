@@ -126,7 +126,7 @@ const SurveyListView = ({
         onClick={() => user ? setView('create') : alert("🌟 広場をもっと楽しもう！\n\nアンケートを作るには、ログインが必要だよ。上の「Googleでログイン」から、らびと一緒に始めよう！🐰🥕")}
       >＋ 新しいアンケートを作る</button>
 
-      {!user && <SiteConceptSection totalVotes={totalVotes} />}
+      {!user && <SiteConceptSection totalVotes={totalVotes} onLogin={() => supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin } })} />}
 
       {/* 🔍 検索 */}
       <div className="search-container">

@@ -1,7 +1,7 @@
 import React from 'react';
 import AnimatedCounter from './AnimatedCounter';
 
-const SiteConceptSection = ({ user, totalVotes = 0 }) => (
+const SiteConceptSection = ({ user, totalVotes = 0, onLogin }) => (
   <div className="site-concept-card" style={{
     background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
     borderRadius: '28px',
@@ -31,7 +31,7 @@ const SiteConceptSection = ({ user, totalVotes = 0 }) => (
             <li>✅ 自分の意見をコメントできる</li>
             <li>✅ 面白いアンケートを作れる</li>
           </ul>
-          <button onClick={() => window.loginWithGoogle && window.loginWithGoogle()} className="premium-login-btn" style={{
+          <button onClick={onLogin} className="premium-login-btn" style={{
             background: '#fff', color: '#6366f1', padding: '12px 32px', borderRadius: '30px', fontWeight: 'bold', fontSize: '1.1rem', border: 'none', boxShadow: '0 10px 20px rgba(0,0,0,0.1)', cursor: 'pointer'
           }}>
             Googleでログインして参加 🐰💎
