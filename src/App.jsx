@@ -944,6 +944,18 @@ function App() {
       })();
       
       setVotedOption(localStorage.getItem(`voted_survey_${sv.id}`));
+      
+      // 閲覧数カウントアップ (URL直接アクセス時)
+      const viewKey = `last_view_${sv.id}`;
+      const lastView = parseInt(localStorage.getItem(viewKey) || '0', 10);
+      if (Date.now() - lastView > VIEW_COOLDOWN_MS) {
+        localStorage.setItem(viewKey, Date.now().toString());
+        supabase.rpc('increment_survey_view', { survey_id_arg: sv.id }).then(({ data: newViews }) => {
+          if (newViews !== undefined) {
+             setCurrentSurvey(prev => prev && prev.id === sv.id ? { ...prev, view_count: newViews } : prev);
+          }
+        });
+      }
     } catch (err) {
       console.error("❌ loadFromUrl CRASHED:", err);
     } finally {
@@ -1301,7 +1313,12 @@ function App() {
       const lastView = parseInt(localStorage.getItem(viewKey) || '0', 10);
       if (Date.now() - lastView > VIEW_COOLDOWN_MS) {
         localStorage.setItem(viewKey, Date.now().toString());
-        supabase.rpc('increment_survey_view', { survey_id_arg: survey.id });
+        supabase.rpc('increment_survey_view', { survey_id_arg: survey.id }).then(({ data: newViews }) => {
+          if (newViews !== undefined) {
+             setCurrentSurvey(prev => prev && prev.id === survey.id ? { ...prev, view_count: newViews } : prev);
+             setSurveys(prev => prev.map(s => s.id === survey.id ? { ...s, view_count: newViews } : s));
+          }
+        });
       }
       return;
     } else if (nextView === 'list') {
@@ -1392,6 +1409,7 @@ function App() {
     const ch = supabase.channel('global-changes')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'surveys' }, () => {
         fetchSurveys(user, true, currentPage, filterCategory, debouncedSearchQuery, activeTab, sortMode, popularMode);
+        fetchSidebarData(); // 🆕 サイドバーの「最新ニュース」も更新するらび！
       })
       .subscribe();
 
@@ -1483,8 +1501,8 @@ function App() {
     setDeadline('');
     setSurveyVisibility('public');
 
-    navigateTo('list');
-    fetchSurveys(user);
+    navigateTo('details', data[0]);
+    fetchSurveys(user, true); // 裏側でリストを最新にしておくらび！
   };
 
   const handleVote = async (optionId) => {
