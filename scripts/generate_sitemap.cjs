@@ -66,37 +66,16 @@ async function generateSitemap() {
         console.log(`✅ ${surveys.length} 件のアンケートを見つけたよ！`);
 
         const now = new Date().toISOString().split('T')[0];
-        let xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- メインページ -->
-  <url>
-    <loc>${SITE_URL}/</loc>
-    <lastmod>${now}</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <!-- 静的コンテンツ -->
-  <url>
-    <loc>${SITE_URL}/about.html</loc>
-    <lastmod>${now}</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>${SITE_URL}/contact.html</loc>
-    <lastmod>${now}</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>${SITE_URL}/terms.html</loc>
-    <lastmod>${now}</lastmod>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>${SITE_URL}/privacy.html</loc>
-    <lastmod>${now}</lastmod>
-    <priority>0.3</priority>
-  </url>
-`;
+        let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+        xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+        xml += '  <!-- メインページ -->\n';
+        xml += `  <url>\n    <loc>${SITE_URL}/</loc>\n    <lastmod>${now}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>1.0</priority>\n  </url>\n`;
+        xml += '  <!-- 静的コンテンツ -->\n';
+        xml += `  <url>\n    <loc>${SITE_URL}/about.html</loc>\n    <lastmod>${now}</lastmod>\n    <priority>0.8</priority>\n  </url>\n`;
+        xml += `  <url>\n    <loc>${SITE_URL}/contact.html</loc>\n    <lastmod>${now}</lastmod>\n    <priority>0.7</priority>\n  </url>\n`;
+        xml += `  <url>\n    <loc>${SITE_URL}/terms.html</loc>\n    <lastmod>${now}</lastmod>\n    <priority>0.3</priority>\n  </url>\n`;
+        xml += `  <url>\n    <loc>${SITE_URL}/privacy.html</loc>\n    <lastmod>${now}</lastmod>\n    <priority>0.3</priority>\n  </url>\n`;
+
 
         surveys.forEach(survey => {
             try {
