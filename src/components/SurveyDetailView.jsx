@@ -408,26 +408,7 @@ const SurveyDetailView = ({
         )}
       </div>
 
-      {/* 🚀 動画連携応援メッセージ（おりぴさんの戦略サポート！） */}
-      {votedOption && (
-        <div style={{
-          marginTop: '30px',
-          padding: '25px',
-          background: 'linear-gradient(135deg, #fdf2f8, #f5f3ff)',
-          borderRadius: '24px',
-          border: '2px dashed #7c3aed33',
-          textAlign: 'center',
-          animation: 'fadeInUp 0.6s ease-out'
-        }}>
-          <div style={{ fontSize: '1.5rem', marginBottom: '10px' }}>🎬 ✨</div>
-          <h4 style={{ margin: '0 0 10px 0', color: '#7c3aed', fontWeight: '900' }}>あなたの1票が動画になるかも！？</h4>
-          <p style={{ margin: 0, fontSize: '0.95rem', color: '#64748b', lineHeight: '1.6' }}>
-            このアンケートの結果やみんなのコメントは、<br/>
-            YouTubeやTikTokの動画で紹介される可能性があるらび！<br/>
-            <strong>「面白い！」と思った意見はピックアップされるかも！？</strong>✨
-          </p>
-        </div>
-      )}
+
 
       {/* 🚀 前後のアンケートへのナビゲーション（カード形式にアップグレードらび！） */}
       {(adjacentSurveys.prev || adjacentSurveys.next) && (
