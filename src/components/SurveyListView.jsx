@@ -322,35 +322,43 @@ const SurveyListView = ({
 
       {/* ⚖️ 公式・ユーザー切り替えタブ (常に表示してレイアウトを安定させるらび！) */}
       <div className="official-tab-navigation" style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px', borderBottom: '2px solid #f1f5f9', paddingBottom: '4px', width: '100%' }}>
-          <button
-            onClick={() => setActiveTab('official')}
-            className={`tab-btn ${activeTab === 'official' ? 'active' : ''}`}
-            style={{
-              padding: '8px 4px', fontSize: '1.1rem', fontWeight: 'bold',
-              color: activeTab === 'official' ? '#8b5cf6' : '#94a3b8',
-              background: 'none', border: 'none',
-              borderBottom: activeTab === 'official' ? '3px solid #8b5cf6' : '3px solid transparent',
-              cursor: 'pointer', transition: 'all 0.2s', position: 'relative'
-            }}
-          >
-            📢 公式・ニュース ({totalOfficialCount})
-            {activeTab === 'official' && (
-              <span style={{ position: 'absolute', top: '-4px', right: '-8px', fontSize: '0.7rem', background: '#ec4899', color: '#fff', borderRadius: '10px', padding: '1px 5px' }}>HOT</span>
-            )}
-          </button>
-          <button
-            onClick={() => setActiveTab('user')}
-            className={`tab-btn ${activeTab === 'user' ? 'active' : ''}`}
-            style={{
-              padding: '8px 4px', fontSize: '1.1rem', fontWeight: 'bold',
-              color: activeTab === 'user' ? '#8b5cf6' : '#94a3b8',
-              background: 'none', border: 'none',
-              borderBottom: activeTab === 'user' ? '3px solid #8b5cf6' : '3px solid transparent',
-              cursor: 'pointer', transition: 'all 0.2s'
-            }}
-          >
-            👥 みんなの投稿 ({totalUserCount})
-          </button>
+        {!['mine', 'watching'].includes(sortMode) ? (
+          <>
+            <button
+              onClick={() => setActiveTab('official')}
+              className={`tab-btn ${activeTab === 'official' ? 'active' : ''}`}
+              style={{
+                padding: '8px 4px', fontSize: '1.1rem', fontWeight: 'bold',
+                color: activeTab === 'official' ? '#8b5cf6' : '#94a3b8',
+                background: 'none', border: 'none',
+                borderBottom: activeTab === 'official' ? '3px solid #8b5cf6' : '3px solid transparent',
+                cursor: 'pointer', transition: 'all 0.2s', position: 'relative'
+              }}
+            >
+              📢 公式・ニュース ({totalOfficialCount})
+              {activeTab === 'official' && (
+                <span style={{ position: 'absolute', top: '-4px', right: '-8px', fontSize: '0.7rem', background: '#ec4899', color: '#fff', borderRadius: '10px', padding: '1px 5px' }}>HOT</span>
+              )}
+            </button>
+            <button
+              onClick={() => setActiveTab('user')}
+              className={`tab-btn ${activeTab === 'user' ? 'active' : ''}`}
+              style={{
+                padding: '8px 4px', fontSize: '1.1rem', fontWeight: 'bold',
+                color: activeTab === 'user' ? '#8b5cf6' : '#94a3b8',
+                background: 'none', border: 'none',
+                borderBottom: activeTab === 'user' ? '3px solid #8b5cf6' : '3px solid transparent',
+                cursor: 'pointer', transition: 'all 0.2s'
+              }}
+            >
+              👥 みんなの投稿 ({totalUserCount})
+            </button>
+          </>
+        ) : (
+          <div style={{ flex: 1, fontSize: '1.2rem', fontWeight: 'bold', color: '#475569', padding: '8px 4px' }}>
+            {sortMode === 'mine' ? '👤 あなたのアンケート' : '⭐ ウォッチ中のアンケート'}
+          </div>
+        )}
 
           {/* 📱 レイアウト切替（ニコニコ風らび！） */}
           <div className="layout-switcher">
