@@ -408,12 +408,17 @@ const SurveyListView = ({
             ))}
           </div>
         ) : (() => {
-          const countToUse = activeTab === 'official' ? totalOfficialCount : totalUserCount;
-          const totalPages = Math.ceil(countToUse / ITEMS_PER_PAGE);
-          const currentItems = finalItems; // finalItems は既に 15件になっているはずらび！
+          const isMineOrWatching = ['mine', 'watching'].includes(sortMode);
+          const countToUse = isMineOrWatching
+            ? finalItems.length
+            : (activeTab === 'official' ? totalOfficialCount : totalUserCount);
+          const totalPages = isMineOrWatching ? 1 : Math.ceil(countToUse / ITEMS_PER_PAGE);
+          const currentItems = finalItems;
 
           if (currentItems.length === 0) {
-            return <div className="empty-msg">該当するアンケートがないよ〜🐰🥕</div>;
+            return <div className="empty-msg">
+              {sortMode === 'mine' ? '🐰 まだアンケートを作っていないよ！\n「新しいアンケートを作る」から挑戦してみてね🥕' : '該当するアンケートがないよ〜🐰🥕'}
+            </div>;
           }
 
           return (
