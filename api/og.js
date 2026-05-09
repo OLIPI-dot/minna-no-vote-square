@@ -14,6 +14,9 @@ export default async function handler(req, res) {
     'skypeuripreview', 'slackbot', 'googlebot', 'bingbot', 'yandexbot', 'applebot'
   ].some(bot => userAgent.includes(bot));
 
+  // 🔍 Googlebot など SEO クローラーかどうか
+  const isSeoBot = ['googlebot', 'bingbot', 'yandexbot', 'applebot'].some(bot => userAgent.includes(bot));
+
   // 👤 人間（ブラウザ）の場合は、メインの広場（index?s=ID）へ即座にリダイレクトするらび！
   // これで SPA が起動して navigateTo("details", s) されるよ。
   if (!isBot && s) {
@@ -50,6 +53,11 @@ export default async function handler(req, res) {
     const description = survey.description || '匿名で気軽に投票・本音が集まるアンケートコミュニティ。あなたの意見を教えてください！';
     const siteUrl = `https://minna-no-vote-square.vercel.app/s/${s}`;
 
+    // 🔍 SEOボット向けには投票項目も含めたリッチなHTMLを返す
+    const optionsHtml = isSeoBot && survey.options
+      ? `<ul>${(survey.options || []).map(o => `<li>${o.name || ''}</li>`).join('')}</ul>`
+      : '';
+
     // 🤖 ロボット専用の軽量メタページを生成
     const html = `<!DOCTYPE html>
 <html lang="ja">
@@ -62,7 +70,7 @@ export default async function handler(req, res) {
   <meta property="og:type" content="article" />
   <meta property="og:url" content="${siteUrl}" />
   <meta property="og:image" content="${imageUrl}" />
-  <link rel="canonical" href="https://minna-no-vote-square.vercel.app/s/${s}" />
+  <link rel="canonical" href="${siteUrl}" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="${title}" />
   <meta name="twitter:description" content="${description}" />
@@ -72,6 +80,7 @@ export default async function handler(req, res) {
 <body>
   <h1>${title}</h1>
   <p>${description}</p>
+  ${optionsHtml}
   <img src="${imageUrl}" alt="Eye-catch" style="max-width: 100%;" />
   <hr />
   <p>魔法発動中...🪄</p>
