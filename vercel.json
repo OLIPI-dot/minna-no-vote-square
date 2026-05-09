@@ -38,10 +38,6 @@
   ],
   "rewrites": [
     {
-      "source": "/(sitemap.*\\.xml|atom\\.xml|robots\\.txt)",
-      "destination": "/$1"
-    },
-    {
       "source": "/og-api",
       "destination": "/api/og"
     },
