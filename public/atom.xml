@@ -4,11 +4,115 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-05-27T21:59:34.676Z</updated>
+  <updated>2026-05-27T23:25:05.920Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>Unbound に複数の脆弱性(ScanNetSecurity)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/8564"/>
+    <id>https://minna-no-vote-square.vercel.app/s/8564</id>
+    <updated>2026-05-27T23:25:04.857Z</updated>
+    <summary>株式会社日本レジストリサービス（JPRS）は5月25日、Unboundの脆弱性情報（CVE-2026-33278、 CVE-2026-42944、CVE-2026-42959、CVE-2026-32792、CVE-2026-40622、CVE-2026-41292、CVE-2026-42534、CVE-2026-42923、CVE-2026-42960、CVE-2026-44390、CVE-202...</summary>
+  </entry>
+  <entry>
+    <title>PowerDNS Authoritative Server に複数の脆弱性(ScanNetSecurity)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/8563"/>
+    <id>https://minna-no-vote-square.vercel.app/s/8563</id>
+    <updated>2026-05-27T23:25:03.674Z</updated>
+    <summary>株式会社日本レジストリサービス（JPRS）は5月25日、PowerDNS Authoritative Serverの脆弱性情報（CVE-2026-42002、CVE-2026-42001、CVE-2026-42000、CVE-2026-41999、CVE-2026-42396）が公開されたと発表した。
+
+権威DNSサーバPowerDNS Authoritative Serverにおいて、複数の脆弱...</summary>
+  </entry>
+  <entry>
+    <title>NEC Atermシリーズに XSS の脆弱性(ScanNetSecurity)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/8562"/>
+    <id>https://minna-no-vote-square.vercel.app/s/8562</id>
+    <updated>2026-05-27T23:25:02.477Z</updated>
+    <summary>独立行政法人情報処理推進機構（IPA）および一般社団法人JPCERT コーディネーションセンター（JPCERT/CC）は5月25日、NEC Atermシリーズにおけるクロスサイトスクリプティングの脆弱性について「Japan Vulnerability Notes（JVN）」で発表した。株式会社サイバーディフェンス研究所の岩崎徳明氏が報告を行っている。影響を受けるシステムは以下の通り。
+
+WX180...</summary>
+  </entry>
+  <entry>
+    <title>NEC Aterm シリーズに OS コマンドインジェクションの脆弱性(ScanNetSecurity)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/8561"/>
+    <id>https://minna-no-vote-square.vercel.app/s/8561</id>
+    <updated>2026-05-27T23:25:01.356Z</updated>
+    <summary>独立行政法人情報処理推進機構（IPA）および一般社団法人JPCERT コーディネーションセンター（JPCERT/CC）は5月25日、NEC AtermシリーズにおけるOSコマンドインジェクションの脆弱性について「Japan Vulnerability Notes（JVN）」で発表した。三井物産セキュアディレクション株式会社の加藤創氏が報告を行っている。影響を受けるシステムは以下の通り。
+
+MR51...</summary>
+  </entry>
+  <entry>
+    <title>「プロ人材」のAI活用調査、自分にも関係ある？(スマホライフPLUS)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/8560"/>
+    <id>https://minna-no-vote-square.vercel.app/s/8560</id>
+    <updated>2026-05-27T23:24:59.762Z</updated>
+    <summary>「生成AI（文章や画像などを自動で作れるAI）は、一部の専門家だけの話」——そう感じている方も多いかもしれません。しかし、最近公表された調査結果を見ると、AIの活用はすでに働き方全体に影響を与え始めていることがわかります。 株式会社サーキュレーションは、2025年12月〜2026年1月にかけて「プロ人材実態調査」を実施しました。対象は、フリーランス・副業・起業で働く個人500名です。 この調査で明...</summary>
+  </entry>
+  <entry>
+    <title>WalmartのAIエージェント利用者は客単価が約35%高い。「検索アシスタント」から「買い物パートナー」へ変わった最新の「AIネイティブ戦略」(ネットショップ担当者フォーラム)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/8559"/>
+    <id>https://minna-no-vote-square.vercel.app/s/8559</id>
+    <updated>2026-05-27T23:24:56.492Z</updated>
+    <summary>米国小売大手のWalmartは、2026年2-4月期（第1四半期）の決算説明会で、AIを経営の核へと据え始めていることかを明かしました。売り上げの拡大に寄与するAIエージェントの活用から、配送やサプライチェーンにおける高度な意思決定、リテールメディア（広告事業）の投資対効果（ROI）向上まで、Walmartが実践する最新の「AIネイティブ戦略」を解説します。
+
+「Sparky」の活用イメージ。さま...</summary>
+  </entry>
+  <entry>
+    <title>「Core Ultra 7 270K Plus」が一時品切れ、Ryzen 9000シリーズは平均値12％台の下落が複数 [5月後半のCPU価格](AKIBA PC Hotline!)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/8558"/>
+    <id>https://minna-no-vote-square.vercel.app/s/8558</id>
+    <updated>2026-05-27T23:24:53.895Z</updated>
+    <summary>「Core Ultra 7 270K Plus」が一時品切れ、Ryzen 9000シリーズは平均値12％台の下落も 【画像】「Ryzen 5 9600」が35,979円など(5月23日撮影) 「Core Ultra 7 270K Plus」が5月16日(土)の調査で一時品切れ。23日時点では一部ショップに再入荷し、価格も59,800円で前回と変わりないが、品不足は続いている。このほか、「Core ...</summary>
+  </entry>
+  <entry>
+    <title>鎌田所属のC・パレス ECL初優勝</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/8557"/>
+    <id>https://minna-no-vote-square.vercel.app/s/8557</id>
+    <updated>2026-05-27T23:24:52.796Z</updated>
+    <summary>109コメント109件51分にマテタのゴールでパレスが先制ボランチで奮闘した鎌田。(C)Getty Images
+
+現地時間５月27日に開催されたカンファレンスリーグ（ECL）の決勝で、鎌田大地が所属するイングランドのクリスタル・パレスが、スペインのラージョ・バジェカーノとドイツのライプツィヒ・スタジアムで対戦した。 【画像】絶世の美女がずらり！C・ロナウドの“元恋人＆パートナー”たちを年代順に一...</summary>
+  </entry>
+  <entry>
+    <title>岡本和真11号 地元ファンは総立ち</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/8556"/>
+    <id>https://minna-no-vote-square.vercel.app/s/8556</id>
+    <updated>2026-05-27T23:24:50.927Z</updated>
+    <summary>90コメント90件ゴジキさんが推薦中ブルージェイズ・岡本(ロイター)
+
+◇インターリーグ ブルージェイズ2―1マーリンズ（2026年5月27日 トロント） 【写真あり】冷たそう！インタビュー中に飲料水をかけられるブルージェイズ・岡本 ブルージェイズの岡本和真内野手（29）は27日（日本時間28日）、トロントでのマーリンズ戦に「5番・三塁」で先発出場。6回に右中間へ試合を決める11号ソロ本塁打を放っ...</summary>
+  </entry>
+  <entry>
+    <title>JAL 客室乗務員も滞在先飲酒禁止</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/8555"/>
+    <id>https://minna-no-vote-square.vercel.app/s/8555</id>
+    <updated>2026-05-27T23:24:49.543Z</updated>
+    <summary>349コメント349件1/2国交省での会見前に陳謝するJALの（左から）客室本部長の中野淳子・執行役員、安全統括管理者の中川由起夫・取締役常務執行役員、総務本部長の野田靖・常務執行役員＝26年5月27日 PHOTO: Tadayuki YOSHIKAWA/Aviation Wire
+
+JALが実施している客室乗務員のアルコール検査（同社資料から）
+
+「100万円修行」の次は「5000万円預金」 三...</summary>
+  </entry>
+  <entry>
+    <title>酒蔵で転落死 ブーム陰で事故続発</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/8554"/>
+    <id>https://minna-no-vote-square.vercel.app/s/8554</id>
+    <updated>2026-05-27T23:24:47.993Z</updated>
+    <summary>55コメント55件土産物店に並ぶ日本酒。海外からの旅行客が買うケースも目立つという=2026年5月22日、秋田市中通2丁目、横山翼撮影
+
+秋田県で4月、老舗酒造会社の社長が、日本酒の酒蔵で亡くなる事故があった。酸欠の危険性があるタンク内への転落だった。 【イラスト】事故があった酒蔵タンク 事故があったのは、秋田県横手市にある酒造会社「大納川（だいながわ）」。消防や警察によると、日本酒の酒蔵に置かれ...</summary>
+  </entry>
+  <entry>
+    <title>皇族数確保 取りまとめの原案判明</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/8553"/>
+    <id>https://minna-no-vote-square.vercel.app/s/8553</id>
+    <updated>2026-05-27T23:24:46.105Z</updated>
+    <summary>皇族数の確保に向け、衆参両院の正副議長が「立法府の総意」として近く与野党に提示する取りまとめ案の原案が判明した。女性皇族が結婚後も身分を保持する案と、旧宮家の男系男子を養子として皇室に迎える案の双方を「基本的に妥当」とし、政府に具体的な制度設計を促す方針だ。 【表】一目でわかる…皇族数確保に向けた正副議長原案のポイント
+
+複数の関係者が明らかにした。衆参の正副議長は２７日、衆院議長公邸で原案を巡り...</summary>
+  </entry>
   <entry>
     <title>「仮想OS博物館」--若き頃に触れた「Linux」ディストロに再会(ZDNET Japan)</title>
     <link href="https://minna-no-vote-square.vercel.app/s/8552"/>
@@ -398,104 +502,5 @@ Bitcoin Japan（旧堀田丸正）は27日、子会社を通じて新たにAIイ
 「レンタルスペースに来たらぐちゃぐちゃ」「諦めて退室したら半額請求」問題、スペースマーケットなど謝罪
 
 2生まれたばかり...</summary>
-  </entry>
-  <entry>
-    <title>NTT、通信容量を2倍にする新技術やミリ波の弱点を克服する分散MIMOを公開(ケータイ Watch)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/8514"/>
-    <id>https://minna-no-vote-square.vercel.app/s/8514</id>
-    <updated>2026-05-27T10:39:01.733Z</updated>
-    <summary>NTTは、茨城県つくば市で「つくばフォーラム 2026」を開催した。同イベントは5月28日まで開催される。今回のテーマは、「アクセスネットワークで拓く未来 新たな価値創造とサステナブル社会への貢献」で、NTTグループ企業を含む113社が出展。本稿では、会場で展示されていた一部の展示を紹介する。
-
-「レンタルスペースに来たらぐちゃぐちゃ」「諦めて退室したら半額請求」問題、スペースマーケットなど謝罪
-...</summary>
-  </entry>
-  <entry>
-    <title>GMOあおぞらネット銀行会長、トークン化預金の課題に言及──同行内ではなく「マルチバンク化」が鍵に(NADA NEWS)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/8513"/>
-    <id>https://minna-no-vote-square.vercel.app/s/8513</id>
-    <updated>2026-05-27T10:39:00.489Z</updated>
-    <summary>GMOあおぞらネット銀行会長、トークン化預金の課題に言及──同行内ではなく「マルチバンク化」が鍵に
-
-GMOあおぞらネット銀行は27日、都内で事業戦略説明会を開いた。AIエージェントを活用した業務効率化や顧客体験向上に向けた取り組みが主なテーマとして語られた。 同行は2018年に事業を開始。法人向け銀行サービスやBaaS（Banking as a Service）事業などを展開しており、法人口座数...</summary>
-  </entry>
-  <entry>
-    <title>アンコウを成層圏に運ぶ 旅館計画</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/8512"/>
-    <id>https://minna-no-vote-square.vercel.app/s/8512</id>
-    <updated>2026-05-27T10:38:58.698Z</updated>
-    <summary>34コメント34件アンコウを成層圏へ運ぶ計画を進める武子能久さん=2026年5月19日午後2時9分、茨城県北茨城市、佐藤英法撮影
-
-北茨城のアンコウ、どんな味に？ 切り身や肝などを成層圏の高度約30キロメートルまで気球で運び、味や食感の変化などを検証する計画を、茨城県北茨城市の旅館社長、武子（たけし）能久（よしひさ）さん（50）らが進めている。アンコウの魅力発信につなげる狙いだ。武子さんが経営する...</summary>
-  </entry>
-  <entry>
-    <title>阿部前監督の辞任 田中将大が胸中</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/8511"/>
-    <id>https://minna-no-vote-square.vercel.app/s/8511</id>
-    <updated>2026-05-27T10:38:57.111Z</updated>
-    <summary>636コメント636件ソフトバンクと3年ぶりの対戦巨人・田中将大【写真：小林靖】
-
-■巨人 ー ソフトバンク（27日・東京ドーム） 巨人の田中将大投手が27日、東京ドームでのソフトバンク戦前に取材に応じた。28日の先発に向けて意気込みを語り、さらに阿部慎之助前監督の辞任についても「みんなでこの状況を乗り越えていくことが大事」と前を向いた。 【写真】胸元ざっくり大胆黒ドレス…名将が育てた剛腕と美人妻...</summary>
-  </entry>
-  <entry>
-    <title>パーソナルトレーニング 事故増加</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/8510"/>
-    <id>https://minna-no-vote-square.vercel.app/s/8510</id>
-    <updated>2026-05-27T10:38:55.507Z</updated>
-    <summary>367コメント367件パーソナルトレーニングでの事故防止の啓発チラシ＝消費者庁提供
-
-近年利用が広がっている、トレーナーから運動の個別指導を受ける「パーソナルトレーニング」での事故について、消費者庁の消費者安全調査委員会（消費者事故調）は27日、調査報告書を公表した。2025年までの7年間で196件の事故が登録され増加傾向で、約4割は治療に1カ月以上かかるけがをしていたことが判明。業界団体などに安...</summary>
-  </entry>
-  <entry>
-    <title>トクリュウの標的か 住人語る恐怖</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/8509"/>
-    <id>https://minna-no-vote-square.vercel.app/s/8509</id>
-    <updated>2026-05-27T10:38:53.913Z</updated>
-    <summary>616コメント616件TBS NEWS DIG Powered by JNN
-
-今月24日、東京・小金井市で強盗に入る準備をしたとして、男3人が逮捕された事件。今月に入り、何度も侵入被害にあった住民が恐怖を語りました。 【写真で見る】今月だけで5回... 防犯カメラが捉えた侵入の様子 今月24日の日曜日の午前4時半すぎ。東京・小金井市の住宅に設置された防犯カメラの映像、黒ずくめの2人が奥から歩いて...</summary>
-  </entry>
-  <entry>
-    <title>子と会えず自殺 遺族が妻と市提訴</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/8508"/>
-    <id>https://minna-no-vote-square.vercel.app/s/8508</id>
-    <updated>2026-05-27T10:38:52.047Z</updated>
-    <summary>546コメント546件 川崎市の男性会社員＝当時（47）＝が長男と会えなくなったことを理由に自殺したのは、市の指南により妻が長男を連れ去り親権が侵害されたためだとして、遺族が市と妻に計約2億3千万円の損害賠償を求めて横浜地裁川崎支部に提訴したことが27日、関係者への取材で分かった。提訴は25日付。代理人弁護士によると子が連れ去られたとして行政に法的責任を問う訴訟は初とみられる。 訴状などによると、...</summary>
-  </entry>
-  <entry>
-    <title>阪急電車「ガソリン臭」全員降車</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/8507"/>
-    <id>https://minna-no-vote-square.vercel.app/s/8507</id>
-    <updated>2026-05-27T10:38:50.494Z</updated>
-    <summary>27日午後5時すぎ、阪急宝塚線の急行電車の車内で異臭が確認されました。この影響で、宝塚線と神戸線が一時運転を見合わせました。 【画像を見る】多くの消防隊員の姿…十三駅が物々しい雰囲気に 阪急電鉄や警察によると、27日午後5時20分に大阪梅田駅を出発した宝塚行きの急行電車で、乗客から異臭がするという旨の申告がありました。 急行電車は午後5時23分に十三駅に到着し、駅員が点検したところ、ガソリンのよう...</summary>
-  </entry>
-  <entry>
-    <title>高市陣営動画問題 AIを駆使と証言</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/8506"/>
-    <id>https://minna-no-vote-square.vercel.app/s/8506</id>
-    <updated>2026-05-27T10:38:47.998Z</updated>
-    <summary>〈【高市首相「ネガキャン動画」を否定も…】週刊文春が報じた“新証拠”にヤフコメ民「本人の否定で済むなら、警察も裁判もいらない社会になってしまう」〉 から続く 【画像】動画作成チームを率いた松井健氏 高市早苗首相陣営による“ネガキャン動画”問題を巡り、作成・拡散を実行したチームが、約20台のスマートフォンやAIを駆使したネット工作を展開していたことが「週刊文春」の取材で分かった。 「週刊文春」はこれ...</summary>
-  </entry>
-  <entry>
-    <title>台風6号北上 今後の進路に注意を</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/8505"/>
-    <id>https://minna-no-vote-square.vercel.app/s/8505</id>
-    <updated>2026-05-27T10:38:46.348Z</updated>
-    <summary>28日（木）午後は、北日本や北陸で雨の範囲が広がる見込み。北海道は低気圧の発達や上空に寒気が流れ込む影響で、29日（金）にかけては強風・高波に注意が必要となります。29日（金）は関東から西で気温が高く、週末にかけては東・西日本の広い範囲で本格的に暑くなりそうです。北日本はこれから来週前半にかけて、気温の変化が大きい点にも注意が必要です。また、南西諸島は週末にかけて、台風6号の影響が出てきそうです。...</summary>
-  </entry>
-  <entry>
-    <title>TeraWulf株、1GW級AIデータセンター開発用地取得で13％上昇──マイニング企業からAIインフラへ【価格分析】(NADA NEWS)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/8504"/>
-    <id>https://minna-no-vote-square.vercel.app/s/8504</id>
-    <updated>2026-05-27T06:25:23.078Z</updated>
-    <summary>TeraWulf株、1GW級AIデータセンター開発用地取得で13％上昇──マイニング企業からAIインフラへ【価格分析】
-
-・TeraWulfは、2030年までにAIおよびHPC向けで1ギガワット超の電力容量を支え得る、ケンタッキー州の新たな開発用地を取得した。・WULF株は火曜日に急伸し、投資家は今回の拡張が同社のビットコイン採掘以外への事業展開を強めるとみている。・今回の動きは、マイニング企業が...</summary>
-  </entry>
-  <entry>
-    <title>NotebookLMの「ソースが古いまま」問題が起こらないように Googleドライブのファイル更新を自動で反映(ITmedia NEWS)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/8503"/>
-    <id>https://minna-no-vote-square.vercel.app/s/8503</id>
-    <updated>2026-05-27T06:25:21.597Z</updated>
-    <summary>米Googleは5月26日（現地時間）、「NotebookLM」にGoogleドライブとの自動同期機能を追加すると同社の公式ブログで発表した。今後はドライブ上のファイルの変更をNotebookLMにも自動で反映する。 【画像を見る】Googleの公式リリースページの画像 従来の機能では、Googleドキュメントなどのソースを書き換えた場合、NotebookLMへの反映は手動で行う必要があった。今回...</summary>
   </entry>
 </feed>
