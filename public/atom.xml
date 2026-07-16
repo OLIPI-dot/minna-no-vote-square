@@ -4,11 +4,115 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-07-16T16:49:45.289Z</updated>
+  <updated>2026-07-16T21:04:33.323Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>朝の大規模クレカ障害、Visa傘下の決済基盤「CyberSource」で「タイムアウト発生」(ITmedia NEWS)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/13503"/>
+    <id>https://minna-no-vote-square.vercel.app/s/13503</id>
+    <updated>2026-07-16T21:04:31.705Z</updated>
+    <summary>7月16日朝、三井住友カードやVisaブランドの一部のクレジットカードで決済できない大規模障害が起きた背景について、ビザ・ワールドワイド・ジャパンがITmedia NEWSの取材に答えた。 【画像で見る】大規模クレカ障害の一因「CyberSource」とは？ 同社によると、米Visa傘下の決済プラットフォーム「CyberSource」で、「取引処理のタイムアウト事象が発生していた」という。「必要な...</summary>
+  </entry>
+  <entry>
+    <title>Android版「モバイルPASMO」でも障害、起動できず(ケータイ Watch)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/13502"/>
+    <id>https://minna-no-vote-square.vercel.app/s/13502</id>
+    <updated>2026-07-16T21:04:30.413Z</updated>
+    <summary>“クレカ障害”の原因、三井住友カードが明らかに 都内店舗は「現金や交通系ICカードをご利用ください」と客に案内
+
+2電気ゼロで貼った場所を冷やしてしまうフィルム。アッツい屋根が25.6℃も下がった
+
+3問題：トランプコイン、大統領就任の日に1万ドル分買ってたら今いくら？
+
+4“クレカ障害”にJCBと楽天カードがコメント 朝のラッシュを直撃
+
+（出典：ケータイ Watch）
+
+[続きを読む](htt...</summary>
+  </entry>
+  <entry>
+    <title>Windowsに新たなゼロデイ脆弱性「LegacyHive」、最新パッチ適用済みでも悪用可能との報告(窓の杜)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/13501"/>
+    <id>https://minna-no-vote-square.vercel.app/s/13501</id>
+    <updated>2026-07-16T21:04:28.939Z</updated>
+    <summary>Windowsの「User Profile Service」に、ローカル特権昇格の脆弱性が発見されたとのこと。日本時間7月15日に、概念実証（PoC）が「GitHub」で公開されている。この脆弱性は「LegacyHive」と命名されており（CVE番号は未割り当て）、2026年7月のセキュリティ更新プログラムを適用した環境でも悪用が可能だという。 「User Profile Service」（pro...</summary>
+  </entry>
+  <entry>
+    <title>手ぶらで改札を通れる！ 東武東上線・池袋駅に「顔認証改札」が登場、気になる仕組みとセキュリティを解説(ITmedia Mobile)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/13500"/>
+    <id>https://minna-no-vote-square.vercel.app/s/13500</id>
+    <updated>2026-07-16T21:04:27.742Z</updated>
+    <summary>5コメント5件顔認証改札サービス対象の路線と導入駅（白丸の駅）
+
+東武鉄道が7月15日、生体認証サービス「SAKULaLa（サクララ）」を活用した、ウォークスルー型顔認証改札のサービスを開始した。顔認証改札は東武東上線の池袋駅と上板橋駅に設置され、2駅間の利用者がPASMO定期券と顔画像をSAKULaLaに登録することで利用できる。 東武東上線の池袋駅に設置されたウォークスルー型顔認証改札 東武鉄...</summary>
+  </entry>
+  <entry>
+    <title>SpaceXAI、AIコーディングエージェント「Grok Build」をオープンソース化(窓の杜)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/13499"/>
+    <id>https://minna-no-vote-square.vercel.app/s/13499</id>
+    <updated>2026-07-16T21:04:26.336Z</updated>
+    <summary>米SpaceXAIは7月15日（現地時間）、「Grok Build」のソースコードを「GitHub」で公開した。ライセンスは「Apache-2.0」（サードパーティーのコードなどは除く）。あわせて、すべてのユーザーを対象に利用制限（usage limits）をリセットしたことも明らかにしている。 【画像】ターミナルで動作するAIコーディングエージェント「Grok Build」 「Grok Buil...</summary>
+  </entry>
+  <entry>
+    <title>2.8兆パラメータAI「Kimi K3」登場、100万トークン対応の新フラグシップ(PC Watch)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/13498"/>
+    <id>https://minna-no-vote-square.vercel.app/s/13498</id>
+    <updated>2026-07-16T21:04:25.063Z</updated>
+    <summary>プレスリリースも公式ブログの告知もないまま、「Kimi K3」が突如使えるようになった。Moonshot AIの次世代AIモデルKimi K3が、同社のAIサービス「Kimi」(kimi.com)で利用可能になっていることを、7月17日(日本時間)に筆者の環境で確認した。7月16日(日本時間)にはKimi公式アカウントがXでKimi K3のティザー動画を投稿しているほか、コーディングエージェント「...</summary>
+  </entry>
+  <entry>
+    <title>AWS障害でPayPayやニコニコなど停止…なぜ大規模な障害となったのか？企業の対応策は(ビジネス＋IT)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/13497"/>
+    <id>https://minna-no-vote-square.vercel.app/s/13497</id>
+    <updated>2026-07-16T21:04:23.659Z</updated>
+    <summary>7月16日午後5時40分ごろから、AWSで障害が発生した。この影響で、国内ではPayPayのほか、note、ニコニコ生放送、はてなブログなどが利用しにくくなった。原因はCloudFrontの「VPC Origins」という機能。今回の問題はクラウドを利用していれば起きうる問題であり、AzureやGoogle Cloudを組み合わせたマルチクラウドだから回避できるというものでもない。今回のインシデン...</summary>
+  </entry>
+  <entry>
+    <title>消え去る「プログラミング学習」--企業がリスキリングに責任を負うべき時代(ZDNET Japan)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/13496"/>
+    <id>https://minna-no-vote-square.vercel.app/s/13496</id>
+    <updated>2026-07-16T21:04:22.014Z</updated>
+    <summary>消え去る「プログラミング学習」--企業がリスキリングに責任を負うべき時代の画像
+
+Rider Rodriguez氏が13年前に「Code Louisville」を設立した当時、このITスキル習得プログラムがいずれ役割を終えることは想定していたが、このような形での幕引きは予想していなかった。 米国ケンタッキー州ルイビルの市政府や補助金などの支援を受けて発足したCode Louisvilleは、ウェブ...</summary>
+  </entry>
+  <entry>
+    <title>物理的にUSB Type-Cポートを塞ぎ、情報漏えいを防ぐポートロック製品、サンワサプライが発売(INTERNET Watch)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/13495"/>
+    <id>https://minna-no-vote-square.vercel.app/s/13495</id>
+    <updated>2026-07-16T21:04:21.052Z</updated>
+    <summary>サンワサプライ株式会社は、USB Type-Cポートへの不正接続を防ぐ「Type-Cポート取り付けセキュリティ」として、「SLE-46S-W」（本体）と「SLE-46SWOP」（追加用部品）を発売した。市場想定価格は6160円、2420円。
+
+“クレカ障害”の原因、三井住友カードが明らかに 都内店舗は「現金や交通系ICカードをご利用ください」と客に案内
+
+2電気ゼロで貼った場所を冷やしてしまうフィ...</summary>
+  </entry>
+  <entry>
+    <title>NTTデータ、Google Cloudとの包括契約により「Google Workspace」「Gemini Enterprise」の活用基盤を整備(クラウド Watch)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/13494"/>
+    <id>https://minna-no-vote-square.vercel.app/s/13494</id>
+    <updated>2026-07-16T21:04:20.019Z</updated>
+    <summary>株式会社NTTデータは16日、Google Cloudとの間で「Agentic Workplace Transformation（AWT）」に関する包括契約を6月29日に締結したと発表した。Agentic Workplace Transformation（AWT）は、AIエージェントが自律的にワークフローを自動化し、人とAIが協働する新しい働き方を目指すGoogle Cloudのビジョン「Agen...</summary>
+  </entry>
+  <entry>
+    <title>「AI失業」を恐れるのは誰か。AIに仕事を任せる人ほど、将来に楽観的だった【アンソロピック調査】(BUSINESS INSIDER JAPAN)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/13493"/>
+    <id>https://minna-no-vote-square.vercel.app/s/13493</id>
+    <updated>2026-07-16T21:04:19.191Z</updated>
+    <summary>AIに多くの仕事を任せるほど「いつか自分もAIに置き換えられるのではないか」という不安は強くなる。 【全画像をみる】「AI失業」を恐れるのは誰か。AIに仕事を任せる人ほど、将来に楽観的だった【アンソロピック調査】 ところが、生成AI「Claude」を提供するアンソロピック（Anthropic）が約9700人の利用者を調べたところ、むしろ逆の傾向が見られた。 Claudeに仕事を丸ごと任せることが多...</summary>
+  </entry>
+  <entry>
+    <title>シャープ「AQUOS R11」カメラレビュー：ライカ監修でもかなり堅実な画作り(BUSINESS INSIDER JAPAN)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/13492"/>
+    <id>https://minna-no-vote-square.vercel.app/s/13492</id>
+    <updated>2026-07-16T21:04:17.633Z</updated>
+    <summary>AQUOS R11はライカ監修のカメラを搭載している。
+
+7月9日に発売になったシャープの新型スマホ「AQUOS R11」は、これまで同様ライカ監修のカメラシステムになっている。 【全画像をみる】シャープ「AQUOS R11」カメラレビュー：ライカ監修でもかなり堅実な画作り ただ、AQUOS R11のカメラはライカの名前から想像するものとは少し違う。レンズはライカ監修だが、実機で前に出てくるのは、...</summary>
+  </entry>
   <entry>
     <title>15万円だけどハイエンド級なロボット掃除機。Narwalの新作「Freo Z10 Turbo」(ギズモード・ジャパン)</title>
     <link href="https://minna-no-vote-square.vercel.app/s/13491"/>
@@ -354,121 +458,5 @@ AKIBA PC Hotline!,AKIBA PC Hotline!編集部
 5問題：トランプコイン、大統領就任の日に1万ドル分買ってたら今いくら？
 
 （出典：ITmedia NEW...</summary>
-  </entry>
-  <entry>
-    <title>スマホを閉じても稼働するAI「Gemini Spark」が日本語に対応 Gemini有料プランで順次展開(ITmedia Mobile)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/13453"/>
-    <id>https://minna-no-vote-square.vercel.app/s/13453</id>
-    <updated>2026-07-16T11:04:18.175Z</updated>
-    <summary>1コメント1件「Gemini Spark」が日本語に対応
-
-2クレカ障害、全国で発生か 「カード払いできない」報告多数
-
-3“クレカ障害”にJCBと楽天カードがコメント 朝のラッシュを直撃
-
-5問題：トランプコイン、大統領就任の日に1万ドル分買ってたら今いくら？
-
-（出典：ITmedia Mobile）
-
-[続きを読む](https://news.yahoo.co.jp/articles/b877...</summary>
-  </entry>
-  <entry>
-    <title>SBI、米Ondoと提携──日本株をトークン化し世界へ、海外のトークン化商品を日本へ(NADA NEWS)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/13452"/>
-    <id>https://minna-no-vote-square.vercel.app/s/13452</id>
-    <updated>2026-07-16T11:04:11.375Z</updated>
-    <summary>SBI、米Ondoと提携──日本株をトークン化し世界へ、海外のトークン化商品を日本へ
-
-SBIホールディングスは7月16日、米国のRWA（現実資産）トークン化企業Ondo Finance（オンド・ファイナンス）と戦略的提携を結んだと発表した。 リリースによると、両社は日本株をはじめとする国内資産をトークン化し、オンドのオンチェーンプラットフォームを通じて海外投資家に提供することを目指す。 一方、オ...</summary>
-  </entry>
-  <entry>
-    <title>金など2億円相当 車から盗まれる</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/13451"/>
-    <id>https://minna-no-vote-square.vercel.app/s/13451</id>
-    <updated>2026-07-16T11:04:03.003Z</updated>
-    <summary>17コメント17件TBS NEWS DIG Powered by JNN
-
-きょう午後1時前、東京・台東区台東の路上で貴金属の回収業者から「昼食を終えて車に戻ったら、後部座席の窓ガラスが割れていた」などと110番通報がありました。 警視庁によりますと、回収業者は「金でできた置物2つと指輪など多数の貴金属が盗まれた。被害額は2億円相当を超える可能性がある」などと話しているということです。 警視庁は窃...</summary>
-  </entry>
-  <entry>
-    <title>サイゼ株ストップ高 社長発言受け</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/13450"/>
-    <id>https://minna-no-vote-square.vercel.app/s/13450</id>
-    <updated>2026-07-16T11:03:56.047Z</updated>
-    <summary>654コメント654件（ブルームバーグ）： サイゼリヤ株がストップ高となる前日終値比17%（1000円）高の6780円で引けた。価格改定の意向が明らかになり、収益性の改善に期待が高まった。
-
-SMBC日興証券の皆川良造アナリストはリポートで、15日に発表された第3四半期決算にサプライズはなかった一方、松谷秀治社長が9月以降に価格改定を視野に入れていると発言したことを前向きに評価した。全国統一価格か...</summary>
-  </entry>
-  <entry>
-    <title>車で乳児死亡 エンジン切ったと母</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/13449"/>
-    <id>https://minna-no-vote-square.vercel.app/s/13449</id>
-    <updated>2026-07-16T11:03:48.652Z</updated>
-    <summary>15日午後、熊本市で車の中に乗せたままになっていた生後11か月の男の赤ちゃんが死亡しました。死因は熱中症の疑いがあるということです。 熱中症の疑いで死亡したのは、熊本市の生後11か月の男の子です。警察と消防によりますと、15日午後2時20分頃、母親から｢車に乗せていた赤ちゃんが反応がない｣と119番通報がありました。救急隊が到着した時心肺停止の状態で、搬送先の病院で死亡が確認されました。司法解剖の...</summary>
-  </entry>
-  <entry>
-    <title>殺害疑い 院内から大便持ち出しか</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/13448"/>
-    <id>https://minna-no-vote-square.vercel.app/s/13448</id>
-    <updated>2026-07-16T11:03:40.884Z</updated>
-    <summary>413コメント413件古川美由紀容疑者（１５日、千葉県柏市の柏署で）
-
-千葉県柏市の「柏たなか病院」で点滴チューブに大便を混入されて入院患者が死亡した事件で、殺人容疑で県警に逮捕された同病院の元看護師古川美由紀容疑者（５１）（柏市豊四季）が、院内の患者の排せつ物を処理保管する部屋から大便を持ち出して混入したとみられることが、捜査関係者への取材でわかった。 【写真】事件の現場となった病院
-
-捜査関係...</summary>
-  </entry>
-  <entry>
-    <title>ロヒンギャら500人 転覆で死亡か</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/13447"/>
-    <id>https://minna-no-vote-square.vercel.app/s/13447</id>
-    <updated>2026-07-16T11:03:33.150Z</updated>
-    <summary>536コメント536件資料画像2025年11月25日：バングラデシュのコックスバザールにあるロヒンギャ難民キャンプには、迫害を受けたミャンマーの少数民族100万人以上が暮らしている。（AP Photo/Mahmud Hossain Opu）
-
-シドニー 、オーストラリア、7月16日 (AP) ー ミャンマーで迫害を受けるイスラム教徒少数民族ロヒンギャの住民らを乗せた船2隻が16日、ベンガル湾で転覆...</summary>
-  </entry>
-  <entry>
-    <title>AWSで障害 PayPayなどに影響</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/13446"/>
-    <id>https://minna-no-vote-square.vercel.app/s/13446</id>
-    <updated>2026-07-16T11:03:24.976Z</updated>
-    <summary>168コメント168件（写真：ITmedia NEWS）
-
-7月16日午後5時40分ごろから、AWSで障害が発生している。CDNサービス「Amazon CloudFront」が世界規模で不調という。日本ではPayPayが影響を明らかにしている他、ニコニコ生放送、はてなブログ、noteといったサービスが同じタイミングで利用しにくくなっている。 【詳細】AWS障害、原因や影響範囲は？ 関連するSNS投...</summary>
-  </entry>
-  <entry>
-    <title>全東信はなぜ突然破綻したか 解説</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/13445"/>
-    <id>https://minna-no-vote-square.vercel.app/s/13445</id>
-    <updated>2026-07-16T11:03:17.101Z</updated>
-    <summary>352コメント352件全東信の東京支社（東京商工リサーチ撮影）
-
-クレジットカード決済代行の（株）全東信（大阪市中央区）の破産が波紋を広げている。破産申請時の負債は1151億6491万円。ことし発生した倒産では最大の倒産だ。決済代行サービスを利用していた加盟店は全東信の破産以降、カード決済ができなくなり混乱が広がっている。約2万店の加盟店が被った焦げ付きの行方、業界を席巻した独自の手数料ビジネスの...</summary>
-  </entry>
-  <entry>
-    <title>皇室典範改正案 17日成立の見通し</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/13444"/>
-    <id>https://minna-no-vote-square.vercel.app/s/13444</id>
-    <updated>2026-07-16T11:03:09.198Z</updated>
-    <summary>参院特別委で皇室典範改正案が可決された=2026年7月16日午後5時47分、岩下毅撮影
-
-皇族数の確保に向けた皇室典範改正案は16日、参院特別委員会で与野党の賛成多数で可決された。自民党、日本維新の会の与党に加え、野党の一部も賛成したが、参院野党第1党の立憲民主党を含む複数の野党が反対した。改正案は17日の参院本会議で成立する見通しとなった。 【写真】皇室典範改正案に賛成した中道「うちは公明を抱え...</summary>
-  </entry>
-  <entry>
-    <title>富士ソフト、AI事業戦略の概要を発表--フィジカルAIなど3領域に注力(ZDNET Japan)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/13443"/>
-    <id>https://minna-no-vote-square.vercel.app/s/13443</id>
-    <updated>2026-07-16T08:41:21.270Z</updated>
-    <summary>富士ソフト、AI事業戦略の概要を発表--フィジカルAIなど3領域に注力の画像
-
-富士ソフトは7月16日、AIに関する事業戦略説明会を開催した。同社は2026年度からの経営戦略でAIを中核に位置付けており、説明会ではAIに関する事業戦略の概要と、「フィジカルAI」「ビジネスAI」「エンジニアリングAI」の3領域に注力していく方針を表明した。 説明会の冒頭で代表取締役 社長執行役員 CEO（最高経営責...</summary>
-  </entry>
-  <entry>
-    <title>NVIDIAのフアンCEOも登壇し「次の産業革命は日本から」 富士通×NVIDIA、ロボット3社とフィジカルAIで協業(ITmedia PC USER)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/13442"/>
-    <id>https://minna-no-vote-square.vercel.app/s/13442</id>
-    <updated>2026-07-16T08:41:20.056Z</updated>
-    <summary>発表会の登壇者。左からフアンCEO、時田社長、山口社長、小川副会長、橋本社長
-
-富士通は7月16日、ファナック、安川電機、川崎重工業の3社と共同で、「フィジカルAI」分野における事業検討を開始することを発表した。NVIDIAの技術を活用してさまざまな産業分野におけるフィジカルAIの社会実装を加速し、「人とロボットが共存・協働する社会の実現」と、「日本の産業競争力の強化」を図るという。 【写真】発表...</summary>
   </entry>
 </feed>
