@@ -4,11 +4,111 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-08-02T22:03:32.679Z</updated>
+  <updated>2026-08-02T23:30:29.931Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>てがろぐ -Fumy Otegaru Memo Logger- に制限が不十分な正規表現を使用している脆弱性(ScanNetSecurity)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/15699"/>
+    <id>https://minna-no-vote-square.vercel.app/s/15699</id>
+    <updated>2026-08-02T23:30:28.073Z</updated>
+    <summary>独立行政法人情報処理推進機構（IPA）および一般社団法人JPCERT コーディネーションセンター（JPCERT/CC）は7月29日、てがろぐ -Fumy Otegaru Memo Logger-における制限が不十分な正規表現を使用している脆弱性について「Japan Vulnerability Notes（JVN）」で発表した。三井物産セキュアディレクション株式会社の東内裕二氏が報告を行っている。影...</summary>
+  </entry>
+  <entry>
+    <title>7月のマイクロソフトセキュリティ更新プログラム、SharePoint におけるリモートコード実行の脆弱性の悪用を確認(ScanNetSecurity)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/15698"/>
+    <id>https://minna-no-vote-square.vercel.app/s/15698</id>
+    <updated>2026-08-02T23:30:27.214Z</updated>
+    <summary>一般社団法人JPCERT コーディネーションセンター（JPCERT/CC）は7月31日、2026年7月のマイクロソフトセキュリティ更新プログラムについて、追加情報を発表した。
+
+2026年7月のセキュリティ更新プログラムで修正された脆弱性の内、SharePointにおけるリモートコード実行の脆弱性（CVE-2026-58644）について、マイクロソフトは脆弱性が悪用されていると情報を更新している。...</summary>
+  </entry>
+  <entry>
+    <title>Ruby on Rails の Active Storage にリモートコード実行につながる脆弱性(ScanNetSecurity)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/15697"/>
+    <id>https://minna-no-vote-square.vercel.app/s/15697</id>
+    <updated>2026-08-02T23:30:25.609Z</updated>
+    <summary>一般社団法人JPCERT コーディネーションセンター（JPCERT/CC）は7月30日、Ruby on RailsのActive Storageにおけるリモートコード実行につながる脆弱性について発表した。影響を受けるシステムは以下の通り。
+
+activestorage 7.2.3.2より前のバージョン activestorage 8.0から8.0.5.1より前のバージョン activestorag...</summary>
+  </entry>
+  <entry>
+    <title>アルトコイン、BTCとの連動が低下──機関マネーが市場構造を変える＝Wintermute(NADA NEWS)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/15696"/>
+    <id>https://minna-no-vote-square.vercel.app/s/15696</id>
+    <updated>2026-08-02T23:30:24.525Z</updated>
+    <summary>アルトコイン、BTCとの連動が低下──機関マネーが市場構造を変える＝Wintermute
+
+Wintermute（ウィンターミュート）は7月30日、2026年上半期の暗号資産OTC（店頭取引）フロー報告書を公表した。 個人投資家が株式市場に関心を移して不在となる中、ヘッジファンドやDAT（デジタル資産トレジャリー企業）、アセットマネジャー、ファミリーオフィスなどの機関投資家が同社OTCデスクの現物...</summary>
+  </entry>
+  <entry>
+    <title>X68000エミュレータ用の5インチFDD制御ユニット「ふろっぴU君」が登場(AKIBA PC Hotline!)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/15695"/>
+    <id>https://minna-no-vote-square.vercel.app/s/15695</id>
+    <updated>2026-08-02T23:30:23.388Z</updated>
+    <summary>X68000エミュレータ用の5インチFDD制御ユニット「ふろっぴU君」が登場した。 【画像】ふろっぴU君 フルセット 正面 家電のケンちゃんでは8月6日（木）頃から販売予定。今回入荷するのは、5インチFDD（中古メンテナンス品）が組み込まれた完成品（フルセット）で、価格は178,000円。 TNB製作所の同人ハードで、BOOTHではこのほかに、ふろっぴU君単体（FDD無し）や組み立てキット（同）も...</summary>
+  </entry>
+  <entry>
+    <title>画面の中だけで満足してない？AIが「現実世界（フィジカル）」を動かし始めた衝撃(ITmedia エンタープライズ)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/15694"/>
+    <id>https://minna-no-vote-square.vercel.app/s/15694</id>
+    <updated>2026-08-02T23:30:21.944Z</updated>
+    <summary>あなたの会社のAIは、まだ「画面の中」にいませんか。議事録を要約し、メールの下書きをつくり、資料のたたき台を出す。便利です。ただ、それはすべて、パソコンの画面の内側で起きていることです。 その間に、世界の工場や倉庫では、AIがもう「身体」を持って動き始めています。 私は物流の現場で20年ほどIT実装に取り組んできました。その経験を土台に、先日、世界経済フォーラム（WEF）へ「フィジカルAIと責任の...</summary>
+  </entry>
+  <entry>
+    <title>東芝が「国産迎撃ドローン」開発へ スタートアップと共同で(CNET Japan)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/15693"/>
+    <id>https://minna-no-vote-square.vercel.app/s/15693</id>
+    <updated>2026-08-02T23:30:20.339Z</updated>
+    <summary>東芝が「国産迎撃ドローン」開発へ スタートアップと共同での画像
+
+東芝は7月31日、産業用ドローンを手掛けるスタートアップのProdrone（プロドローン）と、防衛分野の「国産迎撃ドローン」で技術連携を始めると発表した。 迎撃ドローンは、偵察や攻撃のために飛来する無人機を迎え撃つための機体だ。防衛でも民生でもドローンの活用が急速に広がり、飛んでくる無人機にどう対処するかが課題になっている。両社はそ...</summary>
+  </entry>
+  <entry>
+    <title>桑木志帆が全英V 賞金約2.4億円</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/15692"/>
+    <id>https://minna-no-vote-square.vercel.app/s/15692</id>
+    <updated>2026-08-02T23:30:18.831Z</updated>
+    <summary>122コメント122件表彰式でトロフィーにキスする桑木志帆（ＡＰ）
+
+◆女子プロゴルフツアー メジャー最終戦 ＡＩＧ全英女子オープン 最終日（２日、英ロイヤルリザム＆セントアンズＧＣ＝６６０１ヤード、パー７１） 【写真】優勝を果たしキャディーと抱き合う桑木！ ３打差２位から出た桑木志帆（大和ハウス工業）が日本女子７人目のメジャー制覇を達成した。３バーディー、２ボギーの７０で回り、通算５アンダーで並...</summary>
+  </entry>
+  <entry>
+    <title>湖池屋ポテチ「直送便」好調理由</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/15691"/>
+    <id>https://minna-no-vote-square.vercel.app/s/15691</id>
+    <updated>2026-08-02T23:30:17.170Z</updated>
+    <summary>「揚げたてのポテトチップスを食べてみたい」 そんな夢をかなえるのが、湖池屋の「揚げたて直送便」だ。工場で製造したポテトチップスを生産から3日以内に出荷する完全受注生産の商品で、累計販売数は970万袋を超える人気商品となっている。 【写真】｢揚げたて直送便｣袋を開けるとそこには…？コンビニで買えるポテチとの違い（ほか写真32枚） しかし、この商品、当初は「コンビニなどで買えるポテトチップスを、わざわ...</summary>
+  </entry>
+  <entry>
+    <title>トランプ氏 円買い介入は友好の証</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/15690"/>
+    <id>https://minna-no-vote-square.vercel.app/s/15690</id>
+    <updated>2026-08-02T23:30:15.733Z</updated>
+    <summary>276コメント276件All Nippon NewsNetwork(ANN)
+
+アメリカのトランプ大統領はアメリカ政府による円買い介入の理由について、日本を支援するためだと述べました。 トランプ大統領は2日、記者団からアメリカ政府による円買い介入について尋ねられ、「日本の通貨を支援するためだ。日本は円安で苦しみ、少し助けを必要としていた。我々はいつでも日本のために力になる。日本は真珠湾攻撃を除けば...</summary>
+  </entry>
+  <entry>
+    <title>ヘリ同士衝突し2人死亡 ギリシャ</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/15689"/>
+    <id>https://minna-no-vote-square.vercel.app/s/15689</id>
+    <updated>2026-08-02T23:30:14.361Z</updated>
+    <summary>17コメント17件２日、ギリシャ・アテネ西方の消防ヘリコプターの墜落現場で作業を行う消防隊員ら（ＥＰＡ時事）
+
+【プサタ（ギリシャ）AFP時事】ギリシャの首都アテネ西方で2日、森林火災の消火活動に当たっていた消防ヘリコプター同士が空中で衝突し、搭乗していた2人が死亡した。 【写真】2日、ギリシャ・アテネ西方で消防ヘリコプターが墜落して白煙が上がる山 消防当局が発表した。 ミツォタキス首相は声明で、...</summary>
+  </entry>
+  <entry>
+    <title>熊本の復旧復興 補正予算編成論も</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/15688"/>
+    <id>https://minna-no-vote-square.vercel.app/s/15688</id>
+    <updated>2026-08-02T23:30:12.803Z</updated>
+    <summary>243コメント243件政府の熊本地震非常災害対策本部会議で発言する高市早苗首相＝１日、首相官邸
+
+熊本県で最大震度7を観測した地震を受け、高市政権内で復旧・復興のための2026年度第2次補正予算編成が政策課題として浮上した。 【令和8年熊本地震】空から見た被害状況 本予算を重視し「脱補正」を掲げる高市早苗首相の判断が焦点となる。消費税減税の財源が曖昧な中、さらなる財政出動に踏み切れば市場の信認が揺...</summary>
+  </entry>
   <entry>
     <title>ハイセンス×横浜DeNAベイスターズのシナジーで野球をさらに盛り上げる！50年来のファン、小原由夫氏がスタジアム裏に潜入(PHILE WEB)</title>
     <link href="https://minna-no-vote-square.vercel.app/s/15687"/>
@@ -376,123 +476,5 @@ Game*Sparkでは【クラフトサバイバル名鑑】として、同ジャン�
     <summary>地上移動と照準（胴体移動）の協調、シリーズの抱える特徴と難しさの核心をより「一般向け」にした仕組みとは。
 
 先日、『アーマード・コア』シリーズへの独自の視点からの言及をきっかけに、多くの日本人から「ロボゲー・ロボアニメ詳しすぎな外国人」として知られるようになったオリー・バーダー氏。実は、氏はゲームやアニメを中心として日本サブカルを海外に長年伝えてきた記者であり、様々なタイトルにかかわってきたゲーム...</summary>
-  </entry>
-  <entry>
-    <title>“色々デカい”美人妖怪と少年のドキドキなひと夏…ハートフルホラーADV『八尺様がいた夏休み』プレイレポ</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/15649"/>
-    <id>https://minna-no-vote-square.vercel.app/s/15649</id>
-    <updated>2026-08-02T16:02:58.580Z</updated>
-    <summary>大きな紳士たちの心にもしっかりと刺さる「フェチ満載」の異色ホラーゲーム。
-
-皆さんは「八尺様」という怪異をご存知でしょうか？インターネットの掲示板発祥とされる有名な日本の妖怪です。
-
-その名の通り、外見は身長が約8尺（約240cm）ある長身の女性で、大きな帽子にワンピース姿で「ぽぽぽ」という独特の音を発しながら現れ、魅入られた子供や若者をどこかへ連れ去ってしまう、という都市伝説が基になっています。...</summary>
-  </entry>
-  <entry>
-    <title>単なるバーサーカーから英雄になって亡者や巨人をボコボコにしよう！サバイバー系ローグライトACT『巨人殺し: 冥界の怒涛』</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/15648"/>
-    <id>https://minna-no-vote-square.vercel.app/s/15648</id>
-    <updated>2026-08-02T16:02:57.312Z</updated>
-    <summary>北欧神話をベースにしたサバイバー系タイトルがついにスイッチ2に登場！
-
-Games FarmとARTillery開発の『巨人殺し: 冥界の怒涛』が、7月30日よりニンテンドースイッチ2でも発売となります。
-
-本作は北欧神話をベースとした世界観を舞台とした、サバイバー系アクション。プレイヤーは呪いを負った英雄として、冥界「ヘルヘイム」といった巨人たちの生息域に足を踏み入れ、試練に挑みます。
-
-（出典...</summary>
-  </entry>
-  <entry>
-    <title>Game*Sparkレビュー：『スプラトゥーン レイダース』―“ルートシューター”の新たな金字塔になりうる、シリーズの新たな形</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/15647"/>
-    <id>https://minna-no-vote-square.vercel.app/s/15647</id>
-    <updated>2026-08-02T16:02:55.201Z</updated>
-    <summary>水鉄砲のようなブキから“インク”を発射して、ステージ中を塗りたくるTPSである『スプラトゥーン』シリーズ。4対4のチーム戦で、インクを塗った面積を競う「ナワバリバトル」を中心に、これまで対戦ゲームとして人気を博してきたタイトルでした。
-
-一方で、シリーズ1作目から「ヒーローモード」と呼ばれる一人用の3Dプラットフォーマーモードを内包しているのも特徴であり、ニンテンドースイッチ2向け新作『スプラトゥ...</summary>
-  </entry>
-  <entry>
-    <title>2004年のお蔵入りから奇跡の復活を遂げたGBA幻の続編『シャンティ アドバンス:リスキィ レボリューション』―シャンティの可愛さもアクションも健在！スイッチ版プレイレポ</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/15646"/>
-    <id>https://minna-no-vote-square.vercel.app/s/15646</id>
-    <updated>2026-08-02T16:02:53.615Z</updated>
-    <summary>2004年に一度開発中止となり、およそ20年の時を経て復活を遂げた『シャンティ アドバンス:リスキィ レボリューション』。シリーズの面白さが詰まっています！
-
-オーイズミ・アミュージオは、WayForwardが手がけるアクションゲーム『シャンティ アドバンス:リスキィ レボリューション』を、ニンテンドースイッチ向けに発売中です。PS5/PS4版も近日配信予定となっています。
-
-本作は、2002年に...</summary>
-  </entry>
-  <entry>
-    <title>糞尿血液まみれの少年は、なぜ十数年も愛され続けるのか―『The Binding of Isaac: Rebirth』の魅力を徹底解剖</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/15645"/>
-    <id>https://minna-no-vote-square.vercel.app/s/15645</id>
-    <updated>2026-08-02T16:02:52.200Z</updated>
-    <summary>キリスト教の信仰に狂った母親から逃げる多重人格の少年が、涙を武器に糞尿血液にまみれながら地下室の怪物（それは時に自分が生み出した分身でもある）と戦い続ける――
-
-『The Binding of Isaac: Rebirth（アイザックの伝説）』はこうやって書き出すと、なんだか趣味が悪く近づきがたい印象をもつ作品に思えるかもしれません。
-
-しかし、リリース当初から根強いインディーゲームファンに高く評...</summary>
-  </entry>
-  <entry>
-    <title>『ドラクエ』見た目が良すぎる「キングスライムの提灯」に注目！「ラーの鏡」の卓上ミラーなど8月はプライズがズラリ</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/15644"/>
-    <id>https://minna-no-vote-square.vercel.app/s/15644</id>
-    <updated>2026-08-02T16:02:50.332Z</updated>
-    <summary>8月に登場する『ドラゴンクエスト』プライズをチェック！
-
-タイトーは、『ドラゴンクエスト（ドラクエ）』の各種プライズを展開します。
-
-『ドラクエ』より、ぬいぐるみやフィギュア、雑貨などプライズ6種が展開。ぬいぐるみは、少し大きめサイズな「キングスライム＆ベスキング＆スライムベホマズン」です。フィギュアにはクリア仕様の「キングスライム＆メタルキング＆スライムベホマズン」が登場します。
-
-（出典：ニュ...</summary>
-  </entry>
-  <entry>
-    <title>『SAEKO: Giantess Dating Sim』「巨大娘」と暮らす日々は、なぜ心が揺さぶられるのか─“癖”を刺激する感情の行き着く先【プレイレポ】</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/15643"/>
-    <id>https://minna-no-vote-square.vercel.app/s/15643</id>
-    <updated>2026-08-02T16:02:48.535Z</updated>
-    <summary>巨大娘との同居生活は、可愛らしいだけでも恐ろしいだけでもありません。さまざまな感情を行き来しながら、やがてプレイヤー自身の嗜好まで問いかけてくる異色ADVを紹介します。
-
-※本記事は物語の核心に触れる重大なネタバレは避けていますが、序盤で明らかになる設定は紹介しているほか、感情の変化を解説する都合上、物語の大まかな流れにも触れています。あらかじめご了承ください。
-
-『SAEKO: Giantess...</summary>
-  </entry>
-  <entry>
-    <title>希少なサイズ感が目を引く「PNY GeForce RTX 5070 Ti 16GB OC SLIM」。準ハイエンドでも2スロット厚で長さ30cm切り！(AKIBA PC Hotline!)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/15642"/>
-    <id>https://minna-no-vote-square.vercel.app/s/15642</id>
-    <updated>2026-08-02T16:02:46.575Z</updated>
-    <summary>2025年2月にGeForce RTX 5070 Tiが発売されてからまもなく1年半。そろそろ次の展開が聞こえてきてもよい頃合いだが、今のところ自作PC界隈で聞かれるGPUまわりの話は、次期/次世代の話題よりも下がらない価格や今なお不安のある流通状況のほうが多いようだ。 【画像】PNY GeForce RTX 5070 Ti 16GB OC SLIM。一部のロゴ以外はオールブラックでLED発光機能...</summary>
-  </entry>
-  <entry>
-    <title>阪神監督 2失策の前川に奮起促す</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/15641"/>
-    <id>https://minna-no-vote-square.vercel.app/s/15641</id>
-    <updated>2026-08-02T16:02:44.896Z</updated>
-    <summary>211コメント211件試合後、坂本（右）とタッチを交わす藤川監督（撮影・堀内翔）
-
-「ヤクルト３－４阪神」（２日、神宮球場） 阪神が接戦を制して４連勝。同一カード３連勝で、デーゲームで敗れた巨人とのゲーム差を２に広げた。 【写真】失策からベンチに戻った前川 きちんと下村に頭を下げていた ３－３の九回無死で、坂本が自身初の１試合２本塁打となる５号ソロを放って勝ち越し。１点リードの九回は３連投の工藤が...</summary>
-  </entry>
-  <entry>
-    <title>災害関連死の抑制に軸足 官房長官</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/15640"/>
-    <id>https://minna-no-vote-square.vercel.app/s/15640</id>
-    <updated>2026-08-02T16:02:42.156Z</updated>
-    <summary>木原官房長官は2日、令和8年熊本地震について、「今年の夏の猛暑、まさに二重の災害というべき状況だと認識している」と強調した上で、災害関連死への対策に力を入れる考えを示した。 熊本県は同日、車中泊避難をしていた70代の女性が、熱中症の疑いで死亡したとみられることを発表した。 総理大臣官邸で記者団の取材に応じた木原長官は、「今年の夏の猛暑、まさに二重の災害というべき状況だと認識している。今回、熱中症の...</summary>
-  </entry>
-  <entry>
-    <title>ＳＫＥ４８が全国５か所１２公演のサマーツアーを完走 ８月末に卒業の池田楓「本当に感謝しています」(東スポWEB)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/15639"/>
-    <id>https://minna-no-vote-square.vercel.app/s/15639</id>
-    <updated>2026-08-02T14:37:44.456Z</updated>
-    <summary>サマーツアーを完走したＳＫＥ４８。８月末に卒業する池田楓（中央）はファンに感謝（©2026 SKE,Inc.）
-
-アイドルグループ「SKE48」が2日、東京都内のZepp Hanedaで「SKE48 SUMMER Tour 2026 ～じゅーしーすぷらっしゅだぜ！～」のファイナル公演を開催。名古屋を皮切りに、福岡、札幌、大阪、東京で行われた全国12公演を完走した。 今回のサマーツアーはグループを3...</summary>
-  </entry>
-  <entry>
-    <title>「VIVANT」東条に裏切り者説浮上 ウルトラマン→名作プロレス漫画へ、部屋の“変化”が伏線か(シネマトゥデイ)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/15638"/>
-    <id>https://minna-no-vote-square.vercel.app/s/15638</id>
-    <updated>2026-08-02T14:37:43.411Z</updated>
-    <summary>日曜劇場「VIVANT」（TBS系）の第12話（第2シーズン第2話）が2日に放送され、ホワイトハッカー・東条翔太（濱田岳）の家のとある変化が描かれた。（以下、第12話のネタバレを含みます） 【画像・ネタバレあり】“新たな別班”ついに合流！第12話場面写真 警視庁サイバー犯罪対策課に所属する東条は、警視庁公安部・外事第4課の野崎（阿部寛）と共に、国外逃亡したとみられるテロ組織「テント」のモニター（ス...</summary>
   </entry>
 </feed>
