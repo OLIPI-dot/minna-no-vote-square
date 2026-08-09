@@ -4,11 +4,117 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-08-09T22:34:51.322Z</updated>
+  <updated>2026-08-09T23:34:46.671Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>NetKids iMark に複数の脆弱性(ScanNetSecurity)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/16731"/>
+    <id>https://minna-no-vote-square.vercel.app/s/16731</id>
+    <updated>2026-08-09T23:34:44.666Z</updated>
+    <summary>独立行政法人情報処理推進機構（IPA）および一般社団法人JPCERT コーディネーションセンター（JPCERT/CC）は8月5日、NetKids iMarkにおける複数の脆弱性について「Japan Vulnerability Notes（JVN）」で発表した。GMOサイバーセキュリティ byイエラエ株式会社の松本一真氏が報告を行っている。影響を受けるシステムは以下の通り。
+
+NetKids iMa...</summary>
+  </entry>
+  <entry>
+    <title>miChecker に XML 外部実体参照（XXE）に関する脆弱性(ScanNetSecurity)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/16730"/>
+    <id>https://minna-no-vote-square.vercel.app/s/16730</id>
+    <updated>2026-08-09T23:34:43.607Z</updated>
+    <summary>総務省は8月5日、ウェブアクセシビリティ評価ツール「miChecker」の脆弱性情報について発表した。影響を受けるシステムは以下の通り。
+
+同省が開発・提供するアクセシビリティ評価ツール「みんなのアクセシビリティ評価ツール：miChecker」には、XML外部実体参照（XXE）に関する脆弱性が存在し、同脆弱性を悪用された場合、悪意ある第三者の攻撃により、miCheckerなどが動作しているコンピュ...</summary>
+  </entry>
+  <entry>
+    <title>Alinto SOGo v5.12.7 に不正な形式の ICSカレンダー招待を介した XSS の脆弱性(ScanNetSecurity)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/16729"/>
+    <id>https://minna-no-vote-square.vercel.app/s/16729</id>
+    <updated>2026-08-09T23:34:42.029Z</updated>
+    <summary>独立行政法人情報処理推進機構（IPA）および一般社団法人JPCERT コーディネーションセンター（JPCERT/CC）は8月7日、Alinto SOGo v5.12.7における不正な形式のICSカレンダー招待を介したクロスサイトスクリプティングの脆弱性について「Japan Vulnerability Notes（JVN）」で発表した。CERT/CCが本件に関するアドバイザリを公表している。
+
+JV...</summary>
+  </entry>
+  <entry>
+    <title>OpenSSL の OCSPレスポンス検証にクライアント側のメモリリークの脆弱性(ScanNetSecurity)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/16728"/>
+    <id>https://minna-no-vote-square.vercel.app/s/16728</id>
+    <updated>2026-08-09T23:34:40.880Z</updated>
+    <summary>独立行政法人情報処理推進機構（IPA）および一般社団法人JPCERT コーディネーションセンター（JPCERT/CC）は8月7日、OpenSSLのOCSPレスポンス検証におけるクライアント側のメモリリークの脆弱性（CVE-2026-54876）について「Japan Vulnerability Notes（JVN）」で発表した。
+
+OpenSSL Projectでは、OpenSSL Security...</summary>
+  </entry>
+  <entry>
+    <title>世界のトップ層は何を議論している？ 第一線の論客から見えた「やらかしの正体」(ITmedia エンタープライズ)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/16727"/>
+    <id>https://minna-no-vote-square.vercel.app/s/16727</id>
+    <updated>2026-08-09T23:34:39.634Z</updated>
+    <summary>図2：責任をつなぐ三層。経営が決め、設計に落とし、現場へ権限を渡す 出典: 著者
+
+前回、私たちは1つの問いにたどり着きました。AIが現実世界でやらかしたとき、いったい誰が責任を持つのか。アクセルの話はあふれているのに、ブレーキの話は脚光を浴びづらい、と。 実は、この問いをめぐる議論は、すでに世界の第一線で始まっています。しかも語っているのは、その道の頂点にいる人たちです。私も世界経済フォーラム（...</summary>
+  </entry>
+  <entry>
+    <title>AMDが新興Taalas買収、AIモデルをシリコンに焼き付ける技術を獲得──AI推論でHBM依存を崩すか(Forbes JAPAN)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/16726"/>
+    <id>https://minna-no-vote-square.vercel.app/s/16726</id>
+    <updated>2026-08-09T23:34:38.320Z</updated>
+    <summary>digitalpochi - stock.adobe.com
+
+現在、AIモデルを動かすということは、トークンを1つ生成するたびに、メモリーチップからプロセッサーへと重み（ウェイト）データ全体を何度も繰り返し転送することを意味する。このデータの往復こそが、現代の推論における速度の限界であり、広帯域メモリー（HBM）がコンピューティングの世界で最も希少な商品となった理由だ。AMDが米国時間8月6日に...</summary>
+  </entry>
+  <entry>
+    <title>米ビットコイン現物ETF、4月以来最高の資金流入── 「Coldcard」との関連は？(NADA NEWS)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/16725"/>
+    <id>https://minna-no-vote-square.vercel.app/s/16725</id>
+    <updated>2026-08-09T23:34:37.075Z</updated>
+    <summary>米ビットコイン現物ETF、4月以来最高の資金流入── 「Coldcard」との関連は？
+
+Bloomberg（ブルームバーグ）のETF（上場投資信託）アナリスト、Eric Balchunas（エリック・バルチュナス）氏は8日、Xへの投稿で、米ビットコイン（BTC）現物ETFへの資金流入が先週約10億ドル（約1600億円、1ドル=160円換算）に達し、4月以来最高の週だったと明らかにした。昨年10月...</summary>
+  </entry>
+  <entry>
+    <title>持ち歩く充電ケーブルはコレ一択。CIOのスパイラルケーブル CtoC 2mが僕の最適解でした(ギズモード・ジャパン)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/16724"/>
+    <id>https://minna-no-vote-square.vercel.app/s/16724</id>
+    <updated>2026-08-09T23:34:35.323Z</updated>
+    <summary>持ち歩く充電ケーブルはコレ一択。CIOのスパイラルケーブル CtoC 2mが僕の最適解でした
+
+スマホやノートPCを外出先で充電する機会が多い僕にとって、モバイル用の必須アイテムとなっているのが「マグネット内蔵型のUSB-Cケーブル」。 【全画像をみる】持ち歩く充電ケーブルはコレ一択。CIOのスパイラルケーブル CtoC 2mが僕の最適解でした 手で簡単にまとめられる手軽さに魅了され、気づけば色々...</summary>
+  </entry>
+  <entry>
+    <title>映画「踊る」豪華声優陣が集結</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/16723"/>
+    <id>https://minna-no-vote-square.vercel.app/s/16723</id>
+    <updated>2026-08-09T23:34:34.066Z</updated>
+    <summary>61コメント61件レジェンド声優が警察庁幹部役！左から野島健児、立木文彦、津田健次郎、関智一 - (C) 2026フジテレビジョン BSフジ ビー・エー・シー
+
+織田裕二主演の映画『踊る大捜査線』シリーズ最新作『踊る大捜査線 N.E.W. メトロポリスを駆け抜けろ！』（9月18日全国公開）に、立木文彦、津田健次郎、関智一、野島健児といった豪華声優陣が出演していることが明らかになった。 【画像】みん...</summary>
+  </entry>
+  <entry>
+    <title>家電激戦池袋 ヨドバシが狙う商圏</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/16722"/>
+    <id>https://minna-no-vote-square.vercel.app/s/16722</id>
+    <updated>2026-08-09T23:34:32.640Z</updated>
+    <summary>69コメント69件データで証明する「池袋＝“埼玉”」論争「シン・家電の街」池袋の正体とは（写真＝池袋駅東口、筆者撮影）
+
+6月30日、東京の池袋駅東口に「ヨドバシカメラ マルチメディア池袋」がオープンした。西武池袋本店が有していた地下1階～地上6階までの総売り場面積、約3万3000平方メートル・約1万坪に出店し、関東最大級のスケールを誇る家電量販店として注目されている。池袋は世界有数のターミナル駅...</summary>
+  </entry>
+  <entry>
+    <title>身寄りのない死 膨らむ公費負担</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/16721"/>
+    <id>https://minna-no-vote-square.vercel.app/s/16721</id>
+    <updated>2026-08-09T23:34:31.249Z</updated>
+    <summary>身寄りがなく、資産も残さずに亡くなった人の火葬や納骨を行うための公費負担が膨らみ続けている。無縁の遺体や遺骨を民間業者が自治体から有料で引き取る「無縁ビジネス」が広がる背景には、公費負担を減らしたい自治体側と、自治体相手に確実な収入が見込める業者側の思惑が重なっていることがある。 【写真】埼玉県内の住宅街にある異様なプレハブに遺体冷蔵庫が…… 厚生労働省によると、生活保護受給者が亡くなった際の火葬...</summary>
+  </entry>
+  <entry>
+    <title>不同意性交の認知件数 増加傾向</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/16720"/>
+    <id>https://minna-no-vote-square.vercel.app/s/16720</id>
+    <updated>2026-08-09T23:34:29.386Z</updated>
+    <summary>603コメント603件性暴力根絶を目指す「フラワーデモ」が法務省前であり、参加者は花を手に主張を訴えた=2021年3月8日午後、東京都千代田区、藤牧幸一撮影
+
+不同意性交事件の認知件数が増加傾向にあることが、大阪府警のまとめでわかった。 府警は、性犯罪に関する2023年の改正刑法の内容が浸透してきたことが一因とみている。 【写真】インスタ乗っ取られ、トップでさらされた裸の画像 捜査対象は高校生 被...</summary>
+  </entry>
   <entry>
     <title>ヤコブセン幻の椅子 日本限定復刻(FINDERS)</title>
     <link href="https://minna-no-vote-square.vercel.app/s/16719"/>
@@ -352,109 +458,5 @@ PowerPointのCopilotというと、プレゼンテーションを新しく作成
     <id>https://minna-no-vote-square.vercel.app/s/16682</id>
     <updated>2026-08-09T16:39:01.333Z</updated>
     <summary>7月25日にグランドオープンした「まちキャラ千葉駅前店」は、「豊富なガンプラ在庫」、「対戦コーナーを持つトレーディングカードゲームユーザー交流の場」という、千葉駅前に新たなホビーの交流拠点が誕生した。 【画像】店長の東健祐氏 まちキャラ千葉駅前店はこれまで千葉駅西口にあったが、今回、東口にある複合商業施設「塚本大千葉ビル」の4階にある「三省堂書店カルチャーステーション千葉店」の中にリニューアルオー...</summary>
-  </entry>
-  <entry>
-    <title>ガチャ「肩ズンFig. ディズニープリンセス」8月下旬発売！穏やかに眠るジャスミンやアリエルたちが登場(HOBBY Watch)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/16681"/>
-    <id>https://minna-no-vote-square.vercel.app/s/16681</id>
-    <updated>2026-08-09T16:38:59.785Z</updated>
-    <summary>タカラトミーアーツは、ガチャ商品「肩ズンFig. ディズニープリンセス」を8月下旬に発売する。価格は1回400円。 【画像】ベル 肩に「ズン」ともたれて「きゅん」とときめくポーズが特長の「肩ズンFig.」シリーズに「ディズニープリンセス」が登場。ラインナップは、「ジャスミン」、「ベル」、「ラプンツェル」、「モアナ」、「アリエル」の全5種。約39～42mmのころんとした手のひらサイズで立体化されてい...</summary>
-  </entry>
-  <entry>
-    <title>シンガー・ソングライターなとり、アジアツアー完走「我愛你！」台北２days 次なる野望は…(日刊スポーツ)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/16680"/>
-    <id>https://minna-no-vote-square.vercel.app/s/16680</id>
-    <updated>2026-08-09T16:38:58.359Z</updated>
-    <summary>「natori ONE－MAN LIVE TOUR &quot;行進 (March)&quot; in Taipei」で歌唱するなとり
-
-【台湾9日＝望月千草】シンガー・ソングライターのなとり（23）が、Taipei Music Centerで、4都市をまわった「natori ONE－MAN LIVE TOUR『行進』」のアジアツアーを完走した。7月から8月にかけて台北や韓国などで開催し、計約2万人を集め、チケットは...</summary>
-  </entry>
-  <entry>
-    <title>「パツパツな感じが...」イラストレーター花村菫〝サイズ小さめ〟ビキニショットに「抜群の着こなし MoMAに収蔵したい」「暑さも吹き飛ぶ」の声(西スポWEB OTTO!)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/16679"/>
-    <id>https://minna-no-vote-square.vercel.app/s/16679</id>
-    <updated>2026-08-09T16:38:57.064Z</updated>
-    <summary>1コメント1件▼黒髪ショート映える水玉模様 イラストレーターでネットを中心にグラビア活動も行う花村菫(はなむら・すみれ)の水着ショットが話題になっている。 【写真】〝サイズ小さめ〟ビキニショット「パツパツな感じが...」「MoMAに収蔵したい」 「ぐもも 快晴で気持ちいいけど、昨日も37℃とかなので熱中症にならないように頑張りましょう◎ サイズが小さかった水着…」と、クラシカルな雰囲気漂う白地に黒...</summary>
-  </entry>
-  <entry>
-    <title>『ジャンプ』付録カードなし版、17日から受注受付 発送は10月～12月上旬 ワンピースカード付録で売り切れ騒動の7月13日発売号(オリコン)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/16678"/>
-    <id>https://minna-no-vote-square.vercel.app/s/16678</id>
-    <updated>2026-08-09T16:38:55.729Z</updated>
-    <summary>「杉田かおる!?」「誰かと思った…」現在61歳で主婦〝雰囲気一変〟最新姿に驚きの声「久々に見たらビックリ」「存在感すごい」「良い年の取り方」
-
-2「無惨様かと…」藤原紀香の“真っ白髪”姿にSNS騒然「すごい」「言葉が出ない」
-
-3「かなり小さくなって…」大腸がんで人工肛門…松本人志〝青森訪問〟姿に心配の声続々「脂肪のない感じが痛ましい」「無理せずに」
-
-4ヘンリー王子、エルトン・ジョンを怒らせる ...</summary>
-  </entry>
-  <entry>
-    <title>TOKIO脱退から8年...山口達也さん〝抜け殻〟ショットに「良く頑張って出て来てくれたね」「一生懸命生きてきた証」波乱の半生と重なる深い言葉に絶賛の声(西スポWEB OTTO!)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/16677"/>
-    <id>https://minna-no-vote-square.vercel.app/s/16677</id>
-    <updated>2026-08-09T16:38:54.316Z</updated>
-    <summary>10コメント10件▼「なんだか力強くて美しく見える」 元TOKIOで、現在は講演活動やYouTuberとしての活動を行う山口達也さんが投稿した〝抜け殻〟写真が話題になっている。 【写真】〝抜け殻〟ショット「良く頑張って出て来てくれたね」「一生懸命生きてきた証」 「抜け殻ってネガティブに表現される事が多いよね、 でもなんだか力強くて美しく見えるよ」と、2枚のセミの抜け殻写真を投稿。 中身が空っぽにな...</summary>
-  </entry>
-  <entry>
-    <title>「ド迫力ボディに釘付けです」10キロリバウンドの天月愛〝筋トレ増減ショット〟に反響続々「日々の努力の賜物ですね」(西スポWEB OTTO!)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/16676"/>
-    <id>https://minna-no-vote-square.vercel.app/s/16676</id>
-    <updated>2026-08-09T16:38:52.933Z</updated>
-    <summary>▼ショーパン＆ピタピタウェアで自撮り グラビアアイドルの天月愛が、グラビア撮影前後の驚きの体重増減を告白し、圧巻のビジュアルショットを公開した。 【写真あり】〝筋トレ増減ショット〟「ド迫力ボディに釘付けです」 「撮影前は毎回1ヶ月で6-7キロは落として 撮影後は10キロリバウンドする そしてまた撮影前なので6キロ落とします」とインスタグラムで報告。トレーニングルームで鍛えたボディを披露した。 「1...</summary>
-  </entry>
-  <entry>
-    <title>【コスプレ】美くびれが際立つ、へそ出し×ストリートコーデで魅了！『NTE』異能者・零の中国美女レイヤーが美しすぎた【写真10枚】(インサイド)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/16675"/>
-    <id>https://minna-no-vote-square.vercel.app/s/16675</id>
-    <updated>2026-08-09T16:38:51.488Z</updated>
-    <summary>8月8日・9日の2日間、東京・中池袋公園にて、超現実都市オープンワールドRPG『NTE（Neverness to Everness）』のPOP-UPイベント「メェメェ村の大冒険」が開催されました。 【画像】へそ出し×美くびれが真夏に眩しすぎる！魅惑の中国美女コスプレイヤーがこちら（10枚） 本イベントは、Ver.1.2へのアップデートと新キャラクター「真紅」、「イロヒ」の実装を記念したもの。ゲーム...</summary>
-  </entry>
-  <entry>
-    <title>元いいとも青年隊・岸田健作 中居正広氏めぐり持論「光の部分を体と心で頂いた事しかない」(東スポWEB)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/16674"/>
-    <id>https://minna-no-vote-square.vercel.app/s/16674</id>
-    <updated>2026-08-09T16:38:50.246Z</updated>
-    <summary>元いいとも青年隊で俳優の岸田健作（47）が9日に自身のX（旧ツイッター）を更新。元「SMAP」の中居正広氏について語った。 【写真】レア？ 白髪の中居正広 先日、一部週刊誌が中居氏の近況について報道し、令和8年熊本地震に寄付をしたと伝えた。記事を目にした岸田は7日にXを更新。自身の見てきた中居氏についてつづり、注目を集めていた。 そのポスト内容を報じる記事を添付した岸田は「自分の活動に関する記事で...</summary>
-  </entry>
-  <entry>
-    <title>ＥＸＩＬＥ ＡＫＩＲＡ 初のソロツアー４都市５公演完走「挑戦する姿が誰かの新しい１歩になったり、未来を信じるきっかけになったら」(スポーツ報知)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/16673"/>
-    <id>https://minna-no-vote-square.vercel.app/s/16673</id>
-    <updated>2026-08-09T16:38:49.116Z</updated>
-    <summary>1コメント1件２０周年記念のソロツアー台北公演を成功させたEXILE・AKIRA
-
-ＥＸＩＬＥ ＡＫＩＲＡが９日、台北・ＣＬＡＰＰＥＲ ＳＴＵＤＩＯ ＴＡＩＰＥＩで初のソロツアー「ＥＸＩＬＥ ＡＫＩＲＡ ２０ＴＨ ＡＮＮＩＶＥＲＳＡＲＹ ＳＰＥＣＩＡＬ ＬＩＶＥ ＴＯＵＲ“ＵＲＢＡＮ ＳＡＶＡＧＥ”」のファイナル公演を行った。 【写真】ＥＸＩＬＥ ＡＫＩＲＡ、初ソロツアー開幕「常にアップデートした...</summary>
-  </entry>
-  <entry>
-    <title>『FF14』淡く光る「ミニチュアエーテライト」が欲しすぎる。スクウェア・エニックス e-STOREにて再受注を受付中、2026年11月21日発売予定</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/16672"/>
-    <id>https://minna-no-vote-square.vercel.app/s/16672</id>
-    <updated>2026-08-09T16:38:46.818Z</updated>
-    <summary>8月9日現在、スクウェア・エニックス e-STOREにて『ファイナルファンタジーXIV』より、「ミニチュアエーテライト」の再受注を受付中だ。価格は4400円（税込）で、2026年11月21日の発売・お届けを予定している。
-
-本商品は『FF14』ゲーム内に多数設置され、移動手段として使用可能な「エーテライト」をミニチュアサイズで再現したグッズだ。優しくブルーに光る仕様となっており、インテリアとしてデ...</summary>
-  </entry>
-  <entry>
-    <title>なぜ『Forza Horizon 6』はリアルだったのか？「日本人が誰もいないスタジオ」から始まった、“生活感のある日本&quot;の作り方【CEDEC2026】</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/16671"/>
-    <id>https://minna-no-vote-square.vercel.app/s/16671</id>
-    <updated>2026-08-09T15:35:30.132Z</updated>
-    <summary>CEDEC2026において、『Forza Horizon 6』の日本表現についてセミナーが行われました。
-
-2026年7月22日から24日にかけて、パシフィコ横浜 ノースにてゲーム技術者やコンピュータエンターテインメントのエンジニアらを対象とした、国内最大級のカンファレンス『CEDEC 2026』が開催されました。
-
-22日には、ビジネスコンサルタント／プロデューサー／通訳として活動する山下恭子氏...</summary>
-  </entry>
-  <entry>
-    <title>『どうぶつの森』キャラマグネッツが8月10日発売！たぬきちやしずえなど全24種、ゲーム内の便箋風メモカード全10種も</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/16670"/>
-    <id>https://minna-no-vote-square.vercel.app/s/16670</id>
-    <updated>2026-08-09T15:35:29.151Z</updated>
-    <summary>バンダイは、「どうぶつの森 キャラマグネッツ」を8月10日より全国量販店の菓子売場等にて発売します。
-
-『どうぶつの森』より、厚さ約5mmと立体感のあるアクリル素材仕様のマグネット「キャラマグネッツ」が登場します。ラインナップは「たぬきち」や「しずえ」など豊富な全24種類。また、ゲーム内のメッセージカードデザインのメモカード（全10種）が1枚付属しており、マグネットと一緒に使用できます。
-
-「どう...</summary>
   </entry>
 </feed>
