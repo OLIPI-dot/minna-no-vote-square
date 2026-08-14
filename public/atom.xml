@@ -4,11 +4,125 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-08-14T02:11:33.997Z</updated>
+  <updated>2026-08-14T04:23:04.745Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>Microsoft、個人・ビジネスCopilotアプリを統合。Deep Researchなど廃止(PC Watch)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/17499"/>
+    <id>https://minna-no-vote-square.vercel.app/s/17499</id>
+    <updated>2026-08-14T04:23:02.736Z</updated>
+    <summary>千葉の「通れた道」、JARTIC地図で確認可能に トヨタやホンダなど5社のデータを集約
+
+2豪雨被害の千葉で「通れた道マップ」トヨタが公開 直近3時間の通行実績が分かる
+
+3アップル「折りたたみiPhone」、米国先行発売で他国は数カ月待ちか
+
+4じゃがりこ食べてたら出てきた“奇跡の形”に爆笑⇨「天空の城ラピュタ」「ちょっと恥ずかしがってる」と10万「いいね」
+
+（出典：PC Watch）
+
+[続...</summary>
+  </entry>
+  <entry>
+    <title>米不動産王が明かす、AIエージェントで「100万ドル級の売上」を実現した方法(Forbes JAPAN)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/17498"/>
+    <id>https://minna-no-vote-square.vercel.app/s/17498</id>
+    <updated>2026-08-14T04:23:01.633Z</updated>
+    <summary>ChatGPTに「AIで稼ぐ方法」を尋ねている人をよく見かける。 そして、彼らが目にしている答えはおそらく、どれも使い回されたものだ。 講座を作る、デジタル商品を作る、AIをドロップシッピング（在庫を持たずに販売するモデル）に使う、電子書籍を書く、バイブコーディング（自然言語指示によるコーディング）でAIツールを作る、などである。 だが、自分の専門性を生かしてAIで稼ぐうえで、最大のゲームチェンジ...</summary>
+  </entry>
+  <entry>
+    <title>米SEC、暗号資産ルール審議を中止(NADA NEWS)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/17497"/>
+    <id>https://minna-no-vote-square.vercel.app/s/17497</id>
+    <updated>2026-08-14T04:23:00.026Z</updated>
+    <summary>米証券取引委員会（SEC）は8月13日、14日に予定していた暗号資産（仮想通貨）関連の新たなルール案を審議する公開会合を中止すると発表した。 ロイターによると、SECの広報担当者は「予期せぬ日程上の問題」を理由に挙げ、会合を別の日に移すと説明したという。 関連記事：米SEC、クラリティ法案待たず14日に暗号資産ルール審議へ 会合では、暗号資産に関わる一定の投資契約について、資金調達に特化した制度を...</summary>
+  </entry>
+  <entry>
+    <title>グーグル、最新AIモデル「Gemini 3.7 Flash」公開 Gemini Sparkで提供(ケータイ Watch)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/17496"/>
+    <id>https://minna-no-vote-square.vercel.app/s/17496</id>
+    <updated>2026-08-14T04:22:58.925Z</updated>
+    <summary>グーグル（Google）は14日、最新のAIモデル「Gemini 3.7 Flash」を公開した。個人向けには、常時稼働型のAIエージェント「Gemini Spark」で提供が始まった。「Google AI Pro/Ultra」のユーザーはGemini Sparkを利用できる。
+
+千葉の「通れた道」、JARTIC地図で確認可能に トヨタやホンダなど5社のデータを集約
+
+2豪雨被害の千葉で「通れた道...</summary>
+  </entry>
+  <entry>
+    <title>もうGemini 3.7 Flash登場、先代から3週間 コーディングとエージェント性能向上で年内半額 Gemini SparkとAPIから提供(テクノエッジ)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/17495"/>
+    <id>https://minna-no-vote-square.vercel.app/s/17495</id>
+    <updated>2026-08-14T04:22:57.609Z</updated>
+    <summary>TechnoEdge テクノエッジ編集部ピックアップ
+
+千葉の「通れた道」、JARTIC地図で確認可能に トヨタやホンダなど5社のデータを集約
+
+2豪雨被害の千葉で「通れた道マップ」トヨタが公開 直近3時間の通行実績が分かる
+
+3アップル「折りたたみiPhone」、米国先行発売で他国は数カ月待ちか
+
+（出典：テクノエッジ）
+
+[続きを読む](https://news.yahoo.co.jp/art...</summary>
+  </entry>
+  <entry>
+    <title>「PostgreSQL」にセキュリティアップデート、任意コード実行を含む28件の脆弱性に対処(窓の杜)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/17494"/>
+    <id>https://minna-no-vote-square.vercel.app/s/17494</id>
+    <updated>2026-08-14T04:22:56.369Z</updated>
+    <summary>オープンソースのリレーショナルデータベース（RDB）システム「PostgreSQL」で8月13日、セキュリティアップデートが実施された。ここ数カ月に報告された110件を超える不具合が修正されている。 アップデートが推奨されるのは、以下のバージョン。次期メジャーバージョン「PostgreSQL 19」でもBeta 3がリリースされている。 ・PostgreSQL 18.6 ・PostgreSQL 1...</summary>
+  </entry>
+  <entry>
+    <title>TWICEチェヨン 事務所が破局否定</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/17493"/>
+    <id>https://minna-no-vote-square.vercel.app/s/17493</id>
+    <updated>2026-08-14T04:22:55.035Z</updated>
+    <summary>TWICEのチェヨンと歌手兼プロデューサーのZION.Tが、破局説に巻き込まれたが、これは事実無根であることが分かった。 TWICE チェヨン＆Zion․T、破局説が浮上…両者の関係者がコメント「私生活のため確認が難しい」 14日、双方の所属事務所は破局説に関連して声明を発表し、「破局説は明らかに事実無根である」と明らかにした。 続けて「アーティスト本人に確認した結果、2人は依然として互いに良い感...</summary>
+  </entry>
+  <entry>
+    <title>スキージャンプ銅 丸山希が結婚</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/17492"/>
+    <id>https://minna-no-vote-square.vercel.app/s/17492</id>
+    <updated>2026-08-14T04:22:53.070Z</updated>
+    <summary>2コメント2件丸山希のインスタグラム（＠ｎｏｚｏｍｉ＿ｍａｒｕｙａｍａ）より
+
+ミラノ・コルティナ五輪でジャンプ混合団体と女子個人ＮＨでともに銅メダルを獲得した丸山希（２８）＝北野建設＝が１４日に自身のインスタグラムを更新し、北京五輪のノルディック複合団体で銅メダルを獲得し今年７月にジャンプに転向した山本涼太（２９）＝長野日野自動車＝と結婚したことを発表した。 【写真】ミラノ五輪で銅メダル！丸山希...</summary>
+  </entry>
+  <entry>
+    <title>非上場株の算定ルール 見直し方針</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/17491"/>
+    <id>https://minna-no-vote-square.vercel.app/s/17491</id>
+    <updated>2026-08-14T04:22:51.525Z</updated>
+    <summary>149コメント149件 国税庁は、相続・贈与の対象になる非上場会社株の株価算定ルールを見直す方針を固めた。株の評価額を意図的に下げることによる極端な節税が行われているためで、１９６４年のルール制定以来、初めての抜本的見直しとなる。月内にも同庁の有識者会議で見直し案の概要を示す。 【図解】非上場株の評価のイメージ
+
+国税庁によると、国内の会社は約３００万社あり、ほとんどが非上場会社だ。非上場株には明...</summary>
+  </entry>
+  <entry>
+    <title>千葉大雨でガス異常 1万戸超停止</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/17490"/>
+    <id>https://minna-no-vote-square.vercel.app/s/17490</id>
+    <updated>2026-08-14T04:22:50.109Z</updated>
+    <summary>今回の豪雨の影響で、千葉県の一部のエリアでは、ガスの供給が停止しています。 千葉県のガス会社「大多喜ガス」は、八千代市と佐倉市の一部で1万2890戸あまりを対象にガスの供給を一時停止しています。 【映像】まるで海…車が流される様子（実際の映像） 豪雨の影響でガスの圧力が異常に上昇し、正常に使用できなくなったためだということです。 今朝からガス管に問題がないか確認を進めていて、順次、復旧作業を行うと...</summary>
+  </entry>
+  <entry>
+    <title>大雨から一夜 関東の鉄道運行情報</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/17489"/>
+    <id>https://minna-no-vote-square.vercel.app/s/17489</id>
+    <updated>2026-08-14T04:22:48.559Z</updated>
+    <summary>2コメント2件 記録的な大雨となった千葉県では、これまでの大雨で災害の危険度が高まっています。きょう（金）も関東など本州付近は大気の状態が非常に不安定で、局地的に大雨となる所がありそうです。土砂災害や、低い土地の浸水、川の氾濫に厳重な警戒が必要です。
+
+きのう（木）は関東のあちこちで雨雲が発達し、特に千葉県では線状降水帯が発生して、猛烈な雨が同じような場所で続きました。千葉ではたった1時間で115...</summary>
+  </entry>
+  <entry>
+    <title>千葉大雨6人死亡 1人が心肺停止</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/17488"/>
+    <id>https://minna-no-vote-square.vercel.app/s/17488</id>
+    <updated>2026-08-14T04:22:47.070Z</updated>
+    <summary>千葉県に降った記録的な大雨から一夜明けた１４日、被害状況が徐々に明らかになり、少なくとも６人が死亡、１人が心肺停止となっていることが県などへの取材で判明した。成田空港や千葉市の駅などでは帰宅困難者が相次ぎ、県によると、一時滞在施設（１５か所）には同日午前２時１５分時点で３８７７人が身を寄せ、自治体の避難所には１４日午前６時時点で７３５９人が避難した。 【写真】ＪＲ大網駅ホームから見た冠水した駅周辺...</summary>
+  </entry>
   <entry>
     <title>Gemini 3.7 Flash公開 主力モデルを3週間で更新、性能も大幅向上(Impress Watch)</title>
     <link href="https://minna-no-vote-square.vercel.app/s/17487"/>
@@ -374,111 +488,5 @@ AIには見落とされがちな影響がある。それは労働者の賃金を
 （出典：PC Watch）
 
 [続きを読む](https://...</summary>
-  </entry>
-  <entry>
-    <title>TOPPING「DX9 Discrete」＆ iFi audio「iDSD Valkyrie」。20万円台の注目DAC内蔵ヘッドホンアンプを徹底テスト！(PHILE WEB)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/17449"/>
-    <id>https://minna-no-vote-square.vercel.app/s/17449</id>
-    <updated>2026-08-13T21:50:27.138Z</updated>
-    <summary>20万円から30万円前後の価格帯は、設計思想が音に表れる製品が増えてくる領域だ。ここは単なる高性能にとどまらない個性の強いDAC内蔵ヘッドホンアンプを見つけることができる。今回は技術的にも性格的にも「尖った」DAC内蔵ヘッドホンアンプを2機種選び、じっくり試聴してみた。 斬新なディスクリート1bit DACを搭載したTOPPING（トッピング）の「DX9 Discrete」と、究極のトランスポータ...</summary>
-  </entry>
-  <entry>
-    <title>「ConoHa VPS byGMO」、Claudeのコネクタ提供。国内クラウド事業者初(INTERNET Watch)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/17448"/>
-    <id>https://minna-no-vote-square.vercel.app/s/17448</id>
-    <updated>2026-08-13T21:50:25.767Z</updated>
-    <summary>GMOインターネット株式会社は8月12日、VPSサービス「ConoHa VPS byGMO」におけるAnthropicの生成AIサービス「Claude」のコネクタの提供を開始した。あわせて、同サービスがAnthropicのClaudeコネクタディレクトリ（Claude Connectors Directory）に掲載されたと発表した。同社によれば、VPSを提供する国内クラウド事業者のコネクタが同デ...</summary>
-  </entry>
-  <entry>
-    <title>自分だけの名画座をリノベでつくった！ 4K／120型＆5.1.4chでDolby Atmosも楽しめる防音室(PHILE WEB)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/17447"/>
-    <id>https://minna-no-vote-square.vercel.app/s/17447</id>
-    <updated>2026-08-13T21:50:24.443Z</updated>
-    <summary>アバック名古屋店が手掛けた専用室シアター実例（2021/8/4）
-
-「学生の頃、東京に住んでいたので、よく名画座に行っては3本立てで映画を観ていました。そんな私ですから『映画館を自宅につくる』という憧れをずっと持っていました」。そう話すオーナーのNさん。 【画像あり】ワインセラーもあるミニバーを併設 新作はもちろんだが、青春時代を彩った80年代の日本映画や、当時よく観た70年代のアメリカ映画など、...</summary>
-  </entry>
-  <entry>
-    <title>8月のドコモ「d払い/dポイント」キャンペーン情報、モスバーガーやマツキヨココカラなど(ケータイ Watch)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/17446"/>
-    <id>https://minna-no-vote-square.vercel.app/s/17446</id>
-    <updated>2026-08-13T21:50:23.037Z</updated>
-    <summary>さまざまな場所で利用でき、すぐに決済できるキャッシュレス決済サービス。 本稿では、8月にNTTドコモの「d払い」や「dポイント」でお得に決済できるキャンペーン情報をピックアップしてご紹介する。還元ポイントはdポイント。 ■ 鎌倉パスタ エントリーのうえ、鎌倉パスタの対象店舗で1回5000円以上の会計時にdポイントカードを提示し、50ポイント以上ためると、50万ポイントが山分けで進呈される。期間は8...</summary>
-  </entry>
-  <entry>
-    <title>熊本から世界へ、小中学生がHADO公認チーム「CLOVER」を結成(こどもとIT)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/17445"/>
-    <id>https://minna-no-vote-square.vercel.app/s/17445</id>
-    <updated>2026-08-13T21:50:21.946Z</updated>
-    <summary>ARスポーツ「HADO」を開発・展開する株式会社meleapは、熊本県を拠点とするHADO公認チーム「CLOVER（クローバー）」が新たに活動を開始したと2026年8月13日に発表した。 【画像】表彰式の様子 CLOVERのメンバーは、小学生対象の全国大会で2024年、2025年の2年連続優勝を果たした3名の小中学生チームである。同メンバーは、これまで熊本県菊陽町のHADO ARENA カリーノ菊...</summary>
-  </entry>
-  <entry>
-    <title>1kg切りが当たり前な今なお、圧倒的に軽い「FMV Note U」の変遷を振り返る(PC Watch)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/17444"/>
-    <id>https://minna-no-vote-square.vercel.app/s/17444</id>
-    <updated>2026-08-13T21:50:20.122Z</updated>
-    <summary>モバイルノートPCというと、今どき1kgを切る軽量モデルはめずらしくない。そんな中でも、圧倒的な軽さで知られるのが富士通クライアントコンピューティング(FCCL)の「FMV Note U」(旧LIFEBOOK UH)シリーズだ。 初代は2012年に登場。HDD搭載製品で世界最薄のUltrabookとして投入された。2017年の刷新では777gまで大幅に軽量化し、当時軽さでライバルだったNEC PC...</summary>
-  </entry>
-  <entry>
-    <title>＜香港ショウ＞アキュフェーズやラックスマン、日本ブランドに熱い視線。アンプの出展を中心にピックアップ！(PHILE WEB)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/17443"/>
-    <id>https://minna-no-vote-square.vercel.app/s/17443</id>
-    <updated>2026-08-13T21:50:18.902Z</updated>
-    <summary>2026年8月7日〜9日の3日間、香港にてアジア最大級のオーディオ見本市である「香港高級視聴展」（香港ハイエンドオーディオ＆ビジュアルショウ2026）が開催された。不肖は昨年7月、上海のオーディオショウに取材に赴いたが、香港への取材は今回が初となる。 香港オーディオショウの概要と合わせて、特に注目のブースや日本メーカーの動向を中心にレポートしよう。 ■日本とは大きく規模の異なるオーディオイベント ...</summary>
-  </entry>
-  <entry>
-    <title>暗号資産の評価額、2年以内に少なくとも2倍に＝Bitwise(NADA NEWS)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/17442"/>
-    <id>https://minna-no-vote-square.vercel.app/s/17442</id>
-    <updated>2026-08-13T21:50:17.666Z</updated>
-    <summary>暗号資産の評価額、2年以内に少なくとも2倍に＝Bitwise
-
-【速報】メタプラネット、ビットコイン評価損1842億円を計上──中間決算
-
-2スマホもEVも軽くなって、しかも銅が減る。東レのフィルムが電池の&quot;重い金属&quot;を置き換える
-
-3小4いとこと大学生がLINEでやり取り⇒小4の素朴すぎる質問に「唐突に浄化された」「ほっこりした」
-
-（出典：NADA NEWS）
-
-[続きを読む](https:/...</summary>
-  </entry>
-  <entry>
-    <title>千葉県で大雨 3人死亡1人心肺停止</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/17441"/>
-    <id>https://minna-no-vote-square.vercel.app/s/17441</id>
-    <updated>2026-08-13T21:50:16.426Z</updated>
-    <summary>45コメント45件大雨の影響で冠水した千葉市内の道路＝14日未明
-
-千葉県で線状降水帯が発生するなど大雨が降り、気象庁は13日夜から14日未明にかけ、千葉市などに大雨と土砂災害のレベル5特別警報を出した。各地で道路が冠水し、県によると、市川市と佐倉市でそれぞれ1人が死亡、柏市で1人が心肺停止。県警によると、八千代市でも1人の死亡が確認された。避難指示は一時40万人を超え、帰宅困難者向けに開放された...</summary>
-  </entry>
-  <entry>
-    <title>千葉県内 約1万人の帰宅困難者</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/17440"/>
-    <id>https://minna-no-vote-square.vercel.app/s/17440</id>
-    <updated>2026-08-13T21:50:14.649Z</updated>
-    <summary>千葉県内では少なくとも約1万人の帰宅困難者が発生しています。 一時滞在施設として開放している千葉県庁から、フジテレビ社会部・林ひなの記者が中継でお伝えします。 帰宅困難者のために開放されている千葉県庁では、午前6時現在も多くの方がブルーシートの上で横になっていたり、椅子に座って体を休めていますが、その表情を伺うと、疲弊している様子で過ごされています。 話を聞くと、「全く初めての経験で、ちょっと戸惑...</summary>
-  </entry>
-  <entry>
-    <title>大学生の生成AI継続利用率が84.5％に ChatGPT利用は9割超、Geminiは1年で約4倍に</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/17439"/>
-    <id>https://minna-no-vote-square.vercel.app/s/17439</id>
-    <updated>2026-08-13T20:48:30.958Z</updated>
-    <summary>産業能率大学コンテンツビジネス研究所が8月13日（木）、「学生メディア・コンテンツ利用調査2026 -生成AI編-」の結果を発表した。
-
-同大学の在学生2607人を対象にした調査で、生成AIを継続的に利用している学生は84.5％。前年の57.7％から26.8ポイント増加した。
-
-生成AIを利用した経験がある学生は96％に達し、サービス別ではChatGPTの利用率が90.4％。Geminiも前年の1...</summary>
-  </entry>
-  <entry>
-    <title>サンダーバード3号、放送60周年記念でVRChatの月面プラントに上陸</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/17438"/>
-    <id>https://minna-no-vote-square.vercel.app/s/17438</id>
-    <updated>2026-08-13T20:48:29.285Z</updated>
-    <summary>特撮人形劇『サンダーバード』の日本でのテレビ放送が、9月30日（水）に60周年を迎える。
-
-これを記念する施策として、ソーシャルVR・VRChat内に、サンダーバード3号の3Dモデルが登場した。
-
-設置場所は、海外プラント・施設EPC事業会社の日揮グローバル（JGC）の公式ワールド「Lumarnity®」。リアルな月面プラントを再現したVR空間で、実在の宇宙車両などの3Dモデルとサンダーバード3号...</summary>
   </entry>
 </feed>
