@@ -97,54 +97,38 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
     .join('\n')
     .trim();
 
-  // 🧹 既存DBの[[SUMMARY:...]]タグ内に別ニュースやゴミが含まれていれば自動除外するらび！
-  if (summaryPoints.length > 0 && mainBodyOnly) {
-    const validPoints = summaryPoints.filter(pt => {
-      if (isGarbageText(pt)) return false;
-      const cleanPt = pt.replace(/^([1-9]|[\u2460-\u2468]|[①-⑨])(?![0-9])[.\s、・]?/, '').trim();
-      const headSnippet = cleanPt.replace(/^[「【]/, '').substring(0, 6);
-      return mainBodyOnly.includes(headSnippet);
-    });
-    if (validPoints.length > 0) {
-      summaryPoints = validPoints;
-    } else {
-      summaryPoints = []; // 一致する文がなければメイン本文からの自動抽出へ切替！
-    }
+  // 🧹 既存DBの[[SUMMARY:...]]タグ内をクリーンアップ
+  if (summaryPoints.length > 0) {
+    summaryPoints = summaryPoints.filter(pt => !isGarbageText(pt));
   }
 
-  // ⚡ SUMMARY タグがない（または除外されて空になった）場合はメイン本文から自動抽出するらび！
+  // ⚡ SUMMARY タグがない（または空になった）場合はメイン本文から文単位で自動抽出するらび！
   if (summaryPoints.length === 0 && mainBodyOnly) {
-    // 1. まず見出しや出典を除いたテキスト行を抽出
-    const rawLines = mainBodyOnly.split('\n')
-      .map(l => l.trim().replace(/^###\s*/, '').replace(/^[-・•]\s*/, ''))
-      .filter(l => l.length > 0 && !l.startsWith('（出典') && !isGarbageText(l));
-
-    // 2. 各行から文（。や！）を抽出、先頭の不要なプレフィックスをお掃除
-    const extracted = [];
-    for (const line of rawLines) {
-      if (extracted.length >= 6) break;
-      const sentences = line.match(/[^。！]+[。！]?/g) || [line];
-      for (const s of sentences) {
-        let trimmedS = s.trim()
-          .replace(/^([1-9]|[\u2460-\u2468]|[①-⑨])(?![0-9])[.\s、・]?/, '') // 先頭数字プレフィックスをお掃除！
-          .replace(/^###\s*/, '')
-          .replace(/^[-・•]\s*/, '');
-
-        if (trimmedS.length >= 10 && !trimmedS.includes('出典：') && !isGarbageText(trimmedS)) {
-          const formatted = trimmedS.length > 130 ? trimmedS.substring(0, 128) + '…' : trimmedS;
-          if (!extracted.includes(formatted)) {
-            extracted.push(formatted);
-            if (extracted.length >= 6) break;
-          }
+    // 全文から「。！？」で区切って文を抽出
+    const sentences = mainBodyOnly
+      .replace(/\n+/g, ' ')
+      .split(/([。！\?\n]+)/)
+      .reduce((acc, val, idx, arr) => {
+        if (idx % 2 === 0 && val.trim()) {
+          const punc = arr[idx + 1] || '';
+          acc.push((val + punc).trim());
         }
-      }
-    }
+        return acc;
+      }, []);
 
-    // 3. もし取れなかった場合の緊急救済
-    if (extracted.length === 0 && mainBodyOnly.length > 0) {
-      const shortSnippet = mainBodyOnly.replace(/\s+/g, ' ').trim();
-      if (!isGarbageText(shortSnippet)) {
-        extracted.push(shortSnippet.length > 130 ? shortSnippet.substring(0, 128) + '…' : shortSnippet);
+    const extracted = [];
+    for (const s of sentences) {
+      if (extracted.length >= 6) break;
+      let trimmedS = s.trim()
+        .replace(/^([1-9]|[\u2460-\u2468]|[①-⑨])(?![0-9])[.\s、・]?/, '') // 先頭数字プレフィックスをお掃除！
+        .replace(/^###\s*/, '')
+        .replace(/^[-・•]\s*/, '');
+
+      if (trimmedS.length >= 10 && !isGarbageText(trimmedS)) {
+        const formatted = trimmedS.length > 130 ? trimmedS.substring(0, 128) + '…' : trimmedS;
+        if (!extracted.includes(formatted)) {
+          extracted.push(formatted);
+        }
       }
     }
 
@@ -159,12 +143,12 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
       .trim();
   };
 
-  // 🧹 1文しかなく、本文と要約が全く同じ文章になってしまう場合は要約カードをスキップするらび！（二重表示の防止）
-  const isDuplicateSingleSentence =
-    summaryPoints.length === 1 &&
-    (mainBodyOnly.length <= summaryPoints[0].length + 15 || mainBodyOnly.includes(summaryPoints[0]));
+  summaryPoints = summaryPoints
+    .map(cleanUnclickableTags)
+    .filter(p => !isGarbageText(p) && p.length > 8);
 
-  const showSummaryCard = summaryPoints.length > 0 && !isDuplicateSingleSentence;
+  // 要約カードを表示（要約ポイントが1つ以上あれば常にかっこよく表示！）
+  const showSummaryCard = summaryPoints.length > 0;
 
   return (
     <div className="survey-description-container" style={{

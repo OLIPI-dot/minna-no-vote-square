@@ -10,10 +10,10 @@ const VideoPlayer = ({ entry, idx }) => {
   if (isPlaying) {
     return (
       <div key={`vid-${idx}`} style={{ width: '100%', aspectRatio: '16/9', borderRadius: '24px', overflow: 'hidden', background: '#000', boxShadow: '0 15px 45px rgba(0,0,0,0.15)' }}>
-        <iframe 
-          src={isNico ? `https://embed.nicovideo.jp/watch/${videoId}?jsapi=1` : `https://www.youtube.com/embed/${videoId}?rel=0&autoplay=1`} 
-          style={{ width: '100%', height: '100%', border: 'none' }} 
-          allowFullScreen 
+        <iframe
+          src={isNico ? `https://embed.nicovideo.jp/watch/${videoId}?jsapi=1` : `https://www.youtube.com/embed/${videoId}?rel=0&autoplay=1`}
+          style={{ width: '100%', height: '100%', border: 'none' }}
+          allowFullScreen
           allow="autoplay; encrypted-media"
           title={`video-${idx}`}
         ></iframe>
@@ -21,21 +21,21 @@ const VideoPlayer = ({ entry, idx }) => {
     );
   }
 
-  const thumbUrl = isNico 
-    ? `https://snapshot.cdn.nicovideo.jp/snapshots/i/${videoId}` 
+  const thumbUrl = isNico
+    ? `https://snapshot.cdn.nicovideo.jp/snapshots/i/${videoId}`
     : `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
 
   return (
-    <div 
-      key={`vid-${idx}`} 
+    <div
+      key={`vid-${idx}`}
       onClick={() => setIsPlaying(true)}
       className="video-facade-container"
-      style={{ 
-        width: '100%', 
-        aspectRatio: '16/9', 
-        borderRadius: '24px', 
-        overflow: 'hidden', 
-        background: '#000', 
+      style={{
+        width: '100%',
+        aspectRatio: '16/9',
+        borderRadius: '24px',
+        overflow: 'hidden',
+        background: '#000',
         boxShadow: '0 15px 45px rgba(0,0,0,0.15)',
         position: 'relative',
         cursor: 'pointer'
@@ -79,21 +79,21 @@ const VideoPlayer = ({ entry, idx }) => {
   );
 };
 
-const SurveyDetailView = ({ 
-  currentSurvey, 
-  surveyOnlineCount, 
-  isTimeUp, 
-  votedOption, 
-  isTotalVotes, 
-  options, 
-  handleVote, 
-  handleLikeSurvey, 
-  handleShareResult, 
-  likedSurveys, 
-  user, 
-  isAdmin, 
-  setIsEditingCategory, 
-  setIsEditingTags, 
+const SurveyDetailView = ({
+  currentSurvey,
+  surveyOnlineCount,
+  isTimeUp,
+  votedOption,
+  isTotalVotes,
+  options,
+  handleVote,
+  handleLikeSurvey,
+  handleShareResult,
+  likedSurveys,
+  user,
+  isAdmin,
+  setIsEditingCategory,
+  setIsEditingTags,
   handleDeleteSurvey,
   isEditingCategory,
   handleUpdateCategory,
@@ -146,7 +146,7 @@ const SurveyDetailView = ({
   const stampReactions = React.useMemo(() => {
     const counts = {};
     (STAMPS || []).forEach(s => counts[s.id] = 0);
-    
+
     (currentSurvey.tags || []).forEach(t => {
       if (t.startsWith('_STAMP:')) {
         const parts = t.split(':');
@@ -187,12 +187,12 @@ const SurveyDetailView = ({
     }
   }, [lastReactionEvent, STAMPS]);
 
-  const titlePart = (currentSurvey.tags?.includes('お知らせ') && currentSurvey.title?.includes('||')) 
-    ? currentSurvey.title.split('||')[0].trim() 
+  const titlePart = (currentSurvey.tags?.includes('お知らせ') && currentSurvey.title?.includes('||'))
+    ? currentSurvey.title.split('||')[0].trim()
     : currentSurvey.title;
 
-  const descPart = (currentSurvey.tags?.includes('お知らせ') && currentSurvey.title?.includes('||')) 
-    ? currentSurvey.title.split('||')[1].trim() 
+  const descPart = (currentSurvey.tags?.includes('お知らせ') && currentSurvey.title?.includes('||'))
+    ? currentSurvey.title.split('||')[1].trim()
     : (currentSurvey.description || '');
 
   return (
@@ -206,7 +206,7 @@ const SurveyDetailView = ({
           const entries = currentSurvey.image_url.split(',').map(s => s.trim()).filter(Boolean);
           const videoEntries = entries.filter(e => e.startsWith('yt:') || e.startsWith('nico:'));
           const imageEntries = entries.filter(e => !e.startsWith('yt:') && !e.startsWith('nico:'));
-          
+
           // YouTubeの直接リンク用IDを抽出（最初のYouTube動画があれば）
           const firstYT = videoEntries.find(e => e.startsWith('yt:'));
           const youtubeId = firstYT ? firstYT.substring(3) : null;
@@ -224,21 +224,21 @@ const SurveyDetailView = ({
               {/* 動画がない、あるいは画像も表示したい場合（現在は動画優先で、動画がない時のみ画像を表示する構成が一般的ですが、複数対応） */}
               {videoEntries.length === 0 && imageEntries.length > 0 && (
                 <div className="image-display-container" style={{ textAlign: 'center' }}>
-                  <img 
-                    src={imageEntries[0]} 
-                    alt="survey-visual" 
+                  <img
+                    src={imageEntries[0]}
+                    alt="survey-visual"
                     fetchpriority="high"
                     loading="eager"
-                    style={{ 
-                      width: '100%', 
+                    style={{
+                      width: '100%',
                       height: 'auto',
                       minHeight: '200px', // 枠を確保してCLS（ガクつき）を防止
                       aspectRatio: '16/9', // アスペクト比を固定してガクつきを防止
                       objectFit: 'cover',
-                      borderRadius: '24px', 
+                      borderRadius: '24px',
                       boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
                       backgroundColor: '#f1f5f9'
-                    }} 
+                    }}
                   />
                 </div>
               )}
@@ -282,11 +282,11 @@ const SurveyDetailView = ({
             🗳️ <AnimatedCounter value={isTotalVotes || 0} /> 票
           </span>
           {currentSurvey.category && (
-            <span style={{ 
-              background: (CATEGORY_ICON_STYLE[currentSurvey.category]?.color || '#3b82f6') + '15', 
-              padding: '6px 16px', 
-              borderRadius: '20px', 
-              color: CATEGORY_ICON_STYLE[currentSurvey.category]?.color || '#3b82f6', 
+            <span style={{
+              background: (CATEGORY_ICON_STYLE[currentSurvey.category]?.color || '#3b82f6') + '15',
+              padding: '6px 16px',
+              borderRadius: '20px',
+              color: CATEGORY_ICON_STYLE[currentSurvey.category]?.color || '#3b82f6',
               fontWeight: '900',
               fontSize: '0.9rem',
               border: `2px solid ${CATEGORY_ICON_STYLE[currentSurvey.category]?.color || '#3b82f6'}33`,
@@ -298,42 +298,48 @@ const SurveyDetailView = ({
         </div>
         {currentSurvey.tags && currentSurvey.tags.length > 0 && (
           <div className="detail-tags-row" style={{ marginTop: '25px', marginBottom: '15px', display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
-            {currentSurvey.tags.filter(t => !t.startsWith('_STAMP:')).map((t, i) => {
-              const isLocked = t.startsWith('[L]');
-              const tagName = isLocked ? t.substring(3) : t;
-              return (
-                <span key={i} className="tag-bubble clickable" onClick={() => { setFilterTag(tagName); setActiveTab('all'); navigateTo('list'); }} 
-                  style={{ 
-                    cursor: 'pointer', 
-                    background: isLocked ? '#fef2f2' : '#f1f5f9', 
-                    color: isLocked ? '#b91c1c' : '#475569', 
-                    padding: '5px 15px', 
-                    borderRadius: '20px', 
-                    fontSize: '0.85rem', 
-                    fontWeight: 'bold', 
-                    border: isLocked ? '1px solid #fecaca' : '1px solid #e2e8f0', 
-                    transition: 'all 0.2s',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '4px'
-                  }}>
-                  #{tagName}{isLocked && <span title="ロックされています (編集不可)" style={{ fontSize: '0.75rem' }}>🔒</span>}
-                </span>
-              );
-            })}
+            {currentSurvey.tags
+              .filter(t => !t.startsWith('_STAMP:'))
+              .map(t => {
+                const isLocked = t.startsWith('[L]');
+                const tagName = isLocked ? t.substring(3) : t;
+                return { isLocked, tagName };
+              })
+              .filter(item => item.tagName.length > 0 && item.tagName.length <= 20) // 20文字を超える記事タイトル化けタグを除外！
+              .map(({ isLocked, tagName }, i) => {
+                return (
+                  <span key={i} className="tag-bubble clickable" onClick={() => { setFilterTag(tagName); setActiveTab('all'); navigateTo('list'); }}
+                    style={{
+                      cursor: 'pointer',
+                      background: isLocked ? '#fef2f2' : '#f1f5f9',
+                      color: isLocked ? '#b91c1c' : '#475569',
+                      padding: '5px 15px',
+                      borderRadius: '20px',
+                      fontSize: '0.85rem',
+                      fontWeight: 'bold',
+                      border: isLocked ? '1px solid #fecaca' : '1px solid #e2e8f0',
+                      transition: 'all 0.2s',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}>
+                    #{tagName}{isLocked && <span title="ロックされています (編集不可)" style={{ fontSize: '0.75rem' }}>🔒</span>}
+                  </span>
+                );
+              })}
           </div>
         )}
         {currentSurvey.deadline && (
           <div className="deadline-info-block" style={{ marginTop: '30px' }}>
             <div className="absolute-deadline" style={{ marginBottom: '10px', fontSize: '0.9rem', color: '#64748b' }}>締切：{new Date(currentSurvey.deadline).getFullYear()}年{formatWithDay(currentSurvey.deadline)}</div>
-            {!isTimeUp ? <CountdownTimer deadline={currentSurvey.deadline} onTimeUp={() => {}} /> : <div className="countdown-display ended">投票受付終了</div>}
+            {!isTimeUp ? <CountdownTimer deadline={currentSurvey.deadline} onTimeUp={() => { }} /> : <div className="countdown-display ended">投票受付終了</div>}
           </div>
         )}
       </div>
 
-      <SurveyDescription 
-        description={descPart} 
-        renderCommentContent={renderCommentContent} 
+      <SurveyDescription
+        description={descPart}
+        renderCommentContent={renderCommentContent}
         isTimeUp={isTimeUp}
       />
 
@@ -359,9 +365,9 @@ const SurveyDetailView = ({
                     </span>
                   </div>
                   <div className="result-bar-bg" style={{ height: '14px', background: '#f1f5f9', borderRadius: '10px', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
-                    <div className="result-bar-fill" style={{ 
-                      width: `${perc}%`, 
-                      height: '100%', 
+                    <div className="result-bar-fill" style={{
+                      width: `${perc}%`,
+                      height: '100%',
                       background: isWinner ? 'linear-gradient(90deg, #7c3aed, #ec4899)' : 'linear-gradient(90deg, #94a3b8, #cbd5e1)',
                       borderRadius: '10px',
                       transition: 'width 1s cubic-bezier(0.34, 1.56, 0.64, 1)',
@@ -403,7 +409,7 @@ const SurveyDetailView = ({
           );
         }) : (
           <div className="options-loading" style={{ textAlign: 'center', padding: '30px', color: '#94a3b8', fontStyle: 'italic' }}>
-             🗳️ 投票項目を読み込み中らび...✨
+            🗳️ 投票項目を読み込み中らび...✨
           </div>
         )}
       </div>
@@ -421,58 +427,58 @@ const SurveyDetailView = ({
               { type: 'next', label: '← 次のアンケート ✨', data: adjacentSurveys.next },
               { type: 'prev', label: '前のアンケート 📜 →', data: adjacentSurveys.prev }
             ].filter(nav => nav.data).map(nav => {
-               const s = nav.data;
-               let thumb = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400';
-               if (s.image_url) {
-                 const parts = s.image_url.split(',')[0].trim();
-                 if (parts.startsWith('yt:')) thumb = `https://img.youtube.com/vi/${parts.substring(3)}/mqdefault.jpg`;
-                 else if (parts.startsWith('nico:')) thumb = '/nico_fallback.jpg'; // 以前決めたフォールバックらび！
-                 else thumb = parts;
-               } else if (s.youtube_id) {
-                 thumb = `https://img.youtube.com/vi/${s.youtube_id}/mqdefault.jpg`;
-               }
+              const s = nav.data;
+              let thumb = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400';
+              if (s.image_url) {
+                const parts = s.image_url.split(',')[0].trim();
+                if (parts.startsWith('yt:')) thumb = `https://img.youtube.com/vi/${parts.substring(3)}/mqdefault.jpg`;
+                else if (parts.startsWith('nico:')) thumb = '/nico_fallback.jpg'; // 以前決めたフォールバックらび！
+                else thumb = parts;
+              } else if (s.youtube_id) {
+                thumb = `https://img.youtube.com/vi/${s.youtube_id}/mqdefault.jpg`;
+              }
 
-               return (
-                 <div key={s.id} className="related-card" onClick={() => navigateTo('details', s)} style={{
-                   background: '#fff', borderRadius: '20px', overflow: 'hidden', cursor: 'pointer',
-                   boxShadow: '0 4px 15px rgba(0,0,0,0.05)', transition: 'all 0.3s ease',
-                   border: '2px solid #f1f5f9',
-                   width: '100%',
-                   maxWidth: '280px',
-                   flex: '1 1 280px',
-                   userSelect: 'none',
-                   WebkitTapHighlightColor: 'transparent',
-                   position: 'relative'
-                 }} onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 12px 25px rgba(0,0,0,0.1)'; }} onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.05)'; }}>
-                   <div style={{ 
-                     position: 'absolute', top: '10px', left: '10px', zIndex: 2, 
-                     background: nav.type === 'next' ? 'rgba(124, 58, 237, 0.9)' : 'rgba(71, 85, 105, 0.9)', 
-                     color: 'white', padding: '4px 12px', borderRadius: '30px', fontSize: '0.75rem', fontWeight: '900', backdropFilter: 'blur(4px)',
-                     boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
-                   }}>
-                     {nav.label}
-                   </div>
-                   <div style={{ width: '100%', height: '140px', overflow: 'hidden', position: 'relative' }}>
-                     <img src={thumb} alt={s.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                     <div style={{ position: 'absolute', bottom: '10px', right: '10px', background: 'rgba(255,255,255,0.9)', padding: '2px 8px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 'bold', color: '#64748b' }}>
-                       {s.category}
-                     </div>
-                   </div>
-                   <div style={{ padding: '15px' }}>
-                     <div style={{ fontWeight: 'bold', fontSize: '0.95rem', lineHeight: '1.4', marginBottom: '10px', height: '2.8em', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
-                       {s.title}
-                     </div>
-                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem', color: '#94a3b8' }}>
-                       <span>🗳️ {s.total_votes || 0} 票</span>
-                       <div style={{ display: 'flex', gap: '4px' }}>
-                         {s.tags?.filter(t => !t.startsWith('_STAMP:')).slice(0, 2).map((t, i) => (
-                           <span key={i} style={{ background: '#f8fafc', padding: '1px 6px', borderRadius: '6px', fontSize: '0.7rem' }}>#{t}</span>
-                         ))}
-                       </div>
-                     </div>
-                   </div>
-                 </div>
-               );
+              return (
+                <div key={s.id} className="related-card" onClick={() => navigateTo('details', s)} style={{
+                  background: '#fff', borderRadius: '20px', overflow: 'hidden', cursor: 'pointer',
+                  boxShadow: '0 4px 15px rgba(0,0,0,0.05)', transition: 'all 0.3s ease',
+                  border: '2px solid #f1f5f9',
+                  width: '100%',
+                  maxWidth: '280px',
+                  flex: '1 1 280px',
+                  userSelect: 'none',
+                  WebkitTapHighlightColor: 'transparent',
+                  position: 'relative'
+                }} onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 12px 25px rgba(0,0,0,0.1)'; }} onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.05)'; }}>
+                  <div style={{
+                    position: 'absolute', top: '10px', left: '10px', zIndex: 2,
+                    background: nav.type === 'next' ? 'rgba(124, 58, 237, 0.9)' : 'rgba(71, 85, 105, 0.9)',
+                    color: 'white', padding: '4px 12px', borderRadius: '30px', fontSize: '0.75rem', fontWeight: '900', backdropFilter: 'blur(4px)',
+                    boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
+                  }}>
+                    {nav.label}
+                  </div>
+                  <div style={{ width: '100%', height: '140px', overflow: 'hidden', position: 'relative' }}>
+                    <img src={thumb} alt={s.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <div style={{ position: 'absolute', bottom: '10px', right: '10px', background: 'rgba(255,255,255,0.9)', padding: '2px 8px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 'bold', color: '#64748b' }}>
+                      {s.category}
+                    </div>
+                  </div>
+                  <div style={{ padding: '15px' }}>
+                    <div style={{ fontWeight: 'bold', fontSize: '0.95rem', lineHeight: '1.4', marginBottom: '10px', height: '2.8em', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+                      {s.title}
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem', color: '#94a3b8' }}>
+                      <span>🗳️ {s.total_votes || 0} 票</span>
+                      <div style={{ display: 'flex', gap: '4px' }}>
+                        {s.tags?.filter(t => !t.startsWith('_STAMP:')).slice(0, 2).map((t, i) => (
+                          <span key={i} style={{ background: '#f8fafc', padding: '1px 6px', borderRadius: '6px', fontSize: '0.7rem' }}>#{t}</span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
             })}
           </div>
         </div>
@@ -480,137 +486,137 @@ const SurveyDetailView = ({
 
       {/* 🛡️ 管理パネル (チャッピー・アルゴリズム) */}
       {user && (
-         <div className="admin-actions">
-            <span style={{ fontWeight: 'bold', color: '#64748b' }}>🏷️ タグ機能</span>
-            <div className="admin-btn-group">
-              <button 
-                onClick={() => {
-                  setIsEditingTags(true);
-                  if (setTagEditValue) {
-                    setTagEditValue((currentSurvey?.tags || []).filter(t => !t.startsWith('_STAMP:')).join(', '));
-                  }
-                }} 
-                className="admin-btn"
-              >
-                # タグ編集
-              </button>
-              {(isAdmin || currentSurvey.user_id === user.id) && (
-                <>
-                  <button onClick={() => setIsEditingCategory(true)} className="admin-btn">🏷️ カテゴリ変更</button>
-                  <button onClick={() => handleDeleteSurvey(currentSurvey.id)} className="admin-btn delete">🗑️ 削除</button>
-                </>
-              )}
+        <div className="admin-actions">
+          <span style={{ fontWeight: 'bold', color: '#64748b' }}>🏷️ タグ機能</span>
+          <div className="admin-btn-group">
+            <button
+              onClick={() => {
+                setIsEditingTags(true);
+                if (setTagEditValue) {
+                  setTagEditValue((currentSurvey?.tags || []).filter(t => !t.startsWith('_STAMP:')).join(', '));
+                }
+              }}
+              className="admin-btn"
+            >
+              # タグ編集
+            </button>
+            {(isAdmin || currentSurvey.user_id === user.id) && (
+              <>
+                <button onClick={() => setIsEditingCategory(true)} className="admin-btn">🏷️ カテゴリ変更</button>
+                <button onClick={() => handleDeleteSurvey(currentSurvey.id)} className="admin-btn delete">🗑️ 削除</button>
+              </>
+            )}
+          </div>
+
+          {isEditingCategory && (
+            <div className="edit-panel" style={{ width: '100%', marginTop: '15px', padding: '15px', background: '#fff', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center' }}>
+                {baseCategories.filter(cat => isAdmin || cat !== 'らび').map(cat => (
+                  <button key={cat} onClick={() => handleUpdateCategory(cat)} className={`cat-btn ${currentSurvey.category === cat ? 'active' : ''}`}>{cat}</button>
+                ))}
+              </div>
+              <button onClick={() => setIsEditingCategory(false)} style={{ marginTop: '10px', width: '100%', padding: '8px', background: 'none', border: 'none', color: '#94a3b8' }}>キャンセル</button>
             </div>
-            
-            {isEditingCategory && (
-              <div className="edit-panel" style={{ width: '100%', marginTop: '15px', padding: '15px', background: '#fff', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center' }}>
-                  {baseCategories.filter(cat => isAdmin || cat !== 'らび').map(cat => (
-                    <button key={cat} onClick={() => handleUpdateCategory(cat)} className={`cat-btn ${currentSurvey.category === cat ? 'active' : ''}`}>{cat}</button>
-                  ))}
-                </div>
-                <button onClick={() => setIsEditingCategory(false)} style={{ marginTop: '10px', width: '100%', padding: '8px', background: 'none', border: 'none', color: '#94a3b8' }}>キャンセル</button>
-              </div>
-            )}
+          )}
 
-            {isEditingTags && (
-              <div className="edit-panel" style={{ width: '100%', marginTop: '15px', padding: '15px', background: '#fff', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
-                <div style={{ marginBottom: '10px', fontSize: '0.9rem', color: '#64748b', lineHeight: '1.4' }}>
-                  タグを入力してね（カンマ、スペース、改行区切り）<br/>
-                  {(isAdmin || currentSurvey.user_id === user.id) ? (
-                    <span style={{ color: '#ef4444', fontWeight: 'bold' }}>※ロックしたいタグには [L] を先頭につけてね（例: [L]ニュース）</span>
-                  ) : (
-                    <span>※🔒マークのタグは削除・変更できないよ</span>
-                  )}
-                </div>
-                <textarea 
-                  className="admin-textarea"
-                  value={tagEditValue} 
-                  onChange={e => setTagEditValue(e.target.value)} 
-                  placeholder="例: アニメ, ニュース, [L]公式" 
-                  style={{ width: '100%', minHeight: '100px', padding: '12px', borderRadius: '12px', border: '2px solid #e2e8f0', marginBottom: '10px', fontSize: '1rem', outline: 'none' }} 
-                />
-                <div style={{ display: 'flex', gap: '10px' }}>
-                  <button onClick={() => setIsEditingTags(false)} style={{ flex: 1, padding: '10px', background: '#f1f5f9', color: '#475569', borderRadius: '10px', border: 'none' }}>中止</button>
-                  <button onClick={handleUpdateTags} style={{ flex: 2, padding: '10px', background: '#7c3aed', color: '#fff', borderRadius: '10px', border: 'none', fontWeight: 'bold' }}>タグを保存する</button>
-                </div>
+          {isEditingTags && (
+            <div className="edit-panel" style={{ width: '100%', marginTop: '15px', padding: '15px', background: '#fff', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
+              <div style={{ marginBottom: '10px', fontSize: '0.9rem', color: '#64748b', lineHeight: '1.4' }}>
+                タグを入力してね（カンマ、スペース、改行区切り）<br />
+                {(isAdmin || currentSurvey.user_id === user.id) ? (
+                  <span style={{ color: '#ef4444', fontWeight: 'bold' }}>※ロックしたいタグには [L] を先頭につけてね（例: [L]ニュース）</span>
+                ) : (
+                  <span>※🔒マークのタグは削除・変更できないよ</span>
+                )}
               </div>
-            )}
+              <textarea
+                className="admin-textarea"
+                value={tagEditValue}
+                onChange={e => setTagEditValue(e.target.value)}
+                placeholder="例: アニメ, ニュース, [L]公式"
+                style={{ width: '100%', minHeight: '100px', padding: '12px', borderRadius: '12px', border: '2px solid #e2e8f0', marginBottom: '10px', fontSize: '1rem', outline: 'none' }}
+              />
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button onClick={() => setIsEditingTags(false)} style={{ flex: 1, padding: '10px', background: '#f1f5f9', color: '#475569', borderRadius: '10px', border: 'none' }}>中止</button>
+                <button onClick={handleUpdateTags} style={{ flex: 2, padding: '10px', background: '#7c3aed', color: '#fff', borderRadius: '10px', border: 'none', fontWeight: 'bold' }}>タグを保存する</button>
+              </div>
+            </div>
+          )}
 
-         </div>
+        </div>
       )}
 
       {/* 🎨 スタンプペタペタエリアらび！ (機能保留のため非表示) */}
       {false && (
-        <div className="stamp-peta-peta-area" style={{ 
-          marginTop: '30px', 
-          textAlign: 'center', 
-          background: 'rgba(248, 250, 252, 0.5)', 
-          padding: '20px', 
-          borderRadius: '24px', 
+        <div className="stamp-peta-peta-area" style={{
+          marginTop: '30px',
+          textAlign: 'center',
+          background: 'rgba(248, 250, 252, 0.5)',
+          padding: '20px',
+          borderRadius: '24px',
           border: '1px solid #f1f5f9',
           position: 'relative', // 🚩 エフェクトの基準にするらび！
           overflow: 'visible'
         }}>
-        {/* 🪄 浮き出るエフェクトたち */}
-        {effects.map(eff => (
-          <div key={eff.id} className="floating-stamp-effect" style={{
-            position: 'absolute',
-            left: `${eff.left}%`,
-            bottom: `${eff.bottom}%`,
-            pointerEvents: 'none',
-            zIndex: 100,
-            transform: 'translate(-50%, 0)'
-          }}>
-            {eff.src ? (
-              <img src={eff.src} alt="effect" style={{ width: '60px', height: '60px', objectFit: 'contain' }} />
-            ) : (
-              <span style={{ fontSize: '3rem' }}>{eff.label}</span>
-            )}
-          </div>
-        ))}
-
-        <p style={{ fontSize: '0.9rem', color: '#64748b', fontWeight: '900', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-          <span>✨</span> みんなでスタンプをペタペタするらび！
-        </p>
-        <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '10px' }}>
-          {(STAMPS || []).map(stamp => (
-            <button 
-              key={stamp.id} 
-              onClick={() => handleSurveyReaction(stamp.id)}
-              className="stamp-btn"
-              title={stamp.label}
-              aria-label={stamp.label}
-              style={{
-                background: '#fff',
-                border: '2px solid #f1f5f9',
-                borderRadius: '50px',
-                padding: stamp.src ? '6px 14px' : '8px 16px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                cursor: 'pointer',
-                transition: 'all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.03)',
-                userSelect: 'none',
-                WebkitTapHighlightColor: 'transparent',
-                position: 'relative',
-                zIndex: 1
-              }}
-              onMouseOver={e => { e.currentTarget.style.transform = 'scale(1.1) translateY(-2px)'; e.currentTarget.style.borderColor = '#7c3aed'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(124, 58, 237, 0.15)'; }}
-              onMouseOut={e => { e.currentTarget.style.transform = 'scale(1) translateY(0)'; e.currentTarget.style.borderColor = '#f1f5f9'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.03)'; }}
-            >
-              {stamp.src ? (
-                <img src={stamp.src} alt={stamp.label} style={{ width: '28px', height: '28px', objectFit: 'contain' }} />
+          {/* 🪄 浮き出るエフェクトたち */}
+          {effects.map(eff => (
+            <div key={eff.id} className="floating-stamp-effect" style={{
+              position: 'absolute',
+              left: `${eff.left}%`,
+              bottom: `${eff.bottom}%`,
+              pointerEvents: 'none',
+              zIndex: 100,
+              transform: 'translate(-50%, 0)'
+            }}>
+              {eff.src ? (
+                <img src={eff.src} alt="effect" style={{ width: '60px', height: '60px', objectFit: 'contain' }} />
               ) : (
-                <span style={{ fontSize: '1.4rem' }}>{stamp.label}</span>
+                <span style={{ fontSize: '3rem' }}>{eff.label}</span>
               )}
-              <span style={{ fontSize: '0.9rem', fontWeight: '900', color: '#475569' }}>
-                <AnimatedCounter value={stampReactions[stamp.id] || 0} />
-              </span>
-            </button>
+            </div>
           ))}
-        </div>
+
+          <p style={{ fontSize: '0.9rem', color: '#64748b', fontWeight: '900', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+            <span>✨</span> みんなでスタンプをペタペタするらび！
+          </p>
+          <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '10px' }}>
+            {(STAMPS || []).map(stamp => (
+              <button
+                key={stamp.id}
+                onClick={() => handleSurveyReaction(stamp.id)}
+                className="stamp-btn"
+                title={stamp.label}
+                aria-label={stamp.label}
+                style={{
+                  background: '#fff',
+                  border: '2px solid #f1f5f9',
+                  borderRadius: '50px',
+                  padding: stamp.src ? '6px 14px' : '8px 16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.03)',
+                  userSelect: 'none',
+                  WebkitTapHighlightColor: 'transparent',
+                  position: 'relative',
+                  zIndex: 1
+                }}
+                onMouseOver={e => { e.currentTarget.style.transform = 'scale(1.1) translateY(-2px)'; e.currentTarget.style.borderColor = '#7c3aed'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(124, 58, 237, 0.15)'; }}
+                onMouseOut={e => { e.currentTarget.style.transform = 'scale(1) translateY(0)'; e.currentTarget.style.borderColor = '#f1f5f9'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.03)'; }}
+              >
+                {stamp.src ? (
+                  <img src={stamp.src} alt={stamp.label} style={{ width: '28px', height: '28px', objectFit: 'contain' }} />
+                ) : (
+                  <span style={{ fontSize: '1.4rem' }}>{stamp.label}</span>
+                )}
+                <span style={{ fontSize: '0.9rem', fontWeight: '900', color: '#475569' }}>
+                  <AnimatedCounter value={stampReactions[stamp.id] || 0} />
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
       )}
 
@@ -637,9 +643,9 @@ const SurveyDetailView = ({
           <h3 style={{ fontSize: '1.4rem', fontWeight: '900', color: '#1e293b', marginBottom: '24px', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
             <span>🔥</span> この話題、みんなはどう思ってる？
           </h3>
-          <div className="related-scroll-container" style={{ 
-            display: 'flex', 
-            overflowX: 'auto', 
+          <div className="related-scroll-container" style={{
+            display: 'flex',
+            overflowX: 'auto',
             gap: '20px',
             paddingBottom: '20px',
             paddingLeft: '4px',
@@ -754,19 +760,19 @@ const SurveyDetailView = ({
 
                 <div className="comment-footer-row">
                   <div className="comment-reactions">
-                    <button 
+                    <button
                       className={`reaction-btn ${myReactions[`${c.id}_good`] ? 'active' : ''}`}
                       onClick={() => handleReaction(c.id, 'good')}
                     >
                       👍 {c.reactions?.good || 0}
                     </button>
-                    <button 
+                    <button
                       className={`reaction-btn ${myReactions[`${c.id}_bad`] ? 'active' : ''}`}
                       onClick={() => handleReaction(c.id, 'bad')}
                     >
                       👎 {c.reactions?.bad || 0}
                     </button>
-                    <button 
+                    <button
                       className="report-btn"
                       onClick={() => handleReportContent(c.id, 'comment')}
                       title="通報"
