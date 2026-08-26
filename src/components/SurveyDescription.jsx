@@ -147,25 +147,26 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
         padding: '40px',
         fontFamily: "'Inter', 'Noto Sans JP', sans-serif"
       }}>
-        {/* ⚡ 3秒でわかる！要約カード */}
+        {/* ⚡ 要約・注目ポイントカード (目を引くリッチデザイン＆高ジャンプ率！) */}
         {summaryPoints.length > 0 && (
           <div style={{
-            background: 'linear-gradient(135deg, #f0f4ff 0%, #e8f0fe 50%, #f5f0ff 100%)',
-            borderRadius: '20px',
-            padding: '24px 28px',
-            marginBottom: '30px',
-            border: '1.5px solid rgba(99, 102, 241, 0.2)',
+            background: 'linear-gradient(135deg, #ffffff 0%, #faf5ff 50%, #f0fdf4 100%)',
+            borderRadius: '24px',
+            padding: '26px 30px',
+            marginBottom: '35px',
+            border: '2px solid #e9d5ff',
+            boxShadow: '0 12px 32px rgba(168, 85, 247, 0.12), 0 2px 6px rgba(0, 0, 0, 0.04)',
             position: 'relative',
             overflow: 'hidden'
           }}>
-            {/* 背景のアクセント */}
+            {/* 背景のキラキラアクセント */}
             <div style={{
               position: 'absolute',
-              top: '-30px',
-              right: '-20px',
-              width: '120px',
-              height: '120px',
-              background: 'radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, transparent 70%)',
+              top: '-40px',
+              right: '-30px',
+              width: '160px',
+              height: '160px',
+              background: 'radial-gradient(circle, rgba(236, 72, 153, 0.15) 0%, rgba(168, 85, 247, 0.08) 50%, transparent 70%)',
               borderRadius: '50%',
               pointerEvents: 'none'
             }} />
@@ -173,21 +174,25 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
             <div style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '10px',
-              marginBottom: '16px',
+              justifyContent: 'space-between',
+              marginBottom: '20px',
               position: 'relative',
               zIndex: 1
             }}>
               <span style={{
-                background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                background: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
                 color: 'white',
-                padding: '4px 14px',
-                borderRadius: '20px',
-                fontSize: '0.8rem',
+                padding: '6px 18px',
+                borderRadius: '30px',
+                fontSize: '0.88rem',
                 fontWeight: '900',
                 letterSpacing: '0.08em',
-                boxShadow: '0 3px 8px rgba(99, 102, 241, 0.3)'
+                boxShadow: '0 4px 14px rgba(236, 72, 153, 0.35)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px'
               }}>⚡ 要約・注目ポイント</span>
+              <span style={{ fontSize: '0.78rem', color: '#9333ea', fontWeight: 'bold', opacity: 0.8 }}>30秒でサクッと把握！</span>
             </div>
 
             <ul style={{
@@ -197,35 +202,51 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
               position: 'relative',
               zIndex: 1
             }}>
-              {summaryPoints.map((point, idx) => (
-                <li key={idx} style={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: '12px',
-                  marginBottom: idx < summaryPoints.length - 1 ? '12px' : '0',
-                  fontSize: '0.95rem',
-                  color: '#1e293b',
-                  lineHeight: '1.7',
-                  fontWeight: '600'
-                }}>
-                  <span style={{
-                    flex: '0 0 auto',
-                    width: '24px',
-                    height: '24px',
-                    background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-                    color: 'white',
-                    borderRadius: '50%',
+              {summaryPoints.map((point, idx) => {
+                // 💡 カギカッコや数字などのキーフレーズにハイライト色をつけて「ジャンプ率」を高めるらび！
+                const parts = point.split(/(「[^」]+」|【[^】]+】|\b\d+[月日万億円個件台%]?\b)/g);
+                return (
+                  <li key={idx} style={{
                     display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '0.75rem',
-                    fontWeight: '900',
-                    marginTop: '2px',
-                    boxShadow: '0 2px 6px rgba(99, 102, 241, 0.3)'
-                  }}>{idx + 1}</span>
-                  <span style={{ whiteSpace: 'normal' }}>{point}</span>
-                </li>
-              ))}
+                    alignItems: 'flex-start',
+                    gap: '14px',
+                    marginBottom: idx < summaryPoints.length - 1 ? '16px' : '0',
+                    fontSize: '1.02rem',
+                    color: '#1e293b',
+                    lineHeight: '1.75',
+                    fontWeight: '500'
+                  }}>
+                    <span style={{
+                      flex: '0 0 auto',
+                      width: '28px',
+                      height: '28px',
+                      background: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
+                      color: 'white',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '0.85rem',
+                      fontWeight: '900',
+                      marginTop: '2px',
+                      boxShadow: '0 3px 10px rgba(236, 72, 153, 0.3)'
+                    }}>{idx + 1}</span>
+                    <span style={{ whiteSpace: 'normal', width: '100%' }}>
+                      {parts.map((part, pIdx) => {
+                        const isQuote = part.startsWith('「') || part.startsWith('【');
+                        const isNumber = /^\d+[月日万億円個件台%]?$/.test(part);
+                        if (isQuote) {
+                          return <strong key={pIdx} style={{ color: '#6b21a8', fontWeight: '900', background: 'rgba(168, 85, 247, 0.1)', padding: '1px 6px', borderRadius: '6px', margin: '0 2px' }}>{part}</strong>;
+                        }
+                        if (isNumber) {
+                          return <strong key={pIdx} style={{ color: '#be185d', fontWeight: '900' }}>{part}</strong>;
+                        }
+                        return part;
+                      })}
+                    </span>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         )}
