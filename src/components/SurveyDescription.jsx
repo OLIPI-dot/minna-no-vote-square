@@ -85,17 +85,24 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
   };
 
   // 🧹 「飯の言葉」「肉料理」「注目ポイント」「関連情報」などの別ニュースセクションやゴミテキストを本文から完全に遮断するらび！
-  const mainBodyOnly = cleanBody
+  let mainBodyOnly = cleanBody
     .split(/(?=###\s*)/)
     .filter(section => {
-      // 飯の言葉, 肉料理, 注目ポイント, 関連情報, 関連記事, ピックアップ等は別ニュースリンクなので除外！
       return !section.match(/###\s*(💬\s*飯の言葉|📢\s*肉料理|📢\s*注目ポイント|📖\s*関連情報|関連記事|ピックアップ|おすすめ)/);
     })
     .join('\n\n')
     .split('\n')
-    .filter(line => !isGarbageText(line))
+    .filter(line => {
+      const s = line.trim();
+      return !s.includes('JavaScriptが無効') && !s.includes('マイページ') && !s.includes('購入履歴') && !s.includes('利用規約') && !s.includes('ヘルプ');
+    })
     .join('\n')
     .trim();
+
+  // 万が一フィルタリングで本文が消えてしまった場合の救済フォールバック！
+  if (!mainBodyOnly && cleanBody) {
+    mainBodyOnly = cleanBody;
+  }
 
   // 🧹 既存DBの[[SUMMARY:...]]タグ内をクリーンアップ
   if (summaryPoints.length > 0) {
@@ -104,31 +111,29 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
 
   // ⚡ SUMMARY タグがない（または空になった）場合はメイン本文から文単位で自動抽出するらび！
   if (summaryPoints.length === 0 && mainBodyOnly) {
-    // 全文から「。！？」で区切って文を抽出
-    const sentences = mainBodyOnly
-      .replace(/\n+/g, ' ')
-      .split(/([。！\?\n]+)/)
-      .reduce((acc, val, idx, arr) => {
-        if (idx % 2 === 0 && val.trim()) {
-          const punc = arr[idx + 1] || '';
-          acc.push((val + punc).trim());
-        }
-        return acc;
-      }, []);
+    const rawSentences = mainBodyOnly
+      .split('\n')
+      .map(l => l.trim())
+      .filter(l => l.length > 0 && !isGarbageText(l));
 
     const extracted = [];
-    for (const s of sentences) {
+    for (const line of rawSentences) {
       if (extracted.length >= 6) break;
-      let trimmedS = s.trim()
-        .replace(/^([1-9]|[\u2460-\u2468]|[①-⑨])(?![0-9])[.\s、・]?/, '') // 先頭数字プレフィックスをお掃除！
-        .replace(/^###\s*/, '')
-        .replace(/^[-・•]\s*/, '');
-
-      if (trimmedS.length >= 10 && !isGarbageText(trimmedS)) {
-        if (!extracted.includes(trimmedS)) {
+      const sList = line.split(/[。！\?\n]+/).filter(s => s.trim().length >= 8);
+      for (const s of sList) {
+        let trimmedS = s.trim()
+          .replace(/^([1-9]|[\u2460-\u2468]|[①-⑨])(?![0-9])[.\s、・]?/, '')
+          .replace(/^###\s*/, '')
+          .replace(/^[-・•]\s*/, '');
+        if (trimmedS.length >= 8 && !isGarbageText(trimmedS) && !extracted.includes(trimmedS)) {
           extracted.push(trimmedS);
+          if (extracted.length >= 6) break;
         }
       }
+    }
+
+    if (extracted.length === 0 && mainBodyOnly.length > 0) {
+      extracted.push(mainBodyOnly.substring(0, 100));
     }
 
     summaryPoints = extracted;
@@ -144,11 +149,10 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
 
   summaryPoints = summaryPoints
     .map(cleanUnclickableTags)
-    .filter(p => !isGarbageText(p) && p.length > 8);
+    .filter(p => !isGarbageText(p) && p.length >= 5);
 
-  // 🧹 1文しかない記事で「要約」と「本文」が全く同じになる二重表示をスマートに防止！
-  // 要約ポイントが2つ以上ある（＝まとめる価値がある長めの記事）の場合のみ、要約カードを表示するらび！
-  const showSummaryCard = summaryPoints.length >= 2;
+  // 要約カードを常に表示！
+  const showSummaryCard = summaryPoints.length > 0;
 
   return (
     <div className="survey-description-container" style={{
