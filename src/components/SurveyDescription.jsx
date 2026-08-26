@@ -63,35 +63,45 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
     .replace(/https?:\/\/[^\s)]+/g, '')                            // 生URLを削除
     .trim();
 
-  // ⚡ SUMMARY タグがない場合は本文から自動抽出するらび！（超柔軟フォールバック！）
+  // ⚡ SUMMARY タグがない場合は本文から自動抽出するらび！（超柔軟＆詳細版！）
   if (summaryPoints.length === 0 && cleanBody) {
     // 1. まず見出しや出典を除いたテキスト行を抽出
     const rawLines = cleanBody.split('\n')
       .map(l => l.trim().replace(/^###\s*/, '').replace(/^[-・•]\s*/, ''))
       .filter(l => l.length > 0 && !l.startsWith('（出典'));
 
-    // 2. 各行から文（。や！）を抽出、なければそのまま採用
+    // 2. 各行から文（。や！）を抽出、先頭の「2 」などの不要な数字プレフィックスをお掃除
     const extracted = [];
     for (const line of rawLines) {
-      if (extracted.length >= 3) break;
+      if (extracted.length >= 5) break;
       const sentences = line.match(/[^。！]+[。！]?/g) || [line];
       for (const s of sentences) {
-        const trimmedS = s.trim();
+        let trimmedS = s.trim()
+          .replace(/^[\d①-⑨一-九]+[.\s、・]/, '') // 「2 噂まとめ」や「1. 」の先頭数字を綺麗にお掃除！
+          .replace(/^###\s*/, '')
+          .replace(/^[-・•]\s*/, '');
+
         if (trimmedS.length >= 10 && !trimmedS.includes('出典：')) {
-          extracted.push(trimmedS.length > 70 ? trimmedS.substring(0, 68) + '…' : trimmedS);
-          if (extracted.length >= 3) break;
+          const formatted = trimmedS.length > 130 ? trimmedS.substring(0, 128) + '…' : trimmedS;
+          if (!extracted.includes(formatted)) {
+            extracted.push(formatted);
+            if (extracted.length >= 5) break;
+          }
         }
       }
     }
 
-    // 3. もし10文字以上の文が取れなかった場合の緊急救済（テキスト冒頭を区切る）
+    // 3. もし取れなかった場合の緊急救済
     if (extracted.length === 0 && cleanBody.length > 0) {
       const shortSnippet = cleanBody.replace(/\s+/g, ' ').trim();
-      extracted.push(shortSnippet.length > 70 ? shortSnippet.substring(0, 68) + '…' : shortSnippet);
+      extracted.push(shortSnippet.length > 130 ? shortSnippet.substring(0, 128) + '…' : shortSnippet);
     }
 
     summaryPoints = extracted;
   }
+
+  // 🧹 既存の[[SUMMARY:...]]タグ内でも先頭数字があれば綺麗にするらび！
+  summaryPoints = summaryPoints.map(p => p.replace(/^[\d①-⑨一-九]+[.\s、・]/, '').trim());
 
   return (
     <div className="survey-description-container" style={{
@@ -177,7 +187,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
                 fontWeight: '900',
                 letterSpacing: '0.08em',
                 boxShadow: '0 3px 8px rgba(99, 102, 241, 0.3)'
-              }}>⚡ 3秒でわかる</span>
+              }}>⚡ 要約・注目ポイント</span>
             </div>
 
             <ul style={{

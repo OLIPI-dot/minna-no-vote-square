@@ -267,10 +267,12 @@ async function fetchRichData(url) {
         });
         richDescription = richDescription.trim();
 
-        // ⚡ 要約カード用: 各段落の最初の一文を抽出してSUMMARYタグを生成するらび！
-        const summaryLines = mainParagraphs.slice(0, 3).map(para => {
+        // ⚡ 要約カード用: 各段落の最初の一文を抽出してSUMMARYタグを生成するらび！（詳細版）
+        const summaryLines = mainParagraphs.slice(0, 5).map(para => {
             const sentenceMatch = para.match(/^(.+?[。！])/);
-            return sentenceMatch ? `・${sentenceMatch[1]}` : (para.length > 60 ? `・${para.substring(0, 58)}…` : `・${para}`);
+            let s = sentenceMatch ? sentenceMatch[1] : para;
+            s = s.trim().replace(/^[\d①-⑨一-九]+[.\s、・]/, '').replace(/^###\s*/, '');
+            return `・${s.length > 120 ? s.substring(0, 118) + '…' : s}`;
         }).filter(Boolean);
         if (summaryLines.length > 0) {
             richDescription = `[[SUMMARY:\n${summaryLines.join('\n')}\n]]\n\n${richDescription}`;
