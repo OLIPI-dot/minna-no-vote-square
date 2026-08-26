@@ -148,7 +148,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
     summaryPoints = extracted;
   }
 
-  // 🧹 既存の[[SUMMARY:...]]タグ内や要約内から【写真を見る】【動画あり】などのリンク要素やゴミをお掃除するらび！
+  // 🧹 既存の[[SUMMARY:...]]タグ内や要約内から【写真を見る】【動画あり】などのリンク要素や「（出典：...）」ゴミをお掃除するらび！
   const cleanUnclickableTags = (str) => {
     return str
       .replace(/【(写真を見る|動画を見る|画像あり|写真|動画|別カット|関連画像|一覧|詳細を見る|画像|フォト|関連記事)】/g, '')
@@ -156,7 +156,10 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
       .trim();
   };
 
-  summaryPoints = summaryPoints.filter(p => !isGarbageText(p)).map(cleanUnclickableTags);
+  summaryPoints = summaryPoints
+    .filter(p => !isGarbageText(p) && !p.startsWith('（出典') && !p.startsWith('出典：') && !p.includes('出典：ニュース'))
+    .map(cleanUnclickableTags)
+    .filter(p => p.length > 5);
 
   return (
     <div className="survey-description-container" style={{
