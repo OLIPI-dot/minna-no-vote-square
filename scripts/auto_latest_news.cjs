@@ -238,32 +238,26 @@ async function fetchRichData(url) {
         }
 
         // 3. 本文（<p>タグ）を抽出し、フィルタリング
-        const pLimit = url.includes('yahoo.co.jp') ? 4 : 3;
-
         const pMatches = [...bodyHtml.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/gi)];
-        const mainParagraphs = pMatches
-            .map(m => stripHtml(m[1]))
-            .filter(txt => txt.length > 25 &&
-                !txt.includes('JavaScript') &&
-                !txt.includes('アプリ') &&
-                !txt.includes('トピックス') &&
+        const rawParagraphs = pMatches.map(m => stripHtml(m[1]));
+
+        // メインの段落のみを抽出（1段落目のみ＝別ニュース混入防止）
+        const mainParagraphs = rawParagraphs
+            .map(txt => txt.trim())
+            .filter(txt =>
+                txt.length > 20 &&
+                !txt.includes('出典') &&
+                !txt.includes('写真：') &&
+                !txt.includes('画像：') &&
                 !txt.includes('ログイン') &&
-                !txt.match(/総合 | ニュース | エンタメ | コメント /) && // 総合メニュー等のフィルター
-                !txt.match(/^(■|◆|▼|●|※)/)) // 短い箇条書きやナビ見出しをp段落として拾わない
-            .slice(0, pLimit);
+                !txt.match(/総合 | ニュース | エンタメ | コメント | ランキング | ピックアップ/) &&
+                !txt.match(/^(■|◆|▼|●|※)/))
+            .slice(0, 1);
 
         // 見出し付きで結合して「読ませる」構成にするらび！
         let richDescription = '';
-        const headings = [
-            '### 📢 ニュースの概要',
-            '### 🔍 動向と背景',
-            '### 💡 注目のポイント',
-            '### 📝 詳細情報'
-        ];
-
-        mainParagraphs.forEach((para, idx) => {
-            const heading = headings[idx] || '### 📖 関連情報';
-            richDescription += `${heading}\n${para}\n\n`;
+        mainParagraphs.forEach((para) => {
+            richDescription += `${para}\n\n`;
         });
         richDescription = richDescription.trim();
 

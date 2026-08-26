@@ -67,8 +67,15 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
     .replace(/https?:\/\/[^\s)]+/g, '')                            // 生URLを削除
     .trim();
 
-  // 「関連情報」「関連記事」以降の別記事ニュース一覧を除外したメイン本文だけを抽出するらび！
-  const mainBodyOnly = cleanBody.split(/###\s*📖?\s*(関連情報|関連記事|ピックアップ|おすすめ)/)[0];
+  // 🧹 「飯の言葉」「肉料理」「注目ポイント」「関連情報」などの別ニュースセクションを本文から完全に遮断するらび！
+  const mainBodyOnly = cleanBody
+    .split(/(?=###\s*)/)
+    .filter(section => {
+      // 飯の言葉, 肉料理, 注目ポイント, 関連情報, 関連記事, ピックアップ等は別ニュースリンクなので除外！
+      return !section.match(/###\s*(💬\s*飯の言葉|📢\s*肉料理|📢\s*注目ポイント|📖\s*関連情報|関連記事|ピックアップ|おすすめ)/);
+    })
+    .join('\n\n')
+    .trim();
 
   // 🧹 既存DBの[[SUMMARY:...]]タグ内に別ニュース（無関係なタイトル）が含まれていれば自動除外するらび！
   if (summaryPoints.length > 0 && mainBodyOnly) {
@@ -84,7 +91,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
     }
   }
 
-  // ⚡ SUMMARY タグがない（または除外されて空になった）場合は本文から自動抽出するらび！
+  // ⚡ SUMMARY タグがない（または除外されて空になった）場合はメイン本文から自動抽出するらび！
   if (summaryPoints.length === 0 && mainBodyOnly) {
     // 1. まず見出しや出典を除いたテキスト行を抽出
     const rawLines = mainBodyOnly.split('\n')
@@ -113,7 +120,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
     }
 
     // 3. もし取れなかった場合の緊急救済
-    if (extracted.length === 0 && cleanBody.length > 0) {
+    if (extracted.length === 0 && mainBodyOnly.length > 0) {
       const shortSnippet = mainBodyOnly.replace(/\s+/g, ' ').trim();
       extracted.push(shortSnippet.length > 130 ? shortSnippet.substring(0, 128) + '…' : shortSnippet);
     }
@@ -121,8 +128,15 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
     summaryPoints = extracted;
   }
 
-  // 🧹 既存の[[SUMMARY:...]]タグ内でも先頭数字があれば綺麗にするらび！
-  summaryPoints = summaryPoints.map(p => p.replace(/^[\d①-⑨一-九]+[.\s、・]/, '').trim());
+  // 🧹 既存の[[SUMMARY:...]]タグ内や要約内から【写真を見る】【動画あり】などのリンク要素をお掃除するらび！
+  const cleanUnclickableTags = (str) => {
+    return str
+      .replace(/【(写真を見る|動画を見る|画像あり|写真|動画|別カット|関連画像|一覧|詳細を見る|画像|フォト|関連記事)】/g, '')
+      .replace(/^([1-9]|[\u2460-\u2468]|[①-⑨])(?![0-9])[.\s、・]?/, '')
+      .trim();
+  };
+
+  summaryPoints = summaryPoints.map(cleanUnclickableTags);
 
   return (
     <div className="survey-description-container" style={{
@@ -334,12 +348,15 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
           marginBottom: displayLink ? '32px' : '0',
           color: '#334155'
         }}>
-          {cleanBody ? cleanBody.split('\n').map((line, idx) => {
+          {mainBodyOnly ? mainBodyOnly.split('\n').map((line, idx) => {
             let trimmed = line.trim();
             if (!trimmed) return <div key={idx} style={{ height: '1em' }} />;
 
-            // 先頭の「2千鳥」や「3グラビア」のような不要な番号プレフィックスを除去するらび！
-            trimmed = trimmed.replace(/^([1-9]|[\u2460-\u2468]|[①-⑨])(?![0-9])[.\s、・]?/, '');
+            // 不要な「【写真を見る】」などのクリックできないリンクタグとお掃除プレフィックスを除去するらび！
+            trimmed = trimmed
+              .replace(/【(写真を見る|動画を見る|画像あり|写真|動画|別カット|関連画像|一覧|詳細を見る|画像|フォト|関連記事)】/g, '')
+              .replace(/^([1-9]|[\u2460-\u2468]|[①-⑨])(?![0-9])[.\s、・]?/, '')
+              .trim();
 
             // 見出し行 (### 📢 ...)
             if (trimmed.startsWith('###')) {
