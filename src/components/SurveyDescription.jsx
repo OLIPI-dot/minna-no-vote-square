@@ -67,17 +67,20 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
     .replace(/https?:\/\/[^\s)]+/g, '')                            // 生URLを削除
     .trim();
 
-  // ⚡ SUMMARY タグがない場合は本文から自動抽出するらび！（超柔軟＆詳細版！）
+  // ⚡ SUMMARY タグがない場合は本文から自動抽出するらび！（メイン本文のみ＆関連ニュース除外！）
   if (summaryPoints.length === 0 && cleanBody) {
+    // 「関連情報」「関連記事」以降の別記事ニュース一覧は除外するらび！
+    const mainBodyOnly = cleanBody.split(/###\s*📖?\s*(関連情報|関連記事|ピックアップ|おすすめ)/)[0];
+
     // 1. まず見出しや出典を除いたテキスト行を抽出
-    const rawLines = cleanBody.split('\n')
+    const rawLines = mainBodyOnly.split('\n')
       .map(l => l.trim().replace(/^###\s*/, '').replace(/^[-・•]\s*/, ''))
       .filter(l => l.length > 0 && !l.startsWith('（出典'));
 
-    // 2. 各行から文（。や！）を抽出、先頭の「2 」などの不要な数字プレフィックスをお掃除
+    // 2. 各行から文（。や！）を抽出、先頭の不要なプレフィックスをお掃除
     const extracted = [];
     for (const line of rawLines) {
-      if (extracted.length >= 7) break;
+      if (extracted.length >= 6) break;
       const sentences = line.match(/[^。！]+[。！]?/g) || [line];
       for (const s of sentences) {
         let trimmedS = s.trim()
@@ -89,7 +92,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
           const formatted = trimmedS.length > 130 ? trimmedS.substring(0, 128) + '…' : trimmedS;
           if (!extracted.includes(formatted)) {
             extracted.push(formatted);
-            if (extracted.length >= 7) break;
+            if (extracted.length >= 6) break;
           }
         }
       }
@@ -97,7 +100,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
 
     // 3. もし取れなかった場合の緊急救済
     if (extracted.length === 0 && cleanBody.length > 0) {
-      const shortSnippet = cleanBody.replace(/\s+/g, ' ').trim();
+      const shortSnippet = mainBodyOnly.replace(/\s+/g, ' ').trim();
       extracted.push(shortSnippet.length > 130 ? shortSnippet.substring(0, 128) + '…' : shortSnippet);
     }
 
@@ -207,8 +210,6 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
               zIndex: 1
             }}>
               {summaryPoints.map((point, idx) => {
-                // 💡 コメントやネットの反応が含まれているかチェックするらび！
-                const isComment = /「|『|反響|コメント|SNS|ネット|声|驚き|絶賛|投稿|絶句|悶絶|話題/.test(point);
                 // 💡 カギカッコや数字などのキーフレーズにハイライト色をつけて「ジャンプ率」を高めるらび！
                 const parts = point.split(/(「[^」]+」|【[^】]+】|\b\d+[月日万億円個件台%]?\b)/g);
                 return (
@@ -226,9 +227,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
                       flex: '0 0 auto',
                       width: '28px',
                       height: '28px',
-                      background: isComment
-                        ? 'linear-gradient(135deg, #f43f5e, #e11d48)'
-                        : 'linear-gradient(135deg, #ec4899, #8b5cf6)',
+                      background: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
                       color: 'white',
                       borderRadius: '50%',
                       display: 'flex',
@@ -237,25 +236,9 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
                       fontSize: '0.85rem',
                       fontWeight: '900',
                       marginTop: '2px',
-                      boxShadow: isComment
-                        ? '0 3px 10px rgba(244, 63, 94, 0.35)'
-                        : '0 3px 10px rgba(236, 72, 153, 0.3)'
-                    }}>{isComment ? '💬' : idx + 1}</span>
+                      boxShadow: '0 3px 10px rgba(236, 72, 153, 0.3)'
+                    }}>{idx + 1}</span>
                     <span style={{ whiteSpace: 'normal', width: '100%' }}>
-                      {isComment && (
-                        <span style={{
-                          background: '#fff1f2',
-                          color: '#e11d48',
-                          fontSize: '0.72rem',
-                          fontWeight: '800',
-                          padding: '2px 8px',
-                          borderRadius: '10px',
-                          border: '1px solid #fecdd3',
-                          marginRight: '8px',
-                          display: 'inline-block',
-                          verticalAlign: 'middle'
-                        }}>世間の声・コメント</span>
-                      )}
                       {parts.map((part, pIdx) => {
                         const isQuote = part.startsWith('「') || part.startsWith('【');
                         const isNumber = /^\d+[月日万億円個ckg%]?$/i.test(part);
