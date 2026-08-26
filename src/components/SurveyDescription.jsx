@@ -147,8 +147,9 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
     .map(cleanUnclickableTags)
     .filter(p => !isGarbageText(p) && p.length > 8);
 
-  // 要約カードを表示（要約ポイントが1つ以上あれば常にかっこよく表示！）
-  const showSummaryCard = summaryPoints.length > 0;
+  // 🧹 1文しかない記事で「要約」と「本文」が全く同じになる二重表示をスマートに防止！
+  // 要約ポイントが2つ以上ある（＝まとめる価値がある長めの記事）の場合のみ、要約カードを表示するらび！
+  const showSummaryCard = summaryPoints.length >= 2;
 
   return (
     <div className="survey-description-container" style={{
