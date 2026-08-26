@@ -67,11 +67,25 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
     .replace(/https?:\/\/[^\s)]+/g, '')                            // 生URLを削除
     .trim();
 
-  // ⚡ SUMMARY タグがない場合は本文から自動抽出するらび！（メイン本文のみ＆関連ニュース除外！）
-  if (summaryPoints.length === 0 && cleanBody) {
-    // 「関連情報」「関連記事」以降の別記事ニュース一覧は除外するらび！
-    const mainBodyOnly = cleanBody.split(/###\s*📖?\s*(関連情報|関連記事|ピックアップ|おすすめ)/)[0];
+  // 「関連情報」「関連記事」以降の別記事ニュース一覧を除外したメイン本文だけを抽出するらび！
+  const mainBodyOnly = cleanBody.split(/###\s*📖?\s*(関連情報|関連記事|ピックアップ|おすすめ)/)[0];
 
+  // 🧹 既存DBの[[SUMMARY:...]]タグ内に別ニュース（無関係なタイトル）が含まれていれば自動除外するらび！
+  if (summaryPoints.length > 0 && mainBodyOnly) {
+    const validPoints = summaryPoints.filter(pt => {
+      const cleanPt = pt.replace(/^([1-9]|[\u2460-\u2468]|[①-⑨])(?![0-9])[.\s、・]?/, '').trim();
+      const headSnippet = cleanPt.replace(/^[「【]/, '').substring(0, 6);
+      return mainBodyOnly.includes(headSnippet);
+    });
+    if (validPoints.length > 0) {
+      summaryPoints = validPoints;
+    } else {
+      summaryPoints = []; // 一致する文がなければメイン本文からの自動抽出へ切替！
+    }
+  }
+
+  // ⚡ SUMMARY タグがない（または除外されて空になった）場合は本文から自動抽出するらび！
+  if (summaryPoints.length === 0 && mainBodyOnly) {
     // 1. まず見出しや出典を除いたテキスト行を抽出
     const rawLines = mainBodyOnly.split('\n')
       .map(l => l.trim().replace(/^###\s*/, '').replace(/^[-・•]\s*/, ''))
