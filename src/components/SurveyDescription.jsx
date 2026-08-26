@@ -43,7 +43,11 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
   const summaryTagMatch = description.match(/\[\[SUMMARY:([\s\S]*?)\]\]/);
   let summaryPoints = [];
   if (summaryTagMatch) {
-    summaryPoints = summaryTagMatch[1].trim().split('\n').map(s => s.replace(/^[-・•]\s*/, '').trim()).filter(Boolean);
+    summaryPoints = summaryTagMatch[1]
+      .trim()
+      .split('\n')
+      .map(s => s.replace(/^[-・•]\s*/, '').replace(/^([1-9]|[\u2460-\u2468]|[①-⑨])(?![0-9])[.\s、・]?/, '').trim())
+      .filter(Boolean);
   }
 
   // 📝 らびのコメントを抽出して装飾するらび！
@@ -73,11 +77,11 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
     // 2. 各行から文（。や！）を抽出、先頭の「2 」などの不要な数字プレフィックスをお掃除
     const extracted = [];
     for (const line of rawLines) {
-      if (extracted.length >= 5) break;
+      if (extracted.length >= 7) break;
       const sentences = line.match(/[^。！]+[。！]?/g) || [line];
       for (const s of sentences) {
         let trimmedS = s.trim()
-          .replace(/^[\d①-⑨一-九]+[.\s、・]/, '') // 「2 噂まとめ」や「1. 」の先頭数字を綺麗にお掃除！
+          .replace(/^([1-9]|[\u2460-\u2468]|[①-⑨])(?![0-9])[.\s、・]?/, '') // 先頭数字プレフィックスをお掃除！
           .replace(/^###\s*/, '')
           .replace(/^[-・•]\s*/, '');
 
@@ -85,7 +89,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
           const formatted = trimmedS.length > 130 ? trimmedS.substring(0, 128) + '…' : trimmedS;
           if (!extracted.includes(formatted)) {
             extracted.push(formatted);
-            if (extracted.length >= 5) break;
+            if (extracted.length >= 7) break;
           }
         }
       }
@@ -203,6 +207,8 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
               zIndex: 1
             }}>
               {summaryPoints.map((point, idx) => {
+                // 💡 コメントやネットの反応が含まれているかチェックするらび！
+                const isComment = /「|『|反響|コメント|SNS|ネット|声|驚き|絶賛|投稿|絶句|悶絶|話題/.test(point);
                 // 💡 カギカッコや数字などのキーフレーズにハイライト色をつけて「ジャンプ率」を高めるらび！
                 const parts = point.split(/(「[^」]+」|【[^】]+】|\b\d+[月日万億円個件台%]?\b)/g);
                 return (
@@ -220,7 +226,9 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
                       flex: '0 0 auto',
                       width: '28px',
                       height: '28px',
-                      background: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
+                      background: isComment
+                        ? 'linear-gradient(135deg, #f43f5e, #e11d48)'
+                        : 'linear-gradient(135deg, #ec4899, #8b5cf6)',
                       color: 'white',
                       borderRadius: '50%',
                       display: 'flex',
@@ -229,12 +237,28 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
                       fontSize: '0.85rem',
                       fontWeight: '900',
                       marginTop: '2px',
-                      boxShadow: '0 3px 10px rgba(236, 72, 153, 0.3)'
-                    }}>{idx + 1}</span>
+                      boxShadow: isComment
+                        ? '0 3px 10px rgba(244, 63, 94, 0.35)'
+                        : '0 3px 10px rgba(236, 72, 153, 0.3)'
+                    }}>{isComment ? '💬' : idx + 1}</span>
                     <span style={{ whiteSpace: 'normal', width: '100%' }}>
+                      {isComment && (
+                        <span style={{
+                          background: '#fff1f2',
+                          color: '#e11d48',
+                          fontSize: '0.72rem',
+                          fontWeight: '800',
+                          padding: '2px 8px',
+                          borderRadius: '10px',
+                          border: '1px solid #fecdd3',
+                          marginRight: '8px',
+                          display: 'inline-block',
+                          verticalAlign: 'middle'
+                        }}>世間の声・コメント</span>
+                      )}
                       {parts.map((part, pIdx) => {
                         const isQuote = part.startsWith('「') || part.startsWith('【');
-                        const isNumber = /^\d+[月日万億円個件台%]?$/.test(part);
+                        const isNumber = /^\d+[月日万億円個ckg%]?$/i.test(part);
                         if (isQuote) {
                           return <strong key={pIdx} style={{ color: '#6b21a8', fontWeight: '900', background: 'rgba(168, 85, 247, 0.1)', padding: '1px 6px', borderRadius: '6px', margin: '0 2px' }}>{part}</strong>;
                         }
@@ -314,8 +338,11 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
           color: '#334155'
         }}>
           {cleanBody ? cleanBody.split('\n').map((line, idx) => {
-            const trimmed = line.trim();
+            let trimmed = line.trim();
             if (!trimmed) return <div key={idx} style={{ height: '1em' }} />;
+
+            // 先頭の「2千鳥」や「3グラビア」のような不要な番号プレフィックスを除去するらび！
+            trimmed = trimmed.replace(/^([1-9]|[\u2460-\u2468]|[①-⑨])(?![0-9])[.\s、・]?/, '');
 
             // 見出し行 (### 📢 ...)
             if (trimmed.startsWith('###')) {
@@ -354,7 +381,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
                 letterSpacing: '0.03em',
                 wordBreak: 'break-word'
               }}>
-                {line}
+                {trimmed}
               </p>
             );
           }) : null}
