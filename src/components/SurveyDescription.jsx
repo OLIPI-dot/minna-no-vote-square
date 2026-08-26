@@ -125,9 +125,8 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
         .replace(/^[-・•]\s*/, '');
 
       if (trimmedS.length >= 10 && !isGarbageText(trimmedS)) {
-        const formatted = trimmedS.length > 130 ? trimmedS.substring(0, 128) + '…' : trimmedS;
-        if (!extracted.includes(formatted)) {
-          extracted.push(formatted);
+        if (!extracted.includes(trimmedS)) {
+          extracted.push(trimmedS);
         }
       }
     }
