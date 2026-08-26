@@ -67,17 +67,20 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
     .replace(/https?:\/\/[^\s)]+/g, '')                            // 生URLを削除
     .trim();
 
-  // 🧹 「JavaScriptが無効になっています」や「マイページ購入履歴」等のナビゲーションゴミテキストを完全除去するらび！
+  // 🧹 「JavaScriptが無効になっています」や「(出典：ニュース)」等のナビゲーション・出典ゴミテキストを完全除去するらび！
   const isGarbageText = (str) => {
     if (!str) return true;
+    const s = str.trim();
     return (
-      str.includes('JavaScriptが無効') ||
-      str.includes('マイページ') ||
-      str.includes('購入履歴') ||
-      str.includes('トップ速報') ||
-      str.includes('国内国際経済') ||
-      str.includes('利用規約') ||
-      str.includes('ヘルプ')
+      s.includes('JavaScriptが無効') ||
+      s.includes('マイページ') ||
+      s.includes('購入履歴') ||
+      s.includes('トップ速報') ||
+      s.includes('国内国際経済') ||
+      s.includes('利用規約') ||
+      s.includes('ヘルプ') ||
+      /^[\(（\s]*出典[：:\s]/i.test(s) || // (出典：ニュース) や 出典：ニュース などを全自動で完全遮断！
+      s.startsWith('出典')
     );
   };
 
@@ -157,9 +160,8 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
   };
 
   summaryPoints = summaryPoints
-    .filter(p => !isGarbageText(p) && !p.startsWith('（出典') && !p.startsWith('出典：') && !p.includes('出典：ニュース'))
     .map(cleanUnclickableTags)
-    .filter(p => p.length > 5);
+    .filter(p => !isGarbageText(p) && p.length > 8);
 
   return (
     <div className="survey-description-container" style={{
