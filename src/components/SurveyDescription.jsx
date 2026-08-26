@@ -67,7 +67,21 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
     .replace(/https?:\/\/[^\s)]+/g, '')                            // 生URLを削除
     .trim();
 
-  // 🧹 「飯の言葉」「肉料理」「注目ポイント」「関連情報」などの別ニュースセクションを本文から完全に遮断するらび！
+  // 🧹 「JavaScriptが無効になっています」や「マイページ購入履歴」等のナビゲーションゴミテキストを完全除去するらび！
+  const isGarbageText = (str) => {
+    if (!str) return true;
+    return (
+      str.includes('JavaScriptが無効') ||
+      str.includes('マイページ') ||
+      str.includes('購入履歴') ||
+      str.includes('トップ速報') ||
+      str.includes('国内国際経済') ||
+      str.includes('利用規約') ||
+      str.includes('ヘルプ')
+    );
+  };
+
+  // 🧹 「飯の言葉」「肉料理」「注目ポイント」「関連情報」などの別ニュースセクションやゴミテキストを本文から完全に遮断するらび！
   const mainBodyOnly = cleanBody
     .split(/(?=###\s*)/)
     .filter(section => {
@@ -75,11 +89,15 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
       return !section.match(/###\s*(💬\s*飯の言葉|📢\s*肉料理|📢\s*注目ポイント|📖\s*関連情報|関連記事|ピックアップ|おすすめ)/);
     })
     .join('\n\n')
+    .split('\n')
+    .filter(line => !isGarbageText(line))
+    .join('\n')
     .trim();
 
-  // 🧹 既存DBの[[SUMMARY:...]]タグ内に別ニュース（無関係なタイトル）が含まれていれば自動除外するらび！
+  // 🧹 既存DBの[[SUMMARY:...]]タグ内に別ニュースやゴミが含まれていれば自動除外するらび！
   if (summaryPoints.length > 0 && mainBodyOnly) {
     const validPoints = summaryPoints.filter(pt => {
+      if (isGarbageText(pt)) return false;
       const cleanPt = pt.replace(/^([1-9]|[\u2460-\u2468]|[①-⑨])(?![0-9])[.\s、・]?/, '').trim();
       const headSnippet = cleanPt.replace(/^[「【]/, '').substring(0, 6);
       return mainBodyOnly.includes(headSnippet);
@@ -96,7 +114,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
     // 1. まず見出しや出典を除いたテキスト行を抽出
     const rawLines = mainBodyOnly.split('\n')
       .map(l => l.trim().replace(/^###\s*/, '').replace(/^[-・•]\s*/, ''))
-      .filter(l => l.length > 0 && !l.startsWith('（出典'));
+      .filter(l => l.length > 0 && !l.startsWith('（出典') && !isGarbageText(l));
 
     // 2. 各行から文（。や！）を抽出、先頭の不要なプレフィックスをお掃除
     const extracted = [];
@@ -109,7 +127,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
           .replace(/^###\s*/, '')
           .replace(/^[-・•]\s*/, '');
 
-        if (trimmedS.length >= 10 && !trimmedS.includes('出典：')) {
+        if (trimmedS.length >= 10 && !trimmedS.includes('出典：') && !isGarbageText(trimmedS)) {
           const formatted = trimmedS.length > 130 ? trimmedS.substring(0, 128) + '…' : trimmedS;
           if (!extracted.includes(formatted)) {
             extracted.push(formatted);
@@ -122,13 +140,15 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
     // 3. もし取れなかった場合の緊急救済
     if (extracted.length === 0 && mainBodyOnly.length > 0) {
       const shortSnippet = mainBodyOnly.replace(/\s+/g, ' ').trim();
-      extracted.push(shortSnippet.length > 130 ? shortSnippet.substring(0, 128) + '…' : shortSnippet);
+      if (!isGarbageText(shortSnippet)) {
+        extracted.push(shortSnippet.length > 130 ? shortSnippet.substring(0, 128) + '…' : shortSnippet);
+      }
     }
 
     summaryPoints = extracted;
   }
 
-  // 🧹 既存の[[SUMMARY:...]]タグ内や要約内から【写真を見る】【動画あり】などのリンク要素をお掃除するらび！
+  // 🧹 既存の[[SUMMARY:...]]タグ内や要約内から【写真を見る】【動画あり】などのリンク要素やゴミをお掃除するらび！
   const cleanUnclickableTags = (str) => {
     return str
       .replace(/【(写真を見る|動画を見る|画像あり|写真|動画|別カット|関連画像|一覧|詳細を見る|画像|フォト|関連記事)】/g, '')
@@ -136,7 +156,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
       .trim();
   };
 
-  summaryPoints = summaryPoints.map(cleanUnclickableTags);
+  summaryPoints = summaryPoints.filter(p => !isGarbageText(p)).map(cleanUnclickableTags);
 
   return (
     <div className="survey-description-container" style={{
