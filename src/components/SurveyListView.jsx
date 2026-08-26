@@ -86,13 +86,13 @@ const SurveyListView = ({
         {user ? (
           <div className="user-info">
             {user.user_metadata?.avatar_url && (
-              <img 
-                src={user.user_metadata.avatar_url} 
-                className="user-avatar" 
-                alt={`${user.user_metadata?.full_name || 'ユーザー'}さんのアバター`} 
+              <img
+                src={user.user_metadata.avatar_url}
+                className="user-avatar"
+                alt={`${user.user_metadata?.full_name || 'ユーザー'}さんのアバター`}
               />
             )}
-            <button 
+            <button
               className="logout-button"
               onClick={() => {
                 if (window.confirm('ログアウトしますか？')) {
@@ -106,7 +106,7 @@ const SurveyListView = ({
         ) : (
           <button
             className="google-login-btn"
-          onClick={() => supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin } })}
+            onClick={() => supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin } })}
           >
             <div className="google-icon-wrapper">
               <svg viewBox="0 0 24 24">
@@ -139,8 +139,8 @@ const SurveyListView = ({
           aria-label="アンケートを検索"
         />
         {searchQuery && (
-          <button 
-            className="search-clear" 
+          <button
+            className="search-clear"
             onClick={() => setSearchQuery('')}
             title="検索をクリア"
             aria-label="検索内容をクリア"
@@ -164,7 +164,7 @@ const SurveyListView = ({
             setSortMode('mine');
           }}
         >👤 マイアンケート</button>
-        
+
       </div>
 
       {sortMode === 'popular' && (
@@ -209,7 +209,7 @@ const SurveyListView = ({
               if (cat && cat !== 'すべて') url.searchParams.set('c', cat);
               url.searchParams.delete('t');
               url.searchParams.delete('s');
-              window.history.pushState({}, '', url);
+              window.history.pushState({ view: 'list' }, '', url);
             }}
           >
             <span style={{ fontSize: filterCategory === cat ? '1.8rem' : '1.4rem', transition: 'font-size 0.3s' }}>
@@ -252,7 +252,7 @@ const SurveyListView = ({
           .category-filter-bar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
         `}</style>
       </div>
-      
+
       {/* 🏷️ 人気のタグバー（おりぴさんリクエスト） */}
       <div className="tag-filter-bar" style={{
         display: 'flex', overflowX: 'auto', gap: '10px', padding: '0 10px 16px',
@@ -287,7 +287,7 @@ const SurveyListView = ({
               if (nextTag) url.searchParams.set('t', nextTag);
               url.searchParams.delete('c');
               url.searchParams.delete('s');
-              window.history.pushState({}, '', url);
+              window.history.pushState({ view: 'list' }, '', url);
             }}
           >
             #{tag}
@@ -309,13 +309,13 @@ const SurveyListView = ({
       {/* ✨ あなたへのおすすめセクション (検索が確定するまでは表示を維持してガタつきを防ぐらび！) */}
       {!debouncedSearchQuery && !filterTag && filterCategory === 'すべて' && (
         <>
-          <TrendingHeadline 
-            surveys={trendingHeadlineSurveys} 
-            navigateTo={navigateTo} 
+          <TrendingHeadline
+            surveys={trendingHeadlineSurveys}
+            navigateTo={navigateTo}
           />
-          <RecommendedSection 
-            surveys={recommendedSurveys} 
-            navigateTo={navigateTo} 
+          <RecommendedSection
+            surveys={recommendedSurveys}
+            navigateTo={navigateTo}
           />
         </>
       )}
@@ -360,32 +360,32 @@ const SurveyListView = ({
           </div>
         )}
 
-          {/* 📱 レイアウト切替（ニコニコ風らび！） */}
-          <div className="layout-switcher">
-            <button 
-              className={`layout-btn ${viewMode === 'list' ? 'active' : ''}`} 
-              onClick={() => setViewMode('list')}
-              title="リスト表示"
-            >
-              <svg viewBox="0 0 24 24" width="20" height="20">
-                <rect x="3" y="4" width="18" height="2" fill="currentColor"/>
-                <rect x="3" y="11" width="18" height="2" fill="currentColor"/>
-                <rect x="3" y="18" width="18" height="2" fill="currentColor"/>
-              </svg>
-            </button>
-            <button 
-              className={`layout-btn ${viewMode === 'grid' ? 'active' : ''}`} 
-              onClick={() => setViewMode('grid')}
-              title="グリッド表示"
-            >
-              <svg viewBox="0 0 24 24" width="20" height="20">
-                <rect x="3" y="3" width="8" height="8" rx="1" fill="currentColor"/>
-                <rect x="13" y="3" width="8" height="8" rx="1" fill="currentColor"/>
-                <rect x="3" y="13" width="8" height="8" rx="1" fill="currentColor"/>
-                <rect x="13" y="13" width="8" height="8" rx="1" fill="currentColor"/>
-              </svg>
-            </button>
-          </div>
+        {/* 📱 レイアウト切替（ニコニコ風らび！） */}
+        <div className="layout-switcher">
+          <button
+            className={`layout-btn ${viewMode === 'list' ? 'active' : ''}`}
+            onClick={() => setViewMode('list')}
+            title="リスト表示"
+          >
+            <svg viewBox="0 0 24 24" width="20" height="20">
+              <rect x="3" y="4" width="18" height="2" fill="currentColor" />
+              <rect x="3" y="11" width="18" height="2" fill="currentColor" />
+              <rect x="3" y="18" width="18" height="2" fill="currentColor" />
+            </svg>
+          </button>
+          <button
+            className={`layout-btn ${viewMode === 'grid' ? 'active' : ''}`}
+            onClick={() => setViewMode('grid')}
+            title="グリッド表示"
+          >
+            <svg viewBox="0 0 24 24" width="20" height="20">
+              <rect x="3" y="3" width="8" height="8" rx="1" fill="currentColor" />
+              <rect x="13" y="3" width="8" height="8" rx="1" fill="currentColor" />
+              <rect x="3" y="13" width="8" height="8" rx="1" fill="currentColor" />
+              <rect x="13" y="13" width="8" height="8" rx="1" fill="currentColor" />
+            </svg>
+          </button>
+        </div>
       </div>
 
       {/* 📋 アンケートリスト */}
@@ -487,16 +487,16 @@ const SurveyListView = ({
                             borderRadius: 'inherit'
                           }} />
                           <img
-                            src={thumbSrc} 
+                            src={thumbSrc}
                             alt={`${s.title} のサムネイル`}
-                            className="survey-item-thumb" 
+                            className="survey-item-thumb"
                             loading={idx < 4 ? "eager" : "lazy"}
                             {...(idx < 4 ? { fetchpriority: "high" } : {})}
                             onLoad={e => e.target.classList.add('ready')}
                             onError={e => {
-                               const wrapper = e.target.closest('.video-thumb-wrapper');
-                               if (wrapper) wrapper.style.display = 'none';
-                             }}
+                              const wrapper = e.target.closest('.video-thumb-wrapper');
+                              if (wrapper) wrapper.style.display = 'none';
+                            }}
                             style={{ position: 'relative', zIndex: 1 }}
                           />
                           <div className="thumb-category-badge" style={{
@@ -640,8 +640,8 @@ const SurveyListView = ({
         <Pagination
           current={currentPage}
           total={Math.ceil((activeTab === 'official' ? totalOfficialCount : totalUserCount) / ITEMS_PER_PAGE)}
-          onPageChange={p => { 
-            setCurrentPage(p); 
+          onPageChange={p => {
+            setCurrentPage(p);
             if (listRef.current) {
               const yOffset = -120; // ヘッダーやフィルターバーの分を考慮して調整
               const y = listRef.current.getBoundingClientRect().top + window.pageYOffset + yOffset;

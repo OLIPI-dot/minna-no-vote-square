@@ -70,12 +70,12 @@ function App() {
     if (!user) return false;
     // 🛡️ Supabase OAuth 各プロバイダからのメールアドレス取得を強化らび！
     const email = (
-      user.email || 
-      user.user_metadata?.email || 
-      user.app_metadata?.email || 
+      user.email ||
+      user.user_metadata?.email ||
+      user.app_metadata?.email ||
       ''
     ).toLowerCase().trim();
-    
+
     const result = ADMIN_EMAILS.some(e => e.toLowerCase().trim() === email);
     console.log('🛡️ isAdmin check detail:', { detectedEmail: email, isAdmin: result });
     return result;
@@ -175,19 +175,19 @@ function App() {
     }
     return (
       <nav className="pagination-container" aria-label="ページ選択" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', marginTop: '32px', marginBottom: '16px', width: '100%' }}>
-        <button 
-          onClick={() => { onPageChange(Math.max(1, current - 1)); }} 
-          disabled={current === 1} 
+        <button
+          onClick={() => { onPageChange(Math.max(1, current - 1)); }}
+          disabled={current === 1}
           aria-label="前のページへ"
           style={{ background: 'none', border: 'none', cursor: current === 1 ? 'default' : 'pointer', color: current === 1 ? '#cbd5e1' : '#475569', fontSize: '1.2rem', padding: '4px 8px' }}
         >
           &lt;
         </button>
         {pages.map((p, i) => (
-          <button 
-            key={i} 
-            onClick={() => { if (p !== '...') { onPageChange(p); } }} 
-            disabled={p === '...'} 
+          <button
+            key={i}
+            onClick={() => { if (p !== '...') { onPageChange(p); } }}
+            disabled={p === '...'}
             aria-label={p === '...' ? undefined : `${p}ページ目`}
             aria-current={p === current ? 'page' : undefined}
             style={{ background: p === current ? '#8b5cf6' : 'none', color: p === current ? '#fff' : (p === '...' ? '#94a3b8' : '#475569'), border: 'none', borderRadius: '50%', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: p === '...' ? 'default' : 'pointer', fontWeight: p === current ? 'bold' : 'normal', fontSize: '1rem', transition: 'all 0.2s', boxShadow: p === current ? '0 2px 4px rgba(139,92,246,0.3)' : 'none' }}
@@ -195,9 +195,9 @@ function App() {
             {p}
           </button>
         ))}
-        <button 
-          onClick={() => { onPageChange(Math.min(total, current + 1)); }} 
-          disabled={current === total} 
+        <button
+          onClick={() => { onPageChange(Math.min(total, current + 1)); }}
+          disabled={current === total}
           aria-label="次のページへ"
           style={{ background: 'none', border: 'none', cursor: current === total ? 'default' : 'pointer', color: current === total ? '#cbd5e1' : '#475569', fontSize: '1.2rem', padding: '4px 8px' }}
         >
@@ -353,7 +353,7 @@ function App() {
       const initDetailView = async () => {
         if (!currentSurvey?.id) return;
         console.log("🔄 initDetailView: Fetching details for survey:", currentSurvey.id);
-        
+
         // 1. オプションと投票状況の取得
         const { data: optData, error: optError } = await supabase.from('options').select('*').eq('survey_id', currentSurvey.id).order('id', { ascending: true });
         if (optError) {
@@ -369,7 +369,7 @@ function App() {
             setOptions(optData);
           }
         }
-        
+
         const voted = localStorage.getItem(`voted_survey_${currentSurvey.id}`);
         console.log("🗳️ initDetailView: Voted status:", voted);
         setVotedOption(voted);
@@ -463,7 +463,7 @@ function App() {
     if (!content) return null;
     // 第3弾：Markdownリンク [text](url) に対応！
     const parts = content.split(/(\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|https?:\/\/[^\s]+|>>\d+)/g);
-    
+
     // splitに正規表現のキャプチャグループが含まれる場合、マッチした部分も配列に入るため
     // インデックスを調整しながらレンダリングするらび。
     const elements = [];
@@ -500,7 +500,7 @@ function App() {
 
       // キャプチャグループとして入ってきただけの文字列を除外（親に含まれているため）
       // [text](url) の一部である場合は mdMatch で処理済み
-      if (parts[i-1]?.startsWith('[') && parts[i-1]?.endsWith(')') && (part === parts[i-1].match(/\[([^\]]+)\]/)?.[1] || part === parts[i-1].match(/\(([^)]+)\)/)?.[1])) {
+      if (parts[i - 1]?.startsWith('[') && parts[i - 1]?.endsWith(')') && (part === parts[i - 1].match(/\[([^\]]+)\]/)?.[1] || part === parts[i - 1].match(/\(([^)]+)\)/)?.[1])) {
         continue;
       }
 
@@ -581,7 +581,7 @@ function App() {
         if (!error && data) {
           // 成功したら本物のIDに書き換える（編集・削除のため）
           setComments(prev => prev.map(c => c.id === tempId ? data[0] : c));
-          
+
           const updatedKeys = { ...myCommentKeys };
           updatedKeys[data[0].id] = editKey;
           localStorage.setItem('my_comment_keys', JSON.stringify(updatedKeys));
@@ -625,7 +625,7 @@ function App() {
     // ⏳ 3〜5秒の溜めを作る
     const delay = 3000 + Math.random() * 2000;
     console.log(`🐰 Labi is planning to descend in ${Math.round(delay)}ms...`);
-    
+
     setTimeout(async () => {
       try {
         let responseList = LABI_RESPONSES.default;
@@ -761,8 +761,8 @@ function App() {
       ? `【${currentSurvey.category}】${currentSurvey.title}のアンケート実施中！みんなはどう思ってる？匿名で1タップ投票して、リアルタイムの結果やコメントをチェックしよう！🐰🥕`
       : 'みんなのアンケート広場は、誰でもかんたんに匿名でアンケートを作成・投票できる場所です。日常の疑問や本音を共有して、みんなの意見を楽しく集約しましょう！';
 
-    const currentUrl = currentSurvey 
-      ? `https://minna-no-vote-square.vercel.app/s/${currentSurvey.id}` 
+    const currentUrl = currentSurvey
+      ? `https://minna-no-vote-square.vercel.app/s/${currentSurvey.id}`
       : (view === 'list' ? 'https://minna-no-vote-square.vercel.app/' : 'https://minna-no-vote-square.vercel.app/create');
 
     // 動画サムネイルがあればOGP画像にする魔法 📸
@@ -778,7 +778,7 @@ function App() {
 
     document.title = pageTitle;
 
-    const cleanDesc = currentSurvey && currentSurvey.description 
+    const cleanDesc = currentSurvey && currentSurvey.description
       ? currentSurvey.description.slice(0, 100).replace(/https?:\/\/\S+/g, '').trim() + '...'
       : metaDescription;
 
@@ -878,7 +878,7 @@ function App() {
       let surveyId = params.get('s');
       let categoryFilter = params.get('c');
       let tagFilter = params.get('t');
-      
+
       if (!surveyId && window.location.pathname.startsWith('/s/')) {
         surveyId = window.location.pathname.split('/')[2];
       }
@@ -890,8 +890,10 @@ function App() {
         if (view !== 'list') {
           setView('list');
           setCurrentSurvey(null);
-          window.history.replaceState({ view: 'list' }, '', window.location.href);
           setTimeout(() => window.scrollTo(0, 0), 10);
+        }
+        if (!window.history.state || !window.history.state.view) {
+          window.history.replaceState({ view: 'list' }, '', window.location.href);
         }
         if (categoryFilter) setFilterCategory(categoryFilter);
         if (tagFilter) setFilterTag(tagFilter);
@@ -900,9 +902,9 @@ function App() {
 
       const { data: sv, error: svError } = await supabase.from('surveys').select('*').eq('id', surveyId).single();
       if (svError) {
-         setView('list');
-         setCurrentSurvey(null);
-         return;
+        setView('list');
+        setCurrentSurvey(null);
+        return;
       }
 
       if (sv.visibility === 'private' && (!user || user.id !== sv.user_id)) {
@@ -915,19 +917,19 @@ function App() {
       setIsTimeUp(sv.deadline && new Date(sv.deadline) < new Date());
       setOptions([]);
       setVotedOption(null);
-      
+
       // 🔗 URLを /s/ID 形式に統一するらび！
       const normalizedPath = `/s/${sv.id}`;
       if (window.location.pathname !== normalizedPath || window.location.search.includes('s=')) {
         console.log("🔗 loadFromUrl: Normalizing URL to", normalizedPath);
         window.history.replaceState({ view: 'details', surveyId: sv.id }, '', normalizedPath);
-      } else {
+      } else if (!window.history.state || !window.history.state.view) {
         window.history.replaceState({ view: 'details', surveyId: sv.id }, '', window.location.href);
       }
 
       setView('details');
       setAdjacentSurveys({ prev: null, next: null }); // リセット
-      
+
       // 🏆 オプションと前後アンケートを並行して取得するらび！
       (async () => {
         try {
@@ -942,9 +944,9 @@ function App() {
           console.error("❌ loadFromUrl: Fetching options/adjacent failed:", fetchErr);
         }
       })();
-      
+
       setVotedOption(localStorage.getItem(`voted_survey_${sv.id}`));
-      
+
       // 閲覧数カウントアップ (URL直接アクセス時)
       const viewKey = `last_view_${sv.id}`;
       const lastView = parseInt(localStorage.getItem(viewKey) || '0', 10);
@@ -952,7 +954,7 @@ function App() {
         localStorage.setItem(viewKey, Date.now().toString());
         supabase.rpc('increment_survey_view', { survey_id_arg: sv.id }).then(({ data: newViews }) => {
           if (newViews !== undefined) {
-             setCurrentSurvey(prev => prev && prev.id === sv.id ? { ...prev, view_count: newViews } : prev);
+            setCurrentSurvey(prev => prev && prev.id === sv.id ? { ...prev, view_count: newViews } : prev);
           }
         });
       }
@@ -968,14 +970,14 @@ function App() {
   const fetchSurveys = async (currentUser, silent = false, page = 1, category = null, query = '', currentTab = 'official', sort = 'latest', pop = 'trending') => {
     // 🚀 Early Fetch を使う条件: 初回ロード ＆ フィルタなし ＆ 新着順
     const isFirstLoad = !silent && page === 1 && (!category || category === 'すべて') && !query && currentTab === 'official' && sort === 'latest';
-    
+
     let safetyTimeoutId = null;
     if (!silent) {
-       setIsLoading(true);
-       safetyTimeoutId = setTimeout(() => {
-         console.warn("⚠️ fetchSurveys: Safety timeout triggered (10s). Forcing isLoading=false.");
-         setIsLoading(false);
-       }, 10000);
+      setIsLoading(true);
+      safetyTimeoutId = setTimeout(() => {
+        console.warn("⚠️ fetchSurveys: Safety timeout triggered (10s). Forcing isLoading=false.");
+        setIsLoading(false);
+      }, 10000);
     }
 
     try {
@@ -998,10 +1000,10 @@ function App() {
       const end = start + ITEMS_PER_PAGE - 1;
 
       console.log(`🔍 fetchSurveys: STAGE 1 - Fetching page ${page} (range: ${start}-${end}, sort: ${sort}, query: "${query}")...`);
-      
+
       // 1. 公開アンケートの取得（フィルタ適用）
       let baseQuery = supabase.from('surveys').select('*', { count: 'exact' });
-      
+
       if (sort === 'mine') {
         if (currentUser) {
           baseQuery = baseQuery.eq('user_id', currentUser.id);
@@ -1018,12 +1020,12 @@ function App() {
       } else {
         baseQuery = baseQuery.eq('visibility', 'public');
       }
-      
+
       // 🏷️ カテゴリフィルタ（カテゴリが選ばれている時は、検索中であってもそのカテゴリ内を探すのが自然らびに！）
       if (category && category !== 'すべて') {
         baseQuery = baseQuery.eq('category', category);
       }
-      
+
       // 📢 タブフィルタ (公式 vs ユーザー投稿)
       if (sort !== 'mine' && sort !== 'watching') {
         if (currentTab === 'official') {
@@ -1071,48 +1073,48 @@ function App() {
       }
 
       if (safetyTimeoutId) clearTimeout(safetyTimeoutId);
-      
+
       if (sError) console.error("❌ fetchSurveys: PUBLIC FETCH ERROR:", sError);
       if (sData) {
         console.log(`✅ fetchSurveys: Fetched ${sData.length} surveys for query "${query}". Total matching count: ${count}`);
         if (query && sData.length === 0) {
           console.warn("⚠️ fetchSurveys: Search returned 0 results for:", query);
         }
-      // 📊 タブのカウント表示を同期するらび！
-      if (!query.trim()) {
-        (async () => {
-          // 💡 現在のソートやカテゴリの条件を、カウント用クエリにも反映させるらび！
-          const getCountQuery = (isOff) => {
-            let q = supabase.from('surveys').select('*', { count: 'exact', head: true }).eq('visibility', 'public').eq('is_official', isOff);
-            if (category && category !== 'すべて') q = q.eq('category', category);
-            
-            const now = new Date();
-            if (sort === 'today') {
-              const todayStart = new Date();
-              todayStart.setHours(0, 0, 0, 0);
-              q = q.gte('created_at', todayStart.toISOString());
-              q = q.or(`deadline.is.null,deadline.gt.${now.toISOString()}`);
-            } else if (sort === 'ended') {
-              const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-              q = q.or(`deadline.lt.${now.toISOString()},created_at.lt.${thirtyDaysAgo.toISOString()}`);
-            } else if (sort === 'latest' || sort === 'today' || sort === 'popular') {
-              // 🕒 通常リストでは終了したものを除外する条件をカウントにも反映させるらび！
-              q = q.or(`deadline.is.null,deadline.gt.${now.toISOString()}`);
-              const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-              q = q.gte('created_at', thirtyDaysAgo.toISOString());
-            }
-            return q;
-          };
+        // 📊 タブのカウント表示を同期するらび！
+        if (!query.trim()) {
+          (async () => {
+            // 💡 現在のソートやカテゴリの条件を、カウント用クエリにも反映させるらび！
+            const getCountQuery = (isOff) => {
+              let q = supabase.from('surveys').select('*', { count: 'exact', head: true }).eq('visibility', 'public').eq('is_official', isOff);
+              if (category && category !== 'すべて') q = q.eq('category', category);
 
-          const [{ count: offCount }, { count: uCount }] = await Promise.all([
-            getCountQuery(true),
-            getCountQuery(false)
-          ]);
-          setTotalOfficialCount(offCount || 0);
-          setTotalUserCount(uCount || 0);
-          console.log(`🔢 Filtered Counts Updated: Official(${offCount}), User(${uCount}) [Sort: ${sort}, Cat: ${category}]`);
-        })();
-      }
+              const now = new Date();
+              if (sort === 'today') {
+                const todayStart = new Date();
+                todayStart.setHours(0, 0, 0, 0);
+                q = q.gte('created_at', todayStart.toISOString());
+                q = q.or(`deadline.is.null,deadline.gt.${now.toISOString()}`);
+              } else if (sort === 'ended') {
+                const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+                q = q.or(`deadline.lt.${now.toISOString()},created_at.lt.${thirtyDaysAgo.toISOString()}`);
+              } else if (sort === 'latest' || sort === 'today' || sort === 'popular') {
+                // 🕒 通常リストでは終了したものを除外する条件をカウントにも反映させるらび！
+                q = q.or(`deadline.is.null,deadline.gt.${now.toISOString()}`);
+                const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+                q = q.gte('created_at', thirtyDaysAgo.toISOString());
+              }
+              return q;
+            };
+
+            const [{ count: offCount }, { count: uCount }] = await Promise.all([
+              getCountQuery(true),
+              getCountQuery(false)
+            ]);
+            setTotalOfficialCount(offCount || 0);
+            setTotalUserCount(uCount || 0);
+            console.log(`🔢 Filtered Counts Updated: Official(${offCount}), User(${uCount}) [Sort: ${sort}, Cat: ${category}]`);
+          })();
+        }
       }
 
       // ログイン中なら自分の非公開/限定公開アンケートも別枠で取得（とりあえず最新20件）
@@ -1149,10 +1151,10 @@ function App() {
           // 💡 カテゴリの正規化（存在しない古いカテゴリを適切に読み替えるらび！）
           const isStandardCategory = BASE_CATEGORIES.includes(s.category);
           const effectiveCategory = isStandardCategory
-                                   ? s.category 
-                                   : ((s.title || '').includes('【コラム】') ? 'コラム' : 
-                                      (s.title || '').includes('【レビュー】') ? 'レビュー' :
-                                      (s.title || '').includes('【ネタ】') ? 'ネタ' : (s.category || 'その他'));
+            ? s.category
+            : ((s.title || '').includes('【コラム】') ? 'コラム' :
+              (s.title || '').includes('【レビュー】') ? 'レビュー' :
+                (s.title || '').includes('【ネタ】') ? 'ネタ' : (s.category || 'その他'));
 
           return {
             ...s,
@@ -1171,9 +1173,9 @@ function App() {
           const sId = String(prev.id);
           const lastUpdate = manualUpdatesRef.current[sId];
           if (lastUpdate && Date.now() - lastUpdate < 15000) {
-             // 🗳️ 投票直後は、DBから来た古いtotal_votesで上書きしない！
-             const latest = updatedList.find(s => String(s.id) === sId);
-             return latest ? { ...latest, total_votes: prev.total_votes } : prev;
+            // 🗳️ 投票直後は、DBから来た古いtotal_votesで上書きしない！
+            const latest = updatedList.find(s => String(s.id) === sId);
+            return latest ? { ...latest, total_votes: prev.total_votes } : prev;
           }
           const latest = updatedList.find(s => String(s.id) === sId);
           return latest ? { ...latest } : prev;
@@ -1217,16 +1219,32 @@ function App() {
         .order('created_at', { ascending: false })
         .limit(10);
 
-      // 2. 人気 (とりあえず単純に投票数順の上位10件 + ランダム要素のスコアリングは手元でらび！)
-      const { data: popular } = await supabase
+      // 2. 人気 (直近30日間のアンケートから投票数順で上位10件。足りない場合は全期間から引き継ぎらび！)
+      const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
+      let { data: popular } = await supabase
         .from('surveys')
         .select('*')
         .eq('visibility', 'public')
         .not('tags', 'cs', '{"お知らせ"}')
+        .gte('created_at', thirtyDaysAgo)
         .order('total_votes', { ascending: false })
         .order('view_count', { ascending: false })
         .order('likes_count', { ascending: false })
         .limit(10);
+
+      // 直近の投稿数が少なくてランキングが半分以下（5件未満）しか埋まらない場合は全期間のデータで補正する
+      if (!popular || popular.length < 5) {
+        const { data: fallbackPopular } = await supabase
+          .from('surveys')
+          .select('*')
+          .eq('visibility', 'public')
+          .not('tags', 'cs', '{"お知らせ"}')
+          .order('total_votes', { ascending: false })
+          .order('view_count', { ascending: false })
+          .order('likes_count', { ascending: false })
+          .limit(10);
+        popular = fallbackPopular || [];
+      }
 
       // 3. もうすぐ終了 (24時間以内。全件取得！)
       const { data: ending } = await supabase
@@ -1240,7 +1258,7 @@ function App() {
       if (latest) setLiveSurveys(latest);
       if (popular) setPopularSurveys(popular);
       if (ending) setEndingSoonSurveys(ending);
-      
+
       console.log(`✅ fetchSidebarData: Done. (Live:${latest?.length}, Popular:${popular?.length}, Ending:${ending?.length})`);
     } catch (err) {
       console.error("❌ fetchSidebarData CRASHED:", err);
@@ -1256,26 +1274,32 @@ function App() {
 
   useEffect(() => {
     if ('scrollRestoration' in window.history) {
-      window.history.scrollRestoration = 'auto';
+      window.history.scrollRestoration = 'manual';
     }
+
+    if (!window.history.state || !window.history.state.view) {
+      const isDetail = window.location.pathname.startsWith('/s/');
+      const sId = isDetail ? window.location.pathname.split('/')[2] : null;
+      window.history.replaceState({ view: isDetail ? 'details' : 'list', surveyId: sId }, '', window.location.href);
+    }
+
     const handlePopState = (e) => {
-      console.log("↩️ popstate event fired!", e.state);
-      if (e.state && e.state.view) {
-        if (e.state.view === 'list') {
-          setView('list');
-          setCurrentSurvey(null);
-          setOptions([]); // お掃除らび！
-          setVotedOption(null); // お掃除らび！
-          if (e.state.scrollY !== undefined) {
-            setTimeout(() => window.scrollTo(0, e.state.scrollY), 20); // 少し待ってから戻すらび！
-          }
-        } else if (e.state.view === 'details' && e.state.surveyId) {
-          loadFromUrl();
-        }
-      } else {
+      console.log("↩️ popstate event fired!", e.state, "location:", window.location.pathname);
+      const isDetailPath = window.location.pathname.startsWith('/s/');
+
+      if (isDetailPath) {
         loadFromUrl();
+      } else {
+        setView('list');
+        setCurrentSurvey(null);
+        setOptions([]);
+        setVotedOption(null);
+        if (e.state && e.state.scrollY !== undefined) {
+          setTimeout(() => window.scrollTo(0, e.state.scrollY), 20);
+        } else {
+          setTimeout(() => window.scrollTo(0, 0), 20);
+        }
       }
-      // 🚀 ブラウザの自動復元に任せるので、ここでの強制スクロールはやめるらび！
     };
     window.addEventListener('popstate', handlePopState);
     loadFromUrl(); // 初回読み込み
@@ -1292,11 +1316,11 @@ function App() {
       }
 
       // 📍 リストに戻った時のために、今の位置を履歴に刻むらび
-      window.history.replaceState({ ...window.history.state, scrollY: currentScroll }, '', window.location.href);
+      window.history.replaceState({ ...window.history.state, view: 'list', scrollY: currentScroll }, '', window.location.href);
 
       setView('details');
       window.history.pushState({ view: 'details', surveyId: survey.id }, '', `/s/${survey.id}`);
-      
+
       setOptions([]);
       setVotedOption(null);
       setCurrentSurvey(survey);
@@ -1306,12 +1330,12 @@ function App() {
       // (非同期取得は省略せず維持...)
       (async () => {
         if (!survey.created_at || survey.youtube_id === undefined) {
-           const { data: fullSv } = await supabase.from('surveys').select('*').eq('id', survey.id).single();
-           if (fullSv) {
-             setCurrentSurvey(fullSv);
-             survey = fullSv;
-             setIsTimeUp(fullSv.deadline && new Date(fullSv.deadline) < new Date());
-           }
+          const { data: fullSv } = await supabase.from('surveys').select('*').eq('id', survey.id).single();
+          if (fullSv) {
+            setCurrentSurvey(fullSv);
+            survey = fullSv;
+            setIsTimeUp(fullSv.deadline && new Date(fullSv.deadline) < new Date());
+          }
         }
         const { data: preOpts } = await supabase.from('options').select('*').eq('survey_id', survey.id).order('id', { ascending: true });
         if (preOpts) setOptions(preOpts);
@@ -1322,7 +1346,7 @@ function App() {
             supabase.from('surveys').select('*').eq('visibility', 'public').gt('created_at', survey.created_at).order('created_at', { ascending: true }).limit(1).maybeSingle()
           ]);
           setAdjacentSurveys({ prev: prevRes.data, next: nextRes.data });
-        } catch (err) {}
+        } catch (err) { }
       })();
 
       // 閲覧数カウントアップ
@@ -1332,24 +1356,22 @@ function App() {
         localStorage.setItem(viewKey, Date.now().toString());
         supabase.rpc('increment_survey_view', { survey_id_arg: survey.id }).then(({ data: newViews }) => {
           if (newViews !== undefined) {
-             setCurrentSurvey(prev => prev && prev.id === survey.id ? { ...prev, view_count: newViews } : prev);
-             setSurveys(prev => prev.map(s => s.id === survey.id ? { ...s, view_count: newViews } : s));
+            setCurrentSurvey(prev => prev && prev.id === survey.id ? { ...prev, view_count: newViews } : prev);
+            setSurveys(prev => prev.map(s => s.id === survey.id ? { ...s, view_count: newViews } : s));
           }
         });
       }
       return;
     } else if (nextView === 'list') {
       // 🏘️ 広場に戻る
-      const lastState = window.history.state;
-      window.history.pushState({ view: 'list' }, '', '/');
-      setCurrentSurvey(null);
-      setFilterCategory('すべて');
-      setFilterTag('');
-      setView('list');
-
-      // 📍 もし履歴にスクロール位置があれば戻すらび！
-      if (lastState && lastState.scrollY !== undefined) {
-        setTimeout(() => window.scrollTo(0, lastState.scrollY), 50);
+      if (window.history.state && window.history.state.view === 'details') {
+        window.history.back();
+      } else {
+        window.history.pushState({ view: 'list' }, '', '/');
+        setCurrentSurvey(null);
+        setFilterCategory('すべて');
+        setFilterTag('');
+        setView('list');
       }
       return;
     }
@@ -1373,12 +1395,12 @@ function App() {
         setSearchStats({ categories: {}, official: 0, user: 0, sortModes: { today: 0, latest: 0, ended: 0, popular: 0 } });
         return;
       }
-      
+
       const q = debouncedSearchQuery.trim();
       // ⚡ 検索時は、まず全体（全タブ・全期間）からHIT数を確認するらび！
       let dQuery = supabase.from('surveys').select('category, is_official, created_at, deadline, title, description').eq('visibility', 'public');
       dQuery = dQuery.or(`title.ilike.%${q}%,description.ilike.%${q}%`);
-      
+
       const { data, error } = await dQuery;
       if (!error && data) {
         const now = new Date();
@@ -1389,13 +1411,13 @@ function App() {
           const cat = s.category || 'その他';
           acc.categories[cat] = (acc.categories[cat] || 0) + 1;
           acc.categories['すべて'] = (acc.categories['すべて'] || 0) + 1;
-          
+
           if (s.is_official) acc.official++;
           else acc.user++;
-          
+
           const createdAt = new Date(s.created_at);
           const dline = s.deadline ? new Date(s.deadline) : null;
-          
+
           // 📅 各ソートモードでのカウント
           if (createdAt >= todayStart) acc.sortModes.today++;
           if (dline && dline < now) acc.sortModes.ended++;
@@ -1404,7 +1426,7 @@ function App() {
             acc.sortModes.latest++;
             acc.sortModes.popular++;
           }
-          
+
           return acc;
         }, { categories: {}, official: 0, user: 0, sortModes: { today: 0, latest: 0, ended: 0, popular: 0 } });
         setSearchStats(stats);
@@ -1465,7 +1487,7 @@ function App() {
     if (!deadline) return alert('⏰ いつまでアンケートを取るか、締切日時を設定してください！');
 
     const finalImage = surveyImage.trim(); // 自動セットを廃止
-    
+
     // 📺 動画（YouTube/ニコニコ）の処理
     let processedImage = finalImage;
     if (surveyYoutube.trim()) {
@@ -1487,16 +1509,16 @@ function App() {
     }
 
     const finalDeadline = new Date(`${deadline}:00+09:00`).toISOString();
-    const { data, error } = await supabase.from('surveys').insert([{ 
-      title: surveyTitle, 
-      deadline: finalDeadline, 
-      user_id: user.id, 
-      image_url: processedImage, 
-      category: surveyCategory, 
-      visibility: surveyVisibility, 
+    const { data, error } = await supabase.from('surveys').insert([{
+      title: surveyTitle,
+      deadline: finalDeadline,
+      user_id: user.id,
+      image_url: processedImage,
+      category: surveyCategory,
+      visibility: surveyVisibility,
       tags: surveyTags,
-      description: surveyAnswer.trim() 
-        ? `${surveyDescription.trim()}\n\n[[SECRET_ANSWER:${surveyAnswer.trim()}]]` 
+      description: surveyAnswer.trim()
+        ? `${surveyDescription.trim()}\n\n[[SECRET_ANSWER:${surveyAnswer.trim()}]]`
         : surveyDescription.trim() // 📝 解説文と正解を統合して保存らび！
     }]).select();
     if (error) {
@@ -1765,7 +1787,7 @@ function App() {
 
     const { data, error } = await supabase.from('surveys').update({ tags: finalTags }).eq('id', currentSurvey.id).select();
     setIsActionLoading(false);
-    
+
     if (error) {
       console.error("Update tags error:", error);
       return alert('😿 タグの更新に失敗しました。');
@@ -1886,7 +1908,7 @@ function App() {
         xText += `🏆 現在1位: ${topOption.name} (${Math.round(topOption.votes / currentSurvey.total_votes * 100)}%)\n`;
       }
       xText += `🔥 現在の合計: ${currentSurvey.total_votes}票！みんなはどう思う？らびっ！`;
-      
+
       // 📊 GA4 キーイベント: Xでシェア
       if (window.gtag) {
         window.gtag('event', 'share_result', {
@@ -1895,7 +1917,7 @@ function App() {
           'survey_title': currentSurvey.title
         });
       }
-      
+
       window.open(
         `https://twitter.com/intent/tweet?text=${encodeURIComponent(xText)}&url=${encodeURIComponent(shareUrl)}&hashtags=アンケート広場`,
         '_blank'
@@ -1923,7 +1945,7 @@ function App() {
       const serviceId = 'service_mkhbkz3';
       const templateId = 'template_4wpor27';
       const publicKey = 'wEjNAL8NrmlxBHc6k';
-      
+
       const emailjsModule = await import('@emailjs/browser');
       const emailjs = emailjsModule.default;
       emailjs.init(publicKey);
@@ -1948,7 +1970,7 @@ function App() {
   // 📋 フィルタリング済みアンケートリスト
   const filteredBaseSurveys = useMemo(() => {
     let base = [...surveys];
-    
+
     // 🛡️ 公開設定による閲覧制限（プライベート等）
     base = base.filter(s => {
       if (s.visibility === 'private') {
@@ -1965,8 +1987,8 @@ function App() {
 
     // 🕒 状態別の最終フィルタリング
     base = base.filter(s => {
-      const isEnded = (s.deadline && new Date(s.deadline) < new Date()) || 
-                      (new Date() - new Date(s.created_at) > 30 * 24 * 60 * 60 * 1000);
+      const isEnded = (s.deadline && new Date(s.deadline) < new Date()) ||
+        (new Date() - new Date(s.created_at) > 30 * 24 * 60 * 60 * 1000);
 
       // 通常リストでは終了したものを非表示（ただし検索中やウォッチ中、マイアンケートは除くらび！）
       if (isEnded && sortMode !== 'ended' && !filterTag && !debouncedSearchQuery.trim()) {
@@ -1994,11 +2016,11 @@ function App() {
       .map(s => {
         // 📈 基本スコア (投票数 + 閲覧数)
         const baseScore = (s.total_votes || 0) * SCORE_VOTE_WEIGHT + (s.view_count || 0);
-        
+
         // 🕒 鮮度ボーナス (新しいほど高得点！ 48時間以内の投稿に最大ボーナス)
         const ageHours = (now - new Date(s.created_at)) / (1000 * 60 * 60);
         const freshnessBonus = Math.max(0, 150 - ageHours * 3); // 48時間で0になるくらい
-        
+
         return { ...s, _finalScore: baseScore + freshnessBonus };
       })
       .sort((a, b) => b._finalScore - a._finalScore)
@@ -2012,8 +2034,8 @@ function App() {
     if (!currentSurvey) return [];
     return surveys
       .filter(s => s.id !== currentSurvey.id && s.visibility === 'public')
-      .filter(s => 
-        s.category === currentSurvey.category || 
+      .filter(s =>
+        s.category === currentSurvey.category ||
         s.tags?.some(t => currentSurvey.tags?.includes(t))
       )
       .sort((a, b) => (b.total_votes || 0) - (a.total_votes || 0))
@@ -2036,60 +2058,60 @@ function App() {
             {view === 'list' && (
               <Suspense fallback={<div className="survey-card" style={{ height: '800px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff' }}>⌛ 広場を読み込み中...</div>}>
                 <SurveyListView
-                searchQuery={searchQuery}
-                setSearchQuery={setSearchQuery}
-                sortMode={sortMode}
-                setSortMode={setSortMode}
-                popularMode={popularMode}
-                setPopularMode={setPopularMode}
-                filterCategory={filterCategory}
-                setFilterCategory={setFilterCategory}
-                filterTag={filterTag}
-                setFilterTag={setFilterTag}
-                setView={setView}
-                activeTab={activeTab}
-                setActiveTab={(tab) => {
-                  setActiveTab(tab);
-                  setCurrentPage(1); // 📄 タブ切り替え時は確実に1ページ目に戻すらび！
-                }}
-                totalOfficialCount={totalOfficialCount}
-                totalUserCount={totalUserCount}
-                surveys={filteredBaseSurveys}
-                currentPage={currentPage}
-                setCurrentPage={setCurrentPage}
-                navigateTo={navigateTo}
-                watchedIds={watchedIds}
-                toggleWatch={toggleWatch}
-                CATEGORY_ICON_STYLE={CATEGORY_ICON_STYLE}
-                SCORE_VOTE_WEIGHT={SCORE_VOTE_WEIGHT}
-                formatWithDay={formatWithDay}
-                Pagination={Pagination}
-                SiteConceptSection={SiteConceptSection}
-                AdSenseBox={AdSenseBox}
-                user={user}
-                isAdmin={isAdmin}
-                isLoading={isLoading}
-                debouncedSearchQuery={debouncedSearchQuery}
-                totalVotes={totalVotes}
-                surveyTitle={surveyTitle} setSurveyTitle={setSurveyTitle}
-                surveyDescription={surveyDescription} setSurveyDescription={setSurveyDescription}
-                surveyYoutube={surveyYoutube} setSurveyYoutube={setSurveyYoutube}
-                surveyCategory={surveyCategory} setSurveyCategory={setSurveyCategory}
-                setupOptions={setupOptions} setSetupOptions={setSetupOptions}
-                tempOption={tempOption} setTempOption={setTempOption}
-                surveyVisibility={surveyVisibility} setSurveyVisibility={setSurveyVisibility}
-                deadline={deadline} setDeadline={setDeadline}
-                surveyTags={surveyTags} setSurveyTags={setSurveyTags}
-                tempTag={tempTag} setTempTag={setTempTag}
-                surveyAnswer={surveyAnswer} setSurveyAnswer={setSurveyAnswer}
-                handleStartSurvey={handleStartSurvey}
-                supabase={supabase}
-                recommendedSurveys={recommendedSurveys}
-                searchStats={searchStats}
-                baseCategories={BASE_CATEGORIES}
-                filterCategories={FILTER_CATEGORIES}
-                viewMode={viewMode}
-                setViewMode={setViewMode}
+                  searchQuery={searchQuery}
+                  setSearchQuery={setSearchQuery}
+                  sortMode={sortMode}
+                  setSortMode={setSortMode}
+                  popularMode={popularMode}
+                  setPopularMode={setPopularMode}
+                  filterCategory={filterCategory}
+                  setFilterCategory={setFilterCategory}
+                  filterTag={filterTag}
+                  setFilterTag={setFilterTag}
+                  setView={setView}
+                  activeTab={activeTab}
+                  setActiveTab={(tab) => {
+                    setActiveTab(tab);
+                    setCurrentPage(1); // 📄 タブ切り替え時は確実に1ページ目に戻すらび！
+                  }}
+                  totalOfficialCount={totalOfficialCount}
+                  totalUserCount={totalUserCount}
+                  surveys={filteredBaseSurveys}
+                  currentPage={currentPage}
+                  setCurrentPage={setCurrentPage}
+                  navigateTo={navigateTo}
+                  watchedIds={watchedIds}
+                  toggleWatch={toggleWatch}
+                  CATEGORY_ICON_STYLE={CATEGORY_ICON_STYLE}
+                  SCORE_VOTE_WEIGHT={SCORE_VOTE_WEIGHT}
+                  formatWithDay={formatWithDay}
+                  Pagination={Pagination}
+                  SiteConceptSection={SiteConceptSection}
+                  AdSenseBox={AdSenseBox}
+                  user={user}
+                  isAdmin={isAdmin}
+                  isLoading={isLoading}
+                  debouncedSearchQuery={debouncedSearchQuery}
+                  totalVotes={totalVotes}
+                  surveyTitle={surveyTitle} setSurveyTitle={setSurveyTitle}
+                  surveyDescription={surveyDescription} setSurveyDescription={setSurveyDescription}
+                  surveyYoutube={surveyYoutube} setSurveyYoutube={setSurveyYoutube}
+                  surveyCategory={surveyCategory} setSurveyCategory={setSurveyCategory}
+                  setupOptions={setupOptions} setSetupOptions={setSetupOptions}
+                  tempOption={tempOption} setTempOption={setTempOption}
+                  surveyVisibility={surveyVisibility} setSurveyVisibility={setSurveyVisibility}
+                  deadline={deadline} setDeadline={setDeadline}
+                  surveyTags={surveyTags} setSurveyTags={setSurveyTags}
+                  tempTag={tempTag} setTempTag={setTempTag}
+                  surveyAnswer={surveyAnswer} setSurveyAnswer={setSurveyAnswer}
+                  handleStartSurvey={handleStartSurvey}
+                  supabase={supabase}
+                  recommendedSurveys={recommendedSurveys}
+                  searchStats={searchStats}
+                  baseCategories={BASE_CATEGORIES}
+                  filterCategories={FILTER_CATEGORIES}
+                  viewMode={viewMode}
+                  setViewMode={setViewMode}
                 />
               </Suspense>
             )}
@@ -2104,12 +2126,12 @@ function App() {
                   </div>
                   <div className="setting-item-block">
                     <label>📝 解説文 / 参考記事URL:</label>
-                    <textarea 
-                      className="title-input" 
+                    <textarea
+                      className="title-input"
                       style={{ minHeight: '100px', resize: 'vertical', fontFamily: 'inherit' }}
-                      value={surveyDescription} 
-                      onChange={e => setSurveyDescription(e.target.value)} 
-                      placeholder="例：このニュースの詳細はここからチェック！ https://...&#10;アンケートの背景などを自由に書いてね 🐰🥕" 
+                      value={surveyDescription}
+                      onChange={e => setSurveyDescription(e.target.value)}
+                      placeholder="例：このニュースの詳細はここからチェック！ https://...&#10;アンケートの背景などを自由に書いてね 🐰🥕"
                     />
                   </div>
                   <div className="setting-item-block">
@@ -2118,12 +2140,12 @@ function App() {
                   </div>
                   <div className="setting-item-block">
                     <label>🧩 正解・答え合わせ（なぞなぞ用）:</label>
-                    <textarea 
-                      className="title-input" 
+                    <textarea
+                      className="title-input"
                       style={{ minHeight: '80px', resize: 'vertical', fontFamily: 'inherit', border: '2px dashed #7c3aed66', background: '#f5f3ff' }}
-                      value={surveyAnswer} 
-                      onChange={e => setSurveyAnswer(e.target.value)} 
-                      placeholder="例：正解は「ニンジン」でした！🥕 理由は、らびの主食だからです！" 
+                      value={surveyAnswer}
+                      onChange={e => setSurveyAnswer(e.target.value)}
+                      placeholder="例：正解は「ニンジン」でした！🥕 理由は、らびの主食だからです！"
                     />
                     <small style={{ color: '#64748b', marginTop: '5px', display: 'block' }}>※ ここに書いた内容は、アンケート締切後に自動で公開されますらび！🐰✨</small>
                   </div>
@@ -2193,65 +2215,65 @@ function App() {
             {view === 'details' && currentSurvey && (
               <Suspense fallback={<div className="survey-card" style={{ height: '800px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff' }}>⌛ 詳細を読み込み中...</div>}>
                 <SurveyDetailView
-                currentSurvey={currentSurvey}
-                setCurrentSurvey={setCurrentSurvey}
-                surveyOnlineCount={surveyOnlineCount}
-                isTimeUp={isTimeUp}
-                setIsTimeUp={setIsTimeUp}
-                votedOption={votedOption}
-                options={options}
-                isTotalVotes={options.reduce((sum, o) => sum + (o.votes || 0), 0)}
-                handleVote={handleVote}
-                handleLikeSurvey={handleLikeSurvey}
-                handleShareResult={handleShareResult}
-                likedSurveys={likedSurveys}
-                user={user}
-                isAdmin={isAdmin}
-                isEditingCategory={isEditingCategory}
-                setIsEditingCategory={setIsEditingCategory}
-                isEditingTags={isEditingTags}
-                setIsEditingTags={setIsEditingTags}
-                tagEditValue={tagEditValue}
-                setTagEditValue={setTagEditValue}
-                handleUpdateCategory={handleUpdateCategory}
-                handleUpdateTags={handleUpdateTags}
-                handleUpdateVisibility={handleUpdateVisibility}
-                handleDeleteSurvey={handleDeleteSurvey}
-                handleReportContent={handleReportContent}
-                navigateTo={navigateTo}
-                comments={comments}
-                commentName={commentName}
-                setCommentName={setCommentName}
-                commentContent={commentContent}
-                setCommentContent={setCommentContent}
-                handlePostComment={handlePostComment}
-                isPostingComment={isPostingComment}
-                currentCommentPage={currentCommentPage}
-                setCurrentCommentPage={setCurrentCommentPage}
-                editingCommentId={editingCommentId}
-                editContent={editContent}
-                setEditContent={setEditContent}
-                handleUpdateComment={handleUpdateComment}
-                handleDeleteComment={handleDeleteComment}
-                isActionLoading={isActionLoading}
-                startEditComment={startEditComment}
-                myCommentKeys={myCommentKeys}
-                myReactions={myReactions}
-                handleReaction={handleReaction}
-                renderCommentContent={renderCommentContent}
-                formatWithDay={formatWithDay}
-                CountdownTimer={CountdownTimer}
-                AnimatedCounter={AnimatedCounter}
-                Pagination={Pagination}
-                AdSenseBox={AdSenseBox}
-                CATEGORY_ICON_STYLE={CATEGORY_ICON_STYLE}
-                supabase={supabase}
-                setSurveys={setSurveys}
-                relatedSurveys={relatedSurveys}
-                baseCategories={BASE_CATEGORIES}
-                adjacentSurveys={adjacentSurveys}
-                handleSurveyReaction={handleSurveyReaction}
-                lastReactionEvent={lastReactionEvent}
+                  currentSurvey={currentSurvey}
+                  setCurrentSurvey={setCurrentSurvey}
+                  surveyOnlineCount={surveyOnlineCount}
+                  isTimeUp={isTimeUp}
+                  setIsTimeUp={setIsTimeUp}
+                  votedOption={votedOption}
+                  options={options}
+                  isTotalVotes={options.reduce((sum, o) => sum + (o.votes || 0), 0)}
+                  handleVote={handleVote}
+                  handleLikeSurvey={handleLikeSurvey}
+                  handleShareResult={handleShareResult}
+                  likedSurveys={likedSurveys}
+                  user={user}
+                  isAdmin={isAdmin}
+                  isEditingCategory={isEditingCategory}
+                  setIsEditingCategory={setIsEditingCategory}
+                  isEditingTags={isEditingTags}
+                  setIsEditingTags={setIsEditingTags}
+                  tagEditValue={tagEditValue}
+                  setTagEditValue={setTagEditValue}
+                  handleUpdateCategory={handleUpdateCategory}
+                  handleUpdateTags={handleUpdateTags}
+                  handleUpdateVisibility={handleUpdateVisibility}
+                  handleDeleteSurvey={handleDeleteSurvey}
+                  handleReportContent={handleReportContent}
+                  navigateTo={navigateTo}
+                  comments={comments}
+                  commentName={commentName}
+                  setCommentName={setCommentName}
+                  commentContent={commentContent}
+                  setCommentContent={setCommentContent}
+                  handlePostComment={handlePostComment}
+                  isPostingComment={isPostingComment}
+                  currentCommentPage={currentCommentPage}
+                  setCurrentCommentPage={setCurrentCommentPage}
+                  editingCommentId={editingCommentId}
+                  editContent={editContent}
+                  setEditContent={setEditContent}
+                  handleUpdateComment={handleUpdateComment}
+                  handleDeleteComment={handleDeleteComment}
+                  isActionLoading={isActionLoading}
+                  startEditComment={startEditComment}
+                  myCommentKeys={myCommentKeys}
+                  myReactions={myReactions}
+                  handleReaction={handleReaction}
+                  renderCommentContent={renderCommentContent}
+                  formatWithDay={formatWithDay}
+                  CountdownTimer={CountdownTimer}
+                  AnimatedCounter={AnimatedCounter}
+                  Pagination={Pagination}
+                  AdSenseBox={AdSenseBox}
+                  CATEGORY_ICON_STYLE={CATEGORY_ICON_STYLE}
+                  supabase={supabase}
+                  setSurveys={setSurveys}
+                  relatedSurveys={relatedSurveys}
+                  baseCategories={BASE_CATEGORIES}
+                  adjacentSurveys={adjacentSurveys}
+                  handleSurveyReaction={handleSurveyReaction}
+                  lastReactionEvent={lastReactionEvent}
                   STAMPS={STAMPS}
                 />
               </Suspense>
@@ -2259,15 +2281,15 @@ function App() {
           </div>
 
           <Suspense fallback={<div className="live-feed-sidebar" style={{ minWidth: '320px', background: 'rgba(255,255,255,0.5)', borderRadius: '24px', height: '100vh' }}></div>}>
-            <Sidebar 
-            liveSurveys={liveSurveys}
-            popularSurveys={popularSurveys}
-            endingSoonSurveys={endingSoonSurveys}
-            showAllEndingSoon={showAllEndingSoon}
-            setShowAllEndingSoon={setShowAllEndingSoon}
-            navigateTo={navigateTo}
-            globalOnlineCount={globalOnlineCount}
-            formatWithDay={formatWithDay}
+            <Sidebar
+              liveSurveys={liveSurveys}
+              popularSurveys={popularSurveys}
+              endingSoonSurveys={endingSoonSurveys}
+              showAllEndingSoon={showAllEndingSoon}
+              setShowAllEndingSoon={setShowAllEndingSoon}
+              navigateTo={navigateTo}
+              globalOnlineCount={globalOnlineCount}
+              formatWithDay={formatWithDay}
               AnimatedCounter={AnimatedCounter}
             />
           </Suspense>
@@ -2285,7 +2307,7 @@ function App() {
               最新ニュースから趣味の話題まで、AI守護霊「らび」と一緒に、安心して意見を共有できるコミュニティを目指しています。
             </p>
           </div>
-          
+
           <div className="footer-links" style={{ flex: '3 1 500px', display: 'flex', flexWrap: 'wrap', gap: '30px' }}>
             <div className="footer-link-group" style={{ flex: '1 1 150px' }}>
               <h5 style={{ color: '#1e293b', marginBottom: '15px', fontWeight: 'bold' }}>📚 コンテンツ</h5>
@@ -2310,7 +2332,7 @@ function App() {
 
         {/* 🥕 クリエイター支援 ＆ らびの応援コーナー */}
         <div className="footer-support-section" style={{
-          maxWidth: '800px', margin: '40px auto 0 auto', padding: '30px', 
+          maxWidth: '800px', margin: '40px auto 0 auto', padding: '30px',
           borderRadius: '32px', background: 'linear-gradient(135deg, #fff, #f5f3ff)',
           border: '1px solid #e2e8f0', textAlign: 'center',
           boxShadow: '0 10px 30px rgba(0,0,0,0.03)'
