@@ -159,9 +159,12 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
       .trim();
   };
 
-  summaryPoints = summaryPoints
-    .map(cleanUnclickableTags)
-    .filter(p => !isGarbageText(p) && p.length > 8);
+  // 🧹 1文しかなく、本文と要約が全く同じ文章になってしまう場合は要約カードをスキップするらび！（二重表示の防止）
+  const isDuplicateSingleSentence =
+    summaryPoints.length === 1 &&
+    (mainBodyOnly.length <= summaryPoints[0].length + 15 || mainBodyOnly.includes(summaryPoints[0]));
+
+  const showSummaryCard = summaryPoints.length > 0 && !isDuplicateSingleSentence;
 
   return (
     <div className="survey-description-container" style={{
@@ -208,7 +211,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
         fontFamily: "'Inter', 'Noto Sans JP', sans-serif"
       }}>
         {/* ⚡ 要約・注目ポイントカード (目を引くリッチデザイン＆高ジャンプ率！) */}
-        {summaryPoints.length > 0 && (
+        {showSummaryCard && (
           <div style={{
             background: 'linear-gradient(135deg, #ffffff 0%, #faf5ff 50%, #f0fdf4 100%)',
             borderRadius: '24px',
