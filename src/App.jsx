@@ -1364,14 +1364,18 @@ function App() {
       return;
     } else if (nextView === 'list') {
       // 🏘️ 広場に戻る
-      if (window.history.state && window.history.state.view === 'details') {
+      // history.stateにリスト画面の記録があればback()、なければ直接 / へ遷移
+      if (window.history.state && window.history.state.view === 'details' && window.history.length > 1) {
+        // popstateハンドラが view='list' への復帰を処理してくれるらび
         window.history.back();
       } else {
+        // URL直アクセスやリロード後など、戻り先がないケース
         window.history.pushState({ view: 'list' }, '', '/');
         setCurrentSurvey(null);
         setFilterCategory('すべて');
         setFilterTag('');
         setView('list');
+        window.scrollTo(0, 0);
       }
       return;
     }

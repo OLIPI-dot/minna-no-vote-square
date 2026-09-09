@@ -51,8 +51,16 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
   }
 
   // 📝 らびのコメントを抽出して装飾するらび！
-  const labiCommentMatch = description.match(/🐰 \*\*らびの視点：\*\*([\s\S]*?)(?=---\n|\[\[|$)/);
-  const labiComment = labiCommentMatch ? labiCommentMatch[1].trim() : null;
+  const labiCommentMatch = description.match(/🐰 \*\*らびの視点：\*\*([\s\S]*?)(?=---\n|\[\[|\n\n（出典|\n\n\[続きを読む|$)/);
+  let labiComment = labiCommentMatch ? labiCommentMatch[1].trim() : null;
+  if (labiComment) {
+    labiComment = labiComment
+      .replace(/[\(（]\s*出典\s*[:：][^\)）\n]+[\)）]?/gi, '')
+      .replace(/\[続き[をに]読む\]\(https?:\/\/[^\s)]+\)/g, '')
+      .replace(/https?:\/\/[^\s)]+/g, '')
+      .replace(/続き[をに]読む/g, '')
+      .trim();
+  }
 
   // 🧩 秘密の答え（SECRET_ANSWER）を救出するらび！
   const secretAnswerMatch = description.match(/\[\[SECRET_ANSWER:([\s\S]*?)\]\]/);
@@ -60,31 +68,55 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
 
   // らびのコメントを除いた後の本文（および出典元URLの抽出）
   let cleanBody = description
-    .replace(/🐰 \*\*らびの視点：\*\*[\s\S]*?(---\n|\[\[|$)/, '') // らびのコメントを削除
+    .replace(/🐰 \*\*らびの視点：\*\*[\s\S]*?(?=\n\n|\r\n\r\n|$)/, '') // らびの視点文を削除
     .replace(/\[\[SECRET_ANSWER:[\s\S]*?\]\]/g, '')               // 秘密の答えを削除
     .replace(/\[\[SUMMARY:[\s\S]*?\]\]/g, '')                     // 要約タグを削除
-    .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '')         // リンク形式を削除
-    .replace(/https?:\/\/[^\s)]+/g, '')                            // 生URLを削除
+    .replace(/\[続き[をに]読む\]\(https?:\/\/[^\s)]+\)/g, '')
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '$1')        // その他のリンク形式はテキスト部分を残す
     .trim();
 
-  // 🧹 「JavaScriptが無効になっています」や「(出典：ニュース)」等のナビゲーション・出典ゴミテキストを完全除去するらび！
+  // 🧹 ニュースサイト特有のナビゲーションメニュー結合ゴミ文字列およびメタ表現（出典・続きを読む等）の置換除去
+  cleanBody = cleanBody
+    .replace(/マイページ\s*購入履歴[\s\S]*?現在JavaScriptが無効になっています/g, '')
+    .replace(/マイページ\s*購入履歴[\s\S]*?トピックス一覧/g, '')
+    .replace(/(マイページ|購入履歴|トップ速報|ライブエキスパート|みんなの意見|トピックス一覧|有料主要|国内国際経済|エンタメスポーツ|IT科学|現在JavaScriptが無効)[^。！\n]{15,}/g, '')
+    .replace(/[\(（]\s*出典\s*[:：][^\)）\n]+[\)）]?/gi, '')
+    .replace(/続き[をに]読む/g, '')
+    .trim();
+
+  // 🧹 システム系・ナビゲーション・メタゴミテキストの除去関数（判定基準の完全強化）
   const isGarbageText = (str) => {
     if (!str) return true;
     const s = str.trim();
     return (
+      s.startsWith('(出典') ||
+      s.startsWith('（出典') ||
+      s.includes('出典：') ||
+      s.includes('出典:') ||
+      s.includes('続きを読む') ||
+      s === '続きを読む' ||
       s.includes('JavaScriptが無効') ||
-      s.includes('マイページ') ||
-      s.includes('購入履歴') ||
-      s.includes('トップ速報') ||
+      s.includes('マイページ購入履歴') ||
+      s.includes('トップ速報ライブ') ||
+      s.includes('みんなの意見') ||
       s.includes('国内国際経済') ||
-      s.includes('利用規約') ||
-      s.includes('ヘルプ') ||
-      /^[\(（\s]*出典[：:\s]/i.test(s) || // (出典：ニュース) や 出典：ニュース などを全自動で完全遮断！
-      s.startsWith('出典')
+      s.includes('エンタメスポーツ') ||
+      s.includes('IT科学ライフ') ||
+      s.includes('トピックス一覧') ||
+      s.includes('ライブエキスパート') ||
+      (s.includes('マイページ') && s.includes('購入履歴')) ||
+      (s.includes('有料主要') && s.includes('トピックス')) ||
+      s === 'JavaScriptが無効です' ||
+      s === 'マイページ' ||
+      s === '購入履歴' ||
+      s === 'トップ速報' ||
+      s === '利用規約' ||
+      s === 'ヘルプ' ||
+      s.includes('JavaScriptを有効にしてご覧ください')
     );
   };
 
-  // 🧹 「飯の言葉」「肉料理」「注目ポイント」「関連情報」などの別ニュースセクションやゴミテキストを本文から完全に遮断するらび！
+  // 🧹 「飯の言葉」「肉料理」「注目ポイント」「関連情報」などの別ニュースセクションを分離
   let mainBodyOnly = cleanBody
     .split(/(?=###\s*)/)
     .filter(section => {
@@ -92,16 +124,13 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
     })
     .join('\n\n')
     .split('\n')
-    .filter(line => {
-      const s = line.trim();
-      return !s.includes('JavaScriptが無効') && !s.includes('マイページ') && !s.includes('購入履歴') && !s.includes('利用規約') && !s.includes('ヘルプ');
-    })
+    .filter(line => !isGarbageText(line) && line.trim().length > 0)
     .join('\n')
     .trim();
 
-  // 万が一フィルタリングで本文が消えてしまった場合の救済フォールバック！
-  if (!mainBodyOnly && cleanBody) {
-    mainBodyOnly = cleanBody;
+  // 本文がメタ表現削除で実質空になったか確認
+  if (mainBodyOnly && mainBodyOnly.replace(/[\(（]\s*出典[\s\S]*?[\)）]/g, '').replace(/続きを読む/g, '').trim().length === 0) {
+    mainBodyOnly = '';
   }
 
   // 🧹 既存DBの[[SUMMARY:...]]タグ内をクリーンアップ
@@ -109,7 +138,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
     summaryPoints = summaryPoints.filter(pt => !isGarbageText(pt));
   }
 
-  // ⚡ SUMMARY タグがない（または空になった）場合はメイン本文から文単位で自動抽出するらび！
+  // ⚡ SUMMARY タグがない（または空になった）場合はメイン本文から文単位で自動抽出して要約カードを生成するらび！
   if (summaryPoints.length === 0 && mainBodyOnly) {
     const rawSentences = mainBodyOnly
       .split('\n')
@@ -132,17 +161,15 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
       }
     }
 
-    if (extracted.length === 0 && mainBodyOnly.length > 0) {
-      extracted.push(mainBodyOnly.substring(0, 100));
-    }
-
     summaryPoints = extracted;
   }
 
-  // 🧹 既存の[[SUMMARY:...]]タグ内や要約内から【写真を見る】【動画あり】などのリンク要素や「（出典：...）」ゴミをお掃除するらび！
+  // 🧹 不要な「【写真を見る】」などのクリック不可タグをお掃除
   const cleanUnclickableTags = (str) => {
     return str
       .replace(/【(写真を見る|動画を見る|画像あり|写真|動画|別カット|関連画像|一覧|詳細を見る|画像|フォト|関連記事)】/g, '')
+      .replace(/[\(（]\s*出典\s*[:：][^\)）\n]+[\)）]?/gi, '')
+      .replace(/続きを読む/g, '')
       .replace(/^([1-9]|[\u2460-\u2468]|[①-⑨])(?![0-9])[.\s、・]?/, '')
       .trim();
   };
@@ -151,7 +178,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
     .map(cleanUnclickableTags)
     .filter(p => !isGarbageText(p) && p.length >= 5);
 
-  // 要約カードを常に表示！
+  // 要約カードを表示する判定（要約文があれば常に表示！）
   const showSummaryCard = summaryPoints.length > 0;
 
   return (
@@ -317,7 +344,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
           }}>
             <div style={{ fontWeight: 'bold', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span style={{ fontSize: '1.4rem' }}>🐰</span>
-              <span>守護霊「らび」のコメント</span>
+              <span>らびのコメント</span>
             </div>
             {labiComment}
             <div style={{
@@ -366,13 +393,15 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
         }}>
           {mainBodyOnly ? mainBodyOnly.split('\n').map((line, idx) => {
             let trimmed = line.trim();
-            if (!trimmed) return <div key={idx} style={{ height: '1em' }} />;
+            if (!trimmed) return null;
 
             // 不要な「【写真を見る】」などのクリックできないリンクタグとお掃除プレフィックスを除去するらび！
             trimmed = trimmed
               .replace(/【(写真を見る|動画を見る|画像あり|写真|動画|別カット|関連画像|一覧|詳細を見る|画像|フォト|関連記事)】/g, '')
               .replace(/^([1-9]|[\u2460-\u2468]|[①-⑨])(?![0-9])[.\s、・]?/, '')
               .trim();
+
+            if (!trimmed) return null;
 
             // 見出し行 (### 📢 ...)
             if (trimmed.startsWith('###')) {
@@ -414,7 +443,11 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
                 {trimmed}
               </p>
             );
-          }) : null}
+          }).filter(Boolean) : (
+            <div style={{ textAlign: 'center', padding: '20px 0', color: '#94a3b8', fontStyle: 'italic', fontSize: '0.95rem' }}>
+              📝 このアンケートの本文説明は以上です。
+            </div>
+          )}
         </div>
 
         {/* 🔗 スマート・ソースボタン */}
