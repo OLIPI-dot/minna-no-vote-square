@@ -581,7 +581,7 @@ const SurveyListView = ({
                         {s.tags && s.tags.length > 0 && (
                           <div className="tag-bubble-row">
                             {s.tags
-                              .filter(tag => !tag.startsWith('_STAMP:'))
+                              .filter(tag => !tag.startsWith('_STAMP:') && tag.length <= 20 && tag !== s.title)
                               .map(tag => (
                                 <span
                                   key={tag}

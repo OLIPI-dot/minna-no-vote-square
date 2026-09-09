@@ -157,8 +157,10 @@ function generateTags(category, title, description) {
     const tags = new Set();
     const text = (title + ' ' + (description || '')).toLowerCase();
 
-    // カテゴリをタグに入れるらび
-    tags.add(category);
+    // カテゴリをタグに入れるらび（不正な長文や記号付きは除外）
+    if (category && category.length <= 10 && !category.includes('(')) {
+        tags.add(category);
+    }
 
     const keywordMap = {
         'アニメ': 'アニメ', 'ゲーム': 'ゲーム', '映画': '映画', '漫画': '漫画', 'コミック': 'コミック',
@@ -168,7 +170,10 @@ function generateTags(category, title, description) {
         'sns': 'SNS話題', 'ネット': 'ネット話題', '炎上': 'SNS話題', 'トレンド': 'トレンド',
         '新感覚': '新感覚', 'コラボ': 'コラボ', 'アプリ': 'スマホアプリ', 'イベント': 'イベント',
         '期間限定': '期間限定', '新発売': '新発売', 'グルメ': 'グルメ', 'スイーツ': 'スイーツ',
-        '発表': '発表', '解禁': '解禁', '緊急': '緊急', '衝撃': '衝撃', '話題': '話題'
+        '発表': '発表', '解禁': '解禁', '緊急': '緊急', '衝撃': '衝撃', '話題': '話題',
+        'switch': 'ゲーム', 'ps5': 'ゲーム', 'iphone': 'Apple', 'mac': 'Apple',
+        'ai': '生成AI', 'gemini': '生成AI', 'claude': '生成AI', 'usb': 'ガジェット',
+        '大雨': '防災', '氾濫': '防災'
     };
 
     // テキストをスキャンしてタグを増やすらび
@@ -178,7 +183,8 @@ function generateTags(category, title, description) {
         }
     }
 
-    let finalTags = Array.from(tags).filter(t => t);
+    // 🏷️ 20文字以上やタイトル化けを除外する厳格フィルターらび！
+    let finalTags = Array.from(tags).filter(t => t && t.length >= 2 && t.length <= 15 && t !== title && !t.includes('(') && !t.includes(')'));
 
     // 🏷️ 最低2つ以上にする魔法！1つしかない場合は、カテゴリに合わせた賑やかしタグを添えるらび
     if (finalTags.length < 2) {
@@ -203,7 +209,7 @@ function generateTags(category, title, description) {
 /**
  * 📖 ニュースサイトからリッチな解説文と画像を取得するらび！
  */
-async function fetchRichData(url) {
+async function fetchRichData(url, newsTitle = '') {
     try {
         let res = await axios.get(url, { timeout: 10000, headers: { 'User-Agent': 'Mozilla/5.0' } });
         let html = res.data;
@@ -242,17 +248,30 @@ async function fetchRichData(url) {
         const rawParagraphs = pMatches.map(m => stripHtml(m[1]));
 
         // メインの段落のみを抽出（1段落目のみ＝別ニュース混入防止）
+        const isGarbageText = (txt) => {
+            if (!txt) return true;
+            return (
+                txt.includes('マイページ') ||
+                txt.includes('購入履歴') ||
+                txt.includes('JavaScriptが無効') ||
+                txt.includes('トップ速報') ||
+                txt.includes('利用規約') ||
+                txt.includes('ヘルプ')
+            );
+        };
+
         const mainParagraphs = rawParagraphs
             .map(txt => txt.trim())
             .filter(txt =>
                 txt.length > 20 &&
+                !isGarbageText(txt) &&
                 !txt.includes('出典') &&
                 !txt.includes('写真：') &&
                 !txt.includes('画像：') &&
                 !txt.includes('ログイン') &&
                 !txt.match(/総合 | ニュース | エンタメ | コメント | ランキング | ピックアップ/) &&
                 !txt.match(/^(■|◆|▼|●|※)/))
-            .slice(0, 1);
+            .slice(0, 2);
 
         // 見出し付きで結合して「読ませる」構成にするらび！
         let richDescription = '';
@@ -272,8 +291,10 @@ async function fetchRichData(url) {
             richDescription = `[[SUMMARY:\n${summaryLines.join('\n')}\n]]\n\n${richDescription}`;
         }
 
-        // もし本文が取れなかったらOGPに頼るらび
-        if (richDescription.length < 50) richDescription = ogDesc || '';
+        // もし本文が取れなかったらOGPに頼るらび（ただしゴミテキストでない場合のみ）
+        if (richDescription.length < 50 && ogDesc && !isGarbageText(ogDesc)) {
+            richDescription = `[[SUMMARY:\n・${ogDesc.substring(0, 100)}\n]]\n\n${ogDesc}`;
+        }
 
         return { description: richDescription, image: ogImage };
     } catch (e) {
@@ -364,7 +385,7 @@ async function startAutoPosting() {
             let imageUrl = await searchYouTubeVideo(news.title);
             if (!imageUrl) imageUrl = richData.image || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=1000';
 
-            const tags = generateTags(news.title, richData.description, cat);
+            const tags = generateTags(cat, news.title, richData.description);
             const options = generateOptions(cat, news.title, richData.description);
 
             // 🏷️ 出典元をタイトルから抜き出すらび！
