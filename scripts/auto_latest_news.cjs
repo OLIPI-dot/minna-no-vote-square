@@ -250,27 +250,48 @@ async function fetchRichData(url, newsTitle = '') {
         // メインの段落のみを抽出（1段落目のみ＝別ニュース混入防止）
         const isGarbageText = (txt) => {
             if (!txt) return true;
+            // Yahoo!ニュース JS警告、サイトUI、SNS引用文などのゴミを排除
             return (
                 txt.includes('マイページ') ||
                 txt.includes('購入履歴') ||
                 txt.includes('JavaScriptが無効') ||
+                txt.includes('JavaScriptの設定を有効') ||
+                txt.includes('JavaScript') ||
+                txt.includes('JavaScriptを有効') ||
                 txt.includes('トップ速報') ||
                 txt.includes('利用規約') ||
-                txt.includes('ヘルプ')
+                txt.includes('ヘルプ') ||
+                txt.includes('Cookieを有効') ||
+                txt.includes('プライバシーポリシー') ||
+                txt.includes('のXより') ||
+                txt.includes('@') ||
+                txt.includes('さん（@') ||
+                txt.includes('続きを読む') ||
+                txt.includes('もっと読む') ||
+                txt.includes('ニュース一覧') ||
+                txt.includes('ログインして') ||
+                txt.includes('に設定が') ||
+                txt.includes('無効になっています') ||
+                // 著作権・免責文のパターン
+                txt.match(/^[Cc]opyright/) ||
+                txt.match(/^All rights/) ||
+                // 50文字未満の短い断片（意味のある本文は必ず長い）
+                txt.length < 40
             );
         };
 
         const mainParagraphs = rawParagraphs
             .map(txt => txt.trim())
             .filter(txt =>
-                txt.length > 20 &&
+                txt.length > 40 &&
                 !isGarbageText(txt) &&
                 !txt.includes('出典') &&
                 !txt.includes('写真：') &&
                 !txt.includes('画像：') &&
                 !txt.includes('ログイン') &&
-                !txt.match(/総合 | ニュース | エンタメ | コメント | ランキング | ピックアップ/) &&
-                !txt.match(/^(■|◆|▼|●|※)/))
+                !txt.match(/総合|ニュース一覧|エンタメ|コメント数|ランキング|ピックアップ/) &&
+                !txt.match(/^(■|◆|▼|●|※)/) &&
+                !txt.match(/^\d+$/))
             .slice(0, 2);
 
         // 見出し付きで結合して「読ませる」構成にするらび！
