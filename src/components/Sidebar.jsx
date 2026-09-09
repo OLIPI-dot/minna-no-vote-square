@@ -1,5 +1,6 @@
 import React from 'react';
 import AdSenseBox from './AdSenseBox';
+import SquareTimeline from './SquareTimeline';
 
 const Sidebar = ({ 
   liveSurveys, 
@@ -21,6 +22,9 @@ const Sidebar = ({
           いま {globalOnlineCount} 人が広場にいます 🐰✨
         </div>
       </div>
+
+      {/* 💬 X風・広場のタイムライン（つぶやき） */}
+      <SquareTimeline />
 
       <div className="sidebar-section-card" style={{ marginBottom: '24px', border: '2px solid #fee2e2' }}>
         <h3 className="live-feed-title" style={{ color: '#e11d48' }}>⏰ もうすぐ終了！</h3>
