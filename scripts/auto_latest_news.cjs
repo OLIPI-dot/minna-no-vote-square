@@ -127,30 +127,7 @@ function stripHtml(str) {
     return text.trim();
 }
 
-function generateOptions(category, title, description) {
-    const text = (title + ' ' + (description || '')).toLowerCase();
 
-    // 1. エンタメ・話題・動画配信系
-    if (category === 'エンタメ' || category === '芸能' || text.includes('youTube') || text.includes('vtuber') || text.includes('楽しみ')) {
-        if (text.includes('vtuber') || text.includes('youtuber') || text.includes('ライブ配信')) {
-            return ['推し！・応援してる', '気になる・見てみたい', 'あまり知らない', '自分には合わないかな'];
-        }
-        return ['神作の予感！・期待', '気になる・見てみたい', 'あまり興味ない', '正直、微妙かも…'];
-    }
-
-    // 2. 驚き・事件・ショック系
-    if (text.includes('驚き') || text.includes('衝撃') || text.includes('逮捕') || text.includes('事件') || text.includes('悲報')) {
-        return ['これは驚いた！', 'ひどすぎる・許せない', 'ショック…・残念', '自分には関係ないかな'];
-    }
-
-    // 3. 議論・ニュース・社会系
-    if (category === 'ニュース' || text.includes('検討') || text.includes('改定') || text.includes('導入')) {
-        return ['大賛成！・進めるべき', '賛成寄り・良いと思う', '反対寄り・不安がある', '大反対！・見直すべき'];
-    }
-
-    // 4. 定番（フォールバック）
-    return ['とても興味がある！', '普通に気になる・知りたい', 'あまり関心がない', '正直、どうでもいいかな'];
-}
 
 // 🤖 AI自動要約・タグ生成用の標準プロンプト定義（JSONフォーマット＆十分なmax_tokens）
 const AI_SUMMARY_OPTIONS = {
@@ -169,16 +146,24 @@ const AI_SUMMARY_PROMPT = (articleContent) => `
   "rabi_comment": "記事の具体名に触れたらびの感想（50〜70字）",
   "keyword_title": "専門用語（なければ空文字）",
   "keyword_desc": "用語の1行解説（なければ空文字）",
-  "tags": ["固有名詞1", "固有名詞2", "トピック"]
+  "tags": ["固有名詞1", "固有名詞2", "トピック"],
+  "survey_question": "記事の核心を突いた投票の問いかけ（30字以内）",
+  "survey_options": [
+    "選択肢1（前向き・期待・賛成の意見）",
+    "選択肢2（別の視点やこだわり）",
+    "選択肢3（慎重・懸念・反対・様子見の意見）",
+    "選択肢4（あまり関心がない・様子見）"
+  ]
 }
 
 【必須ルール（絶対遵守）】
-・point1_title, point1_desc, point2_title, point2_desc, rabi_comment, tags のキーは【いかなる場合も省略せず、必ず全て】出力してください。
+・point1_title, point1_desc, point2_title, point2_desc, rabi_comment, tags, survey_question, survey_options のキーは【いかなる場合も省略せず、必ず全て】出力してください。
 ・要約（desc）は必ず60〜80文字程度で、読者にニュースのメリットや変更点がしっかり伝わる充実した内容にしてください。※【重要】本文の冒頭1〜2文をそのままコピー＆ペーストすることは絶対に禁止です。記事全体の趣旨を咀嚼してあなた自身の言葉で要約してください。タイトルの丸写しも厳禁です。
 ・rabi_comment に関する禁止事項：「話題のニュースだね！みんなはどう思う？」のような、どの記事にも使い回せる汎用的な定型文の出力は【厳禁】です。必ず「記事の中身（例：実質7万円は安いね！、噴火警戒は心配だね、等）」に感情を動かされたコメントにし、明るく親しみやすい語尾（うさぎキャラ）にしてください。
 ・keyword_title と keyword_desc は原則必須です。一般的な平易なニュース以外は必ず記事内の重要キーワードを1つ選んで解説を出力してください。
 ・tags の最優先ルール：記事タイトルに含まれる「作品名（例：ポケモンスリープ、ポケモン）」「製品名（例：iPhone、Galaxy）」「企業名」は【必ず最優先で1〜2個目にタグとして抽出】してください。
 ・tags に「注目トピック」「ニュース」「イベント」などの抽象的で無意味なワードは出力禁止です。記事本文から直接3〜4個抽出してください。
+・survey_options は必ず4つの文字列の配列として出力してください。
 ・途中で文章が切れないよう、必ず完全なJSON形式で最後まで出力してください。
 
 【記事テキスト】
@@ -232,7 +217,10 @@ async function generateAISummary(articleContent) {
                     parsed.point1_title?.trim() && parsed.point1_desc?.trim() && 
                     parsed.point2_title?.trim() && parsed.point2_desc?.trim() && 
                     parsed.rabi_comment?.trim() &&
-                    Array.isArray(parsed.tags)
+                    Array.isArray(parsed.tags) &&
+                    parsed.survey_question?.trim() &&
+                    Array.isArray(parsed.survey_options) &&
+                    parsed.survey_options.length === 4
                 ) {
                     log(`✨ AI要約＆タグ生成成功！(試行 ${attempt}回目)`);
                     return parsed;
@@ -444,7 +432,10 @@ async function startAutoPosting() {
             if (richData.summaryObj && Array.isArray(richData.summaryObj.tags)) {
                 tags = richData.summaryObj.tags.map(t => String(t).trim()).filter(t => t.length > 0);
             }
-            const options = generateOptions(cat, news.title, richData.description);
+            let options = ['とても興味がある！', '普通に気になる・知りたい', 'あまり関心がない', '正直、どうでもいいかな'];
+            if (richData.summaryObj && Array.isArray(richData.summaryObj.survey_options) && richData.summaryObj.survey_options.length >= 4) {
+                options = richData.summaryObj.survey_options.slice(0, 4);
+            }
 
             // 🏷️ 出典元をタイトルから抜き出すらび！
             const sourceMatch = news.title.match(/[（\(](.*?)[）\)]$/);
