@@ -379,7 +379,8 @@ function App() {
           .from('comments')
           .select('*')
           .eq('survey_id', currentSurvey.id)
-          .order('created_at', { ascending: false });
+          .order('created_at', { ascending: false })
+          .limit(100);
         if (!commError) setComments(commData);
         else console.error("❌ initDetailView: Error fetching comments:", commError);
 
