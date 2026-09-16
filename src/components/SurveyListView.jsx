@@ -548,7 +548,7 @@ const SurveyListView = ({
                           <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '6px' }}>
                             {/* 上段：タイトル（flex-1）と☆のみ右側 */}
                             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '6px' }}>
-                              <span style={{ flex: 1, minWidth: 0, fontWeight: 900, fontSize: '13px', color: '#111827', lineHeight: 1.375, wordBreak: 'break-word' }}>
+                              <span className="list-item-title" style={{ flex: 1, minWidth: 0, fontWeight: 900, fontSize: '13px', color: '#111827', lineHeight: 1.375, wordBreak: 'break-word' }}>
                                 {isPopularRanking && (realIdx === 0 ? '👑 ' : realIdx === 1 ? '🥈 ' : realIdx === 2 ? '🥉 ' : `${realIdx + 1}位 `)}
                                 {s.tags?.includes('お知らせ') && s.title.includes('||')
                                   ? s.title.split('||')[0].trim()
@@ -563,7 +563,7 @@ const SurveyListView = ({
                               >{watchedIds.includes(s.id) ? '★' : '☆'}</button>
                             </div>
                             {/* 下段：受付中 + 〆切日のみ + アイコン類 */}
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '5px', flexWrap: 'nowrap', overflow: 'hidden', minWidth: 0 }}>
+                            <div className="list-item-meta" style={{ display: 'flex', alignItems: 'center', gap: '5px', flexWrap: 'nowrap', overflow: 'hidden', minWidth: 0 }}>
                               {showScoreBadge && <span className="popular-score-badge" style={{ flexShrink: 0 }}>{badgeLabel}</span>}
                               <span className={`status-badge ${isEnded ? 'ended' : 'active'}`} style={{ fontSize: '0.58rem', padding: '1px 4px', whiteSpace: 'nowrap', flexShrink: 0 }}>
                                 {isEnded ? '終了' : '受付中'}
