@@ -946,9 +946,9 @@ body {
   }
 
   .card-right-actions {
-    position: absolute;
-    top: 24px;
-    right: 24px;
+    position: absolute !important;
+    top: 24px !important;
+    right: 24px !important;
     background: rgba(255, 255, 255, 0.9);
     padding: 4px 8px;
     border-radius: 12px;
@@ -1157,18 +1157,20 @@ body {
   align-items: flex-start;
   margin-bottom: 4px;
   gap: 8px;
+  padding-right: 80px !important;
+  min-width: 0 !important;
 }
 
 .survey-item-title {
   font-weight: 900 !important;
-  font-size: 0.8rem !important;
+  font-size: 13px !important;
   color: #111827 !important;
   display: -webkit-box !important;
   -webkit-line-clamp: 2 !important;
   line-clamp: 2 !important;
   -webkit-box-orient: vertical !important;
   overflow: hidden !important;
-  line-height: 1.25 !important;
+  line-height: 1.375 !important;
   word-break: break-word !important;
   flex: 1 !important;
   margin: 0 !important;
@@ -1193,9 +1195,12 @@ body {
 
 
 .card-right-actions {
-  display: flex;
-  align-items: center;
-  gap: 15px;
+  position: absolute !important;
+  top: 10px !important;
+  right: 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
 }
 
 .watch-star-btn {
