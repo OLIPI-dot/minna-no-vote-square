@@ -323,7 +323,8 @@ const SurveyListView = ({
       )}
 
       {/* ⚖️ 公式・ユーザー切り替えタブ (常に表示してレイアウトを安定させるらび！) */}
-      <div className="official-tab-navigation" style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px', borderBottom: '2px solid #f1f5f9', paddingBottom: '4px', width: '100%', overflowX: 'auto', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
+      <div className="official-tab-navigation" style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px', borderBottom: '2px solid #f1f5f9', paddingBottom: '4px', width: '100%' }}>
+        <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch', flex: 1, paddingRight: '12px' }}>
         {!['mine', 'watching'].includes(sortMode) ? (
           <>
             <button
@@ -338,9 +339,9 @@ const SurveyListView = ({
                 whiteSpace: 'nowrap', flexShrink: 0
               }}
             >
-              📢 公式・ニュース ({totalOfficialCount})
+              <span style={{ marginRight: activeTab === 'official' ? '12px' : '0' }}>📢 公式・ニュース ({totalOfficialCount})</span>
               {activeTab === 'official' && (
-                <span style={{ position: 'absolute', top: '-4px', right: '-8px', fontSize: '0.65rem', background: '#ec4899', color: '#fff', borderRadius: '10px', padding: '1px 5px' }}>HOT</span>
+                <span style={{ position: 'absolute', top: '0', right: '0', fontSize: '0.65rem', background: '#ec4899', color: '#fff', borderRadius: '10px', padding: '1px 5px', transform: 'translateY(-20%)' }}>HOT</span>
               )}
             </button>
             <button
@@ -359,13 +360,14 @@ const SurveyListView = ({
             </button>
           </>
         ) : (
-          <div style={{ flex: 1, fontSize: '1.2rem', fontWeight: 'bold', color: '#475569', padding: '8px 4px' }}>
+          <div style={{ flex: 1, fontSize: '1.2rem', fontWeight: 'bold', color: '#475569', padding: '8px 4px', whiteSpace: 'nowrap' }}>
             {sortMode === 'mine' ? '👤 あなたのアンケート' : '⭐ ウォッチ中のアンケート'}
           </div>
         )}
+        </div>
 
         {/* 📱 レイアウト切替（ニコニコ風らび！） */}
-        <div className="layout-switcher">
+        <div className="layout-switcher" style={{ flexShrink: 0 }}>
           <button
             className={`layout-btn ${viewMode === 'list' ? 'active' : ''}`}
             onClick={() => setViewMode('list')}
