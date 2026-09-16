@@ -14,7 +14,7 @@ const Sidebar = ({
   AnimatedCounter 
 }) => {
   return (
-    <div className="live-feed-sidebar">
+    <div className="live-feed-sidebar" style={{ minWidth: '320px', boxSizing: 'border-box' }}>
       <div className="sidebar-section-card" style={{ marginBottom: '24px', background: 'linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%)', border: '1px solid #ddd6fe' }}>
         <h3 className="live-feed-title" style={{ color: '#7c3aed', marginBottom: '8px', fontSize: '1.1rem', borderLeft: '5px solid #7c3aed', paddingLeft: '12px' }}>📡 広場の状況</h3>
         <div style={{ fontSize: '0.9rem', color: '#4c1d95', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px' }}>

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import SourcePreviewModal from './SourcePreviewModal';
 
-const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
+const SurveyDescription = ({ description, renderCommentContent, isTimeUp, children }) => {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   if (!description) return null;
 
@@ -48,6 +49,39 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
     try {
       const parsed = JSON.parse(rawSummary);
       if (parsed && (parsed.point1_desc || parsed.point1_title)) {
+        // 🛡️ 重複バグ防止: point1_descの先頭がpoint1_titleと同じ場合は削除
+        if (parsed.point1_title && parsed.point1_desc && parsed.point1_desc.startsWith(parsed.point1_title)) {
+          parsed.point1_desc = parsed.point1_desc.substring(parsed.point1_title.length).replace(/^[:：\s]+/, '').trim();
+        }
+        if (parsed.point2_title && parsed.point2_desc && parsed.point2_desc.startsWith(parsed.point2_title)) {
+          parsed.point2_desc = parsed.point2_desc.substring(parsed.point2_title.length).replace(/^[:：\s]+/, '').trim();
+        }
+
+        // 🔄 point2が空の場合、本文から2つ目のポイントを自動補完
+        if (!parsed.point2_desc || parsed.point2_desc.trim() === '') {
+          const bodyForExtract = description
+            .replace(/\[\[SUMMARY:[\s\S]*?\]\]/g, '')
+            .replace(/\[\[SECRET_ANSWER:[\s\S]*?\]\]/g, '')
+            .replace(/🐰 \*\*らびの視点：\*\*[\s\S]*?(?=\n\n|$)/, '')
+            .replace(/\[続き[をに]読む\]\(https?:\/\/[^\s)]+\)/g, '')
+            .replace(/[\(（]\s*出典[\s\S]*?[\)）]/g, '')
+            .trim();
+          const sentences = bodyForExtract
+            .split(/[。！\n]+/)
+            .map(s => s.trim())
+            .filter(s => s.length >= 20 && !s.includes('JavaScript') && !s.includes('出典') && !s.includes('続きを読む'));
+          // point1_descと重複しない2番目の文を探す
+          const p2Candidate = sentences.find(s => 
+            s !== parsed.point1_desc && 
+            !parsed.point1_desc?.includes(s) && 
+            !s.includes(parsed.point1_desc || '')
+          );
+          if (p2Candidate) {
+            parsed.point2_title = 'ここにも注目';
+            parsed.point2_desc = p2Candidate.length > 100 ? p2Candidate.substring(0, 100) + '…' : p2Candidate;
+          }
+        }
+
         summaryJson = parsed;
       }
     } catch (e) {
@@ -653,71 +687,151 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
           </div>
         )}
 
+        {/* 🗳️ 投票コンポーネント（AI要約・らびのひとことの直下に配置！） */}
+        {children}
+
         {/* 本文 💡 (簡易マークダウンパースで見出しと段落をオシャレに装飾) */}
-        <div style={{
-          position: 'relative',
-          zIndex: 1,
-          marginBottom: displayLink ? '32px' : '0',
-          color: '#334155'
-        }}>
-          {mainBodyOnly ? mainBodyOnly.split('\n').map((line, idx) => {
-            let trimmed = line.trim();
-            if (!trimmed) return null;
+        {mainBodyOnly && (
+          <div style={{
+            position: 'relative',
+            zIndex: 1,
+            marginBottom: displayLink ? '16px' : '0',
+            color: '#334155',
+            maxWidth: '680px',
+            margin: displayLink ? '0 auto 16px auto' : '0 auto'
+          }}>
+            <div style={{
+              maxHeight: isExpanded ? 'none' : '250px',
+              overflow: 'hidden',
+              position: 'relative',
+              transition: 'max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
+            }}>
+              {(() => {
+                // 句点で段落分割: 改行なしの巨大な文章塊を読みやすい段落に分ける
+                const lines = mainBodyOnly.split('\n').flatMap(line => {
+                  const trimmed = line.trim();
+                  if (!trimmed) return [];
+                  // 見出し行はそのまま
+                  if (trimmed.startsWith('###')) return [trimmed];
+                  // 長い行は句点で2文以上あれば分割
+                  if (trimmed.length > 150) {
+                    const sentences = trimmed.split(/(。)/g);
+                    const paragraphs = [];
+                    let current = '';
+                    for (const part of sentences) {
+                      current += part;
+                      if (part === '。' && current.trim().length >= 40) {
+                        paragraphs.push(current.trim());
+                        current = '';
+                      }
+                    }
+                    if (current.trim()) paragraphs.push(current.trim());
+                    return paragraphs.length > 1 ? paragraphs : [trimmed];
+                  }
+                  return [trimmed];
+                });
+                return lines.map((line, idx) => {
+                  let trimmed = line.trim();
+                  if (!trimmed) return null;
 
-            // 不要な「【写真を見る】」などのクリックできないリンクタグとお掃除プレフィックスを除去するらび！
-            trimmed = trimmed
-              .replace(/【(写真を見る|動画を見る|画像あり|写真|動画|別カット|関連画像|一覧|詳細を見る|画像|フォト|関連記事)】/g, '')
-              .replace(/^([1-9]|[\u2460-\u2468]|[①-⑨])(?![0-9])[.\s、・]?/, '')
-              .trim();
+                  // 不要な「【写真を見る】」などのクリックできないリンクタグとお掃除プレフィックスを除去するらび！
+                  trimmed = trimmed
+                    .replace(/【(写真を見る|動画を見る|画像あり|写真|動画|別カット|関連画像|一覧|詳細を見る|画像|フォト|関連記事)】/g, '')
+                    .replace(/^([1-9]|[\u2460-\u2468]|[①-⑨])(?![0-9])[.\s、・]?/, '')
+                    .trim();
 
-            if (!trimmed) return null;
+                  if (!trimmed) return null;
 
-            // 見出し行 (### 📢 ...)
-            if (trimmed.startsWith('###')) {
-              const headingText = trimmed.replace(/^###\s*/, '');
-              return (
-                <h4 key={idx} className="desc-heading-classic" style={{
-                  fontSize: '1.15rem',
-                  color: '#1e293b',
-                  fontWeight: '900',
-                  marginTop: '32px',
-                  marginBottom: '18px',
-                  paddingLeft: '14px',
-                  borderLeft: '4px solid #7c3aed',
-                  backgroundImage: 'linear-gradient(90deg, rgba(124, 58, 237, 0.04), transparent)',
-                  paddingTop: '8px',
-                  paddingBottom: '8px',
-                  borderRadius: '0 8px 8px 0',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  lineHeight: '1.5'
-                }}>
-                  {headingText}
-                </h4>
-              );
-            }
+                  // 見出し行 (### 📢 ...)
+                  if (trimmed.startsWith('###')) {
+                    const headingText = trimmed.replace(/^###\s*/, '');
+                    return (
+                      <h4 key={idx} className="desc-heading-classic" style={{
+                        fontSize: '1.15rem',
+                        color: '#1e293b',
+                        fontWeight: '900',
+                        marginTop: '32px',
+                        marginBottom: '18px',
+                        paddingLeft: '14px',
+                        borderLeft: '4px solid #7c3aed',
+                        backgroundImage: 'linear-gradient(90deg, rgba(124, 58, 237, 0.04), transparent)',
+                        paddingTop: '8px',
+                        paddingBottom: '8px',
+                        borderRadius: '0 8px 8px 0',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        lineHeight: '1.5'
+                      }}>
+                        {headingText}
+                      </h4>
+                    );
+                  }
 
-            // 通常の段落
-            return (
-              <p key={idx} className="desc-paragraph" style={{
-                margin: '0 0 20px 0',
-                lineHeight: '2.1',
-                fontSize: '1.05rem',
-                color: '#374151',
-                textAlign: 'justify',
-                letterSpacing: '0.03em',
-                wordBreak: 'break-word'
-              }}>
-                {trimmed}
-              </p>
-            );
-          }).filter(Boolean) : (
-            <div style={{ textAlign: 'center', padding: '20px 0', color: '#94a3b8', fontStyle: 'italic', fontSize: '0.95rem' }}>
-              📝 このアンケートの本文説明は以上です。
+                  // 通常の段落
+                  return (
+                    <p key={idx} className="desc-paragraph" style={{
+                      margin: '0 0 24px 0',
+                      lineHeight: '1.85',
+                      fontSize: '1.05rem',
+                      color: '#374151',
+                      textAlign: 'justify',
+                      letterSpacing: '0.03em',
+                      wordBreak: 'break-word'
+                    }}>
+                      {trimmed}
+                    </p>
+                  );
+                }).filter(Boolean);
+              })()}
+
+              {!isExpanded && (
+                <div style={{
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '150px',
+                  background: 'linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 90%)',
+                  pointerEvents: 'none'
+                }} />
+              )}
             </div>
-          )}
-        </div>
+
+            {!isExpanded && (
+              <div style={{ textAlign: 'center', marginTop: '10px', marginBottom: '20px' }}>
+                <button 
+                  onClick={() => setIsExpanded(true)}
+                  style={{
+                    background: '#f8fafc',
+                    border: '2px solid #cbd5e1',
+                    borderRadius: '24px',
+                    padding: '12px 32px',
+                    fontSize: '1rem',
+                    fontWeight: 'bold',
+                    color: '#475569',
+                    cursor: 'pointer',
+                    boxShadow: '0 4px 10px rgba(0,0,0,0.05)',
+                    transition: 'all 0.2s',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}
+                  onMouseOver={e => { e.currentTarget.style.background = '#f1f5f9'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+                  onMouseOut={e => { e.currentTarget.style.background = '#f8fafc'; e.currentTarget.style.transform = 'translateY(0)'; }}
+                >
+                  記事の続きを読む ▼
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {!mainBodyOnly && (
+          <div style={{ textAlign: 'center', padding: '20px 0', color: '#94a3b8', fontStyle: 'italic', fontSize: '0.95rem' }}>
+            📝 このアンケートの本文説明は以上です。
+          </div>
+        )}
 
         {/* 🔗 スマート・ソースボタン */}
         {displayLink && (

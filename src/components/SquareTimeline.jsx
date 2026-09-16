@@ -107,16 +107,15 @@ const SquareTimeline = () => {
   // ラビ公式投稿のデザイン定義
   const officialCardStyle = {
     background: 'linear-gradient(135deg, #fdf4ff 0%, #f0f4ff 50%, #fff7ed 100%)',
-    border: '1.5px solid transparent',
-    backgroundClip: 'padding-box',
-    boxShadow: '0 0 0 1.5px #c4b5fd, 0 4px 16px rgba(139,92,246,0.10)',
+    border: '1.5px solid #c4b5fd',
+    boxShadow: '0 4px 16px rgba(139,92,246,0.10)',
     position: 'relative',
     overflow: 'hidden'
   };
 
   const officialAvatarStyle = {
     background: 'linear-gradient(135deg, #a78bfa, #60a5fa, #f472b6)',
-    boxShadow: '0 0 0 2px #fff, 0 0 0 4px #a78bfa'
+    boxShadow: '0 0 0 2px #fff, 0 0 0 3px #a78bfa'
   };
 
   const officialNameStyle = {
@@ -147,7 +146,10 @@ const SquareTimeline = () => {
       marginBottom: '24px',
       border: '1px solid #e2e8f0',
       background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)',
-      overflow: 'hidden'
+      overflow: 'visible',
+      boxSizing: 'border-box',
+      padding: '20px 16px',
+      width: '100%'
     }}>
       {/* 🏷️ ヘッダー */}
       <div style={{
@@ -196,10 +198,13 @@ const SquareTimeline = () => {
       <div ref={scrollRef} style={{
         maxHeight: '300px',
         overflowY: 'auto',
-        paddingRight: '2px',
+        overflowX: 'hidden',
+        padding: '8px 16px',
+        boxSizing: 'border-box',
+        width: '100%',
         display: 'flex',
         flexDirection: 'column',
-        gap: '10px',
+        gap: '12px',
         scrollbarWidth: 'thin'
       }}>
         {isLoading ? (
@@ -214,7 +219,9 @@ const SquareTimeline = () => {
           <div key={p.id} style={{
             display: 'flex',
             gap: '10px',
-            padding: '10px 12px',
+            padding: '12px 16px',
+            boxSizing: 'border-box',
+            width: '100%',
             borderRadius: '14px',
             animation: 'fadeInUp 0.25s ease-out',
             ...(p.is_official
@@ -305,7 +312,10 @@ const SquareTimeline = () => {
       <form onSubmit={handlePost} style={{
         marginTop: '14px',
         paddingTop: '12px',
-        borderTop: '1.5px solid #f1f5f9'
+        borderTop: '1.5px solid #f1f5f9',
+        overflow: 'hidden',
+        boxSizing: 'border-box',
+        width: '100%'
       }}>
         <div style={{ display: 'flex', gap: '6px', marginBottom: '8px' }}>
           <select
@@ -339,7 +349,8 @@ const SquareTimeline = () => {
               fontSize: '0.8rem',
               outline: 'none',
               background: '#fff',
-              minWidth: 0
+              minWidth: 0,
+              boxSizing: 'border-box'
             }}
           />
         </div>
@@ -351,14 +362,16 @@ const SquareTimeline = () => {
             value={inputText}
             onChange={e => setInputText(e.target.value.slice(0, 50))}
             style={{
-              flex: 1,
+              flex: '1 1 0%',
               padding: '8px 12px',
               borderRadius: '10px',
               border: '1px solid #cbd5e1',
               fontSize: '0.85rem',
               outline: 'none',
               background: '#fff',
-              minWidth: 0
+              minWidth: 0,
+              boxSizing: 'border-box',
+              width: '100%'
             }}
           />
           <button
@@ -380,7 +393,8 @@ const SquareTimeline = () => {
               alignItems: 'center',
               gap: '4px',
               whiteSpace: 'nowrap',
-              flexShrink: 0
+              flexShrink: 0,
+              boxSizing: 'border-box'
             }}
           >
             {isPosting ? '⏳' : '送信 🕊️'}

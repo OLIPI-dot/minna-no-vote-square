@@ -221,7 +221,7 @@ body {
   background: var(--sidebar-card-bg);
   backdrop-filter: blur(10px);
   border-radius: 0;
-  padding: 24px 15px;
+  padding: 24px 20px;
   border-top: 1px solid var(--border-color);
   border-bottom: 1px solid var(--border-color);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.02);

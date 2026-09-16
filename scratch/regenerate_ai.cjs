@@ -166,30 +166,38 @@ const AI_SUMMARY_PROMPT = (articleContent) => `
   "point1_desc": "内容説明1（60〜80字程度）",
   "point2_title": "見出し2（15字以内）",
   "point2_desc": "内容説明2（60〜80字程度）",
-  "rabi_comment": "記事の具体的な内容（製品名・出来事など）に必ず1箇所触れた、らび（うさぎキャラ）としてのリアルな感想（50〜70文字程度）",
+  "rabi_comment": "らびの感想や問いかけ（50字程度・語尾は〜だね！等）",
   "keyword_title": "専門用語（※ある場合のみ。なければ空文字）",
-  "keyword_desc": "用語の1行解説（※ある場合のみ。なければ空文字）",
-  "tags": [
-    "記事の主役となる固有名詞（作品名・製品名・サービス名・企業名など）",
-    "サブの固有名詞・重要キーワード",
-    "ジャンルや場所"
-  ]
+  "keyword_desc": "用語の1行解説（※ある場合のみ。なければ空文字）"
 }
 
 【必須ルール（絶対遵守）】
-・point1_title, point1_desc, point2_title, point2_desc, rabi_comment, tags のキーは【いかなる場合も省略せず、必ず全て】出力してください。
-・要約（desc）は必ず70〜100文字程度で、読者にニュースのメリットや変更点がしっかり伝わる充実した内容にしてください。※【重要】本文の冒頭1〜2文をそのままコピー＆ペーストすることは絶対に禁止です。記事全体の趣旨を咀嚼してあなた自身の言葉で要約してください。タイトルの丸写しも厳禁です。
-・rabi_comment に関する禁止事項：「話題のニュースだね！みんなはどう思う？」のような、どの記事にも使い回せる汎用的な定型文の出力は【厳禁】です。必ず「記事の中身（例：実質7万円は安いね！、噴火警戒は心配だね、等）」に感情を動かされたコメントにし、明るく親しみやすい語尾（うさぎキャラ）にしてください。
+・point1_title, point1_desc, point2_title, point2_desc, rabi_comment の5つのキーは【いかなる場合も省略せず、必ず全て】出力してください。
+・要約（desc）は必ず70〜100文字程度で、読者にニュースのメリットや変更点がしっかり伝わる充実した内容にしてください。「タイトルの丸写し」や「短すぎる要約」は厳禁です。
+・rabi_comment では、「〜だね！みんなはどう思う？🐰」のように明るく親しみやすい語尾にしてください。省略は絶対に禁止です。
 ・keyword_title と keyword_desc は、専門用語や略語がない日常ニュース等の場合は空文字 "" にしてください。
-・tags の最優先ルール：記事タイトルに含まれる「作品名（例：ポケモンスリープ、ポケモン）」「製品名（例：iPhone、Galaxy）」「企業名」は【必ず最優先で1〜2個目にタグとして抽出】してください。
-・tags に「注目トピック」「ニュース」「イベント」などの抽象的で無意味なワードは出力禁止です。記事本文から直接3〜4個抽出してください。
 ・途中で文章が切れないよう、必ず完全なJSON形式で最後まで出力してください。
 
 【記事テキスト】
 ${articleContent}
 `.trim();
 
+const AI_TAG_PROMPT = (articleContent) => `
+あなたはニュースの分類を行う専門家です。
+提供された記事テキストを分析し、最も関連性の高いタグを3〜5個抽出してください。
 
+【タグ抽出のルール】
+・必ず記事の「メイン本文」の内容に直接関係するキーワードのみを選定してください。
+・サイドバーや関連記事、広告、サイトのナビゲーションに由来する単語は【絶対に】除外してください。
+・固有名詞（製品名、企業名、人物名）、主要カテゴリ（「SSD」「自動運転」など）を優先してください。
+・「ニュース」「話題」「最新」などの一般的すぎる抽象的な単語は除外してください。
+
+【出力フォーマット】
+カンマ区切りで出力してください（例: タグ1, タグ2, タグ3）
+
+【記事テキスト】
+${articleContent}
+`.trim();
 
 // 🤖 Gemini APIクライアントの初期化（APIキーがない場合はnull → フォールバック処理へ）
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
@@ -233,10 +241,9 @@ async function generateAISummary(articleContent) {
                     parsed && 
                     parsed.point1_title?.trim() && parsed.point1_desc?.trim() && 
                     parsed.point2_title?.trim() && parsed.point2_desc?.trim() && 
-                    parsed.rabi_comment?.trim() &&
-                    Array.isArray(parsed.tags)
+                    parsed.rabi_comment?.trim()
                 ) {
-                    log(`✨ AI要約＆タグ生成成功！(試行 ${attempt}回目)`);
+                    log(`✨ AI要約生成成功！(試行 ${attempt}回目)`);
                     return parsed;
                 } else {
                     throw new Error("必須フィールド（point2_descやrabi_commentなど）が欠落しています");
@@ -254,9 +261,103 @@ async function generateAISummary(articleContent) {
     return null;
 }
 
+/**
+ * 🏷️ Gemini APIでタグを生成
+ */
+async function generateAITags(articleContent) {
+    if (!geminiModel || !articleContent || articleContent.length < 50) return [];
+    try {
+        const truncated = articleContent.substring(0, 1500);
+        const result = await geminiModel.generateContent({
+            contents: [{ role: 'user', parts: [{ text: AI_TAG_PROMPT(truncated) }] }],
+            generationConfig: {
+                maxOutputTokens: 256,
+                temperature: 0.3,
+            }
+        });
+        const responseText = result.response.text().trim();
+        const tags = responseText.split(/[,、，]/).map(t => t.trim().replace(/^#/, '')).filter(Boolean);
+        const filtered = filterTags(tags);
+        log(`🏷️ AIタグ生成成功: [${filtered.join(', ')}]`);
+        return filtered;
+    } catch (e) {
+        log(`❌ AIタグ生成エラー: ${e.message}`);
+    }
+    return [];
+}
 
+// 🚫 NGタグ・ブラックリストフィルター（抽象的すぎる単語やメディア名・ノイズを自動除外！）
+const BLACKLIST_TAGS = [
+    // 抽象的すぎる単語
+    'ニュース', '最新ニュース', '話題', 'まとめ', 'おすすめ', 'トピックス', '最新', '速報', 'アンケート',
+    '声', '登場', '注目', '情報', '発表', '対応', '開始', '影響', '変更', '確認', '報告',
+    '活動', '詳細', '内容', '結果', '問題', '状況', '対策', '提供', '利用', '機能',
+    '日本', '世界', '全国', '海外', '国内',
+    // メディア名・サイト名
+    '窓の社', 'マイナビニュース', 'GIGAZINE', 'ITmedia', 'Impress', 'インプレス',
+    'Yahoo', 'ヤフー', 'NHK', 'TBS', 'フジテレビ', '日テレ', 'テレ東', 'テレ朝',
+    '毎日新聞', '読売新聞', '産経新聞', '朝日新聞', '共同通信', '時事通信',
+    'オリコン', 'J-CAST', 'CNET', 'Engadget', 'TechCrunch',
+    '注目トピック'
+];
 
-// 🚫 古いブラックリストやタグフィルター（filterTags）は完全撤廃されました
+function filterTags(tags) {
+    return (tags || [])
+        .map(tag => String(tag).trim())
+        .filter(tag => tag.length >= 2 && tag.length <= 15)
+        .filter(tag => !BLACKLIST_TAGS.some(bl => bl.toLowerCase() === tag.toLowerCase()))
+        .filter(tag => !tag.includes('(') && !tag.includes(')') && !tag.includes('【') && !tag.includes('】'));
+}
+
+/**
+ * 🏷️ タグ生成（本文優先＆ブラックリスト強化版！）
+ */
+function generateTags(category, title, description) {
+    const tags = new Set();
+    const text = (title + ' ' + (description || '')).toLowerCase();
+
+    // カテゴリを基本タグに入れる（ただし除外リストに入っていない場合のみ）
+    if (category && category.length <= 10 && !BLACKLIST_TAGS.includes(category)) {
+        tags.add(category);
+    }
+
+    const keywordMap = {
+        'アニメ': 'アニメ', 'ゲーム': 'ゲーム', '映画': '映画', '漫画': '漫画', 'コミック': 'コミック',
+        'youtube': 'YouTube', 'vtuber': 'VTuber',
+        '芸能': '芸能', 'ジャニーズ': '芸能', 'アイドル': 'アイドル', 'お笑い': 'お笑い',
+        '事件': '社会', '政治': '政治', '経済': '経済', '社会': '社会', '物価': '経済',
+        'sns': 'SNS', '新感覚': '注目作', 'コラボ': 'コラボ', 'アプリ': 'スマホアプリ', 'イベント': 'イベント',
+        '期間限定': '期間限定', '新発売': '新発売', 'グルメ': 'グルメ', 'スイーツ': 'スイーツ',
+        '発表': '公式発表', 'switch': 'Nintendo Switch', 'ps5': 'PS5', 'iphone': 'iPhone', 'mac': 'Mac', 'apple': 'Apple',
+        'ai': '生成AI', 'gemini': 'Gemini', 'claude': 'Claude', 'chatgpt': 'ChatGPT', 'usb': 'ガジェット',
+        '大雨': '防災', '氾濫': '防災', '地震': '防災', '避難': '防災', 'steam': 'Steam'
+    };
+
+    // テキストをスキャンして具体的なキーワードタグを抽出
+    for (const [kw, tagName] of Object.entries(keywordMap)) {
+        if (text.includes(kw.toLowerCase())) {
+            tags.add(tagName);
+        }
+    }
+
+    // フィルタリング（ブラックリスト・長さチェック）
+    let cleanTags = filterTags(Array.from(tags).filter(t => t !== title));
+
+    // もしタグが不足している場合は、カテゴリに応じた具体的タグを補う
+    if (cleanTags.length < 2) {
+        const fallback = {
+            'ゲーム': 'ゲーム特集',
+            'エンタメ': 'エンタメ特集',
+            'テクノロジー': 'テクノロジー',
+            '社会': '社会',
+            '生活': 'ライフスタイル'
+        };
+        const extra = fallback[category] || '注目トピック';
+        if (!cleanTags.includes(extra)) cleanTags.push(extra);
+    }
+
+    return cleanTags.slice(0, 5);
+}
 
 /**
  * 📖 Cheerioを使ってHTMLから不要なナビや広告を除去し、メイン本文を抽出するらび！
@@ -269,9 +370,6 @@ function extractMainContent(html) {
     $('aside, footer, header, nav, iframe, script, style, noscript, svg, form').remove();
     $('.related-articles, .related_articles, .recommend-box, .recommend, .ad-container, .ad, .sidebar, .menu, .tags-list, .category-list, .sns-share, .comments-area, .comment-box, .author-profile').remove();
     $('[class*="related"], [class*="recommend"], [class*="banner"], [class*="footer"], [class*="header"]').remove();
-    // 追加の強力なノイズ除去（他記事の混入を防止！）
-    $('[class*="pickup"], [id*="pickup"], [class*="ranking"], [id*="ranking"], [class*="popular"], [id*="popular"], [class*="readmore"], [id*="readmore"], [class*="list"], [id*="list"], [class*="link"], [id*="link"]').remove();
-    $('.article-list, .article_list, .post-list, .p-pickup, .c-pickup, .c-article_list, .related-links, .new-articles').remove();
 
     // 2. メイン本文エリア（articleやmain、主要コンテナ）を特定
     let $body = $('article');
@@ -321,8 +419,7 @@ async function fetchRichData(url, newsTitle = '') {
 
         // 2. Cheerioを使ってクリーンな本文と段落を抽出
         const { mainText, paragraphs } = extractMainContent(html);
-        // アコーディオン表示用に、3行でカットせず十分な長さを取得するらび！
-        const mainParagraphs = paragraphs.slice(0, 20); 
+        const mainParagraphs = paragraphs.slice(0, 3);
 
         let richDescription = '';
         mainParagraphs.forEach(para => {
@@ -348,11 +445,11 @@ async function fetchRichData(url, newsTitle = '') {
             richDescription = `[[SUMMARY:\n${JSON.stringify(summaryObj, null, 2)}\n]]\n\n${richDescription}`;
         }
 
-        return { description: richDescription, image: ogImage, mainText: fullText, summaryObj };
+        return { description: richDescription, image: ogImage, mainText: fullText };
     } catch (e) {
         log(`[Rich Fetch Error] ${url} -> ${e.message}`);
     }
-    return { description: null, image: null, summaryObj: null };
+    return { description: null, image: null };
 }
 
 function classifyNews(title, description) {
@@ -437,10 +534,17 @@ async function startAutoPosting() {
             let imageUrl = await searchYouTubeVideo(news.title);
             if (!imageUrl) imageUrl = richData.image || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=1000';
 
-            // 🏷️ 要約AIが生成したタグをそのまま使用（フォールバック完全撤廃）
+            // 🏷️ AIタグ生成を試行し、失敗時は従来のキーワードマップベースのタグを使用
             let tags = [];
-            if (richData.summaryObj && Array.isArray(richData.summaryObj.tags)) {
-                tags = richData.summaryObj.tags.map(t => String(t).trim()).filter(t => t.length > 0);
+            const articleFullText = richData.mainText || richData.description || '';
+            if (geminiModel && articleFullText.length >= 50) {
+                tags = await generateAITags(articleFullText);
+            }
+            // AI結果が不十分な場合は従来のタグ生成とマージ
+            if (tags.length < 2) {
+                const fallbackTags = generateTags(cat, news.title, richData.description);
+                const merged = new Set([...tags, ...fallbackTags]);
+                tags = filterTags(Array.from(merged)).slice(0, 5);
             }
             const options = generateOptions(cat, news.title, richData.description);
 
@@ -475,3 +579,53 @@ async function startAutoPosting() {
 }
 
 startAutoPosting().catch(console.error);
+
+
+
+
+async function regenerateBroken() {
+    log('Fetching surveys from Supabase...');
+    const { data: surveys, error } = await supabase
+        .from('surveys')
+        .select('id, title, description')
+        .order('id', { ascending: false });
+
+    if (error) {
+        log('Error fetching surveys: ' + error.message);
+        return;
+    }
+
+    log(`Found ${surveys.length} surveys.`);
+    let count = 0;
+
+    for (const s of surveys) {
+        if (!s.description || !s.description.includes('[[SUMMARY:') || s.description.includes('に関する最新トピックスが大きな関心を集めています')) {
+            const urlMatch = (s.description || '').match(/[続きを読む]\((https?:\/\/[^\s)]+)\)/) || (s.description || '').match(/(https?:\/\/news\.yahoo\.co\.jp[^\s]+)/);
+            const sourceUrl = urlMatch ? urlMatch[1] : null;
+
+            if (sourceUrl) {
+                log(`Regenerating ID ${s.id}: ${s.title}`);
+                const desc = await fetchRichData(sourceUrl, s.title);
+                
+                if (desc && desc.includes('[[SUMMARY:')) {
+                    const { error: updateErr } = await supabase
+                        .from('surveys')
+                        .update({ description: desc })
+                        .eq('id', s.id);
+                    if (updateErr) {
+                        log('Error updating ' + s.id + ': ' + updateErr.message);
+                    } else {
+                        log('Successfully updated ID ' + s.id);
+                        count++;
+                    }
+                } else {
+                    log('AI generation failed for ID ' + s.id);
+                }
+                await new Promise(r => setTimeout(r, 2000)); // sleep to avoid rate limits
+            }
+        }
+    }
+    log(`Regeneration complete. Fixed ${count} surveys.`);
+}
+
+regenerateBroken();

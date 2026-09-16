@@ -346,9 +346,8 @@ const SurveyDetailView = ({
         description={descPart}
         renderCommentContent={renderCommentContent}
         isTimeUp={isTimeUp}
-      />
-
-      <div className="options-container">
+      >
+      <div className="options-container" style={{ margin: '20px 0 40px 0' }}>
         {options.length > 0 ? options.map((opt, index) => {
           const perc = isTotalVotes > 0 ? Math.round((opt.votes / isTotalVotes) * 100) : 0;
           const isWinner = options.length > 1 && opt.votes === Math.max(...options.map(o => o.votes)) && opt.votes > 0;
@@ -418,6 +417,7 @@ const SurveyDetailView = ({
           </div>
         )}
       </div>
+      </SurveyDescription>
 
 
 

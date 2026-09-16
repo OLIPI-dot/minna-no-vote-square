@@ -45,6 +45,7 @@ const SurveyListView = ({
   filterCategories = [],
   viewMode, setViewMode,
 }) => {
+  const [brokenImages, setBrokenImages] = React.useState(new Set());
   const ITEMS_PER_PAGE = viewMode === 'grid' ? 40 : 15;
   const listRef = React.useRef(null);
   const [copyStatus, setCopyStatus] = React.useState('📜 タイトルをコピー');
@@ -455,8 +456,11 @@ const SurveyListView = ({
                     const numericId = fullId.replace(/^[a-z]+/, '');
                     thumbSrc = `https://nicovideo.cdn.nimg.jp/thumbnails/${numericId}/${numericId}`;
                   }
-                  else if (entries[0]) thumbSrc = entries[0];
+                  else if (entries[0]) thumbSrc = entries[0].replace(/&amp;/g, '&');
                 }
+
+                const isBroken = brokenImages.has(s.id);
+                const showFallback = !thumbSrc || isBroken;
 
                 return (
                   <React.Fragment key={s.id}>
@@ -474,67 +478,62 @@ const SurveyListView = ({
                         '--cat-color': catStyle.color
                       }}
                     >
-                      {thumbSrc ? (
-                        <div className="video-thumb-wrapper" style={{ position: 'relative' }}
-                          ref={el => {
-                            if (!el) return;
-                            // 画像エラー時にwrapperごと隠してカテゴリバッジに切り替えるらび
-                            el._hideOnError = true;
-                          }}
-                        >
-                          <div className="category-icon-thumb placeholder-base" style={{
-                            position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
-                            background: catStyle.color, opacity: 0.1, zIndex: 0,
-                            borderRadius: 'inherit'
-                          }} />
+                      {/* 🛡️ 画像の有無に関わらず、必ず同じ枠組み（video-thumb-wrapper）を描画してレイアウト崩れを防ぐ */}
+                      <div className="video-thumb-wrapper" style={{ position: 'relative', width: '100%', aspectRatio: '16/9', overflow: 'hidden' }}>
+                        <div className="category-icon-thumb placeholder-base" style={{
+                          position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
+                          background: catStyle.color, opacity: 0.1, zIndex: 0,
+                          borderRadius: 'inherit'
+                        }} />
+
+                        {/* 🐰 No Image専用の背景枠 (画像URLがない、またはエラー時に表示) */}
+                        <div className="no-image-fallback" style={{
+                          display: (showFallback ? 'flex' : 'none'),
+                          position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
+                          background: 'linear-gradient(135deg, #f8fafc 0%, #f3e8ff 100%)',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          zIndex: 1,
+                          borderRadius: 'inherit'
+                        }}>
+                          <div style={{ fontSize: '2.5rem', marginBottom: '6px' }}>🐰</div>
+                          <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#64748b' }}>No Image</div>
+                        </div>
+
+                        {/* サムネイル画像 */}
+                        {!showFallback && (
                           <img
                             src={thumbSrc}
                             alt={`${s.title} のサムネイル`}
                             className="survey-item-thumb"
                             loading={idx < 4 ? "eager" : "lazy"}
                             {...(idx < 4 ? { fetchpriority: "high" } : {})}
-                            onLoad={e => e.target.classList.add('ready')}
-                            onError={e => {
-                              const wrapper = e.target.closest('.video-thumb-wrapper');
-                              if (wrapper) wrapper.style.display = 'none';
+                            onLoad={e => {
+                              if (thumbSrc) e.target.classList.add('ready');
                             }}
-                            style={{ position: 'relative', zIndex: 1 }}
+                            onError={() => {
+                              // エラー時はstateを更新して確実にフォールバックを表示する
+                              setBrokenImages(prev => {
+                                const next = new Set(prev);
+                                next.add(s.id);
+                                return next;
+                              });
+                            }}
+                            style={{ position: 'relative', zIndex: 1, display: 'block', width: '100%', height: '100%', objectFit: 'cover' }}
                           />
-                          <div className="thumb-category-badge" style={{
-                            color: catStyle.color,
-                            border: `1.5px solid ${catStyle.color}44`,
-                            background: 'rgba(255, 255, 255, 0.95)', zIndex: 2
-                          }}>
-                            <span style={{ fontSize: '1em' }}>{catStyle.icon}</span>
-                            <span>{s.category || 'その他'}</span>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="category-badge-placeholder" style={{
-                          flex: '0 0 auto',
-                          marginRight: '16px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          minWidth: '100px'
+                        )}
+
+                        {/* カテゴリバッジ */}
+                        <div className="thumb-category-badge" style={{
+                          color: catStyle.color,
+                          border: `1.5px solid ${catStyle.color}44`,
+                          background: 'rgba(255, 255, 255, 0.95)', zIndex: 2
                         }}>
-                          <div className="thumb-category-badge" style={{
-                            color: catStyle.color,
-                            border: `1.5px solid ${catStyle.color}88`,
-                            background: 'rgba(255, 255, 255, 0.95)',
-                            padding: '6px 14px',
-                            fontSize: '0.9rem',
-                            borderRadius: '20px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '6px',
-                            boxShadow: `0 4px 12px ${catStyle.color}15`
-                          }}>
-                            <span style={{ fontSize: '1.2em' }}>{catStyle.icon}</span>
-                            <span>{s.category || 'その他'}</span>
-                          </div>
+                          <span style={{ fontSize: '1em' }}>{catStyle.icon}</span>
+                          <span>{s.category || 'その他'}</span>
                         </div>
-                      )}
+                      </div>
 
                       <div className="survey-item-content">
                         <div className="survey-item-info">
@@ -643,6 +642,16 @@ const SurveyListView = ({
           total={Math.ceil((activeTab === 'official' ? totalOfficialCount : totalUserCount) / ITEMS_PER_PAGE)}
           onPageChange={p => {
             setCurrentPage(p);
+
+            // URLクエリパラメータを更新 (ページネーション連動)
+            const url = new URL(window.location.href);
+            if (p > 1) {
+              url.searchParams.set('p', p);
+            } else {
+              url.searchParams.delete('p');
+            }
+            window.history.pushState({ view: 'list' }, '', url);
+
             if (listRef.current) {
               const yOffset = -120; // ヘッダーやフィルターバーの分を考慮して調整
               const y = listRef.current.getBoundingClientRect().top + window.pageYOffset + yOffset;
