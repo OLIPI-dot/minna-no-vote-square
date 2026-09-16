@@ -692,12 +692,12 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
 
         {/* 本文 💡 (簡易マークダウンパースで見出しと段落をオシャレに装飾) */}
         {mainBodyOnly && (
-          <div style={{
+          <div className="max-w-2xl mx-auto" style={{
             position: 'relative',
             zIndex: 1,
             marginBottom: displayLink ? '16px' : '0',
             color: '#334155',
-            maxWidth: '680px',
+            maxWidth: '42rem',
             margin: displayLink ? '0 auto 16px auto' : '0 auto'
           }}>
             <div style={{
@@ -707,29 +707,8 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
               transition: 'max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
             }}>
               {(() => {
-                // 句点で段落分割: 改行なしの巨大な文章塊を読みやすい段落に分ける
-                const lines = mainBodyOnly.split('\n').flatMap(line => {
-                  const trimmed = line.trim();
-                  if (!trimmed) return [];
-                  // 見出し行はそのまま
-                  if (trimmed.startsWith('###')) return [trimmed];
-                  // 長い行は句点で2文以上あれば分割
-                  if (trimmed.length > 150) {
-                    const sentences = trimmed.split(/(。)/g);
-                    const paragraphs = [];
-                    let current = '';
-                    for (const part of sentences) {
-                      current += part;
-                      if (part === '。' && current.trim().length >= 40) {
-                        paragraphs.push(current.trim());
-                        current = '';
-                      }
-                    }
-                    if (current.trim()) paragraphs.push(current.trim());
-                    return paragraphs.length > 1 ? paragraphs : [trimmed];
-                  }
-                  return [trimmed];
-                });
+                // 改行コードで段落分割: 空行を除外して描画
+                const lines = mainBodyOnly.split('\n');
                 return lines.map((line, idx) => {
                   let trimmed = line.trim();
                   if (!trimmed) return null;
@@ -770,11 +749,11 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
 
                   // 通常の段落
                   return (
-                    <p key={idx} className="desc-paragraph" style={{
-                      margin: '0 0 24px 0',
+                    <p key={idx} className="desc-paragraph mb-4 leading-relaxed text-slate-700" style={{
+                      margin: '0 0 16px 0',
                       lineHeight: '1.85',
                       fontSize: '1.05rem',
-                      color: '#374151',
+                      color: '#334155',
                       textAlign: 'justify',
                       letterSpacing: '0.03em',
                       wordBreak: 'break-word'

@@ -167,8 +167,8 @@ const AI_SUMMARY_PROMPT = (articleContent) => `
   "point2_title": "見出し2（15字以内）",
   "point2_desc": "内容説明2（60〜80字程度）",
   "rabi_comment": "記事の具体的な内容（製品名・出来事など）に必ず1箇所触れた、らび（うさぎキャラ）としてのリアルな感想（50〜70文字程度）",
-  "keyword_title": "専門用語（※ある場合のみ。なければ空文字）",
-  "keyword_desc": "用語の1行解説（※ある場合のみ。なければ空文字）",
+  "keyword_title": "専門用語（※原則必須。一般的な平易なニュース以外は必ず記事内の重要キーワードを1つ選ぶ）",
+  "keyword_desc": "用語の1行解説（※原則必須。一般的な平易なニュース以外は必ず解説を出力する）",
   "tags": [
     "記事の主役となる固有名詞（作品名・製品名・サービス名・企業名など）",
     "サブの固有名詞・重要キーワード",
@@ -280,17 +280,21 @@ function extractMainContent(html) {
 
     // 3. 本文中の段落（<p>）を抽出
     const paragraphs = [];
-    $body.find('p').each((_, el) => {
-        const txt = $(el).text().trim().replace(/\s+/g, ' ');
-        if (txt.length >= 30 &&
-            !txt.includes('JavaScript') &&
-            !txt.includes('利用規約') &&
-            !txt.includes('プライバシー') &&
-            !txt.includes('Cookie') &&
-            !txt.match(/^[Cc]opyright/) &&
-            !txt.match(/^All rights/)) {
-            paragraphs.push(txt);
-        }
+    $body.find('br').replaceWith('\n');
+    $body.find('p, div.article-body-inner, div.paragraph').each((_, el) => {
+        const rawText = $(el).text().trim();
+        const lines = rawText.split('\n').map(l => l.trim().replace(/\s+/g, ' ')).filter(Boolean);
+        lines.forEach(txt => {
+            if (txt.length >= 20 &&
+                !txt.includes('JavaScript') &&
+                !txt.includes('利用規約') &&
+                !txt.includes('プライバシー') &&
+                !txt.includes('Cookie') &&
+                !txt.match(/^[Cc]opyright/) &&
+                !txt.match(/^All rights/)) {
+                paragraphs.push(txt);
+            }
+        });
     });
 
     const mainText = paragraphs.join('\n\n').trim();
