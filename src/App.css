@@ -666,6 +666,7 @@ body {
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 24px 16px;
   }
+}
 
   /* 🖼️ グリッド表示時のカード調整 */
   .view-grid .survey-item-card {
@@ -855,7 +856,7 @@ body {
     display: none !important;
     /* サムネイルに重ねる場合は別途調整 */
   }
-}
+
 
 @media (min-width: 1024px) {
   .survey-list {
