@@ -850,19 +850,26 @@ body {
 
   .view-grid .watch-star-btn {
     background: rgba(255, 255, 255, 0.9) !important;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
+    width: 28px !important;
+    height: 28px !important;
+    border-radius: 50% !important;
     display: flex !important;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 1rem !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+    padding: 0 !important;
+  }
+  @media (min-width: 640px) {
+    .view-grid .watch-star-btn {
+      width: 32px !important;
+      height: 32px !important;
+      font-size: 1.1rem !important;
+    }
   }
 
   .view-grid .status-badge {
-    display: none !important;
-    /* サムネイルに重ねる場合は別途調整 */
+    display: flex !important;
   }
 
 

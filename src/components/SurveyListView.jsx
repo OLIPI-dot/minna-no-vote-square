@@ -323,15 +323,15 @@ const SurveyListView = ({
       )}
 
       {/* ⚖️ 公式・ユーザー切り替えタブ (常に表示してレイアウトを安定させるらび！) */}
-      <div className="official-tab-navigation" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 8px', marginBottom: '16px', borderBottom: '2px solid #f1f5f9', paddingBottom: '8px', width: '100%', boxSizing: 'border-box' }}>
-        <div style={{ display: 'flex', gap: '4px', overflowX: 'auto', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch', flex: 1, paddingRight: '4px' }}>
+      <div className="official-tab-navigation" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 8px 8px 8px', marginBottom: '16px', borderBottom: '2px solid #f1f5f9', width: '100%', boxSizing: 'border-box' }}>
+        <div style={{ display: 'flex', gap: '4px', overflowX: 'auto', overflowY: 'visible', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch', flex: 1, paddingRight: '4px' }}>
         {!['mine', 'watching'].includes(sortMode) ? (
           <>
             <button
               onClick={() => setActiveTab('official')}
               className={`tab-btn ${activeTab === 'official' ? 'active' : ''}`}
               style={{
-                padding: '6px 2px', fontSize: '0.85rem', fontWeight: 'bold',
+                padding: '6px 8px', fontSize: '0.75rem', fontWeight: 'bold',
                 color: activeTab === 'official' ? '#8b5cf6' : '#94a3b8',
                 background: 'none', border: 'none',
                 borderBottom: activeTab === 'official' ? '3px solid #8b5cf6' : '3px solid transparent',
@@ -348,7 +348,7 @@ const SurveyListView = ({
               onClick={() => setActiveTab('user')}
               className={`tab-btn ${activeTab === 'user' ? 'active' : ''}`}
               style={{
-                padding: '6px 2px', fontSize: '0.85rem', fontWeight: 'bold',
+                padding: '6px 8px', fontSize: '0.75rem', fontWeight: 'bold',
                 color: activeTab === 'user' ? '#8b5cf6' : '#94a3b8',
                 background: 'none', border: 'none',
                 borderBottom: activeTab === 'user' ? '3px solid #8b5cf6' : '3px solid transparent',
