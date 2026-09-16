@@ -4009,9 +4009,17 @@ button:active,
   }
   .survey-list.view-list .video-thumb-wrapper {
     width: 192px !important;
-    height: 112px !important;
+    height: auto !important;
+    aspect-ratio: 16 / 9 !important;
     border-radius: 10px !important;
     flex-shrink: 0 !important;
+    overflow: hidden !important;
+  }
+  /* サムネイル画像：object-coverで比率を保ってトリミング */
+  .survey-list.view-list .video-thumb-wrapper .survey-item-thumb {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
   }
   .survey-list.view-list .list-item-title {
     font-size: 1rem !important;
