@@ -1048,6 +1048,7 @@ body {
   flex-shrink: 0 !important;
   width: 96px !important;
   height: 80px !important;
+  border-radius: 8px !important;
   margin-right: 0 !important;
   gap: 8px !important;
 }
