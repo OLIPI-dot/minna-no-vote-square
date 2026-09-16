@@ -775,8 +775,11 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: flex-start !important;
-    /* 🚫 謎の余白を消すために上寄せにするらび！ */
     flex: 1;
+  }
+
+  .view-grid .survey-item-info {
+    padding-right: 0 !important;
   }
 
   .view-grid .survey-item-title {
@@ -784,19 +787,19 @@ body {
     line-height: 1.4 !important;
     margin-bottom: 8px !important;
     display: -webkit-box !important;
-    line-clamp: 2;
-    -webkit-line-clamp: 2;
-    /* 📝 2行でスッキリ表示らび！ */
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    line-clamp: 2 !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
     font-weight: bold !important;
-    color: #333;
+    color: #333 !important;
   }
 
   .view-grid .survey-item-meta-row {
     font-size: 0.75rem !important;
     gap: 4px !important;
     margin-top: auto !important;
+    flex-wrap: wrap !important;
   }
 
   .view-grid .survey-item-created-at {
@@ -839,10 +842,10 @@ body {
   }
 
   .view-grid .card-right-actions {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    z-index: 10;
+    position: absolute !important;
+    top: 8px !important;
+    right: 8px !important;
+    z-index: 10 !important;
   }
 
   .view-grid .watch-star-btn {
