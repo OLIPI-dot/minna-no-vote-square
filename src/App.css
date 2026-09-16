@@ -665,6 +665,7 @@ body {
 .survey-list.view-grid {
   grid-template-columns: repeat(2, 1fr);
   gap: 12px;
+  align-items: stretch;
 }
 
 @media (min-width: 768px) {
@@ -770,10 +771,11 @@ body {
 
   .view-grid .survey-item-content {
     padding: 12px !important;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start !important;
-    flex: 1;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    flex: 1 !important;
+    height: 100% !important;
   }
 
   .view-grid .survey-item-info {
@@ -784,13 +786,10 @@ body {
     font-size: 0.78rem !important;
     line-height: 1.35 !important;
     margin-bottom: 6px !important;
-    display: -webkit-box !important;
-    line-clamp: 3 !important;
-    -webkit-line-clamp: 3 !important;
-    -webkit-box-orient: vertical !important;
-    overflow: hidden !important;
+    display: block !important;
     font-weight: bold !important;
     color: #333 !important;
+    word-break: break-word !important;
   }
 
   .view-grid .survey-item-meta-row {
