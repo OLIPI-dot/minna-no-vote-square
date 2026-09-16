@@ -678,11 +678,10 @@ body {
   .view-grid .survey-item-card {
     flex-direction: column !important;
     align-items: stretch !important;
-    /* 🎨 インラインスタイル（React側）の色を活かすために、ここでは背景と枠線を固定しないらび！ */
     padding: 0 !important;
     padding-bottom: 12px !important;
     border-radius: 12px !important;
-    overflow: hidden !important;
+    overflow: visible !important;
     gap: 0 !important;
     height: 100%;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
@@ -703,10 +702,9 @@ body {
     aspect-ratio: 16 / 9;
     margin: 0 !important;
     flex: none !important;
-    overflow: hidden;
-    border-radius: 0 !important;
+    overflow: hidden !important;
+    border-radius: 12px 12px 0 0 !important;
     background: transparent !important;
-    /* 🚫 はみ出し黒丸の原因を消去！ */
     position: relative;
   }
 

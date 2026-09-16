@@ -546,40 +546,42 @@ const SurveyListView = ({
                         {viewMode === 'list' ? (
                           /* ===== リスト表示レイアウト ===== */
                           <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '6px' }}>
-                            {/* 上段：タイトルと☆+受付中を横並び（absoluteなし） */}
-                            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '8px' }}>
+                            {/* 上段：タイトル（flex-1）と☆のみ右側 */}
+                            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '6px' }}>
                               <span style={{ flex: 1, minWidth: 0, fontWeight: 900, fontSize: '13px', color: '#111827', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', lineHeight: 1.375, wordBreak: 'break-word' }}>
                                 {isPopularRanking && (realIdx === 0 ? '👑 ' : realIdx === 1 ? '🥈 ' : realIdx === 2 ? '🥉 ' : `${realIdx + 1}位 `)}
                                 {s.tags?.includes('お知らせ') && s.title.includes('||')
                                   ? s.title.split('||')[0].trim()
                                   : s.title}
                               </span>
-                              {/* 右側：☆ + 受付中バッジ（flex-shrink-0で絶対に潰れない） */}
-                              <div style={{ display: 'flex', flexShrink: 0, alignItems: 'center', gap: '4px' }}>
-                                <button
-                                  className={`watch-star-btn ${watchedIds.includes(s.id) ? 'active' : ''}`}
-                                  onClick={e => toggleWatch(e, s.id)}
-                                  aria-label={watchedIds.includes(s.id) ? "ウォッチリストから削除" : "ウォッチリストに追加"}
-                                  style={{ background: 'none', border: 'none', fontSize: '1rem', cursor: 'pointer', padding: '2px', lineHeight: 1, color: watchedIds.includes(s.id) ? '#f59e0b' : '#94a3b8' }}
-                                >{watchedIds.includes(s.id) ? '★' : '☆'}</button>
-                                <span className={`status-badge ${isEnded ? 'ended' : 'active'}`} style={{ fontSize: '0.6rem', padding: '2px 5px', whiteSpace: 'nowrap' }}>
-                                  {isEnded ? '終了' : '受付中'}
-                                </span>
-                              </div>
+                              {/* 右側：☆のみ */}
+                              <button
+                                className={`watch-star-btn ${watchedIds.includes(s.id) ? 'active' : ''}`}
+                                onClick={e => toggleWatch(e, s.id)}
+                                aria-label={watchedIds.includes(s.id) ? "ウォッチリストから削除" : "ウォッチリストに追加"}
+                                style={{ flexShrink: 0, background: 'none', border: 'none', fontSize: '1rem', cursor: 'pointer', padding: '2px', lineHeight: 1, color: watchedIds.includes(s.id) ? '#f59e0b' : '#94a3b8' }}
+                              >{watchedIds.includes(s.id) ? '★' : '☆'}</button>
                             </div>
-                            {/* 下段：メタ情報（日付・票数） */}
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                              {showScoreBadge && <span className="popular-score-badge">{badgeLabel}</span>}
-                              <span className="survey-item-created-at" title="作成日時" style={{ fontSize: '0.68rem', whiteSpace: 'nowrap' }}>🐣 {formatWithDay(s.created_at)}</span>
-                              {s.deadline && <span className="survey-item-deadline" style={{ fontSize: '0.68rem', whiteSpace: 'nowrap' }}>〆: {formatWithDay(s.deadline)}</span>}
-                              <span style={{ fontSize: '0.68rem', color: '#64748b', whiteSpace: 'nowrap' }}>🗳️ {s.total_votes || 0}</span>
-                              <span style={{ fontSize: '0.68rem', color: '#64748b', whiteSpace: 'nowrap' }}>💬 {s.comment_count || 0}</span>
+                            {/* 下段：受付中 + 〆切日のみ + アイコン類 */}
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '5px', flexWrap: 'nowrap', overflow: 'hidden', minWidth: 0 }}>
+                              {showScoreBadge && <span className="popular-score-badge" style={{ flexShrink: 0 }}>{badgeLabel}</span>}
+                              <span className={`status-badge ${isEnded ? 'ended' : 'active'}`} style={{ fontSize: '0.58rem', padding: '1px 4px', whiteSpace: 'nowrap', flexShrink: 0 }}>
+                                {isEnded ? '終了' : '受付中'}
+                              </span>
+                              {s.deadline
+                                ? <span style={{ fontSize: '0.64rem', color: '#e11d48', whiteSpace: 'nowrap', flexShrink: 0 }}>〆{new Date(s.deadline).toLocaleDateString('ja-JP', { month: '2-digit', day: '2-digit' })}</span>
+                                : <span style={{ fontSize: '0.64rem', color: '#64748b', whiteSpace: 'nowrap', flexShrink: 0 }}>🐣{new Date(s.created_at).toLocaleDateString('ja-JP', { month: '2-digit', day: '2-digit' })}</span>
+                              }
+                              <span style={{ fontSize: '0.64rem', color: '#64748b', whiteSpace: 'nowrap', flexShrink: 0 }}>🗳️{s.total_votes || 0}</span>
+                              <span style={{ fontSize: '0.64rem', color: '#64748b', whiteSpace: 'nowrap', flexShrink: 0 }}>👁️{s.view_count || 0}</span>
+                              <span style={{ fontSize: '0.64rem', color: '#64748b', whiteSpace: 'nowrap', flexShrink: 0 }}>👍{s.likes_count || 0}</span>
+                              <span style={{ fontSize: '0.64rem', color: '#64748b', whiteSpace: 'nowrap', flexShrink: 0 }}>💬{s.comment_count || 0}</span>
                             </div>
                           </div>
                         ) : (
                           /* ===== グリッド表示レイアウト（従来通り） ===== */
                           <>
-                            <div className="survey-item-info">
+                            <div className="survey-item-info" style={{ width: '100%', minWidth: 0 }}>
                               <span className="survey-item-title" style={{ backgroundColor: 'transparent', padding: '0', borderRadius: '0', display: 'block', marginBottom: '4px', boxShadow: 'none', border: 'none', color: '#333' }}>
                                 {isPopularRanking && (realIdx === 0 ? '👑 ' : realIdx === 1 ? '🥈 ' : realIdx === 2 ? '🥉 ' : `${realIdx + 1}位 `)}
                                 {s.tags?.includes('お知らせ') && s.title.includes('||')
@@ -589,13 +591,13 @@ const SurveyListView = ({
                                   <span style={{ marginLeft: '8px', fontSize: '1.2rem', display: 'inline-block', verticalAlign: 'middle' }}>✨</span>
                                 )}
                               </span>
-                              {/* グリッド：☆ボタンのみ右上絶対配置（受付中バッジは画像の下の情報に表示） */}
-                              <div style={{ position: 'absolute', top: '8px', right: '8px', zIndex: 10 }}>
+                              {/* グリッド：☆ボタンのみ右上絶対配置（24px, 画像に被らないよう縮小） */}
+                              <div style={{ position: 'absolute', top: '6px', right: '6px', zIndex: 10 }}>
                                 <button
                                   className={`watch-star-btn ${watchedIds.includes(s.id) ? 'active' : ''}`}
                                   onClick={e => toggleWatch(e, s.id)}
                                   aria-label={watchedIds.includes(s.id) ? "ウォッチリストから削除" : "ウォッチリストに追加"}
-                                  style={{ background: 'rgba(255,255,255,0.9)', border: 'none', borderRadius: '50%', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1rem', cursor: 'pointer', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', padding: 0 }}
+                                  style={{ background: 'rgba(255,255,255,0.88)', border: 'none', borderRadius: '50%', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.85rem', cursor: 'pointer', boxShadow: '0 1px 3px rgba(0,0,0,0.12)', padding: 0 }}
                                 >{watchedIds.includes(s.id) ? '★' : '☆'}</button>
                               </div>
                             </div>
