@@ -494,19 +494,21 @@ body {
 
 .layout-switcher {
   display: flex;
-  background: white;
+  background: #f1f5f9;
   border: 1px solid #e2e8f0;
   border-radius: 12px;
-  overflow: hidden;
+  padding: 4px;
   margin-left: auto;
   align-self: center;
   flex-shrink: 0;
   height: 40px;
+  box-sizing: border-box;
 }
 
 .layout-btn {
-  background: white;
+  background: transparent;
   border: none;
+  border-radius: 8px;
   padding: 0 12px;
   color: #94a3b8;
   cursor: pointer;
@@ -514,17 +516,21 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  outline: none;
+}
+
+.layout-btn:focus, .layout-btn:active {
+  outline: none;
 }
 
 .layout-btn:hover {
-  background: #f8fafc;
-  color: #6366f1;
+  color: #8b5cf6;
 }
 
 .layout-btn.active {
-  background: #f1f5f9;
-  color: #6366f1;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+  background: white;
+  color: #8b5cf6;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .tab-switcher::-webkit-scrollbar {
