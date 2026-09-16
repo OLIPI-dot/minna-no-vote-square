@@ -216,7 +216,9 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
       }
     }
 
-    summaryPoints = extracted;
+    // 古いフォールバック処理（1〜6の箇条書き自動抽出）を無効化
+    // APIがコケた場合は要約カード自体を非表示にし、画面崩れを防ぐ
+    // summaryPoints = extracted;
   }
 
   // 🧹 不要な「【写真を見る】」などのクリック不可タグをお掃除
