@@ -413,7 +413,7 @@ async function startAutoPosting() {
     const recentNormTitles = new Set(recentSurveys?.map(s => normalize(s.title)) || []);
 
     let count = 0;
-    const POST_LIMIT = 12; // 1回12件まで大幅増量！ ニュース大盛りらびっ！！🥕🚀🔥
+    const POST_LIMIT = 2; // 1回2件まで厳選！ (1日4回実行で合計最大8本/日) 🥕
     for (const news of allNews) {
         if (count >= POST_LIMIT) break;
         if (recentNormTitles.has(normalize(news.title))) continue;
