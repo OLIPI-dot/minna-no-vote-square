@@ -777,32 +777,30 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
               )}
             </div>
 
-            {!isExpanded && (
-              <div style={{ textAlign: 'center', marginTop: '10px', marginBottom: '20px' }}>
-                <button 
-                  onClick={() => setIsExpanded(true)}
-                  style={{
-                    background: '#f8fafc',
-                    border: '2px solid #cbd5e1',
-                    borderRadius: '24px',
-                    padding: '12px 32px',
-                    fontSize: '1rem',
-                    fontWeight: 'bold',
-                    color: '#475569',
-                    cursor: 'pointer',
-                    boxShadow: '0 4px 10px rgba(0,0,0,0.05)',
-                    transition: 'all 0.2s',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '8px'
-                  }}
-                  onMouseOver={e => { e.currentTarget.style.background = '#f1f5f9'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
-                  onMouseOut={e => { e.currentTarget.style.background = '#f8fafc'; e.currentTarget.style.transform = 'translateY(0)'; }}
-                >
-                  記事の続きを読む ▼
-                </button>
-              </div>
-            )}
+            <div style={{ textAlign: 'center', marginTop: '10px', marginBottom: '20px' }}>
+              <button 
+                onClick={() => setIsExpanded(!isExpanded)}
+                style={{
+                  background: '#f8fafc',
+                  border: '2px solid #cbd5e1',
+                  borderRadius: '24px',
+                  padding: '12px 32px',
+                  fontSize: '1rem',
+                  fontWeight: 'bold',
+                  color: '#475569',
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 10px rgba(0,0,0,0.05)',
+                  transition: 'all 0.2s',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}
+                onMouseOver={e => { e.currentTarget.style.background = '#f1f5f9'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+                onMouseOut={e => { e.currentTarget.style.background = '#f8fafc'; e.currentTarget.style.transform = 'translateY(0)'; }}
+              >
+                {isExpanded ? '閉じる ▲' : '記事の続きを読む ▼'}
+              </button>
+            </div>
           </div>
         )}
 
