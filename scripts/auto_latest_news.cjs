@@ -352,7 +352,7 @@ function classifyNews(title, description) {
         'エンタメ': ['映画', 'ドラマ', 'アニメ', '音楽', 'アイドル', '漫画', 'コミック', '声優', 'youtube', 'vtuber', '動画配信', '実況'],
         '芸能': ['芸能', 'ジャニーズ', '不倫', '結婚', '熱愛', '退所', 'スター', '俳優', '女優', 'タレント', '芸人'], '話題': ['sns', 'ネットで', 'バズ', '炎上', '流行', 'x', 'twitter', 'tiktok', 'インスタ'],
         'ニュース': ['政治', '経済', '社会', '事件', '事故', '科学', '国際', '物価'],
-        'ゲーム': ['ps5', 'switch', 'steam', 'ゲーム', 'プレイステーション', 'ニンテンドー', 'esports', 'rpg', 'fps', 'インディーゲーム']
+        'ゲーム': ['ps5', 'switch', 'steam', 'ゲーム', 'プレイステーション', 'ニンテンドー', 'esports', 'rpg', 'fps', 'インディー', 'mod', 'pcゲーム', 'xbox', 'オープンワールド', '新作タイトル']
     };
     for (const [cat, words] of Object.entries(keywords)) {
         words.forEach(w => { if (textLower.includes(w)) scores[cat] += 20; });
