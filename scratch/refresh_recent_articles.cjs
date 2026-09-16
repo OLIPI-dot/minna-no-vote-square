@@ -24,7 +24,7 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 let geminiModel = null;
 if (GEMINI_API_KEY) {
     const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-    geminiModel = genAI.getGenerativeModel({ model: 'gemini-3.6-flash' });
+    geminiModel = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 } else {
     console.error('GEMINI_API_KEY is not set');
     process.exit(1);
