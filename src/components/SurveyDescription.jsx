@@ -281,8 +281,54 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
               zIndex: 1
             }}>
               {summaryPoints.map((point, idx) => {
-                // 💡 カギカッコや数字などのキーフレーズにハイライト色をつけて「ジャンプ率」を高めるらび！
-                const parts = point.split(/(「[^」]+」|【[^】]+】|\b\d+[月日万億円個件台%]?\b)/g);
+                // 💡 用語解説（「〜とは：」を含む場合）の判定
+                const isGlossary = /とは[：:]/.test(point) || point.startsWith('💡');
+                
+                if (isGlossary) {
+                  const cleanGlossary = point.replace(/^💡\s*/, '').replace(/^\*\*|\*\*$/g, '');
+                  // 「用語」と「解説」を分離してより見やすく
+                  const glossaryParts = cleanGlossary.split(/(とは[：:])/);
+                  return (
+                    <li key={idx} style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '10px',
+                      marginTop: '16px',
+                      padding: '12px 18px',
+                      background: 'linear-gradient(135deg, rgba(243, 232, 255, 0.7) 0%, rgba(253, 244, 255, 0.7) 100%)',
+                      border: '1.5px dashed #c084fc',
+                      borderRadius: '16px',
+                      fontSize: '0.92rem',
+                      color: '#4c1d95',
+                      lineHeight: '1.6'
+                    }}>
+                      <span style={{ fontSize: '1.2rem', flexShrink: 0 }}>💡</span>
+                      <span style={{ whiteSpace: 'normal', width: '100%', fontWeight: '600' }}>
+                        {glossaryParts.length >= 3 ? (
+                          <>
+                            <span style={{ background: '#7e22ce', color: '#fff', padding: '2px 8px', borderRadius: '6px', fontSize: '0.85rem', marginRight: '6px' }}>
+                              用語
+                            </span>
+                            <strong style={{ color: '#581c87' }}>{glossaryParts[0].replace(/\*\*/g, '')}</strong>
+                            <span style={{ color: '#7e22ce' }}>{glossaryParts[1]} </span>
+                            <span style={{ color: '#334155', fontWeight: '500' }}>{glossaryParts.slice(2).join('')}</span>
+                          </>
+                        ) : (
+                          cleanGlossary
+                        )}
+                      </span>
+                    </li>
+                  );
+                }
+
+                // 🏷️ 見出し（例: **[見出し]**: 内容）のパース
+                const headingMatch = point.match(/^(?:\*\*)?[\[【]([^\]】]+)[\]】](?:\*\*)?[：:]\s*(.*)$/);
+                const headingText = headingMatch ? headingMatch[1].replace(/\*\*/g, '') : null;
+                const bodyText = headingMatch ? headingMatch[2] : point;
+
+                // 💡 カギカッコや数字などのキーフレーズにハイライト
+                const parts = bodyText.split(/(「[^」]+」|【[^】]+】|\b\d+[月日万億円個件台%]?\b)/g);
+
                 return (
                   <li key={idx} style={{
                     display: 'flex',
@@ -310,6 +356,21 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
                       boxShadow: '0 3px 10px rgba(236, 72, 153, 0.3)'
                     }}>{idx + 1}</span>
                     <span style={{ whiteSpace: 'normal', width: '100%' }}>
+                      {headingText && (
+                        <span style={{
+                          display: 'inline-block',
+                          background: 'linear-gradient(135deg, #f3e8ff 0%, #fae8ff 100%)',
+                          color: '#6b21a8',
+                          fontWeight: '800',
+                          padding: '1px 10px',
+                          borderRadius: '8px',
+                          border: '1px solid #e9d5ff',
+                          marginRight: '8px',
+                          fontSize: '0.92rem'
+                        }}>
+                          {headingText}
+                        </span>
+                      )}
                       {parts.map((part, pIdx) => {
                         const isQuote = part.startsWith('「') || part.startsWith('【');
                         const isNumber = /^\d+[月日万億円個ckg%]?$/i.test(part);
