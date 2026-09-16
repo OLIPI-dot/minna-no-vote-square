@@ -548,7 +548,7 @@ const SurveyListView = ({
                           <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '6px' }}>
                             {/* 上段：タイトル（flex-1）と☆のみ右側 */}
                             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '6px' }}>
-                              <span style={{ flex: 1, minWidth: 0, fontWeight: 900, fontSize: '13px', color: '#111827', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', lineHeight: 1.375, wordBreak: 'break-word' }}>
+                              <span style={{ flex: 1, minWidth: 0, fontWeight: 900, fontSize: '13px', color: '#111827', lineHeight: 1.375, wordBreak: 'break-word' }}>
                                 {isPopularRanking && (realIdx === 0 ? '👑 ' : realIdx === 1 ? '🥈 ' : realIdx === 2 ? '🥉 ' : `${realIdx + 1}位 `)}
                                 {s.tags?.includes('お知らせ') && s.title.includes('||')
                                   ? s.title.split('||')[0].trim()
