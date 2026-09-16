@@ -151,28 +151,30 @@ function generateOptions(category, title, description) {
     return ['とても興味がある！', '普通に気になる・知りたい', 'あまり関心がない', '正直、どうでもいいかな'];
 }
 
-// 🤖 AI自動要約・タグ生成用の標準プロンプト定義（要約2点＋らびの感想＋用語解説）
+// 🤖 AI自動要約・タグ生成用の標準プロンプト定義（JSONフォーマット＆十分なmax_tokens）
+const AI_SUMMARY_OPTIONS = {
+    max_tokens: 2048, // 文章が途中で途切れないよう十分に確保
+    temperature: 0.7
+};
+
 const AI_SUMMARY_PROMPT = (articleContent) => `
-あなたはニュースサイト「みんなのアンケート広場」公式キャラクターのうさぎ「らび」です。
-提供された記事テキストから、読者がサクッと理解できて親しみを感じられる「要約」と「らびの感想」を作成してください。
+以下のフォーマットのJSON形式のみを出力してください。余計な解説文やマークダウンの枠組みは不要です。
 
-【出力フォーマット】
-1. **[見出し（15文字以内）]**: 内容説明（50〜80文字程度）
-2. **[見出し（15文字以内）]**: 内容説明（50〜80文字程度）
-・**らびのひとこと**：ニュースに対する感想や、読者への問いかけ（40〜60文字程度）
-・**[専門用語]**とは：初心者にもわかる1行解説（※専門用語や略語がある場合のみ出力。日常ニュースなど解説不要な場合はこの行自体を出力しない）
-
-【出力例】
-1. **[キャリアの垣根を解消]**: 日本国内の「RCS」によるメッセージが、通信キャリアやOSの壁を越えて相互利用できるようになりました。
-2. **[暗号化で安全性も向上]**: GoogleとAppleが共同推進し、AndroidとiPhone間でのやり取りの安全性が高まります。
-・**らびのひとこと**：スマホの壁がなくなって便利になるのは嬉しいね！みんなは普段どのメッセージアプリを使ってる？🐰
-・**RCS**とは：SMSの進化版で、写真や動画も送れる次世代メッセージ規格。
+{
+  "point1_title": "見出し1（15字以内）",
+  "point1_desc": "内容説明1（60〜80字程度）",
+  "point2_title": "見出し2（15字以内）",
+  "point2_desc": "内容説明2（60〜80字程度）",
+  "rabi_comment": "らびの感想や問いかけ（50字程度・語尾は〜だね！等）",
+  "keyword_title": "専門用語（※ある場合のみ。なければ空文字）",
+  "keyword_desc": "用語の1行解説（※ある場合のみ。なければ空文字）"
+}
 
 【必須ルール】
-・箇条書き（1と2）は【必ず2つ】出力してください。
-・「らびのひとこと」では、語尾に「〜だね！」「〜かな？🐰」などを使い、明るく親しみやすいキャラクター性を出してください。最後に「みんなはどう思う？」などの問いかけを入れると最高です。
-・「専門用語とは」の行は、難解な用語がない場合は省略してください（無理に作る必要はありません）。
-・必ず「メイン本文」のみを対象とし、関連記事や広告テキストは完全に無視してください。
+・point1_title と point2_title、point1_desc と point2_desc は【必ず2つとも】出力してください。
+・rabi_comment では、「〜だね！みんなはどう思う？🐰」のように明るく親しみやすい語尾にしてください。
+・keyword_title と keyword_desc は、専門用語や略語がない日常ニュース等の場合は空文字 "" にしてください。
+・途中で文章が切れないよう、必ず完全なJSONとして最後まで出力してください。
 
 【記事テキスト】
 ${articleContent}
@@ -324,18 +326,31 @@ async function fetchRichData(url, newsTitle = '') {
         });
         richDescription = richDescription.trim();
 
-        // ⚡ 要約カード用: 30秒で理解できる要点（ポイント）を抽出してSUMMARYタグを生成
-        const summaryLines = mainParagraphs.slice(0, 3).map(para => {
-            const sentenceMatch = para.match(/^(.+?[。！])/);
-            let s = sentenceMatch ? sentenceMatch[1] : para;
-            s = s.trim().replace(/^([1-9]|[\u2460-\u2468]|[①-⑨])(?![0-9])[.\s、・]?/, '').replace(/^###\s*/, '');
-            return `・${s.length > 100 ? s.substring(0, 98) + '…' : s}`;
-        }).filter(Boolean);
+        // ⚡ 要約カード用: JSON形式で構造化して文章の途中切れを防止！
+        const p1 = mainParagraphs[0] || ogDesc || '';
+        const p2 = mainParagraphs[1] || '';
 
-        if (summaryLines.length > 0) {
-            richDescription = `[[SUMMARY:\n${summaryLines.join('\n')}\n]]\n\n${richDescription}`;
-        } else if (ogDesc && ogDesc.length > 20) {
-            richDescription = `[[SUMMARY:\n・${ogDesc.substring(0, 100)}\n]]\n\n${ogDesc}`;
+        // 句点・感嘆符で文末まで安全に抽出（文字数でぶつ切りにしない）
+        const getFullSentence = (text) => {
+            if (!text) return '';
+            const match = text.match(/^(.+?[。！])/);
+            return (match ? match[1] : text).trim().replace(/^###\s*/, '').replace(/^[-・•]\s*/, '');
+        };
+
+        const p1Sent = getFullSentence(p1);
+        const p2Sent = getFullSentence(p2);
+
+        if (p1Sent) {
+            const summaryObj = {
+                point1_title: "注目ポイント",
+                point1_desc: p1Sent,
+                point2_title: p2Sent ? "ここにも注目" : "",
+                point2_desc: p2Sent || "",
+                rabi_comment: "話題のニュースだね！みんなはどう思う？気になる意見を教えてね🐰🥕",
+                keyword_title: "",
+                keyword_desc: ""
+            };
+            richDescription = `[[SUMMARY:\n${JSON.stringify(summaryObj, null, 2)}\n]]\n\n${richDescription}`;
         }
 
         return { description: richDescription, image: ogImage };

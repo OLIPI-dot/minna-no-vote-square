@@ -39,15 +39,27 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
 
   const isRestricted = displayLink ? isIframeRestricted(displayLink.url) : false;
 
-  // ⚡ 要約カード（SUMMARY）を抽出するらび！
+  // ⚡ 要約カード（SUMMARY）を抽出するらび！JSON形式と従来のテキスト形式の両方に対応
   const summaryTagMatch = description.match(/\[\[SUMMARY:([\s\S]*?)\]\]/);
+  let summaryJson = null;
   let summaryPoints = [];
   if (summaryTagMatch) {
-    summaryPoints = summaryTagMatch[1]
-      .trim()
-      .split('\n')
-      .map(s => s.replace(/^[-・•]\s*/, '').replace(/^([1-9]|[\u2460-\u2468]|[①-⑨])(?![0-9])[.\s、・]?/, '').trim())
-      .filter(Boolean);
+    const rawSummary = summaryTagMatch[1].trim();
+    try {
+      const parsed = JSON.parse(rawSummary);
+      if (parsed && (parsed.point1_desc || parsed.point1_title)) {
+        summaryJson = parsed;
+      }
+    } catch (e) {
+      // JSON形式でない場合はフォールバックとしてテキスト分割
+    }
+
+    if (!summaryJson) {
+      summaryPoints = rawSummary
+        .split('\n')
+        .map(s => s.replace(/^[-・•]\s*/, '').replace(/^([1-9]|[\u2460-\u2468]|[①-⑨])(?![0-9])[.\s、・]?/, '').trim())
+        .filter(Boolean);
+    }
   }
 
   // 📝 らびのコメントを抽出して装飾するらび！
@@ -178,8 +190,8 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
     .map(cleanUnclickableTags)
     .filter(p => !isGarbageText(p) && p.length >= 5);
 
-  // 要約カードを表示する判定（要約文があれば常に表示！）
-  const showSummaryCard = summaryPoints.length > 0;
+  // 要約カードを表示する判定（JSONまたは要約文があれば常に表示！）
+  const showSummaryCard = Boolean(summaryJson || summaryPoints.length > 0);
 
   return (
     <div className="survey-description-container" style={{
@@ -280,153 +292,308 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
               position: 'relative',
               zIndex: 1
             }}>
-              {(() => {
-                let pointCounter = 0;
-                return summaryPoints.map((point, idx) => {
-                  // 🐰 らびのひとこと判定
-                  const isLabiThought = /らびの(ひとこと|感想|視点)[：:]/.test(point);
-                  if (isLabiThought) {
-                    const thoughtText = point.replace(/^.*らびの(ひとこと|感想|視点)[：:]\s*/, '').replace(/^\*\*|\*\*$/g, '');
-                    return (
-                      <li key={idx} style={{
+              {summaryJson ? (
+                // 🎯 JSONフォーマット対応：キー指定の堅牢な描画（文章の途中切れ・パース崩れゼロ！）
+                <>
+                  {/* 注目ポイント1 */}
+                  {summaryJson.point1_desc && (
+                    <li style={{
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      gap: '14px',
+                      marginBottom: '16px',
+                      fontSize: '1.02rem',
+                      color: '#1e293b',
+                      lineHeight: '1.75',
+                      fontWeight: '500'
+                    }}>
+                      <span style={{
+                        flex: '0 0 auto',
+                        width: '28px',
+                        height: '28px',
+                        background: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
+                        color: 'white',
+                        borderRadius: '50%',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '12px',
-                        marginTop: '16px',
-                        padding: '14px 20px',
-                        background: 'linear-gradient(135deg, #fff7ed 0%, #fdf4ff 50%, #f0fdf4 100%)',
-                        border: '1.5px solid #fed7aa',
-                        boxShadow: '0 4px 14px rgba(251, 146, 60, 0.10)',
-                        borderRadius: '20px',
-                        fontSize: '0.98rem',
-                        lineHeight: '1.6'
-                      }}>
-                        <span style={{ fontSize: '1.4rem', flexShrink: 0 }}>🐰</span>
-                        <span style={{ whiteSpace: 'normal', width: '100%' }}>
-                          <strong style={{
-                            background: 'linear-gradient(90deg, #ea580c, #c026d3)',
-                            WebkitBackgroundClip: 'text',
-                            WebkitTextFillColor: 'transparent',
-                            fontWeight: '900',
-                            marginRight: '8px'
+                        justifyContent: 'center',
+                        fontSize: '0.85rem',
+                        fontWeight: '900',
+                        marginTop: '2px',
+                        boxShadow: '0 3px 10px rgba(236, 72, 153, 0.3)'
+                      }}>1</span>
+                      <span style={{ whiteSpace: 'normal', width: '100%' }}>
+                        {summaryJson.point1_title && (
+                          <span style={{
+                            display: 'inline-block',
+                            background: 'linear-gradient(135deg, #f3e8ff 0%, #fae8ff 100%)',
+                            color: '#6b21a8',
+                            fontWeight: '800',
+                            padding: '1px 10px',
+                            borderRadius: '8px',
+                            border: '1px solid #e9d5ff',
+                            marginRight: '8px',
+                            fontSize: '0.92rem'
                           }}>
-                            らびのひとこと：
-                          </strong>
-                          <span style={{ color: '#431407', fontWeight: '600' }}>{thoughtText}</span>
-                        </span>
-                      </li>
-                    );
-                  }
+                            {summaryJson.point1_title}
+                          </span>
+                        )}
+                        {summaryJson.point1_desc}
+                      </span>
+                    </li>
+                  )}
 
-                  // 💡 用語解説（「〜とは：」を含む場合）の判定
-                  const isGlossary = /とは[：:]/.test(point) || point.startsWith('💡');
-                  if (isGlossary) {
-                    const cleanGlossary = point.replace(/^💡\s*/, '').replace(/^\*\*|\*\*$/g, '');
-                    // 「用語」と「解説」を分離してより見やすく
-                    const glossaryParts = cleanGlossary.split(/(とは[：:])/);
-                    return (
-                      <li key={idx} style={{
+                  {/* 注目ポイント2 */}
+                  {summaryJson.point2_desc && (
+                    <li style={{
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      gap: '14px',
+                      marginBottom: '16px',
+                      fontSize: '1.02rem',
+                      color: '#1e293b',
+                      lineHeight: '1.75',
+                      fontWeight: '500'
+                    }}>
+                      <span style={{
+                        flex: '0 0 auto',
+                        width: '28px',
+                        height: '28px',
+                        background: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
+                        color: 'white',
+                        borderRadius: '50%',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '10px',
-                        marginTop: '16px',
-                        padding: '12px 18px',
-                        background: 'linear-gradient(135deg, rgba(243, 232, 255, 0.7) 0%, rgba(253, 244, 255, 0.7) 100%)',
-                        border: '1.5px dashed #c084fc',
-                        borderRadius: '16px',
-                        fontSize: '0.92rem',
-                        color: '#4c1d95',
-                        lineHeight: '1.6'
-                      }}>
-                        <span style={{ fontSize: '1.2rem', flexShrink: 0 }}>💡</span>
-                        <span style={{ whiteSpace: 'normal', width: '100%', fontWeight: '600' }}>
-                          {glossaryParts.length >= 3 ? (
-                            <>
-                              <span style={{ background: '#7e22ce', color: '#fff', padding: '2px 8px', borderRadius: '6px', fontSize: '0.85rem', marginRight: '6px' }}>
-                                用語
-                              </span>
-                              <strong style={{ color: '#581c87' }}>{glossaryParts[0].replace(/\*\*/g, '')}</strong>
-                              <span style={{ color: '#7e22ce' }}>{glossaryParts[1]} </span>
-                              <span style={{ color: '#334155', fontWeight: '500' }}>{glossaryParts.slice(2).join('')}</span>
-                            </>
-                          ) : (
-                            cleanGlossary
-                          )}
-                        </span>
-                      </li>
-                    );
-                  }
+                        justifyContent: 'center',
+                        fontSize: '0.85rem',
+                        fontWeight: '900',
+                        marginTop: '2px',
+                        boxShadow: '0 3px 10px rgba(236, 72, 153, 0.3)'
+                      }}>2</span>
+                      <span style={{ whiteSpace: 'normal', width: '100%' }}>
+                        {summaryJson.point2_title && (
+                          <span style={{
+                            display: 'inline-block',
+                            background: 'linear-gradient(135deg, #f3e8ff 0%, #fae8ff 100%)',
+                            color: '#6b21a8',
+                            fontWeight: '800',
+                            padding: '1px 10px',
+                            borderRadius: '8px',
+                            border: '1px solid #e9d5ff',
+                            marginRight: '8px',
+                            fontSize: '0.92rem'
+                          }}>
+                            {summaryJson.point2_title}
+                          </span>
+                        )}
+                        {summaryJson.point2_desc}
+                      </span>
+                    </li>
+                  )}
 
-                  // 通常の要約箇条書き（番号をインクリメント）
-                  pointCounter++;
-                  const currentNum = pointCounter;
-
-                // 🏷️ 見出し（例: **[見出し]**: 内容）のパース
-                const headingMatch = point.match(/^(?:\*\*)?[\[【]([^\]】]+)[\]】](?:\*\*)?[：:]\s*(.*)$/);
-                const headingText = headingMatch ? headingMatch[1].replace(/\*\*/g, '') : null;
-                const bodyText = headingMatch ? headingMatch[2] : point;
-
-                // 💡 カギカッコや数字などのキーフレーズにハイライト
-                const parts = bodyText.split(/(「[^」]+」|【[^】]+】|\b\d+[月日万億円個件台%]?\b)/g);
-
-                return (
-                  <li key={idx} style={{
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    gap: '14px',
-                    marginBottom: idx < summaryPoints.length - 1 ? '16px' : '0',
-                    fontSize: '1.02rem',
-                    color: '#1e293b',
-                    lineHeight: '1.75',
-                    fontWeight: '500'
-                  }}>
-                    <span style={{
-                      flex: '0 0 auto',
-                      width: '28px',
-                      height: '28px',
-                      background: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
-                      color: 'white',
-                      borderRadius: '50%',
+                  {/* らびのひとこと */}
+                  {summaryJson.rabi_comment && (
+                    <li style={{
                       display: 'flex',
                       alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '0.85rem',
-                      fontWeight: '900',
-                      marginTop: '2px',
-                      boxShadow: '0 3px 10px rgba(236, 72, 153, 0.3)'
-                    }}>{currentNum}</span>
-                    <span style={{ whiteSpace: 'normal', width: '100%' }}>
-                      {headingText && (
-                        <span style={{
-                          display: 'inline-block',
-                          background: 'linear-gradient(135deg, #f3e8ff 0%, #fae8ff 100%)',
-                          color: '#6b21a8',
-                          fontWeight: '800',
-                          padding: '1px 10px',
-                          borderRadius: '8px',
-                          border: '1px solid #e9d5ff',
-                          marginRight: '8px',
-                          fontSize: '0.92rem'
+                      gap: '12px',
+                      marginTop: '16px',
+                      padding: '14px 20px',
+                      background: 'linear-gradient(135deg, #fff7ed 0%, #fdf4ff 50%, #f0fdf4 100%)',
+                      border: '1.5px solid #fed7aa',
+                      boxShadow: '0 4px 14px rgba(251, 146, 60, 0.10)',
+                      borderRadius: '20px',
+                      fontSize: '0.98rem',
+                      lineHeight: '1.6'
+                    }}>
+                      <span style={{ fontSize: '1.4rem', flexShrink: 0 }}>🐰</span>
+                      <span style={{ whiteSpace: 'normal', width: '100%' }}>
+                        <strong style={{
+                          background: 'linear-gradient(90deg, #ea580c, #c026d3)',
+                          WebkitBackgroundClip: 'text',
+                          WebkitTextFillColor: 'transparent',
+                          fontWeight: '900',
+                          marginRight: '8px'
                         }}>
-                          {headingText}
+                          らびのひとこと：
+                        </strong>
+                        <span style={{ color: '#431407', fontWeight: '600' }}>{summaryJson.rabi_comment}</span>
+                      </span>
+                    </li>
+                  )}
+
+                  {/* 専門用語の解説（ある場合のみ） */}
+                  {summaryJson.keyword_title && summaryJson.keyword_desc && (
+                    <li style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '10px',
+                      marginTop: '16px',
+                      padding: '12px 18px',
+                      background: 'linear-gradient(135deg, rgba(243, 232, 255, 0.7) 0%, rgba(253, 244, 255, 0.7) 100%)',
+                      border: '1.5px dashed #c084fc',
+                      borderRadius: '16px',
+                      fontSize: '0.92rem',
+                      color: '#4c1d95',
+                      lineHeight: '1.6'
+                    }}>
+                      <span style={{ fontSize: '1.2rem', flexShrink: 0 }}>💡</span>
+                      <span style={{ whiteSpace: 'normal', width: '100%', fontWeight: '600' }}>
+                        <span style={{ background: '#7e22ce', color: '#fff', padding: '2px 8px', borderRadius: '6px', fontSize: '0.85rem', marginRight: '6px' }}>
+                          用語
                         </span>
-                      )}
-                      {parts.map((part, pIdx) => {
-                        const isQuote = part.startsWith('「') || part.startsWith('【');
-                        const isNumber = /^\d+[月日万億円個ckg%]?$/i.test(part);
-                        if (isQuote) {
-                          return <strong key={pIdx} style={{ color: '#6b21a8', fontWeight: '900', background: 'rgba(168, 85, 247, 0.1)', padding: '1px 6px', borderRadius: '6px', margin: '0 2px' }}>{part}</strong>;
-                        }
-                        if (isNumber) {
-                          return <strong key={pIdx} style={{ color: '#be185d', fontWeight: '900' }}>{part}</strong>;
-                        }
-                        return part;
-                      })}
-                    </span>
-                  </li>
-                );
-              });
-            })()}
+                        <strong style={{ color: '#581c87' }}>{summaryJson.keyword_title}</strong>
+                        <span style={{ color: '#7e22ce' }}>とは： </span>
+                        <span style={{ color: '#334155', fontWeight: '500' }}>{summaryJson.keyword_desc}</span>
+                      </span>
+                    </li>
+                  )}
+                </>
+              ) : (
+                // 🔄 従来のテキスト配列形式に対するフォールバック
+                (() => {
+                  let pointCounter = 0;
+                  return summaryPoints.map((point, idx) => {
+                    // 🐰 らびのひとこと判定
+                    const isLabiThought = /らびの(ひとこと|感想|視点)[：:]/.test(point);
+                    if (isLabiThought) {
+                      const thoughtText = point.replace(/^.*らびの(ひとこと|感想|視点)[：:]\s*/, '').replace(/^\*\*|\*\*$/g, '');
+                      return (
+                        <li key={idx} style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '12px',
+                          marginTop: '16px',
+                          padding: '14px 20px',
+                          background: 'linear-gradient(135deg, #fff7ed 0%, #fdf4ff 50%, #f0fdf4 100%)',
+                          border: '1.5px solid #fed7aa',
+                          boxShadow: '0 4px 14px rgba(251, 146, 60, 0.10)',
+                          borderRadius: '20px',
+                          fontSize: '0.98rem',
+                          lineHeight: '1.6'
+                        }}>
+                          <span style={{ fontSize: '1.4rem', flexShrink: 0 }}>🐰</span>
+                          <span style={{ whiteSpace: 'normal', width: '100%' }}>
+                            <strong style={{
+                              background: 'linear-gradient(90deg, #ea580c, #c026d3)',
+                              WebkitBackgroundClip: 'text',
+                              WebkitTextFillColor: 'transparent',
+                              fontWeight: '900',
+                              marginRight: '8px'
+                            }}>
+                              らびのひとこと：
+                            </strong>
+                            <span style={{ color: '#431407', fontWeight: '600' }}>{thoughtText}</span>
+                          </span>
+                        </li>
+                      );
+                    }
+
+                    // 💡 用語解説（「〜とは：」を含む場合）の判定
+                    const isGlossary = /とは[：:]/.test(point) || point.startsWith('💡');
+                    if (isGlossary) {
+                      const cleanGlossary = point.replace(/^💡\s*/, '').replace(/^\*\*|\*\*$/g, '');
+                      const glossaryParts = cleanGlossary.split(/(とは[：:])/);
+                      return (
+                        <li key={idx} style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '10px',
+                          marginTop: '16px',
+                          padding: '12px 18px',
+                          background: 'linear-gradient(135deg, rgba(243, 232, 255, 0.7) 0%, rgba(253, 244, 255, 0.7) 100%)',
+                          border: '1.5px dashed #c084fc',
+                          borderRadius: '16px',
+                          fontSize: '0.92rem',
+                          color: '#4c1d95',
+                          lineHeight: '1.6'
+                        }}>
+                          <span style={{ fontSize: '1.2rem', flexShrink: 0 }}>💡</span>
+                          <span style={{ whiteSpace: 'normal', width: '100%', fontWeight: '600' }}>
+                            {glossaryParts.length >= 3 ? (
+                              <>
+                                <span style={{ background: '#7e22ce', color: '#fff', padding: '2px 8px', borderRadius: '6px', fontSize: '0.85rem', marginRight: '6px' }}>
+                                  用語
+                                </span>
+                                <strong style={{ color: '#581c87' }}>{glossaryParts[0].replace(/\*\*/g, '')}</strong>
+                                <span style={{ color: '#7e22ce' }}>{glossaryParts[1]} </span>
+                                <span style={{ color: '#334155', fontWeight: '500' }}>{glossaryParts.slice(2).join('')}</span>
+                              </>
+                            ) : (
+                              cleanGlossary
+                            )}
+                          </span>
+                        </li>
+                      );
+                    }
+
+                    // 通常の要約箇条書き
+                    pointCounter++;
+                    const currentNum = pointCounter;
+                    const headingMatch = point.match(/^(?:\*\*)?[\[【]([^\]】]+)[\]】](?:\*\*)?[：:]\s*(.*)$/);
+                    const headingText = headingMatch ? headingMatch[1].replace(/\*\*/g, '') : null;
+                    const bodyText = headingMatch ? headingMatch[2] : point;
+                    const parts = bodyText.split(/(「[^」]+」|【[^】]+】|\b\d+[月日万億円個件台%]?\b)/g);
+
+                    return (
+                      <li key={idx} style={{
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        gap: '14px',
+                        marginBottom: idx < summaryPoints.length - 1 ? '16px' : '0',
+                        fontSize: '1.02rem',
+                        color: '#1e293b',
+                        lineHeight: '1.75',
+                        fontWeight: '500'
+                      }}>
+                        <span style={{
+                          flex: '0 0 auto',
+                          width: '28px',
+                          height: '28px',
+                          background: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
+                          color: 'white',
+                          borderRadius: '50%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '0.85rem',
+                          fontWeight: '900',
+                          marginTop: '2px',
+                          boxShadow: '0 3px 10px rgba(236, 72, 153, 0.3)'
+                        }}>{currentNum}</span>
+                        <span style={{ whiteSpace: 'normal', width: '100%' }}>
+                          {headingText && (
+                            <span style={{
+                              display: 'inline-block',
+                              background: 'linear-gradient(135deg, #f3e8ff 0%, #fae8ff 100%)',
+                              color: '#6b21a8',
+                              fontWeight: '800',
+                              padding: '1px 10px',
+                              borderRadius: '8px',
+                              border: '1px solid #e9d5ff',
+                              marginRight: '8px',
+                              fontSize: '0.92rem'
+                            }}>
+                              {headingText}
+                            </span>
+                          )}
+                          {parts.map((part, pIdx) => {
+                            const isQuote = part.startsWith('「') || part.startsWith('【');
+                            const isNumber = /^\d+[月日万億円個ckg%]?$/i.test(part);
+                            if (isQuote) {
+                              return <strong key={pIdx} style={{ color: '#6b21a8', fontWeight: '900', background: 'rgba(168, 85, 247, 0.1)', padding: '1px 6px', borderRadius: '6px', margin: '0 2px' }}>{part}</strong>;
+                            }
+                            if (isNumber) {
+                              return <strong key={pIdx} style={{ color: '#be185d', fontWeight: '900' }}>{part}</strong>;
+                            }
+                            return part;
+                          })}
+                        </span>
+                      </li>
+                    );
+                  });
+                })()
+              )}
             </ul>
           </div>
         )}
