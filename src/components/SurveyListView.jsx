@@ -323,15 +323,15 @@ const SurveyListView = ({
       )}
 
       {/* ⚖️ 公式・ユーザー切り替えタブ (常に表示してレイアウトを安定させるらび！) */}
-      <div className="official-tab-navigation" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 8px 8px 8px', marginBottom: '16px', borderBottom: '2px solid #f1f5f9', width: '100%', boxSizing: 'border-box' }}>
-        <div style={{ display: 'flex', gap: '4px', overflowX: 'auto', overflowY: 'visible', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch', flex: 1, paddingRight: '4px' }}>
+      <div className="official-tab-navigation" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 8px 0 8px', marginBottom: '16px', borderBottom: '2px solid #f1f5f9', width: '100%', boxSizing: 'border-box', overflow: 'visible' }}>
+        <div style={{ display: 'flex', gap: '4px', overflowX: 'auto', overflowY: 'visible', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch', flex: 1, paddingRight: '4px', paddingTop: '6px', paddingBottom: '8px' }}>
         {!['mine', 'watching'].includes(sortMode) ? (
           <>
             <button
               onClick={() => setActiveTab('official')}
               className={`tab-btn ${activeTab === 'official' ? 'active' : ''}`}
               style={{
-                padding: '6px 8px', fontSize: '0.75rem', fontWeight: 'bold',
+                padding: '4px 6px', fontSize: '0.72rem', fontWeight: 'bold',
                 color: activeTab === 'official' ? '#8b5cf6' : '#94a3b8',
                 background: 'none', border: 'none',
                 borderBottom: activeTab === 'official' ? '3px solid #8b5cf6' : '3px solid transparent',
@@ -348,7 +348,7 @@ const SurveyListView = ({
               onClick={() => setActiveTab('user')}
               className={`tab-btn ${activeTab === 'user' ? 'active' : ''}`}
               style={{
-                padding: '6px 8px', fontSize: '0.75rem', fontWeight: 'bold',
+                padding: '4px 6px', fontSize: '0.72rem', fontWeight: 'bold',
                 color: activeTab === 'user' ? '#8b5cf6' : '#94a3b8',
                 background: 'none', border: 'none',
                 borderBottom: activeTab === 'user' ? '3px solid #8b5cf6' : '3px solid transparent',
@@ -475,15 +475,18 @@ const SurveyListView = ({
                         background: 'linear-gradient(135deg, #fffbeb, #fff7ed)',
                         border: '2px solid #fbbf24',
                         boxShadow: '0 8px 15px -3px rgba(251, 191, 36, 0.15)',
-                        position: 'relative', '--cat-color': '#fbbf24'
+                        position: 'relative', '--cat-color': '#fbbf24',
+                        ...(viewMode === 'list' ? { display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '12px', padding: '10px', minHeight: '96px' } : {})
                       } : {
                         background: 'white',
                         border: `2px solid ${catStyle.color}44`,
-                        '--cat-color': catStyle.color
+                        '--cat-color': catStyle.color,
+                        position: 'relative',
+                        ...(viewMode === 'list' ? { display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '12px', padding: '10px', minHeight: '96px' } : {})
                       }}
                     >
                       {/* 🛡️ 画像の有無に関わらず、必ず同じ枠組み（video-thumb-wrapper）を描画してレイアウト崩れを防ぐ */}
-                      <div className="video-thumb-wrapper" style={{ position: 'relative', width: '100%', aspectRatio: '16/9', overflow: 'hidden' }}>
+                      <div className="video-thumb-wrapper" style={viewMode === 'list' ? { position: 'relative', flexShrink: 0, width: '96px', height: '80px', overflow: 'hidden', borderRadius: '10px' } : { position: 'relative', width: '100%', aspectRatio: '16/9', overflow: 'hidden' }}>
                         <div className="category-icon-thumb placeholder-base" style={{
                           position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
                           background: catStyle.color, opacity: 0.1, zIndex: 0,
@@ -540,63 +543,91 @@ const SurveyListView = ({
                       </div>
 
                       <div className="survey-item-content">
-                        <div className="survey-item-info">
-                          <span className="survey-item-title" style={viewMode === 'grid' ? {
-                            backgroundColor: 'transparent', padding: '0', borderRadius: '0',
-                            display: 'block', marginBottom: '4px', boxShadow: 'none',
-                            border: 'none', color: '#333'
-                          } : {
-                            backgroundColor: 'transparent', padding: '4px 0', borderRadius: '0',
-                            display: 'block', marginBottom: '10px', boxShadow: 'none',
-                            border: 'none', color: '#1e293b'
-                          }}>
-                            {isPopularRanking && (realIdx === 0 ? '👑 ' : realIdx === 1 ? '🥈 ' : realIdx === 2 ? '🥉 ' : `${realIdx + 1}位 `)}
-                            {s.tags?.includes('お知らせ') && s.title.includes('||')
-                              ? s.title.split('||')[0].trim()
-                              : s.title}
-                            {s.tags?.includes('お知らせ') && (
-                              <span style={{ marginLeft: '8px', fontSize: '1.2rem', display: 'inline-block', verticalAlign: 'middle' }}>✨</span>
+                        {viewMode === 'list' ? (
+                          /* ===== リスト表示レイアウト ===== */
+                          <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '6px' }}>
+                            {/* 上段：タイトルと☆+受付中を横並び（absoluteなし） */}
+                            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '8px' }}>
+                              <span style={{ flex: 1, minWidth: 0, fontWeight: 900, fontSize: '13px', color: '#111827', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', lineHeight: 1.375, wordBreak: 'break-word' }}>
+                                {isPopularRanking && (realIdx === 0 ? '👑 ' : realIdx === 1 ? '🥈 ' : realIdx === 2 ? '🥉 ' : `${realIdx + 1}位 `)}
+                                {s.tags?.includes('お知らせ') && s.title.includes('||')
+                                  ? s.title.split('||')[0].trim()
+                                  : s.title}
+                              </span>
+                              {/* 右側：☆ + 受付中バッジ（flex-shrink-0で絶対に潰れない） */}
+                              <div style={{ display: 'flex', flexShrink: 0, alignItems: 'center', gap: '4px' }}>
+                                <button
+                                  className={`watch-star-btn ${watchedIds.includes(s.id) ? 'active' : ''}`}
+                                  onClick={e => toggleWatch(e, s.id)}
+                                  aria-label={watchedIds.includes(s.id) ? "ウォッチリストから削除" : "ウォッチリストに追加"}
+                                  style={{ background: 'none', border: 'none', fontSize: '1rem', cursor: 'pointer', padding: '2px', lineHeight: 1, color: watchedIds.includes(s.id) ? '#f59e0b' : '#94a3b8' }}
+                                >{watchedIds.includes(s.id) ? '★' : '☆'}</button>
+                                <span className={`status-badge ${isEnded ? 'ended' : 'active'}`} style={{ fontSize: '0.6rem', padding: '2px 5px', whiteSpace: 'nowrap' }}>
+                                  {isEnded ? '終了' : '受付中'}
+                                </span>
+                              </div>
+                            </div>
+                            {/* 下段：メタ情報（日付・票数） */}
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                              {showScoreBadge && <span className="popular-score-badge">{badgeLabel}</span>}
+                              <span className="survey-item-created-at" title="作成日時" style={{ fontSize: '0.68rem', whiteSpace: 'nowrap' }}>🐣 {formatWithDay(s.created_at)}</span>
+                              {s.deadline && <span className="survey-item-deadline" style={{ fontSize: '0.68rem', whiteSpace: 'nowrap' }}>〆: {formatWithDay(s.deadline)}</span>}
+                              <span style={{ fontSize: '0.68rem', color: '#64748b', whiteSpace: 'nowrap' }}>🗳️ {s.total_votes || 0}</span>
+                              <span style={{ fontSize: '0.68rem', color: '#64748b', whiteSpace: 'nowrap' }}>💬 {s.comment_count || 0}</span>
+                            </div>
+                          </div>
+                        ) : (
+                          /* ===== グリッド表示レイアウト（従来通り） ===== */
+                          <>
+                            <div className="survey-item-info">
+                              <span className="survey-item-title" style={{ backgroundColor: 'transparent', padding: '0', borderRadius: '0', display: 'block', marginBottom: '4px', boxShadow: 'none', border: 'none', color: '#333' }}>
+                                {isPopularRanking && (realIdx === 0 ? '👑 ' : realIdx === 1 ? '🥈 ' : realIdx === 2 ? '🥉 ' : `${realIdx + 1}位 `)}
+                                {s.tags?.includes('お知らせ') && s.title.includes('||')
+                                  ? s.title.split('||')[0].trim()
+                                  : s.title}
+                                {s.tags?.includes('お知らせ') && (
+                                  <span style={{ marginLeft: '8px', fontSize: '1.2rem', display: 'inline-block', verticalAlign: 'middle' }}>✨</span>
+                                )}
+                              </span>
+                              {/* グリッド：☆ボタンのみ右上絶対配置（受付中バッジは画像の下の情報に表示） */}
+                              <div style={{ position: 'absolute', top: '8px', right: '8px', zIndex: 10 }}>
+                                <button
+                                  className={`watch-star-btn ${watchedIds.includes(s.id) ? 'active' : ''}`}
+                                  onClick={e => toggleWatch(e, s.id)}
+                                  aria-label={watchedIds.includes(s.id) ? "ウォッチリストから削除" : "ウォッチリストに追加"}
+                                  style={{ background: 'rgba(255,255,255,0.9)', border: 'none', borderRadius: '50%', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1rem', cursor: 'pointer', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', padding: 0 }}
+                                >{watchedIds.includes(s.id) ? '★' : '☆'}</button>
+                              </div>
+                            </div>
+                            <div className="survey-item-meta-row">
+                              {showScoreBadge && <span className="popular-score-badge">{badgeLabel}</span>}
+                              <span className={`status-badge ${isEnded ? 'ended' : 'active'}`}>{isEnded ? '終了' : '受付中'}</span>
+                              <span className="survey-item-created-at" title="作成日時">🐣 {formatWithDay(s.created_at)}</span>
+                              {s.deadline && <span className="survey-item-deadline">〆: {formatWithDay(s.deadline)}</span>}
+                              <div className="card-stats-row">
+                                <span className="survey-item-votes" title="投票数">🗳️ {s.total_votes || 0}</span>
+                                <span className="survey-item-views" title="閲覧数">👁️ {s.view_count || 0}</span>
+                                <span className="survey-item-likes" title="いいね数">👍 {s.likes_count || 0}</span>
+                                <span className="survey-item-comments" title="コメント数">💬 {s.comment_count || 0}</span>
+                              </div>
+                            </div>
+                            {s.tags && s.tags.length > 0 && (
+                              <div className="tag-bubble-row">
+                                {s.tags
+                                  .filter(tag => !tag.startsWith('_STAMP:') && tag.length <= 20 && tag !== s.title)
+                                  .map(tag => (
+                                    <span
+                                      key={tag}
+                                      className={`tag-bubble ${filterTag === tag ? 'active' : ''}`}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        setFilterTag(filterTag === tag ? '' : tag);
+                                      }}
+                                    >#{tag}</span>
+                                  ))}
+                              </div>
                             )}
-                          </span>
-                          <div className="card-right-actions">
-                            <button
-                              className={`watch-star-btn ${watchedIds.includes(s.id) ? 'active' : ''}`}
-                              onClick={e => toggleWatch(e, s.id)}
-                              aria-label={watchedIds.includes(s.id) ? "ウォッチリストから削除" : "ウォッチリストに追加"}
-                            >{watchedIds.includes(s.id) ? '★' : '☆'}</button>
-                            <span className={`status-badge ${isEnded ? 'ended' : 'active'}`}>
-                              {isEnded ? '終了' : '受付中'}
-                            </span>
-                          </div>
-                        </div>
-
-                        <div className="survey-item-meta-row">
-                          {showScoreBadge && <span className="popular-score-badge">{badgeLabel}</span>}
-                          <span className="survey-item-created-at" title="作成日時">🐣 {formatWithDay(s.created_at)}</span>
-                          {s.deadline && <span className="survey-item-deadline">〆: {formatWithDay(s.deadline)}</span>}
-                          <div className="card-stats-row">
-                            <span className="survey-item-votes" title="投票数">🗳️ {s.total_votes || 0}</span>
-                            <span className="survey-item-views" title="閲覧数">👁️ {s.view_count || 0}</span>
-                            <span className="survey-item-likes" title="いいね数">👍 {s.likes_count || 0}</span>
-                            <span className="survey-item-comments" title="コメント数">💬 {s.comment_count || 0}</span>
-                          </div>
-                        </div>
-
-                        {s.tags && s.tags.length > 0 && (
-                          <div className="tag-bubble-row">
-                            {s.tags
-                              .filter(tag => !tag.startsWith('_STAMP:') && tag.length <= 20 && tag !== s.title)
-                              .map(tag => (
-                                <span
-                                  key={tag}
-                                  className={`tag-bubble ${filterTag === tag ? 'active' : ''}`}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setFilterTag(filterTag === tag ? '' : tag);
-                                  }}
-                                >#{tag}</span>
-                              ))}
-                          </div>
+                          </>
                         )}
                       </div>
                     </div>
