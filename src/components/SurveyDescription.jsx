@@ -1,9 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import SourcePreviewModal from './SourcePreviewModal';
 
 const SurveyDescription = ({ description, renderCommentContent, isTimeUp, children }) => {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const contentTopRef = useRef(null);
+
+  const handleToggle = () => {
+    if (isExpanded) {
+      // 閉じる時は、まず本文の先頭（アンケート投票枠付近）へスクロールさせる
+      contentTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    setIsExpanded(!isExpanded);
+  };
 
   if (!description) return null;
 
@@ -688,7 +697,9 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
         )}
 
         {/* 🗳️ 投票コンポーネント（AI要約・らびのひとことの直下に配置！） */}
-        {children}
+        <div ref={contentTopRef}>
+          {children}
+        </div>
 
         {/* 本文 💡 (簡易マークダウンパースで見出しと段落をオシャレに装飾) */}
         {mainBodyOnly && (
@@ -779,7 +790,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
 
             <div style={{ textAlign: 'center', marginTop: '10px', marginBottom: '20px' }}>
               <button 
-                onClick={() => setIsExpanded(!isExpanded)}
+                onClick={handleToggle}
                 style={{
                   background: '#f8fafc',
                   border: '2px solid #cbd5e1',
