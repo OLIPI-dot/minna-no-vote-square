@@ -1,4 +1,5 @@
 const axios = require('axios');
+const cheerio = require('cheerio');
 const { createClient } = require('@supabase/supabase-js');
 const fs = require('fs');
 const path = require('path');
@@ -150,15 +151,62 @@ function generateOptions(category, title, description) {
     return ['とても興味がある！', '普通に気になる・知りたい', 'あまり関心がない', '正直、どうでもいいかな'];
 }
 
+// 🤖 AI自動要約・タグ生成用の標準プロンプト定義（アドバイス準拠）
+const AI_SUMMARY_PROMPT = (articleContent) => `
+あなたはニュース編集者です。
+提供された記事テキストから、読者が30秒で理解できる要点（注目ポイント）を2つ作成してください。
+
+【出力フォーマット】
+1. **[見出し（15文字以内）]**: 内容説明（50〜80文字程度）
+2. **[見出し（15文字以内）]**: 内容説明（50〜80文字程度）
+
+【必須ルール】
+・必ず記事の「メイン本文」のみを要約対象にしてください。
+・「関連記事」「おすすめ記事」「アクセスランキング」「広告」等のテキストが含まれている場合は完全に無視・除外してください。
+・メインのテーマと異なるトピック（別記事の見出し等）は要約に絶対に含めないでください。
+・重要な数値や日付、固有名詞は分かりやすく記載してください。
+
+【記事テキスト】
+${articleContent}
+`.trim();
+
+const AI_TAG_PROMPT = (articleContent) => `
+あなたはニュースの分類を行う専門家です。
+提供された記事テキストを分析し、最も関連性の高いタグを3〜5個抽出してください。
+
+【タグ抽出のルール】
+・必ず記事の「メイン本文」の内容に直接関係するキーワードのみを選定してください。
+・サイドバーや関連記事、広告、サイトのナビゲーションに由来する単語は【絶対に】除外してください。
+・固有名詞（製品名、企業名、人物名）、主要カテゴリ（「SSD」「自動運転」など）を優先してください。
+・「ニュース」「話題」「最新」などの一般的すぎる抽象的な単語は除外してください。
+
+【出力フォーマット】
+カンマ区切りで出力してください（例: タグ1, タグ2, タグ3）
+
+【記事テキスト】
+${articleContent}
+`.trim();
+
+// 🚫 NGタグ・ブラックリストフィルター（抽象的すぎる単語やノイズを自動除外！）
+const BLACKLIST_TAGS = ['ニュース', '最新ニュース', '話題', 'まとめ', 'おすすめ', 'トピックス', '最新', '速報', 'アンケート'];
+
+function filterTags(tags) {
+    return (tags || [])
+        .map(tag => String(tag).trim())
+        .filter(tag => tag.length >= 2 && tag.length <= 15)
+        .filter(tag => !BLACKLIST_TAGS.includes(tag))
+        .filter(tag => !tag.includes('(') && !tag.includes(')') && !tag.includes('【') && !tag.includes('】'));
+}
+
 /**
- * 🏷️ タグ生成（以前の強化版を維持らび！）
+ * 🏷️ タグ生成（本文優先＆ブラックリスト強化版！）
  */
 function generateTags(category, title, description) {
     const tags = new Set();
     const text = (title + ' ' + (description || '')).toLowerCase();
 
-    // カテゴリをタグに入れるらび（不正な長文や記号付きは除外）
-    if (category && category.length <= 10 && !category.includes('(')) {
+    // カテゴリを基本タグに入れる（ただし除外リストに入っていない場合のみ）
+    if (category && category.length <= 10 && !BLACKLIST_TAGS.includes(category)) {
         tags.add(category);
     }
 
@@ -166,44 +214,74 @@ function generateTags(category, title, description) {
         'アニメ': 'アニメ', 'ゲーム': 'ゲーム', '映画': '映画', '漫画': '漫画', 'コミック': 'コミック',
         'youtube': 'YouTube', 'vtuber': 'VTuber',
         '芸能': '芸能', 'ジャニーズ': '芸能', 'アイドル': 'アイドル', 'お笑い': 'お笑い',
-        '事件': '事件', '政治': '政治', '経済': '経済', '社会': '社会', '物価': 'トレンド',
-        'sns': 'SNS話題', 'ネット': 'ネット話題', '炎上': 'SNS話題', 'トレンド': 'トレンド',
-        '新感覚': '新感覚', 'コラボ': 'コラボ', 'アプリ': 'スマホアプリ', 'イベント': 'イベント',
+        '事件': '社会', '政治': '政治', '経済': '経済', '社会': '社会', '物価': '経済',
+        'sns': 'SNS', '新感覚': '注目作', 'コラボ': 'コラボ', 'アプリ': 'スマホアプリ', 'イベント': 'イベント',
         '期間限定': '期間限定', '新発売': '新発売', 'グルメ': 'グルメ', 'スイーツ': 'スイーツ',
-        '発表': '発表', '解禁': '解禁', '緊急': '緊急', '衝撃': '衝撃', '話題': '話題',
-        'switch': 'ゲーム', 'ps5': 'ゲーム', 'iphone': 'Apple', 'mac': 'Apple',
-        'ai': '生成AI', 'gemini': '生成AI', 'claude': '生成AI', 'usb': 'ガジェット',
-        '大雨': '防災', '氾濫': '防災'
+        '発表': '公式発表', 'switch': 'Nintendo Switch', 'ps5': 'PS5', 'iphone': 'iPhone', 'mac': 'Mac', 'apple': 'Apple',
+        'ai': '生成AI', 'gemini': 'Gemini', 'claude': 'Claude', 'chatgpt': 'ChatGPT', 'usb': 'ガジェット',
+        '大雨': '防災', '氾濫': '防災', '地震': '防災', '避難': '防災', 'steam': 'Steam'
     };
 
-    // テキストをスキャンしてタグを増やすらび
+    // テキストをスキャンして具体的なキーワードタグを抽出
     for (const [kw, tagName] of Object.entries(keywordMap)) {
         if (text.includes(kw.toLowerCase())) {
             tags.add(tagName);
         }
     }
 
-    // 🏷️ 20文字以上やタイトル化けを除外する厳格フィルターらび！
-    let finalTags = Array.from(tags).filter(t => t && t.length >= 2 && t.length <= 15 && t !== title && !t.includes('(') && !t.includes(')'));
+    // フィルタリング（ブラックリスト・長さチェック）
+    let cleanTags = filterTags(Array.from(tags).filter(t => t !== title));
 
-    // 🏷️ 最低2つ以上にする魔法！1つしかない場合は、カテゴリに合わせた賑やかしタグを添えるらび
-    if (finalTags.length < 2) {
+    // もしタグが不足している場合は、カテゴリに応じた具体的タグを補う
+    if (cleanTags.length < 2) {
         const fallback = {
-            'ゲーム': '最新作',
-            'ニュース': '最新ニュース',
-            'エンタメ': 'エンタメ情報',
-            '芸能': 'トピックス',
-            '話題': 'トレンド',
-            'その他': '注目'
+            'ゲーム': 'ゲーム特集',
+            'エンタメ': 'エンタメ特集',
+            'テクノロジー': 'テクノロジー',
+            '社会': '社会',
+            '生活': 'ライフスタイル'
         };
-        const extra = fallback[category] || '注目';
-        if (!finalTags.includes(extra)) finalTags.push(extra);
-        // 万が一まだ1つの場合は「アンケート」で賑やかすらび
-        if (finalTags.length < 2) finalTags.push('アンケート');
+        const extra = fallback[category] || '注目トピック';
+        if (!cleanTags.includes(extra)) cleanTags.push(extra);
     }
 
-    // 重複を消して、多すぎないように最大6〜7個くらいに調整するらび
-    return finalTags.slice(0, 7);
+    return cleanTags.slice(0, 5);
+}
+
+/**
+ * 📖 Cheerioを使ってHTMLから不要なナビや広告を除去し、メイン本文を抽出するらび！
+ */
+function extractMainContent(html) {
+    if (!html) return { mainText: '', paragraphs: [] };
+    const $ = cheerio.load(html);
+
+    // 1. 関連記事、サイドバー、ナビゲーション、広告、スクリプトなどの不要タグを完全削除
+    $('aside, footer, header, nav, iframe, script, style, noscript, svg, form').remove();
+    $('.related-articles, .related_articles, .recommend-box, .recommend, .ad-container, .ad, .sidebar, .menu, .tags-list, .category-list, .sns-share, .comments-area, .comment-box, .author-profile').remove();
+    $('[class*="related"], [class*="recommend"], [class*="banner"], [class*="footer"], [class*="header"]').remove();
+
+    // 2. メイン本文エリア（articleやmain、主要コンテナ）を特定
+    let $body = $('article');
+    if ($body.length === 0) $body = $('[class*="articleBody"], [class*="article-body"], [class*="entry-content"], main');
+    if ($body.length === 0) $body = $('body');
+
+    // 3. 本文中の段落（<p>）を抽出
+    const paragraphs = [];
+    $body.find('p').each((_, el) => {
+        const txt = $(el).text().trim().replace(/\s+/g, ' ');
+        if (txt.length >= 30 &&
+            !txt.includes('JavaScript') &&
+            !txt.includes('利用規約') &&
+            !txt.includes('プライバシー') &&
+            !txt.includes('Cookie') &&
+            !txt.match(/^[Cc]opyright/) &&
+            !txt.match(/^All rights/)) {
+            paragraphs.push(txt);
+        }
+    });
+
+    const mainText = paragraphs.join('\n\n').trim();
+    return { mainText, paragraphs };
 }
 
 /**
@@ -228,92 +306,27 @@ async function fetchRichData(url, newsTitle = '') {
         const ogDesc = html.match(/<meta property="og:description" content="([^"]+)"/i)?.[1];
         const ogImage = html.match(/<meta property="og:image" content="([^"]+)"/i)?.[1];
 
-        // 2. 本文コンテナを極力絞り込む（関連記事などのゴミが入らないようにするためらび！）
-        let bodyHtml = html;
-        if (url.includes('news.yahoo.co.jp')) {
-            const match = html.match(/<div[^>]*class="[^"]*articleBody[^"]*"[^>]*>([\s\S]*?)<\/div>/i);
-            if (match) bodyHtml = match[1];
-        } else if (url.includes('ascii.jp')) {
-            const match = html.match(/<div[^>]*class="[^"]*article-body[^"]*"[^>]*>([\s\S]*?)<\/div>/i) ||
-                html.match(/<pre[^>]*class="[^"]*body[^"]*"[^>]*>([\s\S]*?)<\/pre>/i);
-            if (match) bodyHtml = match[1];
-        } else {
-            const match = html.match(/<div[^>]*class="[^"]*article-body[^"]*"[^>]*>([\s\S]*?)<\/div>/i) ||
-                html.match(/<article[^>]*>([\s\S]*?)<\/article>/i);
-            if (match) bodyHtml = match[1];
-        }
+        // 2. Cheerioを使ってクリーンな本文と段落を抽出
+        const { mainText, paragraphs } = extractMainContent(html);
+        const mainParagraphs = paragraphs.slice(0, 3);
 
-        // 3. 本文（<p>タグ）を抽出し、フィルタリング
-        const pMatches = [...bodyHtml.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/gi)];
-        const rawParagraphs = pMatches.map(m => stripHtml(m[1]));
-
-        // メインの段落のみを抽出（1段落目のみ＝別ニュース混入防止）
-        const isGarbageText = (txt) => {
-            if (!txt) return true;
-            // Yahoo!ニュース JS警告、サイトUI、SNS引用文などのゴミを排除
-            return (
-                txt.includes('マイページ') ||
-                txt.includes('購入履歴') ||
-                txt.includes('JavaScriptが無効') ||
-                txt.includes('JavaScriptの設定を有効') ||
-                txt.includes('JavaScript') ||
-                txt.includes('JavaScriptを有効') ||
-                txt.includes('トップ速報') ||
-                txt.includes('利用規約') ||
-                txt.includes('ヘルプ') ||
-                txt.includes('Cookieを有効') ||
-                txt.includes('プライバシーポリシー') ||
-                txt.includes('のXより') ||
-                txt.includes('@') ||
-                txt.includes('さん（@') ||
-                txt.includes('続きを読む') ||
-                txt.includes('もっと読む') ||
-                txt.includes('ニュース一覧') ||
-                txt.includes('ログインして') ||
-                txt.includes('に設定が') ||
-                txt.includes('無効になっています') ||
-                // 著作権・免責文のパターン
-                txt.match(/^[Cc]opyright/) ||
-                txt.match(/^All rights/) ||
-                // 50文字未満の短い断片（意味のある本文は必ず長い）
-                txt.length < 40
-            );
-        };
-
-        const mainParagraphs = rawParagraphs
-            .map(txt => txt.trim())
-            .filter(txt =>
-                txt.length > 40 &&
-                !isGarbageText(txt) &&
-                !txt.includes('出典') &&
-                !txt.includes('写真：') &&
-                !txt.includes('画像：') &&
-                !txt.includes('ログイン') &&
-                !txt.match(/総合|ニュース一覧|エンタメ|コメント数|ランキング|ピックアップ/) &&
-                !txt.match(/^(■|◆|▼|●|※)/) &&
-                !txt.match(/^\d+$/))
-            .slice(0, 2);
-
-        // 見出し付きで結合して「読ませる」構成にするらび！
         let richDescription = '';
-        mainParagraphs.forEach((para) => {
+        mainParagraphs.forEach(para => {
             richDescription += `${para}\n\n`;
         });
         richDescription = richDescription.trim();
 
-        // ⚡ 要約カード用: 各段落の最初の一文を抽出してSUMMARYタグを生成するらび！（詳細版・最大7項目）
-        const summaryLines = mainParagraphs.slice(0, 7).map(para => {
+        // ⚡ 要約カード用: 30秒で理解できる要点（ポイント）を抽出してSUMMARYタグを生成
+        const summaryLines = mainParagraphs.slice(0, 3).map(para => {
             const sentenceMatch = para.match(/^(.+?[。！])/);
             let s = sentenceMatch ? sentenceMatch[1] : para;
             s = s.trim().replace(/^([1-9]|[\u2460-\u2468]|[①-⑨])(?![0-9])[.\s、・]?/, '').replace(/^###\s*/, '');
-            return `・${s.length > 120 ? s.substring(0, 118) + '…' : s}`;
+            return `・${s.length > 100 ? s.substring(0, 98) + '…' : s}`;
         }).filter(Boolean);
+
         if (summaryLines.length > 0) {
             richDescription = `[[SUMMARY:\n${summaryLines.join('\n')}\n]]\n\n${richDescription}`;
-        }
-
-        // もし本文が取れなかったらOGPに頼るらび（ただしゴミテキストでない場合のみ）
-        if (richDescription.length < 50 && ogDesc && !isGarbageText(ogDesc)) {
+        } else if (ogDesc && ogDesc.length > 20) {
             richDescription = `[[SUMMARY:\n・${ogDesc.substring(0, 100)}\n]]\n\n${ogDesc}`;
         }
 

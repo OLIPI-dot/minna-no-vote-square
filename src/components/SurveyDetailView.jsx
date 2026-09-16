@@ -229,6 +229,11 @@ const SurveyDetailView = ({
                     alt="survey-visual"
                     fetchpriority="high"
                     loading="eager"
+                    onError={(e) => {
+                      if (!e.currentTarget.src.includes('ogp-image.png')) {
+                        e.currentTarget.src = '/ogp-image.png';
+                      }
+                    }}
                     style={{
                       width: '100%',
                       height: 'auto',
@@ -459,7 +464,16 @@ const SurveyDetailView = ({
                     {nav.label}
                   </div>
                   <div style={{ width: '100%', height: '140px', overflow: 'hidden', position: 'relative' }}>
-                    <img src={thumb} alt={s.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img
+                      src={thumb}
+                      alt={s.title}
+                      onError={(e) => {
+                        if (!e.currentTarget.src.includes('ogp-image.png')) {
+                          e.currentTarget.src = '/ogp-image.png';
+                        }
+                      }}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
                     <div style={{ position: 'absolute', bottom: '10px', right: '10px', background: 'rgba(255,255,255,0.9)', padding: '2px 8px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 'bold', color: '#64748b' }}>
                       {s.category}
                     </div>
@@ -674,7 +688,16 @@ const SurveyDetailView = ({
                   WebkitTapHighlightColor: 'transparent'
                 }} onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 12px 25px rgba(0,0,0,0.1)'; }} onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.05)'; }}>
                   <div style={{ width: '100%', height: '140px', overflow: 'hidden', position: 'relative' }}>
-                    <img src={thumb} alt={s.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img
+                      src={thumb}
+                      alt={s.title}
+                      onError={(e) => {
+                        if (!e.currentTarget.src.includes('ogp-image.png')) {
+                          e.currentTarget.src = '/ogp-image.png';
+                        }
+                      }}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
                     <div style={{ position: 'absolute', top: '10px', right: '10px', background: 'rgba(255,255,255,0.9)', padding: '2px 8px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 'bold', color: '#64748b' }}>
                       {s.category}
                     </div>

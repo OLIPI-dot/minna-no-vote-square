@@ -104,6 +104,29 @@ const SquareTimeline = () => {
     setIsPosting(false);
   };
 
+  // ラビ公式投稿のデザイン定義
+  const officialCardStyle = {
+    background: 'linear-gradient(135deg, #fdf4ff 0%, #f0f4ff 50%, #fff7ed 100%)',
+    border: '1.5px solid transparent',
+    backgroundClip: 'padding-box',
+    boxShadow: '0 0 0 1.5px #c4b5fd, 0 4px 16px rgba(139,92,246,0.10)',
+    position: 'relative',
+    overflow: 'hidden'
+  };
+
+  const officialAvatarStyle = {
+    background: 'linear-gradient(135deg, #a78bfa, #60a5fa, #f472b6)',
+    boxShadow: '0 0 0 2px #fff, 0 0 0 4px #a78bfa'
+  };
+
+  const officialNameStyle = {
+    background: 'linear-gradient(90deg, #7c3aed, #2563eb)',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    fontWeight: '900',
+    fontSize: '0.88rem'
+  };
+
   // 💖 いいねを押す
   const handleLike = async (post) => {
     if (likedIds.has(post.id)) return; // 重複いいね防止
@@ -192,23 +215,31 @@ const SquareTimeline = () => {
             display: 'flex',
             gap: '10px',
             padding: '10px 12px',
-            background: '#ffffff',
             borderRadius: '14px',
-            border: '1px solid #edf2f7',
-            boxShadow: '0 2px 5px rgba(0,0,0,0.02)',
-            animation: 'fadeInUp 0.25s ease-out'
+            animation: 'fadeInUp 0.25s ease-out',
+            ...(p.is_official
+              ? officialCardStyle
+              : {
+                  background: '#ffffff',
+                  border: '1px solid #edf2f7',
+                  boxShadow: '0 2px 5px rgba(0,0,0,0.02)'
+                }
+            )
           }}>
             {/* アバター */}
             <div style={{
               width: '36px',
               height: '36px',
               borderRadius: '50%',
-              background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               fontSize: '1.2rem',
-              flexShrink: 0
+              flexShrink: 0,
+              ...(p.is_official
+                ? officialAvatarStyle
+                : { background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)' }
+              )
             }}>
               {p.avatar}
             </div>
@@ -216,7 +247,23 @@ const SquareTimeline = () => {
             {/* 本文エリア */}
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap', marginBottom: '3px' }}>
-                <span style={{ fontWeight: '800', fontSize: '0.85rem', color: '#1e293b' }}>{p.name}</span>
+                {p.is_official ? (
+                  <span style={officialNameStyle}>{p.name}</span>
+                ) : (
+                  <span style={{ fontWeight: '800', fontSize: '0.85rem', color: '#1e293b' }}>{p.name}</span>
+                )}
+                {p.is_official && (
+                  <span style={{
+                    fontSize: '0.65rem',
+                    background: 'linear-gradient(90deg, #7c3aed, #2563eb)',
+                    color: '#fff',
+                    padding: '1px 6px',
+                    borderRadius: '10px',
+                    fontWeight: 'bold',
+                    letterSpacing: '0.02em',
+                    flexShrink: 0
+                  }}>✦ 公式</span>
+                )}
                 <span style={{ fontSize: '0.72rem', color: '#94a3b8' }}>・{timeAgo(p.created_at)}</span>
               </div>
               <p style={{

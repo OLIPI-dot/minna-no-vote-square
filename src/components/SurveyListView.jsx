@@ -90,6 +90,7 @@ const SurveyListView = ({
                 src={user.user_metadata.avatar_url}
                 className="user-avatar"
                 alt={`${user.user_metadata?.full_name || 'ユーザー'}さんのアバター`}
+                onError={(e) => { e.currentTarget.style.display = 'none'; }}
               />
             )}
             <button
