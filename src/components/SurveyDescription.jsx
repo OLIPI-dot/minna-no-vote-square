@@ -280,46 +280,86 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
               position: 'relative',
               zIndex: 1
             }}>
-              {summaryPoints.map((point, idx) => {
-                // 💡 用語解説（「〜とは：」を含む場合）の判定
-                const isGlossary = /とは[：:]/.test(point) || point.startsWith('💡');
-                
-                if (isGlossary) {
-                  const cleanGlossary = point.replace(/^💡\s*/, '').replace(/^\*\*|\*\*$/g, '');
-                  // 「用語」と「解説」を分離してより見やすく
-                  const glossaryParts = cleanGlossary.split(/(とは[：:])/);
-                  return (
-                    <li key={idx} style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '10px',
-                      marginTop: '16px',
-                      padding: '12px 18px',
-                      background: 'linear-gradient(135deg, rgba(243, 232, 255, 0.7) 0%, rgba(253, 244, 255, 0.7) 100%)',
-                      border: '1.5px dashed #c084fc',
-                      borderRadius: '16px',
-                      fontSize: '0.92rem',
-                      color: '#4c1d95',
-                      lineHeight: '1.6'
-                    }}>
-                      <span style={{ fontSize: '1.2rem', flexShrink: 0 }}>💡</span>
-                      <span style={{ whiteSpace: 'normal', width: '100%', fontWeight: '600' }}>
-                        {glossaryParts.length >= 3 ? (
-                          <>
-                            <span style={{ background: '#7e22ce', color: '#fff', padding: '2px 8px', borderRadius: '6px', fontSize: '0.85rem', marginRight: '6px' }}>
-                              用語
-                            </span>
-                            <strong style={{ color: '#581c87' }}>{glossaryParts[0].replace(/\*\*/g, '')}</strong>
-                            <span style={{ color: '#7e22ce' }}>{glossaryParts[1]} </span>
-                            <span style={{ color: '#334155', fontWeight: '500' }}>{glossaryParts.slice(2).join('')}</span>
-                          </>
-                        ) : (
-                          cleanGlossary
-                        )}
-                      </span>
-                    </li>
-                  );
-                }
+              {(() => {
+                let pointCounter = 0;
+                return summaryPoints.map((point, idx) => {
+                  // 🐰 らびのひとこと判定
+                  const isLabiThought = /らびの(ひとこと|感想|視点)[：:]/.test(point);
+                  if (isLabiThought) {
+                    const thoughtText = point.replace(/^.*らびの(ひとこと|感想|視点)[：:]\s*/, '').replace(/^\*\*|\*\*$/g, '');
+                    return (
+                      <li key={idx} style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px',
+                        marginTop: '16px',
+                        padding: '14px 20px',
+                        background: 'linear-gradient(135deg, #fff7ed 0%, #fdf4ff 50%, #f0fdf4 100%)',
+                        border: '1.5px solid #fed7aa',
+                        boxShadow: '0 4px 14px rgba(251, 146, 60, 0.10)',
+                        borderRadius: '20px',
+                        fontSize: '0.98rem',
+                        lineHeight: '1.6'
+                      }}>
+                        <span style={{ fontSize: '1.4rem', flexShrink: 0 }}>🐰</span>
+                        <span style={{ whiteSpace: 'normal', width: '100%' }}>
+                          <strong style={{
+                            background: 'linear-gradient(90deg, #ea580c, #c026d3)',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent',
+                            fontWeight: '900',
+                            marginRight: '8px'
+                          }}>
+                            らびのひとこと：
+                          </strong>
+                          <span style={{ color: '#431407', fontWeight: '600' }}>{thoughtText}</span>
+                        </span>
+                      </li>
+                    );
+                  }
+
+                  // 💡 用語解説（「〜とは：」を含む場合）の判定
+                  const isGlossary = /とは[：:]/.test(point) || point.startsWith('💡');
+                  if (isGlossary) {
+                    const cleanGlossary = point.replace(/^💡\s*/, '').replace(/^\*\*|\*\*$/g, '');
+                    // 「用語」と「解説」を分離してより見やすく
+                    const glossaryParts = cleanGlossary.split(/(とは[：:])/);
+                    return (
+                      <li key={idx} style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '10px',
+                        marginTop: '16px',
+                        padding: '12px 18px',
+                        background: 'linear-gradient(135deg, rgba(243, 232, 255, 0.7) 0%, rgba(253, 244, 255, 0.7) 100%)',
+                        border: '1.5px dashed #c084fc',
+                        borderRadius: '16px',
+                        fontSize: '0.92rem',
+                        color: '#4c1d95',
+                        lineHeight: '1.6'
+                      }}>
+                        <span style={{ fontSize: '1.2rem', flexShrink: 0 }}>💡</span>
+                        <span style={{ whiteSpace: 'normal', width: '100%', fontWeight: '600' }}>
+                          {glossaryParts.length >= 3 ? (
+                            <>
+                              <span style={{ background: '#7e22ce', color: '#fff', padding: '2px 8px', borderRadius: '6px', fontSize: '0.85rem', marginRight: '6px' }}>
+                                用語
+                              </span>
+                              <strong style={{ color: '#581c87' }}>{glossaryParts[0].replace(/\*\*/g, '')}</strong>
+                              <span style={{ color: '#7e22ce' }}>{glossaryParts[1]} </span>
+                              <span style={{ color: '#334155', fontWeight: '500' }}>{glossaryParts.slice(2).join('')}</span>
+                            </>
+                          ) : (
+                            cleanGlossary
+                          )}
+                        </span>
+                      </li>
+                    );
+                  }
+
+                  // 通常の要約箇条書き（番号をインクリメント）
+                  pointCounter++;
+                  const currentNum = pointCounter;
 
                 // 🏷️ 見出し（例: **[見出し]**: 内容）のパース
                 const headingMatch = point.match(/^(?:\*\*)?[\[【]([^\]】]+)[\]】](?:\*\*)?[：:]\s*(.*)$/);
@@ -354,7 +394,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
                       fontWeight: '900',
                       marginTop: '2px',
                       boxShadow: '0 3px 10px rgba(236, 72, 153, 0.3)'
-                    }}>{idx + 1}</span>
+                    }}>{currentNum}</span>
                     <span style={{ whiteSpace: 'normal', width: '100%' }}>
                       {headingText && (
                         <span style={{
@@ -385,7 +425,8 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp }) => {
                     </span>
                   </li>
                 );
-              })}
+              });
+            })()}
             </ul>
           </div>
         )}
