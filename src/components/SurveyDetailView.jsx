@@ -230,9 +230,8 @@ const SurveyDetailView = ({
                     fetchpriority="high"
                     loading="eager"
                     onError={(e) => {
-                      if (!e.currentTarget.src.includes('ogp-image.png')) {
-                        e.currentTarget.src = '/ogp-image.png';
-                      }
+                      e.target.onerror = null;
+                      e.target.src = '/ogp-image.png';
                     }}
                     style={{
                       width: '100%',

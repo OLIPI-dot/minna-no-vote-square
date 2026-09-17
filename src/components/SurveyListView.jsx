@@ -519,7 +519,7 @@ const SurveyListView = ({
                           borderRadius: 'inherit'
                         }} />
 
-                        {/* 🐰 No Image専用の背景枠 (画像URLがない、またはエラー時に表示) */}
+                        {/* 🐰 No Image専用の背景枠 (画像URLがない場合に表示。画像ロードエラー時も下敷きになる) */}
                         <div className="no-image-fallback" style={{
                           display: (showFallback ? 'flex' : 'none'),
                           position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
@@ -535,27 +535,22 @@ const SurveyListView = ({
                         </div>
 
                         {/* サムネイル画像 */}
-                        {!showFallback && (
-                          <img
-                            src={thumbSrc}
-                            alt={`${s.title} のサムネイル`}
-                            className="survey-item-thumb"
-                            loading={idx < 4 ? "eager" : "lazy"}
-                            {...(idx < 4 ? { fetchpriority: "high" } : {})}
-                            onLoad={e => {
-                              if (thumbSrc) e.target.classList.add('ready');
-                            }}
-                            onError={() => {
-                              // エラー時はstateを更新して確実にフォールバックを表示する
-                              setBrokenImages(prev => {
-                                const next = new Set(prev);
-                                next.add(s.id);
-                                return next;
-                              });
-                            }}
-                            style={{ position: 'relative', zIndex: 1, display: 'block', width: '100%', height: '100%', objectFit: 'cover' }}
-                          />
-                        )}
+                        <img
+                          src={thumbSrc || '/ogp-image.png'}
+                          alt={`${s.title} のサムネイル`}
+                          className="survey-item-thumb"
+                          loading={idx < 4 ? "eager" : "lazy"}
+                          {...(idx < 4 ? { fetchpriority: "high" } : {})}
+                          onLoad={e => {
+                            e.target.classList.add('ready');
+                          }}
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = '/ogp-image.png';
+                            e.target.classList.add('ready');
+                          }}
+                          style={{ position: 'relative', zIndex: 2, display: 'block', width: '100%', height: '100%', objectFit: 'contain', backgroundColor: 'transparent' }}
+                        />
 
                         {/* カテゴリバッジ */}
                         <div className="thumb-category-badge" style={{
