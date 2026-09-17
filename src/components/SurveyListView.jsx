@@ -513,11 +513,13 @@ const SurveyListView = ({
                     >
                       {/* 🛡️ 画像の有無に関わらず、必ず同じ枠組み（video-thumb-wrapper）を描画してレイアウト崩れを防ぐ */}
                       <div className={`video-thumb-wrapper ${viewMode === 'list' ? '' : 'skeleton'}`} style={viewMode === 'list' ? { position: 'relative', flexShrink: 0, width: '144px', height: '96px', minWidth: '144px', overflow: 'hidden', borderRadius: '8px', backgroundColor: '#f3f4f6', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '4px' } : { position: 'relative', width: '100%', aspectRatio: '16/9', overflow: 'hidden' }}>
-                        <div className="category-icon-thumb placeholder-base" style={{
-                          position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
-                          background: catStyle.color, opacity: 0.1, zIndex: 0,
-                          borderRadius: 'inherit'
-                        }} />
+                        {viewMode !== 'list' && (
+                          <div className="category-icon-thumb placeholder-base" style={{
+                            position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
+                            background: catStyle.color, opacity: 0.1, zIndex: 0,
+                            borderRadius: 'inherit'
+                          }} />
+                        )}
 
                         {/* 🐰 No Image専用の背景枠 (画像URLがない場合に表示。画像ロードエラー時も下敷きになる) */}
                         <div className="no-image-fallback" style={{
@@ -553,14 +555,16 @@ const SurveyListView = ({
                         />
 
                         {/* カテゴリバッジ */}
-                        <div className="thumb-category-badge" style={{
-                          color: catStyle.color,
-                          border: `1.5px solid ${catStyle.color}44`,
-                          background: 'rgba(255, 255, 255, 0.95)', zIndex: 2
-                        }}>
-                          <span style={{ fontSize: '1em' }}>{catStyle.icon}</span>
-                          <span>{s.category || 'その他'}</span>
-                        </div>
+                        {viewMode !== 'list' && (
+                          <div className="thumb-category-badge" style={{
+                            color: catStyle.color,
+                            border: `1.5px solid ${catStyle.color}44`,
+                            background: 'rgba(255, 255, 255, 0.95)', zIndex: 2
+                          }}>
+                            <span style={{ fontSize: '1em' }}>{catStyle.icon}</span>
+                            <span>{s.category || 'その他'}</span>
+                          </div>
+                        )}
                       </div>
 
                       <div className="survey-item-content">
