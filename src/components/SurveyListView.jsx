@@ -323,38 +323,38 @@ const SurveyListView = ({
       )}
 
       {/* ⚖️ 公式・ユーザー切り替えタブ + レイアウト切替（1行統合） */}
-      <div className="official-tab-navigation" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 12px', marginBottom: '16px', borderBottom: '2px solid #f1f5f9', width: '100%', boxSizing: 'border-box', height: '44px', overflow: 'visible' }}>
+      <div className="official-tab-navigation" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 8px', marginBottom: '16px', borderBottom: '2px solid #f1f5f9', width: '100%', boxSizing: 'border-box', height: '44px', overflow: 'visible' }}>
         {/* 左側：タブ */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flex: 1, overflow: 'hidden' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '2px', flex: 1, overflow: 'hidden', minWidth: 0 }}>
         {!['mine', 'watching'].includes(sortMode) ? (
           <>
             <button
               onClick={() => setActiveTab('official')}
               className={`tab-btn ${activeTab === 'official' ? 'active' : ''}`}
               style={{
-                padding: '4px 6px', fontSize: '0.72rem', fontWeight: 'bold',
+                padding: '4px 5px', fontWeight: 'bold',
                 color: activeTab === 'official' ? '#8b5cf6' : '#94a3b8',
                 background: 'none', border: 'none',
                 borderBottom: activeTab === 'official' ? '3px solid #8b5cf6' : '3px solid transparent',
                 cursor: 'pointer', transition: 'all 0.2s',
-                whiteSpace: 'nowrap', flexShrink: 0
+                whiteSpace: 'nowrap', flexShrink: 0, fontSize: '0.68rem'
               }}
             >
-              📢 公式・ニュース ({totalOfficialCount})
+              📢 公式・ニュース <span style={{ fontSize: '0.62rem', opacity: 0.8 }}>({totalOfficialCount})</span>
             </button>
             <button
               onClick={() => setActiveTab('user')}
               className={`tab-btn ${activeTab === 'user' ? 'active' : ''}`}
               style={{
-                padding: '4px 6px', fontSize: '0.72rem', fontWeight: 'bold',
+                padding: '4px 5px', fontWeight: 'bold',
                 color: activeTab === 'user' ? '#8b5cf6' : '#94a3b8',
                 background: 'none', border: 'none',
                 borderBottom: activeTab === 'user' ? '3px solid #8b5cf6' : '3px solid transparent',
                 cursor: 'pointer', transition: 'all 0.2s',
-                whiteSpace: 'nowrap', flexShrink: 0
+                whiteSpace: 'nowrap', flexShrink: 0, fontSize: '0.68rem'
               }}
             >
-              👥 みんなの投稿 ({totalUserCount})
+              👥 みんなの投稿 <span style={{ fontSize: '0.62rem', opacity: 0.8 }}>({totalUserCount})</span>
             </button>
           </>
         ) : (
