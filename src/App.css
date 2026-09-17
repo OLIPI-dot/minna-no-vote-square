@@ -3938,3 +3938,23 @@ button:active,
     font-size: 0.75rem !important;
   }
 }
+
+/* \ud83d\udda5\ufe0f \u30ea\u30b9\u30c8\u8868\u793a\uff1a\u4f5c\u6210\u65e5\u30d0\u30c3\u30b8\u306fPC\u306e\u307f\u8868\u793a */
+.list-created-at-badge {
+  display: none !important;
+}
+@media (min-width: 768px) {
+  .list-created-at-badge {
+    display: inline-flex !important;
+    align-items: center;
+    font-size: 0.69rem;
+    background: #f0f9ff;
+    color: #0369a1;
+    border: 1px solid #bae6fd;
+    padding: 2px 6px;
+    border-radius: 6px;
+    font-weight: 700;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+}

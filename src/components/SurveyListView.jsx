@@ -566,6 +566,8 @@ const SurveyListView = ({
                               <span className={`status-badge ${isEnded ? 'ended' : 'active'}`} style={{ fontSize: '0.58rem', padding: '1px 4px', whiteSpace: 'nowrap', flexShrink: 0 }}>
                                 {isEnded ? '終了' : '受付中'}
                               </span>
+                              {/* PC のみ表示：作成日（青バッジ） */}
+                              <span className="list-created-at-badge">🐣 {formatWithDay(s.created_at)}</span>
                               {s.deadline
                                 ? <span style={{ fontSize: '0.64rem', color: '#e11d48', whiteSpace: 'nowrap', flexShrink: 0 }}>〆{new Date(s.deadline).toLocaleDateString('ja-JP', { month: '2-digit', day: '2-digit' })}</span>
                                 : <span style={{ fontSize: '0.64rem', color: '#64748b', whiteSpace: 'nowrap', flexShrink: 0 }}>🐣{new Date(s.created_at).toLocaleDateString('ja-JP', { month: '2-digit', day: '2-digit' })}</span>
