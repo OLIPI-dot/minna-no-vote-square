@@ -365,13 +365,13 @@ const SurveyListView = ({
         </div>
 
         {/* 右側：レイアウト切替ボタン */}
-        <div className="layout-switcher" style={{ flexShrink: 0 }}>
+        <div className="layout-switcher" style={{ flexShrink: 0, marginRight: '4px' }}>
           <button
             className={`layout-btn ${viewMode === 'list' ? 'active' : ''}`}
             onClick={() => setViewMode('list')}
             title="リスト表示"
           >
-            <svg viewBox="0 0 24 24" width="20" height="20">
+            <svg viewBox="0 0 24 24" width="15" height="15">
               <rect x="3" y="4" width="18" height="2" fill="currentColor" />
               <rect x="3" y="11" width="18" height="2" fill="currentColor" />
               <rect x="3" y="18" width="18" height="2" fill="currentColor" />
@@ -382,7 +382,7 @@ const SurveyListView = ({
             onClick={() => setViewMode('grid')}
             title="グリッド表示"
           >
-            <svg viewBox="0 0 24 24" width="20" height="20">
+            <svg viewBox="0 0 24 24" width="15" height="15">
               <rect x="3" y="3" width="8" height="8" rx="1" fill="currentColor" />
               <rect x="13" y="3" width="8" height="8" rx="1" fill="currentColor" />
               <rect x="3" y="13" width="8" height="8" rx="1" fill="currentColor" />
