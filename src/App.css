@@ -808,20 +808,9 @@ body {
     box-sizing: border-box !important;
   }
 
+  /* 🗓️ グリッド表示：作成日（青）は非表示→しめ切日ど1本絞り */
   .view-grid .survey-item-created-at {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-    font-size: 0.69rem !important;
-    background: #f0f9ff !important;
-    color: #0369a1 !important;
-    border: 1px solid #bae6fd !important;
-    padding: 3px 5px !important;
-    border-radius: 6px !important;
-    font-weight: 700 !important;
-    white-space: nowrap !important;
+    display: none !important;
   }
 
   .view-grid .survey-item-deadline {
