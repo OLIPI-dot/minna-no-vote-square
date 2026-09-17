@@ -420,7 +420,33 @@ const SurveyListView = ({
           const currentItems = finalItems;
 
           if (currentItems.length === 0) {
-            return <div className="empty-msg">
+            if (activeTab === 'user' && !debouncedSearchQuery && !filterCategory) {
+              return (
+                <div className="empty-state-container" style={{ textAlign: 'center', padding: '60px 20px', background: 'linear-gradient(to bottom, #f8fafc, #ffffff)', borderRadius: '16px', border: '2px dashed #cbd5e1', margin: '40px 0' }}>
+                  <div style={{ fontSize: '3.5rem', marginBottom: '20px' }}>📝</div>
+                  <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#334155', marginBottom: '12px' }}>みんなの投稿はまだありません</h3>
+                  <p style={{ fontSize: '0.95rem', color: '#64748b', marginBottom: '32px', lineHeight: '1.7', maxWidth: '400px', margin: '0 auto' }}>
+                    あなたの気になる疑問や、みんなに聞いてみたいことを最初のアンケートにして投稿してみませんか？
+                  </p>
+                  <button 
+                    onClick={() => {
+                      if (!user) {
+                        alert("アンケートを作るにはログインが必要です🐰\n右下のメニューからログインしてね！");
+                      } else {
+                        if (navigateTo) navigateTo('create');
+                      }
+                    }}
+                    style={{ background: '#8b5cf6', color: 'white', padding: '14px 32px', borderRadius: '50px', fontSize: '1rem', fontWeight: 'bold', border: 'none', boxShadow: '0 4px 12px rgba(139, 92, 246, 0.3)', cursor: 'pointer', transition: 'all 0.2s' }}
+                    onMouseOver={e => { e.currentTarget.style.transform = 'scale(1.05)'; e.currentTarget.style.boxShadow = '0 6px 16px rgba(139, 92, 246, 0.4)'; }}
+                    onMouseOut={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(139, 92, 246, 0.3)'; }}
+                  >
+                    ✨ 最初のアンケートを作る
+                  </button>
+                </div>
+              );
+            }
+
+            return <div className="empty-msg" style={{ padding: '40px 20px', textAlign: 'center', color: '#64748b', whiteSpace: 'pre-wrap' }}>
               {sortMode === 'mine' ? '🐰 まだアンケートを作っていないよ！\n「新しいアンケートを作る」から挑戦してみてね🥕' : '該当するアンケートがないよ〜🐰🥕'}
             </div>;
           }
