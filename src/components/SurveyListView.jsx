@@ -340,7 +340,7 @@ const SurveyListView = ({
                 whiteSpace: 'nowrap', flexShrink: 0, fontSize: '0.68rem'
               }}
             >
-              📢 公式・ニュース <span style={{ fontSize: '0.62rem', opacity: 0.8 }}>({totalOfficialCount})</span>
+              📢 公式・ニュース <span className="tab-count" style={{ fontSize: '0.62rem', opacity: 0.8 }}>({totalOfficialCount})</span>
             </button>
             <button
               onClick={() => setActiveTab('user')}
@@ -354,7 +354,7 @@ const SurveyListView = ({
                 whiteSpace: 'nowrap', flexShrink: 0, fontSize: '0.68rem'
               }}
             >
-              👥 みんなの投稿 <span style={{ fontSize: '0.62rem', opacity: 0.8 }}>({totalUserCount})</span>
+              👥 みんなの投稿 <span className="tab-count" style={{ fontSize: '0.62rem', opacity: 0.8 }}>({totalUserCount})</span>
             </button>
           </>
         ) : (
