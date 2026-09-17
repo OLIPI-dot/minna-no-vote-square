@@ -323,32 +323,31 @@ const SurveyListView = ({
       )}
 
       {/* ⚖️ 公式・ユーザー切り替えタブ (常に表示してレイアウトを安定させるらび！) */}
-      <div className="official-tab-navigation" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 8px 0 8px', marginBottom: '16px', borderBottom: '2px solid #f1f5f9', width: '100%', boxSizing: 'border-box', overflow: 'visible' }}>
-        <div style={{ display: 'flex', gap: '4px', overflowX: 'auto', overflowY: 'visible', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch', flex: 1, paddingRight: '4px', paddingTop: '6px', paddingBottom: '8px' }}>
+      <div className="official-tab-navigation flex items-center justify-start px-2" style={{ marginBottom: '16px', borderBottom: '2px solid #f1f5f9', width: '100%', boxSizing: 'border-box', overflow: 'visible', paddingTop: '8px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', overflowX: 'auto', overflowY: 'visible', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch', flex: 1, paddingTop: '6px', paddingBottom: '8px' }}>
         {!['mine', 'watching'].includes(sortMode) ? (
           <>
             <button
               onClick={() => setActiveTab('official')}
-              className={`tab-btn ${activeTab === 'official' ? 'active' : ''}`}
+              className={`tab-btn text-xs sm:text-sm font-bold px-2 py-1.5 ${activeTab === 'official' ? 'active' : ''}`}
               style={{
-                padding: '4px 6px', fontSize: '0.72rem', fontWeight: 'bold',
                 color: activeTab === 'official' ? '#8b5cf6' : '#94a3b8',
                 background: 'none', border: 'none',
                 borderBottom: activeTab === 'official' ? '3px solid #8b5cf6' : '3px solid transparent',
-                cursor: 'pointer', transition: 'all 0.2s', position: 'relative',
+                cursor: 'pointer', transition: 'all 0.2s',
                 whiteSpace: 'nowrap', flexShrink: 0
               }}
             >
-              <span style={{ marginRight: activeTab === 'official' ? '12px' : '0' }}>📢 公式・ニュース ({totalOfficialCount})</span>
-              {activeTab === 'official' && (
-                <span style={{ position: 'absolute', top: '0', right: '0', fontSize: '0.65rem', background: '#ec4899', color: '#fff', borderRadius: '10px', padding: '1px 5px', transform: 'translateY(-20%)' }}>HOT</span>
-              )}
+              <span>📢 公式・ニュース <span className="relative">({totalOfficialCount})
+                {activeTab === 'official' && (
+                  <span className="absolute -top-2.5 -right-3 text-[9px] px-1 py-0.5" style={{ background: '#ec4899', color: '#fff', borderRadius: '10px' }}>HOT</span>
+                )}
+              </span></span>
             </button>
             <button
               onClick={() => setActiveTab('user')}
-              className={`tab-btn ${activeTab === 'user' ? 'active' : ''}`}
+              className={`tab-btn text-xs sm:text-sm font-bold px-2 py-1.5 ${activeTab === 'user' ? 'active' : ''}`}
               style={{
-                padding: '4px 6px', fontSize: '0.72rem', fontWeight: 'bold',
                 color: activeTab === 'user' ? '#8b5cf6' : '#94a3b8',
                 background: 'none', border: 'none',
                 borderBottom: activeTab === 'user' ? '3px solid #8b5cf6' : '3px solid transparent',
@@ -367,7 +366,7 @@ const SurveyListView = ({
         </div>
 
         {/* 📱 レイアウト切替（ニコニコ風らび！） */}
-        <div className="layout-switcher" style={{ flexShrink: 0 }}>
+        <div className="layout-switcher ml-auto flex-shrink-0">
           <button
             className={`layout-btn ${viewMode === 'list' ? 'active' : ''}`}
             onClick={() => setViewMode('list')}
