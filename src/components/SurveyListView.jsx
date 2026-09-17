@@ -512,7 +512,7 @@ const SurveyListView = ({
                       }}
                     >
                       {/* 🛡️ 画像の有無に関わらず、必ず同じ枠組み（video-thumb-wrapper）を描画してレイアウト崩れを防ぐ */}
-                      <div className="video-thumb-wrapper skeleton" style={viewMode === 'list' ? { position: 'relative', flexShrink: 0, width: '96px', height: '80px', overflow: 'hidden', borderRadius: '10px' } : { position: 'relative', width: '100%', aspectRatio: '16/9', overflow: 'hidden' }}>
+                      <div className="video-thumb-wrapper skeleton" style={viewMode === 'list' ? { position: 'relative', flexShrink: 0, width: '96px', height: '80px', overflow: 'hidden', borderRadius: '10px', backgroundColor: '#f9fafb', display: 'flex', alignItems: 'center', justifyContent: 'center' } : { position: 'relative', width: '100%', aspectRatio: '16/9', overflow: 'hidden' }}>
                         <div className="category-icon-thumb placeholder-base" style={{
                           position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
                           background: catStyle.color, opacity: 0.1, zIndex: 0,

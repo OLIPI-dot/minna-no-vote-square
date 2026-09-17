@@ -3919,11 +3919,11 @@ button:active,
     flex-shrink: 0 !important;
     overflow: hidden !important;
   }
-  /* サムネイル画像：object-coverで比率を保ってトリミング */
+  /* サムネイル画像：object-containで全景表示 */
   .survey-list.view-list .video-thumb-wrapper .survey-item-thumb {
     width: 100% !important;
     height: 100% !important;
-    object-fit: cover !important;
+    object-fit: contain !important;
   }
   .survey-list.view-list .list-item-title {
     font-size: 1rem !important;
