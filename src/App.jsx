@@ -90,7 +90,7 @@ function App() {
   const [surveyTitle, setSurveyTitle] = useState('');
   const [surveyImage, setSurveyImage] = useState('');
   const [surveyCategory, setSurveyCategory] = useState('');
-  const [setupOptions, setSetupOptions] = useState([]);
+  const [setupOptions, setSetupOptions] = useState(['', '']);
   const [surveyVisibility, setSurveyVisibility] = useState('public');
   const [sortMode, setSortMode] = useState('latest'); // 🚀 デフォルトは「新着順」に戻すらび！
   const [popularMode, setPopularMode] = useState('trending');
@@ -107,7 +107,8 @@ function App() {
   const [likedSurveys, setLikedSurveys] = useState(() => JSON.parse(localStorage.getItem('liked_surveys') || '[]')); // 👍 いいね履歴
   const [surveyYoutube, setSurveyYoutube] = useState(''); // 📺 YouTube動画URL
   const [surveyDescription, setSurveyDescription] = useState(''); // 📝 解説文 / 参考URL
-  const [surveyAnswer, setSurveyAnswer] = useState(''); // 🧩 正解・答え合わせの解説
+  const [surveyAnswer, setSurveyAnswer] = useState('');
+  const [showAnswerInput, setShowAnswerInput] = useState(false);
   const [activeTab, setActiveTab] = useState('official'); // ⚖️ 'official' or 'user'
   const [searchStats, setSearchStats] = useState({ categories: {}, official: 0, user: 0, sortModes: { today: 0, latest: 0, ended: 0, popular: 0 } }); // 🔍 検索ヒット数統計
   const [adjacentSurveys, setAdjacentSurveys] = useState({ prev: null, next: null }); // 🔍 前後のアンケート
@@ -1491,9 +1492,11 @@ function App() {
     if (!checkRateLimit()) return; // 🛡️ 連投チェック
     if (!surveyTitle.trim()) return alert('お題（タイトル）を入力してください✨');
     if (!surveyCategory) return alert('カテゴリを選択してください🍜');
-    if (setupOptions.length < 2) return alert('投票項目は2つ以上入力してください🗳️');
 
-    if (hasNGWord(surveyTitle) || setupOptions.some(hasNGWord) || surveyTags.some(hasNGWord)) {
+    const validOptions = setupOptions.map(opt => opt.trim()).filter(Boolean);
+    if (validOptions.length < 2) return alert('投票項目は2つ以上入力してください🗳️');
+
+    if (hasNGWord(surveyTitle) || validOptions.some(hasNGWord) || surveyTags.some(hasNGWord)) {
       return alert('NGワードが含まれているため作成できません。言葉遣いに気をつけてね🐰');
     }
 
@@ -1539,7 +1542,7 @@ function App() {
       return;
     }
     updateRateLimit(); // 🛡️ 作成時間を記録
-    await supabase.from('options').insert(setupOptions.map(name => ({ name, votes: 0, survey_id: data[0].id })));
+    await supabase.from('options').insert(validOptions.map(name => ({ name, votes: 0, survey_id: data[0].id })));
 
     // 全ての状態をリセット
     setSurveyTitle('');
@@ -1548,7 +1551,8 @@ function App() {
     setSurveyYoutube('');
     setSurveyDescription(''); // 📝 リセット
     setSurveyAnswer(''); // 🧩 リセット
-    setSetupOptions([]);
+    setSetupOptions(['', '']);
+    setShowAnswerInput(false);
     setSurveyTags([]);
     setDeadline('');
     setSurveyVisibility('public');
@@ -2057,6 +2061,8 @@ function App() {
 
 
 
+  const isCreateFormValid = Boolean(surveyTitle.trim() && surveyCategory && setupOptions.filter(o => o.trim()).length >= 2 && deadline);
+
   return (
     <div className="survey-main-portal">
       <div className="main-wrap">
@@ -2153,15 +2159,22 @@ function App() {
                     <input className="title-input" value={surveyYoutube} onChange={e => setSurveyYoutube(e.target.value)} placeholder="例：https://www.youtube.com/watch?v=..." />
                   </div>
                   <div className="setting-item-block">
-                    <label>🧩 正解・答え合わせ（なぞなぞ用）:</label>
-                    <textarea
-                      className="title-input"
-                      style={{ minHeight: '80px', resize: 'vertical', fontFamily: 'inherit', border: '2px dashed #7c3aed66', background: '#f5f3ff' }}
-                      value={surveyAnswer}
-                      onChange={e => setSurveyAnswer(e.target.value)}
-                      placeholder="例：正解は「ニンジン」でした！🥕 理由は、らびの主食だからです！"
-                    />
-                    <small style={{ color: '#64748b', marginTop: '5px', display: 'block' }}>※ ここに書いた内容は、アンケート締切後に自動で公開されますらび！🐰✨</small>
+                    <label style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <input type="checkbox" checked={showAnswerInput} onChange={e => setShowAnswerInput(e.target.checked)} style={{ width: '18px', height: '18px' }} />
+                      🧩 正解を設定する（クイズ・なぞなぞ用）
+                    </label>
+                    {showAnswerInput && (
+                      <div style={{ marginTop: '10px' }}>
+                        <textarea
+                          className="title-input"
+                          style={{ minHeight: '80px', resize: 'vertical', fontFamily: 'inherit', border: '2px dashed #7c3aed66', background: '#f5f3ff' }}
+                          value={surveyAnswer}
+                          onChange={e => setSurveyAnswer(e.target.value)}
+                          placeholder="例：正解は「ニンジン」でした！🥕 理由は、らびの主食だからです！"
+                        />
+                        <small style={{ color: '#64748b', marginTop: '5px', display: 'block' }}>※ ここに書いた内容は、アンケート締切後に自動で公開されますらび！🐰✨</small>
+                      </div>
+                    )}
                   </div>
                   <div className="setting-item-block">
                     <label>カテゴリ:</label>
@@ -2173,11 +2186,20 @@ function App() {
                   </div>
                   <div className="setting-item-block">
                     <label className="setting-label">🗳️ 投票項目を決める：</label>
-                    <div className="setup-add-container">
-                      <input className="add-input" value={tempOption} onChange={e => setTempOption(e.target.value)} onKeyPress={e => e.key === 'Enter' && (setSetupOptions([...setupOptions, tempOption.trim()]), setTempOption(''))} placeholder="項目を追加..." />
-                      <button className="add-button" onClick={() => { if (tempOption.trim()) { setSetupOptions([...setupOptions, tempOption.trim()]); setTempOption(''); } }}>追加</button>
-                    </div>
-                    {setupOptions.map((opt, i) => <div key={i} className="setup-option-item"><span>{i + 1}. {opt}</span><button onClick={() => setSetupOptions(setupOptions.filter((_, idx) => idx !== i))}>×</button></div>)}
+                    {setupOptions.map((opt, i) => (
+                      <div key={i} className="setup-option-item" style={{ display: 'flex', alignItems: 'center', marginBottom: '8px', gap: '8px' }}>
+                        <span style={{ fontWeight: 'bold', color: '#64748b' }}>{i + 1}.</span>
+                        <input className="title-input" value={opt} onChange={e => {
+                          const newOpts = [...setupOptions];
+                          newOpts[i] = e.target.value;
+                          setSetupOptions(newOpts);
+                        }} placeholder={`選択肢 ${i + 1}`} style={{ flex: 1, margin: 0 }} />
+                        {setupOptions.length > 2 && (
+                          <button onClick={() => setSetupOptions(setupOptions.filter((_, idx) => idx !== i))} style={{ background: 'none', border: 'none', fontSize: '1.2rem', color: '#cbd5e1', cursor: 'pointer', padding: '0 5px' }}>×</button>
+                        )}
+                      </div>
+                    ))}
+                    <button className="add-button" onClick={() => setSetupOptions([...setupOptions, ''])} style={{ marginTop: '10px', background: '#f1f5f9', color: '#64748b', border: '2px dashed #cbd5e1', width: '100%', padding: '12px', borderRadius: '12px' }}>＋ 選択肢を追加</button>
                   </div>
                   <div className="setting-item-block">
                     <label>🔒 公開設定:</label>
@@ -2191,13 +2213,13 @@ function App() {
                     <label>⏰ 締切日時 <span style={{ color: '#e11d48', fontWeight: 'bold' }}>（必須）</span>:</label>
                     <input className="title-input" type="datetime-local" value={deadline} onChange={e => setDeadline(e.target.value)} />
                     <div className="deadline-quick-btns">
-                      {[1, 5, 10, 60].map(min => (
-                        <button key={min} className="deadline-add-btn" onClick={() => {
+                      {[1, 3, 7].map(days => (
+                        <button key={days} className="deadline-add-btn" onClick={() => {
                           const base = deadline ? new Date(deadline) : new Date();
-                          base.setMinutes(base.getMinutes() + min);
+                          base.setDate(base.getDate() + days);
                           const local = new Date(base.getTime() - base.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
                           setDeadline(local);
-                        }}>+{min}分</button>
+                        }}>+{days === 7 ? '1週間' : `${days}日`}後</button>
                       ))}
                       {deadline && <button className="deadline-clear-btn" onClick={() => setDeadline('')}>✕ クリア</button>}
                     </div>
@@ -2218,7 +2240,7 @@ function App() {
                       </div>
                     )}
                   </div>
-                  <button className="start-button" onClick={handleStartSurvey} style={{ marginTop: '20px' }}>世界に公開する！🚀</button>
+                  <button className="start-button" onClick={handleStartSurvey} style={{ marginTop: '20px', background: isCreateFormValid ? '#10b981' : '#cbd5e1', cursor: isCreateFormValid ? 'pointer' : 'not-allowed', pointerEvents: isCreateFormValid ? 'auto' : 'none' }}>世界に公開する！🚀</button>
                   <p style={{ fontSize: '0.85rem', color: '#64748b', textAlign: 'center', marginTop: '12px' }}>
                     ※ 終了したアンケートは、広場の歴史として<span style={{ fontWeight: 'bold', color: '#7c3aed' }}>アーカイブ（永久保存）</span>されます。🐰💎
                   </p>
