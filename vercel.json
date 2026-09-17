@@ -39,11 +39,11 @@
   "rewrites": [
     {
       "source": "/og-api",
-      "destination": "/api/og"
+      "destination": "/api/og-injector"
     },
     {
       "source": "/s/:id",
-      "destination": "/api/og?s=:id"
+      "destination": "/api/og-injector?s=:id"
     },
     {
       "source": "/(.*)",
