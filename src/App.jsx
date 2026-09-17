@@ -2199,7 +2199,7 @@ function App() {
                         )}
                       </div>
                     ))}
-                    <button className="add-button" onClick={() => setSetupOptions([...setupOptions, ''])} style={{ marginTop: '10px', background: '#f1f5f9', color: '#64748b', border: '2px dashed #cbd5e1', width: '100%', padding: '12px', borderRadius: '12px' }}>＋ 選択肢を追加</button>
+                    <button onClick={() => setSetupOptions([...setupOptions, ''])} style={{ marginTop: '10px', background: '#f8fafc', color: '#64748b', border: '2px dashed #cbd5e1', width: '100%', padding: '14px', borderRadius: '12px', cursor: 'pointer', fontWeight: 'bold' }}>＋ 選択肢を追加</button>
                   </div>
                   <div className="setting-item-block">
                     <label>🔒 公開設定:</label>
