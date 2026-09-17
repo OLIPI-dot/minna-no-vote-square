@@ -49,7 +49,9 @@ const formatWithDay = (dateStr) => {
 
 
 function App() {
-  const [view, setView] = useState('list');
+  const [view, setView] = useState(() => {
+    return window.location.pathname.startsWith('/s/') ? 'details' : 'list';
+  }); // 🏷️ 'list' or 'details' or 'create'
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [surveys, setSurveys] = useState([]);
@@ -899,9 +901,7 @@ function App() {
           setCurrentSurvey(null);
           setTimeout(() => window.scrollTo(0, 0), 10);
         }
-        if (!window.history.state || !window.history.state.view) {
-          window.history.replaceState({ view: 'list' }, '', window.location.href);
-        }
+        window.history.replaceState({ view: 'list' }, '', '/');
         if (categoryFilter) setFilterCategory(categoryFilter);
         if (tagFilter) setFilterTag(tagFilter);
         return;
@@ -909,6 +909,7 @@ function App() {
 
       const { data: sv, error: svError } = await supabase.from('surveys').select('*').eq('id', surveyId).single();
       if (svError) {
+        window.history.replaceState({ view: 'list' }, '', '/');
         setView('list');
         setCurrentSurvey(null);
         return;
@@ -916,6 +917,7 @@ function App() {
 
       if (sv.visibility === 'private' && (!user || user.id !== sv.user_id)) {
         alert('非公開のアンケートです🔒');
+        window.history.replaceState({ view: 'list' }, '', '/');
         setView('list');
         return;
       }
@@ -1375,18 +1377,12 @@ function App() {
       }
       return;
     } else if (nextView === 'list') {
-      // 🏘️ 広場に戻る
-      if (window.history.state?.fromSquare) {
-        // 広場から来たことが確実なら、back()でスクロール位置やフィルタを完璧に復元する
-        window.history.back();
-      } else {
-        // 直接リンク等で来た場合は、強制的に広場のトップへ遷移する
-        window.history.pushState({ view: 'list' }, '', '/');
-        setCurrentSurvey(null);
-        setAdjacentSurveys({ prev: null, next: null });
-        setView('list');
-        window.scrollTo(0, 0);
-      }
+      // 🏘️ 広場に戻る: 常にトップ（/）へプッシュ遷移する
+      window.history.pushState({ view: 'list' }, '', '/');
+      setCurrentSurvey(null);
+      setAdjacentSurveys({ prev: null, next: null });
+      setView('list');
+      window.scrollTo(0, 0);
       return;
     }
     setView(nextView);
@@ -2023,7 +2019,11 @@ function App() {
   // 💎 鮮度重視 ＆ ランダム性のある「あなたへのおすすめ」 🐰✨
   const recommendedSurveys = useMemo(() => {
     const now = new Date();
-    return [...surveys]
+    // 💡 タブ切り替えでsurveysが空になった時でもおすすめを表示するため、人気の話題と新着をマージして重複排除するらび！
+    const allAvailable = [...surveys, ...popularSurveys, ...liveSurveys];
+    const uniqueSurveys = Array.from(new Map(allAvailable.map(s => [s.id, s])).values());
+
+    return uniqueSurveys
       .filter(s => s.visibility === 'public')
       // 💡 期間が終了したものは除外するらび！
       .filter(s => {
@@ -2044,7 +2044,7 @@ function App() {
       .slice(0, 24) // 優秀な候補を24件選んで...
       .sort(() => Math.random() - 0.5) // シャッフルするらび！🔀
       .slice(0, 12); // その中から12件を表示
-  }, [surveys]);
+  }, [surveys, popularSurveys, liveSurveys]);
 
   // 🔥 関連アンケート（同じカテゴリ or 類似タグ）
   const relatedSurveys = useMemo(() => {
@@ -2248,6 +2248,10 @@ function App() {
               </div>
             )}
 
+            {view === 'details' && !currentSurvey && (
+              <div className="survey-card" style={{ height: '800px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff' }}>⌛ アンケートを読み込み中...</div>
+            )}
+
             {view === 'details' && currentSurvey && (
               <Suspense fallback={<div className="survey-card" style={{ height: '800px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff' }}>⌛ 詳細を読み込み中...</div>}>
                 <SurveyDetailView
@@ -2358,8 +2362,8 @@ function App() {
             <div className="footer-link-group" style={{ flex: '1 1 150px' }}>
               <h5 style={{ color: '#1e293b', marginBottom: '15px', fontWeight: 'bold' }}>🧭 ナビゲート</h5>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                <li onClick={() => { setView('list'); setSortMode('latest'); }} style={{ marginBottom: '10px', color: '#64748b', cursor: 'pointer' }}>🆕 新着アンケート</li>
-                <li onClick={() => { setView('list'); setSortMode('popular'); }} style={{ marginBottom: '10px', color: '#64748b', cursor: 'pointer' }}>🔥 人気の話題</li>
+                <li onClick={() => { navigateTo('list'); setSortMode('latest'); }} style={{ marginBottom: '10px', color: '#64748b', cursor: 'pointer' }}>🆕 新着アンケート</li>
+                <li onClick={() => { navigateTo('list'); setSortMode('popular'); }} style={{ marginBottom: '10px', color: '#64748b', cursor: 'pointer' }}>🔥 人気の話題</li>
                 <li style={{ marginBottom: '10px' }}><a href="/sitemap.xml" target="_blank" style={{ color: '#64748b', textDecoration: 'none' }}>🗺️ サイトマップ</a></li>
               </ul>
             </div>
