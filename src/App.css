@@ -654,7 +654,7 @@ body {
 
 .survey-list {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 18px;
   /* 🐰 リスト表示の余白をしっかり復活！ */
   min-height: auto;
@@ -662,7 +662,7 @@ body {
 
 /* 📱 グリッド表示（ニコニコ風らび！） */
 .survey-list.view-grid {
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
   align-items: stretch;
 }
@@ -681,10 +681,11 @@ body {
     padding: 0 !important;
     padding-bottom: 12px !important;
     border-radius: 12px !important;
-    overflow: visible !important;
+    overflow: hidden !important;
     gap: 0 !important;
     height: 100% !important;
     display: flex !important;
+    min-width: 0 !important;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
   }
 
@@ -801,31 +802,35 @@ body {
     gap: 4px !important;
     margin-top: auto !important;
     flex-wrap: wrap !important;
+    padding: 0 6px !important;
+    box-sizing: border-box !important;
   }
 
   .view-grid .survey-item-created-at {
     display: inline-block !important;
-    font-size: 0.72rem !important;
+    font-size: 0.69rem !important;
     background: #f0f9ff !important;
     color: #0369a1 !important;
     border: 1px solid #bae6fd !important;
-    padding: 2px 8px !important;
+    padding: 2px 5px !important;
     border-radius: 6px !important;
     margin-bottom: 4px;
-    font-weight: 800 !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
   }
 
   .view-grid .survey-item-deadline {
     display: inline-block !important;
-    font-size: 0.72rem !important;
+    font-size: 0.69rem !important;
     background: #fff1f2 !important;
     color: #e11d48 !important;
     border: 1px solid #fecdd3 !important;
-    padding: 2px 8px !important;
+    padding: 2px 5px !important;
     border-radius: 6px !important;
     margin-bottom: 4px;
     margin-left: 4px;
-    font-weight: 800 !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
   }
 
   .view-grid .card-stats-row {
