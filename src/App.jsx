@@ -2087,6 +2087,7 @@ function App() {
                   totalOfficialCount={totalOfficialCount}
                   totalUserCount={totalUserCount}
                   surveys={filteredBaseSurveys}
+                  popularSurveys={popularSurveys}
                   currentPage={currentPage}
                   setCurrentPage={setCurrentPage}
                   navigateTo={navigateTo}

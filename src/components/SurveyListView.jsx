@@ -40,6 +40,7 @@ const SurveyListView = ({
   recommendedSurveys,
   debouncedSearchQuery,
   searchStats = { categories: {}, official: 0, user: 0 },
+  popularSurveys = [],
   supabase,
   baseCategories = [],
   filterCategories = [],
@@ -61,9 +62,10 @@ const SurveyListView = ({
 
   // ⚡ useMemoによりソート・フィルタの計算結果をキャッシュ化。filter/sortはレンダーのたびに実行されず、必要な時だけ実行される。
   const trendingHeadlineSurveys = React.useMemo(() => {
-    if (!surveys || surveys.length === 0) return [];
+    const sourceSurveys = (popularSurveys && popularSurveys.length > 0) ? popularSurveys : surveys;
+    if (!sourceSurveys || sourceSurveys.length === 0) return [];
     const now = new Date();
-    return [...surveys]
+    return [...sourceSurveys]
       .filter(s => !s.tags?.includes('お知らせ')) // お知らせは除外
       .filter(s => !s.deadline || new Date(s.deadline) > now) // 終了済み(受付終了)を除外
       .sort((a, b) => {
@@ -72,7 +74,7 @@ const SurveyListView = ({
         return scoreB - scoreA;
       })
       .slice(0, 5); // 上位5件をピックアップ
-  }, [surveys]);
+  }, [surveys, popularSurveys]);
 
   // ⚡ サーバー側でフィルタ・ソート済みの surveys をそのまま使うらび！
   // ただし、公式/ユーザー切り替えタブの client-side filtering だけは残すらび（将来的にサーバーへ移行可能）
