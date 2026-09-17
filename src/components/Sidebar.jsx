@@ -26,62 +26,8 @@ const Sidebar = ({
       {/* 💬 X風・広場のタイムライン（つぶやき） */}
       <SquareTimeline />
 
-      <div className="sidebar-section-card" style={{ marginBottom: '24px', border: '2px solid #fee2e2' }}>
-        <h3 className="live-feed-title" style={{ color: '#e11d48' }}>⏰ もうすぐ終了！</h3>
-        <div className="live-feed-content">
-          {endingSoonSurveys.length > 0 ? (
-            <>
-              {(showAllEndingSoon ? endingSoonSurveys : endingSoonSurveys.slice(0, 4)).map(s => (
-                <div 
-                  key={s.id} 
-                  className="live-item clickable" 
-                  onClick={() => navigateTo('details', s)}
-                  role="button"
-                  tabIndex={0}
-                  onKeyPress={(e) => e.key === 'Enter' && navigateTo('details', s)}
-                  aria-label={`${s.title} の詳細を見る`}
-                >
-                  <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>{s.title}</div>
-                  <div style={{ fontSize: '0.8rem', color: '#e11d48', background: '#fff1f2', display: 'inline-block', padding: '2px 8px', borderRadius: '12px' }}>
-                    〆: {formatWithDay(s.deadline)}
-                  </div>
-                </div>
-              ))}
-              {endingSoonSurveys.length > 4 && (
-                <button onClick={() => setShowAllEndingSoon(v => !v)} style={{
-                  marginTop: '8px', width: '100%', background: 'none', border: '1.5px solid #fca5a5',
-                  borderRadius: '12px', color: '#e11d48', fontSize: '0.8rem', padding: '4px 0', cursor: 'pointer', fontWeight: 'bold'
-                }}>
-                  {showAllEndingSoon ? '▲ 閉じる' : `▼ あと${endingSoonSurveys.length - 4}件 もっと見る`}
-                </button>
-              )}
-            </>
-          ) : (
-            <div style={{ fontSize: '0.85rem', color: '#64748b', textAlign: 'center', padding: '12px 0' }}>
-              現在、24時間以内に終了する<br />アンケートはありません🍵
-            </div>
-          )}
-        </div>
-      </div>
-      <div className="sidebar-section-card">
-        <h3 className="live-feed-title">✨ 広場の最新ニュース</h3>
-        <div className="live-feed-content">
-          {liveSurveys.map(s => (
-            <div 
-              key={s.id} 
-              className="live-item clickable" 
-              onClick={() => navigateTo('details', s)}
-              role="button"
-              tabIndex={0}
-              onKeyPress={(e) => e.key === 'Enter' && navigateTo('details', s)}
-              aria-label={`${s.title} の詳細を見る`}
-            >
-              <strong>{s.title}</strong> が公開されました！
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className="sidebar-section-card" style={{ marginTop: '24px' }}>
+      {/* 🔥 人気ランキング (引き上げ) */}
+      <div className="sidebar-section-card" style={{ marginBottom: '24px' }}>
         <h3 className="live-feed-title">🔥 人気ランキング</h3>
         <div className="live-feed-content">
           {popularSurveys.map((s, idx) => (
@@ -106,6 +52,59 @@ const Sidebar = ({
                   <span>💬 {s.comment_count || 0}</span>
                 </div>
               </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ⏳ もうすぐ終了！ (条件付きレンダリング) */}
+      {endingSoonSurveys.length > 0 && (
+        <div className="sidebar-section-card" style={{ marginBottom: '24px', border: '2px solid #fee2e2' }}>
+          <h3 className="live-feed-title" style={{ color: '#e11d48' }}>⏰ もうすぐ終了！</h3>
+          <div className="live-feed-content">
+            {(showAllEndingSoon ? endingSoonSurveys : endingSoonSurveys.slice(0, 4)).map(s => (
+              <div 
+                key={s.id} 
+                className="live-item clickable" 
+                onClick={() => navigateTo('details', s)}
+                role="button"
+                tabIndex={0}
+                onKeyPress={(e) => e.key === 'Enter' && navigateTo('details', s)}
+                aria-label={`${s.title} の詳細を見る`}
+              >
+                <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>{s.title}</div>
+                <div style={{ fontSize: '0.8rem', color: '#e11d48', background: '#fff1f2', display: 'inline-block', padding: '2px 8px', borderRadius: '12px' }}>
+                  〆: {formatWithDay(s.deadline)}
+                </div>
+              </div>
+            ))}
+            {endingSoonSurveys.length > 4 && (
+              <button onClick={() => setShowAllEndingSoon(v => !v)} style={{
+                marginTop: '8px', width: '100%', background: 'none', border: '1.5px solid #fca5a5',
+                borderRadius: '12px', color: '#e11d48', fontSize: '0.8rem', padding: '4px 0', cursor: 'pointer', fontWeight: 'bold'
+              }}>
+                {showAllEndingSoon ? '▲ 閉じる' : `▼ あと${endingSoonSurveys.length - 4}件 もっと見る`}
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ✨ 広場の最新ニュース (最下部へ移動) */}
+      <div className="sidebar-section-card" style={{ marginBottom: '24px' }}>
+        <h3 className="live-feed-title">✨ 広場の最新ニュース</h3>
+        <div className="live-feed-content">
+          {liveSurveys.map(s => (
+            <div 
+              key={s.id} 
+              className="live-item clickable" 
+              onClick={() => navigateTo('details', s)}
+              role="button"
+              tabIndex={0}
+              onKeyPress={(e) => e.key === 'Enter' && navigateTo('details', s)}
+              aria-label={`${s.title} の詳細を見る`}
+            >
+              <strong>{s.title}</strong> が公開されました！
             </div>
           ))}
         </div>
