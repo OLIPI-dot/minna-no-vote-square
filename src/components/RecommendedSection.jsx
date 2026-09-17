@@ -58,7 +58,15 @@ const RecommendedSection = ({ surveys, navigateTo }) => {
               }}
             >
               <div style={{ width: '100%', height: '100px', borderRadius: '14px', overflow: 'hidden' }}>
-                <img src={thumb} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <img 
+                  src={thumb || '/ogp-image.png'} 
+                  alt="" 
+                  style={{ width: '100%', height: '100%', objectFit: 'contain', backgroundColor: '#f9fafb' }} 
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = '/ogp-image.png';
+                  }}
+                />
               </div>
               <div>
                 <div style={{ 
