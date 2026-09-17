@@ -91,7 +91,15 @@ const RiddleSquareView = ({
               >
                 {/* サムネイル部分 */}
                 <div style={{ position: 'relative', height: '180px', overflow: 'hidden' }}>
-                  <img src={thumb} alt={s.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <img 
+                    src={thumb} 
+                    alt={s.title} 
+                    style={{ width: '100%', height: '100%', objectFit: 'contain', backgroundColor: '#f9fafb' }} 
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = '/ogp-image.png';
+                    }}
+                  />
                   <div style={{
                     position: 'absolute', top: '15px', right: '15px',
                     padding: '6px 14px', borderRadius: '100px',
