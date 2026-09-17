@@ -4010,3 +4010,11 @@ button:active,
   }
 }
 
+
+@media (min-width: 768px) {
+  .view-grid .card-stats-row {
+    justify-content: flex-start !important;
+    gap: 8px !important;
+    width: auto !important;
+  }
+}
