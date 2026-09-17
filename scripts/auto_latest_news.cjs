@@ -195,6 +195,10 @@ async function generateAISummary(articleContent) {
     
     let lastError = null;
     for (let attempt = 1; attempt <= 3; attempt++) {
+        if (attempt > 1) {
+            log(`⏳ APIレート制限対策のため 5秒待機します...`);
+            await new Promise(r => setTimeout(r, 5000));
+        }
         try {
             const truncated = articleContent.substring(0, 2500); // 少し増やして情報量を確保
             const result = await geminiModel.generateContent({
@@ -440,6 +444,14 @@ async function startAutoPosting() {
             // 🏷️ 出典元をタイトルから抜き出すらび！
             const sourceMatch = news.title.match(/[（\(](.*?)[）\)]$/);
             const sourceName = sourceMatch ? sourceMatch[1] : 'ニュース';
+
+            // ⚠️ AI要約がなく、かつ本文が実質空っぽ（20文字未満など）の場合はスキップ！
+            // （タイトルと画像だけのスッカスカな記事が投稿されるのを防ぐらび！）
+            if (!richData.summaryObj && richData.description.replace(/[\s\n]/g, '').length < 20) {
+                log(`⚠️ 警告: AI要約に失敗し、本文も空のため投稿をスキップします: ${news.title}`);
+                continue;
+            }
+
             const finalDesc = `${richData.description}\n\n（出典：${sourceName}）\n\n[続きを読む](${news.link})`;
 
             log(`🚀 プレミアム投稿準備OK: ${news.title} (${cat}) [Options: ${options.slice(0, 2).join(',')}...]`);
