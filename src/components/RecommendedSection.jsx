@@ -15,7 +15,7 @@ const RecommendedSection = ({ surveys, navigateTo }) => {
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
         <span style={{ fontSize: '1.6rem' }}>🐰</span>
         <h2 style={{ fontSize: '1.25rem', fontWeight: '900', color: '#4c1d95', margin: 0 }}>
-          あなたにぴったりかも <span style={{ fontSize: '0.8rem', fontWeight: 'normal', opacity: 0.7, marginLeft: '8px' }}>おすすめ</span>
+          あなたにぴったりかも <span style={{ fontSize: '0.8rem', fontWeight: 'normal', opacity: 0.7, marginLeft: '8px', whiteSpace: 'nowrap' }}>おすすめ</span>
         </h2>
       </div>
 
