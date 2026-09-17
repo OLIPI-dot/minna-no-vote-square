@@ -323,8 +323,8 @@ const SurveyListView = ({
       )}
 
       {/* ⚖️ 公式・ユーザー切り替えタブ (常に表示してレイアウトを安定させるらび！) */}
-      <div className="official-tab-navigation flex items-center justify-start px-2" style={{ marginBottom: '16px', borderBottom: '2px solid #f1f5f9', width: '100%', boxSizing: 'border-box', overflow: 'visible', paddingTop: '8px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', overflowX: 'auto', overflowY: 'visible', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch', flex: 1, paddingTop: '6px', paddingBottom: '8px' }}>
+      <div className="official-tab-navigation flex items-center justify-between px-3 h-12 flex-nowrap" style={{ marginBottom: '16px', borderBottom: '2px solid #f1f5f9', width: '100%', boxSizing: 'border-box', overflow: 'visible' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', overflowX: 'auto', overflowY: 'visible', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch', flex: 1 }}>
         {!['mine', 'watching'].includes(sortMode) ? (
           <>
             <button
@@ -338,11 +338,15 @@ const SurveyListView = ({
                 whiteSpace: 'nowrap', flexShrink: 0
               }}
             >
-              <span>📢 公式・ニュース <span className="relative">({totalOfficialCount})
+              <span className="relative font-bold text-sm">
+                📢 公式・ニュース
+                <span className="text-xs text-gray-500 font-normal ml-1">({totalOfficialCount})</span>
                 {activeTab === 'official' && (
-                  <span className="absolute -top-2.5 -right-3 text-[9px] px-1 py-0.5" style={{ background: '#ec4899', color: '#fff', borderRadius: '10px' }}>HOT</span>
+                  <span className="absolute -top-1.5 -right-5 bg-pink-500 text-white text-[8px] font-bold px-1 rounded-full leading-none py-0.5">
+                    HOT
+                  </span>
                 )}
-              </span></span>
+              </span>
             </button>
             <button
               onClick={() => setActiveTab('user')}
