@@ -424,6 +424,11 @@ async function startAutoPosting() {
 
         log(`🔍 リード文をリッチ化中: ${news.title}`);
         const richData = await fetchRichData(news.link);
+
+        // 無料枠（Free Tier）レート制限対策：1記事の要約が終わるごとに15秒待機！🥕
+        log(`⏳ API無料枠の安全のため、次の処理まで15秒待機します...`);
+        await new Promise(r => setTimeout(r, 15000));
+
         if (!richData.description || richData.description.length < 50) continue;
 
         try {
