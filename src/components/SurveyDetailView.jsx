@@ -467,11 +467,10 @@ const SurveyDetailView = ({
                       src={thumb}
                       alt={s.title}
                       onError={(e) => {
-                        if (!e.currentTarget.src.includes('ogp-image.png')) {
-                          e.currentTarget.src = '/ogp-image.png';
-                        }
+                        e.target.onerror = null;
+                        e.target.src = '/ogp-image.png';
                       }}
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      style={{ width: '100%', height: '100%', objectFit: 'contain', backgroundColor: '#f9fafb' }}
                     />
                     <div style={{ position: 'absolute', bottom: '10px', right: '10px', background: 'rgba(255,255,255,0.9)', padding: '2px 8px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 'bold', color: '#64748b' }}>
                       {s.category}
