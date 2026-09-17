@@ -1321,12 +1321,17 @@ function App() {
         return alert('非公開です🔒');
       }
 
-      // 📍 リストに戻った時のために、今の位置を履歴に刻むらび
-      window.history.replaceState({ ...window.history.state, view: 'list', scrollY: currentScroll }, '', window.location.href);
+      if (view !== 'details') {
+        // 📍 リストから詳細に入る時のみ、今の位置(リスト)を履歴に刻む
+        window.history.replaceState({ ...window.history.state, view: 'list', scrollY: currentScroll }, '', window.location.href);
+        window.history.pushState({ view: 'details', surveyId: survey.id, fromSquare: true }, '', `/s/${survey.id}`);
+      } else {
+        // 📍 既に詳細画面にいる場合(前後のアンケート遷移など)は、履歴を積み上げずURLだけ書き換える
+        const wasFromSquare = window.history.state?.fromSquare;
+        window.history.replaceState({ view: 'details', surveyId: survey.id, fromSquare: wasFromSquare }, '', `/s/${survey.id}`);
+      }
 
       setView('details');
-      window.history.pushState({ view: 'details', surveyId: survey.id }, '', `/s/${survey.id}`);
-
       setOptions([]);
       setVotedOption(null);
       setCurrentSurvey(survey);
@@ -1370,16 +1375,14 @@ function App() {
       return;
     } else if (nextView === 'list') {
       // 🏘️ 広場に戻る
-      // history.stateにリスト画面の記録があればback()、なければ直接 / へ遷移
-      if (window.history.state && window.history.state.view === 'details' && window.history.length > 1) {
-        // popstateハンドラが view='list' への復帰を処理してくれるらび
+      if (window.history.state?.fromSquare) {
+        // 広場から来たことが確実なら、back()でスクロール位置やフィルタを完璧に復元する
         window.history.back();
       } else {
-        // URL直アクセスやリロード後など、戻り先がないケース
+        // 直接リンク等で来た場合は、強制的に広場のトップへ遷移する
         window.history.pushState({ view: 'list' }, '', '/');
         setCurrentSurvey(null);
-        setFilterCategory('すべて');
-        setFilterTag('');
+        setAdjacentSurveys({ prev: null, next: null });
         setView('list');
         window.scrollTo(0, 0);
       }
