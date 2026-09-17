@@ -763,10 +763,7 @@ body {
     align-items: center;
   }
 
-  .view-grid .survey-item-thumb {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
+  .view-grid .survey-item-thumb { width: 100% !important; height: 100% !important; object-fit: contain !important; background-color: #f9fafb !important;
     transition: transform 0.5s ease;
   }
 
@@ -939,9 +936,7 @@ body {
   flex: 0 0 96px !important;
   flex-shrink: 0 !important;
   border-radius: 8px !important;
-  object-fit: cover !important;
-  margin-right: 0 !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  object-fit: contain !important; background-color: #f9fafb !important; margin-right: 0 !important; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   opacity: 0;
   transition: opacity 0.4s ease-in-out;
 }
@@ -4014,3 +4009,4 @@ button:active,
     font-size: 12px !important;
   }
 }
+

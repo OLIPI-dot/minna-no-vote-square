@@ -236,13 +236,13 @@ const SurveyDetailView = ({
                     }}
                     style={{
                       width: '100%',
-                      height: 'auto',
-                      minHeight: '200px', // 枠を確保してCLS（ガクつき）を防止
-                      aspectRatio: '16/9', // アスペクト比を固定してガクつきを防止
-                      objectFit: 'cover',
-                      borderRadius: '24px',
+                      maxHeight: '450px', // 高さを制限しつつ縦長画像全体を表示
+                      objectFit: 'contain', // 見切れを完全に防ぐ
+                      borderRadius: '12px',
                       boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
-                      backgroundColor: '#f1f5f9'
+                      backgroundColor: '#f9fafb', // bg-gray-50 で余白を自然に
+                      margin: '0 auto',
+                      display: 'block'
                     }}
                   />
                 </div>
