@@ -3911,6 +3911,12 @@ button:active,
     min-height: 120px !important;
     gap: 16px !important;
   }
+  .survey-list.view-list .survey-item-card::before,
+  .survey-list.view-list .survey-item-card::after {
+    display: none !important;
+    background: none !important;
+    box-shadow: none !important;
+  }
   .survey-list.view-list .video-thumb-wrapper {
     width: 192px !important;
     height: auto !important;
@@ -3918,6 +3924,16 @@ button:active,
     border-radius: 10px !important;
     flex-shrink: 0 !important;
     overflow: hidden !important;
+    background: #f3f4f6 !important;
+    box-shadow: none !important;
+  }
+  .survey-list.view-list .video-thumb-wrapper::before,
+  .survey-list.view-list .video-thumb-wrapper::after,
+  .survey-list.view-list .survey-item-thumb::before,
+  .survey-list.view-list .survey-item-thumb::after {
+    display: none !important;
+    background: none !important;
+    box-shadow: none !important;
   }
   /* サムネイル画像：object-containで全景表示 */
   .survey-list.view-list .video-thumb-wrapper .survey-item-thumb {
