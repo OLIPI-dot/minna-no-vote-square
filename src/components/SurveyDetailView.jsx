@@ -333,12 +333,37 @@ const SurveyDetailView = ({
               })}
           </div>
         )}
-        {currentSurvey.deadline && (
-          <div className="deadline-info-block" style={{ marginTop: '30px' }}>
-            <div className="absolute-deadline" style={{ marginBottom: '10px', fontSize: '0.9rem', color: '#64748b' }}>締切：{new Date(currentSurvey.deadline).getFullYear()}年{formatWithDay(currentSurvey.deadline)}</div>
-            {!isTimeUp ? <CountdownTimer deadline={currentSurvey.deadline} onTimeUp={() => { }} /> : <div className="countdown-display ended">投票受付終了</div>}
+        <div className="deadline-info-block" style={{ marginTop: '30px' }}>
+          <div className="absolute-deadline" style={{ marginBottom: '4px', fontSize: '0.9rem', color: '#64748b' }}>
+            🕒 投稿日：{(() => {
+              const d = new Date(currentSurvey.created_at);
+              const yyyy = d.getFullYear();
+              const mm = String(d.getMonth() + 1).padStart(2, '0');
+              const dd = String(d.getDate()).padStart(2, '0');
+              const day = ['日','月','火','水','木','金','土'][d.getDay()];
+              const hh = String(d.getHours()).padStart(2, '0');
+              const min = String(d.getMinutes()).padStart(2, '0');
+              return `${yyyy}/${mm}/${dd}(${day}) ${hh}:${min}`;
+            })()}
           </div>
-        )}
+          {currentSurvey.deadline && (
+            <>
+              <div className="absolute-deadline" style={{ marginBottom: '10px', fontSize: '0.9rem', color: '#64748b' }}>
+                🏁 締切日：{(() => {
+                  const d = new Date(currentSurvey.deadline);
+                  const yyyy = d.getFullYear();
+                  const mm = String(d.getMonth() + 1).padStart(2, '0');
+                  const dd = String(d.getDate()).padStart(2, '0');
+                  const day = ['日','月','火','水','木','金','土'][d.getDay()];
+                  const hh = String(d.getHours()).padStart(2, '0');
+                  const min = String(d.getMinutes()).padStart(2, '0');
+                  return `${yyyy}/${mm}/${dd}(${day}) ${hh}:${min}`;
+                })()}
+              </div>
+              {!isTimeUp ? <CountdownTimer deadline={currentSurvey.deadline} onTimeUp={() => { }} /> : <div className="countdown-display ended">投票受付終了</div>}
+            </>
+          )}
+        </div>
       </div>
 
       <SurveyDescription
