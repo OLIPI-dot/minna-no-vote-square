@@ -4,11 +4,23 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-09-18T09:02:56.393Z</updated>
+  <updated>2026-09-18T15:08:33.395Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>Windows 11搭載の一部ノートPCでタスクバーのすぐ上がマウス操作できない問題(窓の杜)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23096"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23096</id>
+    <updated>2026-09-18T10:50:01.549Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;point1_title&quot;: &quot;画面下部が操作不能に&quot;,
+  &quot;point1_desc&quot;: &quot;Windows 11搭載ノートPCにおいて、タスクバーのすぐ上の領域でマウス操作を受け付けなくなる不具合の発生がマイクロソフトにより公表されました。&quot;,
+  &quot;point2_title&quot;: &quot;公式ブログで不具合公表&quot;,
+  &quot;point2_desc&quot;: &quot;日本マイクロソフト...</summary>
+  </entry>
   <entry>
     <title>劇場版『虎に翼』主題歌、米津玄師「さよーならまたいつか！」が続投 新予告が解禁</title>
     <link href="https://minna-no-vote-square.vercel.app/s/22956"/>
@@ -608,16 +620,5 @@ Mojahid Mottakin - stock.adobe.com
 　15日、ディスプレイ非搭載の新型AIグラス「Rokid Ai Glasses Style」が日本向けに発表された。価格は6万4990円。公式サイトで購入できる。
 
 ■...</summary>
-  </entry>
-  <entry>
-    <title>「今の気分に合う音楽」をAIに相談、「Rakuten Music」に新機能(ケータイ Watch)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/22887"/>
-    <id>https://minna-no-vote-square.vercel.app/s/22887</id>
-    <updated>2026-09-16T10:03:21.128Z</updated>
-    <summary>[[SUMMARY:
-・楽天グループは、音楽配信サービス「Rakuten Music」のスマートフォンアプリに、エージェント型AIツール「Rakuten AI for Music」を搭載した。
-]]
-
-楽天グループは、音楽配信サービス「Rakuten Music」のスマートフォンアプリに、エージェント型AIツール「Rakuten AI for Music」を搭載した。 AIとの対話を通じて、アーテ...</summary>
   </entry>
 </feed>
