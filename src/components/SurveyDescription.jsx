@@ -339,36 +339,38 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
                 <>
                   {/* 注目ポイント1 */}
                   {summaryJson.point1_desc && (
-                    <li className="flex flex-col md:flex-row items-start gap-2 md:gap-[14px] text-[1.02rem] text-slate-800 leading-[1.75] font-medium" style={{ marginBottom: '16px' }}>
-                      <span style={{
-                        flex: '0 0 auto',
-                        width: '28px',
-                        height: '28px',
-                        background: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
-                        color: 'white',
-                        borderRadius: '50%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '0.85rem',
-                        fontWeight: '900',
-                        marginTop: '2px',
-                        boxShadow: '0 3px 10px rgba(236, 72, 153, 0.3)'
-                      }}>1</span>
-                      <span className="flex flex-col md:block gap-1 w-full" style={{ whiteSpace: "normal" }}>
+                    <li className="summary-point-item flex flex-col md:flex-row items-start gap-2 md:gap-[14px] text-[1.02rem] text-slate-800 leading-[1.75] font-medium" style={{ marginBottom: '16px' }}>
+                      <div className="summary-point-header" style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                        <span style={{
+                          flex: '0 0 auto',
+                          width: '28px',
+                          height: '28px',
+                          background: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
+                          color: 'white',
+                          borderRadius: '50%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '0.85rem',
+                          fontWeight: '900',
+                          boxShadow: '0 3px 10px rgba(236, 72, 153, 0.3)'
+                        }}>1</span>
                         {summaryJson.point1_title && (
-                          <span className="block w-fit md:inline-block" style={{ background: 'linear-gradient(135deg, #f3e8ff 0%, #fae8ff 100%)',
+                          <span style={{
+                            display: 'inline-block',
+                            background: 'linear-gradient(135deg, #f3e8ff 0%, #fae8ff 100%)',
                             color: '#6b21a8',
                             fontWeight: '800',
                             padding: '1px 10px',
                             borderRadius: '8px',
                             border: '1px solid #e9d5ff',
-                            marginRight: '8px', marginBottom: '4px',
                             fontSize: '0.92rem'
                           }}>
                             {summaryJson.point1_title}
                           </span>
                         )}
+                      </div>
+                      <span className="summary-point-text" style={{ whiteSpace: "normal" }}>
                         {summaryJson.point1_desc}
                       </span>
                     </li>
@@ -376,36 +378,38 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
 
                   {/* 注目ポイント2 */}
                   {summaryJson.point2_desc && (
-                    <li className="flex flex-col md:flex-row items-start gap-2 md:gap-[14px] text-[1.02rem] text-slate-800 leading-[1.75] font-medium" style={{ marginBottom: '16px' }}>
-                      <span style={{
-                        flex: '0 0 auto',
-                        width: '28px',
-                        height: '28px',
-                        background: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
-                        color: 'white',
-                        borderRadius: '50%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '0.85rem',
-                        fontWeight: '900',
-                        marginTop: '2px',
-                        boxShadow: '0 3px 10px rgba(236, 72, 153, 0.3)'
-                      }}>2</span>
-                      <span className="flex flex-col md:block gap-1 w-full" style={{ whiteSpace: "normal" }}>
+                    <li className="summary-point-item flex flex-col md:flex-row items-start gap-2 md:gap-[14px] text-[1.02rem] text-slate-800 leading-[1.75] font-medium" style={{ marginBottom: '16px' }}>
+                      <div className="summary-point-header" style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                        <span style={{
+                          flex: '0 0 auto',
+                          width: '28px',
+                          height: '28px',
+                          background: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
+                          color: 'white',
+                          borderRadius: '50%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '0.85rem',
+                          fontWeight: '900',
+                          boxShadow: '0 3px 10px rgba(236, 72, 153, 0.3)'
+                        }}>2</span>
                         {summaryJson.point2_title && (
-                          <span className="block w-fit md:inline-block" style={{ background: 'linear-gradient(135deg, #f3e8ff 0%, #fae8ff 100%)',
+                          <span style={{
+                            display: 'inline-block',
+                            background: 'linear-gradient(135deg, #f3e8ff 0%, #fae8ff 100%)',
                             color: '#6b21a8',
                             fontWeight: '800',
                             padding: '1px 10px',
                             borderRadius: '8px',
                             border: '1px solid #e9d5ff',
-                            marginRight: '8px', marginBottom: '4px',
                             fontSize: '0.92rem'
                           }}>
                             {summaryJson.point2_title}
                           </span>
                         )}
+                      </div>
+                      <span className="summary-point-text" style={{ whiteSpace: "normal" }}>
                         {summaryJson.point2_desc}
                       </span>
                     </li>
