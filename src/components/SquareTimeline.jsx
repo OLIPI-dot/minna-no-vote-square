@@ -224,6 +224,9 @@ const SquareTimeline = () => {
             width: '100%',
             borderRadius: '14px',
             animation: 'fadeInUp 0.25s ease-out',
+            flexShrink: 0,
+            height: 'auto',
+            minHeight: 'fit-content',
             ...(p.is_official
               ? officialCardStyle
               : {
@@ -315,9 +318,8 @@ const SquareTimeline = () => {
         borderTop: '1.5px solid #f1f5f9',
         overflow: 'hidden',
         boxSizing: 'border-box',
-        width: '100%'
-      }}>
-        <div style={{ display: 'flex', gap: '6px', marginBottom: '8px' }}>
+        width: '100%', maxWidth: '100%' }}>
+        <div style={{ display: 'flex', gap: '6px', marginBottom: '8px', width: '100%', boxSizing: 'border-box' }}>
           <select
             value={selectedAvatar}
             onChange={e => setSelectedAvatar(e.target.value)}
@@ -336,6 +338,7 @@ const SquareTimeline = () => {
           </select>
 
           <input
+            className="text-[16px] md:text-[0.8rem]"
             type="text"
             placeholder="お名前（省略可）"
             value={name}
@@ -346,7 +349,6 @@ const SquareTimeline = () => {
               padding: '6px 10px',
               borderRadius: '8px',
               border: '1px solid #cbd5e1',
-              fontSize: '0.8rem',
               outline: 'none',
               background: '#fff',
               minWidth: 0,
@@ -355,8 +357,9 @@ const SquareTimeline = () => {
           />
         </div>
 
-        <div style={{ display: 'flex', gap: '6px' }}>
+        <div style={{ display: 'flex', gap: '6px', width: '100%', boxSizing: 'border-box' }}>
           <input
+            className="text-[16px] md:text-[0.85rem]"
             type="text"
             placeholder="いまどうしてる？（50字まで）"
             value={inputText}
@@ -366,7 +369,6 @@ const SquareTimeline = () => {
               padding: '8px 12px',
               borderRadius: '10px',
               border: '1px solid #cbd5e1',
-              fontSize: '0.85rem',
               outline: 'none',
               background: '#fff',
               minWidth: 0,
