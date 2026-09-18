@@ -114,7 +114,7 @@ function App() {
   const [activeTab, setActiveTab] = useState('official'); // ⚖️ 'official' or 'user'
   const [searchStats, setSearchStats] = useState({ categories: {}, official: 0, user: 0, sortModes: { today: 0, latest: 0, ended: 0, popular: 0 } }); // 🔍 検索ヒット数統計
   const [adjacentSurveys, setAdjacentSurveys] = useState({ prev: null, next: null }); // 🔍 前後のアンケート
-  const [viewMode, setViewMode] = useState(() => localStorage.getItem('view_mode') || 'list'); // 📱 'list' or 'grid'らび！
+  const [viewMode, setViewMode] = useState('list'); // 📱 常に 'list' からスタートらび！
 
   // 📺 YouTube URLからIDを抽出する魔法
   const extractYoutubeId = (input) => {
