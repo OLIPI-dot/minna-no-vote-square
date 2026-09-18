@@ -357,9 +357,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
                       }}>1</span>
                       <span className="flex flex-col md:block gap-1 w-full" style={{ whiteSpace: "normal" }}>
                         {summaryJson.point1_title && (
-                          <span style={{
-                            display: 'inline-block',
-                            background: 'linear-gradient(135deg, #f3e8ff 0%, #fae8ff 100%)',
+                          <span className="block w-fit md:inline-block" style={{ background: 'linear-gradient(135deg, #f3e8ff 0%, #fae8ff 100%)',
                             color: '#6b21a8',
                             fontWeight: '800',
                             padding: '1px 10px',
@@ -396,9 +394,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
                       }}>2</span>
                       <span className="flex flex-col md:block gap-1 w-full" style={{ whiteSpace: "normal" }}>
                         {summaryJson.point2_title && (
-                          <span style={{
-                            display: 'inline-block',
-                            background: 'linear-gradient(135deg, #f3e8ff 0%, #fae8ff 100%)',
+                          <span className="block w-fit md:inline-block" style={{ background: 'linear-gradient(135deg, #f3e8ff 0%, #fae8ff 100%)',
                             color: '#6b21a8',
                             fontWeight: '800',
                             padding: '1px 10px',
@@ -578,9 +574,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
                         }}>{currentNum}</span>
                         <span className="flex flex-col md:block gap-1 w-full" style={{ whiteSpace: "normal" }}>
                           {headingText && (
-                            <span style={{
-                              display: 'inline-block',
-                              background: 'linear-gradient(135deg, #f3e8ff 0%, #fae8ff 100%)',
+                            <span className="block w-fit md:inline-block" style={{ background: 'linear-gradient(135deg, #f3e8ff 0%, #fae8ff 100%)',
                               color: '#6b21a8',
                               fontWeight: '800',
                               padding: '1px 10px',
