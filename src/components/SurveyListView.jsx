@@ -521,6 +521,15 @@ const SurveyListView = ({
                   }
                 }
 
+                // Yahooニュース画像の期限切れ対策（200 OKのダミー白画像を回避）
+                if (thumbSrc && thumbSrc.includes('yimg.jp') && s.created_at) {
+                  const createdTime = new Date(s.created_at).getTime();
+                  const nowTime = Date.now();
+                  if (nowTime - createdTime > 3 * 60 * 60 * 1000) {
+                    thumbSrc = null; // 3時間経過したYahoo画像は強制無効化
+                  }
+                }
+
                 const isBroken = brokenImages.has(s.id);
                 const showFallback = !thumbSrc || isBroken;
 

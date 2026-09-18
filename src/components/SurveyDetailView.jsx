@@ -511,6 +511,15 @@ const SurveyDetailView = ({
                 thumb = `https://img.youtube.com/vi/${s.youtube_id}/mqdefault.jpg`;
               }
 
+              // Yahooニュース画像の期限切れ対策
+              if (thumb.includes('yimg.jp') && s.created_at) {
+                const createdTime = new Date(s.created_at).getTime();
+                const nowTime = Date.now();
+                if (nowTime - createdTime > 3 * 60 * 60 * 1000) {
+                  thumb = '/ogp-image.png';
+                }
+              }
+
               return (
                 <div key={s.id} className="related-card" onClick={() => navigateTo('details', s)} style={{
                   background: '#fff', borderRadius: '20px', overflow: 'hidden', cursor: 'pointer',
@@ -750,6 +759,15 @@ const SurveyDetailView = ({
                 const parts = s.image_url.split(',')[0].trim();
                 if (parts.startsWith('yt:')) thumb = `https://img.youtube.com/vi/${parts.substring(3)}/mqdefault.jpg`;
                 else if (!parts.startsWith('nico:')) thumb = parts;
+              }
+
+              // Yahooニュース画像の期限切れ対策
+              if (thumb.includes('yimg.jp') && s.created_at) {
+                const createdTime = new Date(s.created_at).getTime();
+                const nowTime = Date.now();
+                if (nowTime - createdTime > 3 * 60 * 60 * 1000) {
+                  thumb = '/ogp-image.png';
+                }
               }
 
               return (

@@ -54,6 +54,15 @@ const TrendingHeadline = ({ surveys, navigateTo }) => {
     else if (entries[0]) thumbSrc = entries[0];
   }
 
+  // Yahooニュース画像の期限切れ対策
+  if (thumbSrc && thumbSrc.includes('yimg.jp') && s.created_at) {
+    const createdTime = new Date(s.created_at).getTime();
+    const nowTime = Date.now();
+    if (nowTime - createdTime > 3 * 60 * 60 * 1000) {
+      thumbSrc = null;
+    }
+  }
+
   const isBroken = brokenImages.has(s.id);
 
   return (
