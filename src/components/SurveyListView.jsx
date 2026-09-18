@@ -578,8 +578,12 @@ const SurveyListView = ({
                               e.target.classList.add('ready');
                             }}
                             onError={(e) => {
-                              // エラー時は画像を消して背後の「🐰 No Image」を見せるらび！
                               e.target.style.display = 'none';
+                              setBrokenImages(prev => {
+                                const newSet = new Set(prev);
+                                newSet.add(s.id);
+                                return newSet;
+                              });
                             }}
                             style={viewMode === 'list' ? { position: 'relative', zIndex: 2, display: 'block', maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto', objectFit: 'contain', borderRadius: '4px' } : { position: 'relative', zIndex: 2, display: 'block', width: '100%', height: '100%', objectFit: 'contain', backgroundColor: 'transparent' }}
                           />
