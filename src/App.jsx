@@ -94,7 +94,10 @@ function App() {
   const [surveyCategory, setSurveyCategory] = useState('');
   const [setupOptions, setSetupOptions] = useState(['', '']);
   const [surveyVisibility, setSurveyVisibility] = useState('public');
-  const [sortMode, setSortMode] = useState('latest'); // 🚀 デフォルトは「新着順」に戻すらび！
+  const [sortMode, setSortMode] = useState(() => {
+    const params = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
+    return params.get('tab') || 'latest';
+  }); // 🚀 URL またはデフォルトは「新着順」
   const [popularMode, setPopularMode] = useState('trending');
   const [filterCategory, setFilterCategory] = useState('すべて');
   const [tempOption, setTempOption] = useState('');
@@ -105,7 +108,11 @@ function App() {
   const [surveyTags, setSurveyTags] = useState([]); // 🏷️ タグ作成用
   const [tempTag, setTempTag] = useState(''); // タグ入力中の文字
   const [filterTag, setFilterTag] = useState(''); // 🏷️ タグ絞り込み
-  const [currentPage, setCurrentPage] = useState(1); // 📄 ページネーション用
+  const [currentPage, setCurrentPage] = useState(() => {
+    const params = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
+    const p = parseInt(params.get('page'), 10);
+    return !isNaN(p) && p > 0 ? p : 1;
+  }); // 📄 ページネーション用
   const [likedSurveys, setLikedSurveys] = useState(() => JSON.parse(localStorage.getItem('liked_surveys') || '[]')); // 👍 いいね履歴
   const [surveyYoutube, setSurveyYoutube] = useState(''); // 📺 YouTube動画URL
   const [surveyDescription, setSurveyDescription] = useState(''); // 📝 解説文 / 参考URL
@@ -157,9 +164,53 @@ function App() {
   const manualUpdatesRef = useRef({}); // 🛡️ { [surveyId]: timestamp } アンケートごとの更新ガード
   const [surveyOnlineCount, setSurveyOnlineCount] = useState(1);
 
+  const isFirstMountForPageReset = useRef(true);
   useEffect(() => {
+    if (isFirstMountForPageReset.current) {
+      isFirstMountForPageReset.current = false;
+      return;
+    }
     setCurrentPage(1);
   }, [sortMode, searchQuery, filterCategory, filterTag, popularMode, activeTab]);
+
+  useEffect(() => {
+    localStorage.setItem('minna_no_vote_watched', JSON.stringify(watchedIds));
+  }, [watchedIds]);
+
+  // 🔗 タブとページネーションを URL に同期する魔法
+  useEffect(() => {
+    if (view === 'list') {
+      const url = new URL(window.location.href);
+      const params = url.searchParams;
+      let changed = false;
+
+      if (sortMode !== 'latest') {
+        if (params.get('tab') !== sortMode) {
+          params.set('tab', sortMode);
+          changed = true;
+        }
+      } else if (params.has('tab')) {
+        params.delete('tab');
+        changed = true;
+      }
+
+      if (currentPage !== 1) {
+        if (params.get('page') !== String(currentPage)) {
+          params.set('page', currentPage);
+          changed = true;
+        }
+      } else if (params.has('page')) {
+        params.delete('page');
+        changed = true;
+      }
+
+      if (changed) {
+        window.history.replaceState(window.history.state, '', url.pathname + url.search);
+      }
+    }
+  }, [sortMode, currentPage, view]);
+
+
 
   useEffect(() => {
     localStorage.setItem('view_mode', viewMode);
@@ -1328,6 +1379,13 @@ function App() {
         setCurrentSurvey(null);
         setOptions([]);
         setVotedOption(null);
+        
+        // 🔗 URL からタブ・ページ状態を復元
+        const params = new URLSearchParams(window.location.search);
+        setSortMode(params.get('tab') || 'latest');
+        const p = parseInt(params.get('page'), 10);
+        setCurrentPage(!isNaN(p) && p > 0 ? p : 1);
+
         if (e.state && e.state.scrollY !== undefined) {
           setTimeout(() => window.scrollTo(0, e.state.scrollY), 20);
         } else {

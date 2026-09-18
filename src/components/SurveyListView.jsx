@@ -232,11 +232,14 @@ const SurveyListView = ({
             onClick={() => {
               setFilterCategory(cat);
               setFilterTag('');
+              if (typeof setCurrentPage === 'function') setCurrentPage(1);
               setView('list');
-              const url = new URL('/', window.location.origin);
+              const url = new URL(window.location.href);
               if (cat && cat !== 'すべて') url.searchParams.set('c', cat);
+              else url.searchParams.delete('c');
               url.searchParams.delete('t');
               url.searchParams.delete('s');
+              url.searchParams.delete('page');
               window.history.pushState({ view: 'list' }, '', url);
             }}
           >
@@ -311,10 +314,13 @@ const SurveyListView = ({
             onClick={() => {
               const nextTag = filterTag === tag ? '' : tag;
               setFilterTag(nextTag);
-              const url = new URL('/', window.location.origin);
+              if (typeof setCurrentPage === 'function') setCurrentPage(1);
+              const url = new URL(window.location.href);
               if (nextTag) url.searchParams.set('t', nextTag);
+              else url.searchParams.delete('t');
               url.searchParams.delete('c');
               url.searchParams.delete('s');
+              url.searchParams.delete('page');
               window.history.pushState({ view: 'list' }, '', url);
             }}
           >
