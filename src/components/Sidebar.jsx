@@ -46,6 +46,9 @@ const Sidebar = ({
               <div className="popular-item-info">
                 <strong style={{ display: 'block', marginBottom: '4px' }}>{s.title}</strong>
                 <div style={{ display: 'flex', gap: '8px', fontSize: '0.75rem', color: '#64748b', flexWrap: 'wrap' }}>
+                  <span style={{ color: '#d97706', fontWeight: 'bold' }}>
+                    ⚡ {(Number(s.total_votes || 0) * 10) + (Number(s.likes_count || 0) * 5) + Number(s.view_count || 0)} pt
+                  </span>
                   <span>🗳️ <AnimatedCounter value={s.total_votes || 0} /> 票</span>
                   <span>👁️ {s.view_count || 0}</span>
                   <span>👍 {s.likes_count || 0}</span>

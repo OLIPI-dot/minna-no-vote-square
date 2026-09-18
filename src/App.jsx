@@ -1237,31 +1237,39 @@ function App() {
         .order('created_at', { ascending: false })
         .limit(10);
 
-      // 2. 人気 (直近30日間のアンケートから投票数順で上位10件。足りない場合は全期間から引き継ぎらび！)
+      // 2. 人気 (直近30日間のアンケートからスコア順で上位10件をクライアントで計算して抽出するらび！)
       const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
-      let { data: popular } = await supabase
+      let { data: popularRaw } = await supabase
         .from('surveys')
         .select('*')
         .eq('visibility', 'public')
         .not('tags', 'cs', '{"お知らせ"}')
         .gte('created_at', thirtyDaysAgo)
-        .order('total_votes', { ascending: false })
-        .order('view_count', { ascending: false })
-        .order('likes_count', { ascending: false })
-        .limit(10);
+        .limit(200);
+
+      const calcTotalScore = (item) => {
+        const votes = Number(item.total_votes || 0);
+        const views = Number(item.view_count || item.views || 0);
+        const likes = Number(item.likes_count || item.likes || 0);
+        return (votes * 10) + (likes * 5) + views;
+      };
+
+      let popular = [];
+      if (popularRaw) {
+        popular = popularRaw.sort((a, b) => calcTotalScore(b) - calcTotalScore(a)).slice(0, 10);
+      }
 
       // 直近の投稿数が少なくてランキングが半分以下（5件未満）しか埋まらない場合は全期間のデータで補正する
       if (!popular || popular.length < 5) {
-        const { data: fallbackPopular } = await supabase
+        const { data: fallbackPopularRaw } = await supabase
           .from('surveys')
           .select('*')
           .eq('visibility', 'public')
           .not('tags', 'cs', '{"お知らせ"}')
-          .order('total_votes', { ascending: false })
-          .order('view_count', { ascending: false })
-          .order('likes_count', { ascending: false })
-          .limit(10);
-        popular = fallbackPopular || [];
+          .limit(200);
+        if (fallbackPopularRaw) {
+          popular = fallbackPopularRaw.sort((a, b) => calcTotalScore(b) - calcTotalScore(a)).slice(0, 10);
+        }
       }
 
       // 3. もうすぐ終了 (24時間以内。全件取得！)
