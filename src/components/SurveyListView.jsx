@@ -506,7 +506,7 @@ const SurveyListView = ({
                 const catStyle = CATEGORY_ICON_STYLE[s.category] || CATEGORY_ICON_STYLE[s.category?.trim()] || CATEGORY_ICON_STYLE['その他'];
 
                 let thumbSrc = null;
-                if (s.image_url) {
+                if (s.image_url && s.image_url !== 'null' && s.image_url !== 'undefined') {
                   const entries = s.image_url.split(',').map(v => v.trim()).filter(Boolean);
                   const yt = entries.find(v => v.startsWith('yt:'));
                   const nico = entries.find(v => v.startsWith('nico:'));
@@ -516,7 +516,9 @@ const SurveyListView = ({
                     const numericId = fullId.replace(/^[a-z]+/, '');
                     thumbSrc = `https://nicovideo.cdn.nimg.jp/thumbnails/${numericId}/${numericId}`;
                   }
-                  else if (entries[0]) thumbSrc = entries[0].replace(/&amp;/g, '&');
+                  else if (entries[0] && entries[0] !== 'null' && entries[0] !== 'undefined') {
+                    thumbSrc = entries[0].replace(/&amp;/g, '&');
+                  }
                 }
 
                 const isBroken = brokenImages.has(s.id);
@@ -555,14 +557,15 @@ const SurveyListView = ({
                         <div className="no-image-fallback" style={{
                           display: (showFallback ? 'flex' : 'none'),
                           position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
-                          background: 'linear-gradient(135deg, #f8fafc 0%, #f3e8ff 100%)',
+                          background: '#f1f5f9', /* 確実に見える薄いグレー (slate-100) */
+                          border: '1px solid #e2e8f0', /* 同化を防ぐボーダー */
                           flexDirection: 'column',
                           alignItems: 'center',
                           justifyContent: 'center',
                           zIndex: 1,
                           borderRadius: 'inherit'
                         }}>
-                          <div style={{ fontSize: '2.5rem', marginBottom: '6px' }}>🐰</div>
+                          <div style={{ fontSize: '2.5rem', marginBottom: '6px', opacity: 0.6, filter: 'grayscale(100%)' }}>🐰</div>
                           <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#64748b' }}>No Image</div>
                         </div>
 
