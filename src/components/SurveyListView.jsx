@@ -438,11 +438,14 @@ const SurveyListView = ({
           </div>
         ) : (() => {
           const isMineOrWatching = ['mine', 'watching'].includes(sortMode);
-          const countToUse = isMineOrWatching
+          const countToUse = isMineOrWatching || sortMode === 'popular'
             ? finalItems.length
             : (activeTab === 'official' ? totalOfficialCount : totalUserCount);
-          const totalPages = isMineOrWatching ? 1 : Math.ceil(countToUse / ITEMS_PER_PAGE);
-          const currentItems = finalItems;
+          const totalPages = isMineOrWatching || sortMode === 'popular' ? Math.ceil(finalItems.length / ITEMS_PER_PAGE) : Math.ceil(countToUse / ITEMS_PER_PAGE);
+          
+          const currentItems = sortMode === 'popular' 
+            ? finalItems.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE)
+            : finalItems;
 
           if (currentItems.length === 0) {
             if (activeTab === 'user' && !debouncedSearchQuery && !filterCategory) {

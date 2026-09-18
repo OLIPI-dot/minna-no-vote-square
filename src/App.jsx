@@ -1065,28 +1065,30 @@ function App() {
         baseQuery = baseQuery.or(`deadline.lt.${now.toISOString()},created_at.lt.${thirtyDaysAgo.toISOString()}`);
       }
 
-      // 📈 ソート順の適用
+      // 📈 ソート順の適用とデータ取得
       if (sort === 'popular') {
-        if (pop === 'views') {
-          baseQuery = baseQuery.order('view_count', { ascending: false, nullsFirst: false }).order('total_votes', { ascending: false });
-        } else if (pop === 'votes') {
-          baseQuery = baseQuery.order('total_votes', { ascending: false, nullsFirst: false });
-        } else if (pop === 'score') {
-          baseQuery = baseQuery.order('total_votes', { ascending: false, nullsFirst: false }).order('likes_count', { ascending: false });
-        } else {
-          // trending (盛り上がり) 等のデフォルト
-          baseQuery = baseQuery.order('total_votes', { ascending: false, nullsFirst: false }).order('view_count', { ascending: false });
-        }
+        // 🚨 DB側での中途半端なソートは行わず、直近30日のアクティブな記事をまとめて最大300件取得し、
+        // クライアント側（SurveyListView）で正確にスコア計算＆ソートするらび！
+        const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
+        baseQuery = baseQuery.gte('created_at', thirtyDaysAgo).limit(300);
       } else {
         // デフォルトは新着順
         baseQuery = baseQuery.order('created_at', { ascending: false });
       }
 
       if (!sData) {
-        const { data, error, count: c } = await baseQuery.range(start, end);
-        sData = data;
-        sError = error;
-        count = c;
+        if (sort === 'popular') {
+          // pagination（range）は使わず一気に取得
+          const { data, error, count: c } = await baseQuery;
+          sData = data;
+          sError = error;
+          count = c;
+        } else {
+          const { data, error, count: c } = await baseQuery.range(start, end);
+          sData = data;
+          sError = error;
+          count = c;
+        }
       }
 
       if (safetyTimeoutId) clearTimeout(safetyTimeoutId);
