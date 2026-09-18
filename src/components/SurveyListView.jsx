@@ -567,22 +567,23 @@ const SurveyListView = ({
                         </div>
 
                         {/* サムネイル画像 */}
-                        <img
-                          src={thumbSrc || '/ogp-image.png'}
-                          alt={`${s.title} のサムネイル`}
-                          className="survey-item-thumb"
-                          loading={idx < 4 ? "eager" : "lazy"}
-                          {...(idx < 4 ? { fetchpriority: "high" } : {})}
-                          onLoad={e => {
-                            e.target.classList.add('ready');
-                          }}
-                          onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src = '/ogp-image.png';
-                            e.target.classList.add('ready');
-                          }}
-                          style={viewMode === 'list' ? { position: 'relative', zIndex: 2, display: 'block', maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto', objectFit: 'contain', borderRadius: '4px' } : { position: 'relative', zIndex: 2, display: 'block', width: '100%', height: '100%', objectFit: 'contain', backgroundColor: 'transparent' }}
-                        />
+                        {thumbSrc && (
+                          <img
+                            src={thumbSrc}
+                            alt={`${s.title} のサムネイル`}
+                            className="survey-item-thumb"
+                            loading={idx < 4 ? "eager" : "lazy"}
+                            {...(idx < 4 ? { fetchpriority: "high" } : {})}
+                            onLoad={e => {
+                              e.target.classList.add('ready');
+                            }}
+                            onError={(e) => {
+                              // エラー時は画像を消して背後の「🐰 No Image」を見せるらび！
+                              e.target.style.display = 'none';
+                            }}
+                            style={viewMode === 'list' ? { position: 'relative', zIndex: 2, display: 'block', maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto', objectFit: 'contain', borderRadius: '4px' } : { position: 'relative', zIndex: 2, display: 'block', width: '100%', height: '100%', objectFit: 'contain', backgroundColor: 'transparent' }}
+                          />
+                        )}
 
                         {/* カテゴリバッジ */}
                         {viewMode !== 'list' && (

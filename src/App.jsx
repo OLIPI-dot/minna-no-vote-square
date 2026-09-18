@@ -1070,7 +1070,11 @@ function App() {
         // 🚨 DB側での中途半端なソートは行わず、直近30日のアクティブな記事をまとめて最大300件取得し、
         // クライアント側（SurveyListView）で正確にスコア計算＆ソートするらび！
         const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
-        baseQuery = baseQuery.gte('created_at', thirtyDaysAgo).limit(300);
+        baseQuery = baseQuery
+          .gte('created_at', thirtyDaysAgo)
+          .or(`deadline.is.null,deadline.gt.${now.toISOString()}`) // 終了済みは除外
+          .order('created_at', { ascending: false }) // ちゃんと最新から取得するらび！
+          .limit(300);
       } else {
         // デフォルトは新着順
         baseQuery = baseQuery.order('created_at', { ascending: false });
@@ -1245,6 +1249,8 @@ function App() {
         .eq('visibility', 'public')
         .not('tags', 'cs', '{"お知らせ"}')
         .gte('created_at', thirtyDaysAgo)
+        .or(`deadline.is.null,deadline.gt.${now.toISOString()}`) // 終了済みは除外
+        .order('created_at', { ascending: false }) // 最新200件からスコア計算するらび！
         .limit(200);
 
       const calcTotalScore = (item) => {
@@ -1266,6 +1272,8 @@ function App() {
           .select('*')
           .eq('visibility', 'public')
           .not('tags', 'cs', '{"お知らせ"}')
+          .or(`deadline.is.null,deadline.gt.${now.toISOString()}`) // 終了済みは除外
+          .order('created_at', { ascending: false })
           .limit(200);
         if (fallbackPopularRaw) {
           popular = fallbackPopularRaw.sort((a, b) => calcTotalScore(b) - calcTotalScore(a)).slice(0, 10);
