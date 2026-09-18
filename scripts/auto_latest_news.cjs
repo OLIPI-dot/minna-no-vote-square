@@ -450,10 +450,10 @@ async function startAutoPosting() {
             const sourceMatch = news.title.match(/[（\(](.*?)[）\)]$/);
             const sourceName = sourceMatch ? sourceMatch[1] : 'ニュース';
 
-            // ⚠️ AI要約がなく、かつ本文が実質空っぽ（20文字未満など）の場合はスキップ！
-            // （タイトルと画像だけのスッカスカな記事が投稿されるのを防ぐらび！）
-            if (!richData.summaryObj && richData.description.replace(/[\s\n]/g, '').length < 20) {
-                log(`⚠️ 警告: AI要約に失敗し、本文も空のため投稿をスキップします: ${news.title}`);
+            // ⚠️ AI要約が生成できなかった場合は、本文の文字数に関わらず強制スキップ！
+            // （タイトルや短いキャプションだけの淡白な記事が投稿されるのを防ぐらび！）
+            if (!richData.summaryObj) {
+                log(`⚠️ 警告: AI要約の生成に失敗したため、投稿を強制スキップします: ${news.title}`);
                 continue;
             }
 

@@ -308,9 +308,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
 
             <div style={{
               display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginBottom: '20px',
+              alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px', marginBottom: '20px',
               position: 'relative',
               zIndex: 1
             }}>
@@ -325,8 +323,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
                 boxShadow: '0 4px 14px rgba(236, 72, 153, 0.35)',
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '6px'
-              }}>⚡ 要約・注目ポイント</span>
+                gap: '6px', whiteSpace: 'nowrap' }}>⚡ 要約・注目ポイント</span>
               <span style={{ fontSize: '0.78rem', color: '#9333ea', fontWeight: 'bold', opacity: 0.8 }}>30秒でサクッと把握！</span>
             </div>
 
@@ -342,16 +339,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
                 <>
                   {/* 注目ポイント1 */}
                   {summaryJson.point1_desc && (
-                    <li style={{
-                      display: 'flex',
-                      alignItems: 'flex-start',
-                      gap: '14px',
-                      marginBottom: '16px',
-                      fontSize: '1.02rem',
-                      color: '#1e293b',
-                      lineHeight: '1.75',
-                      fontWeight: '500'
-                    }}>
+                    <li className="flex flex-col md:flex-row items-start gap-2 md:gap-[14px] text-[1.02rem] text-slate-800 leading-[1.75] font-medium" style={{ marginBottom: '16px' }}>
                       <span style={{
                         flex: '0 0 auto',
                         width: '28px',
@@ -367,7 +355,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
                         marginTop: '2px',
                         boxShadow: '0 3px 10px rgba(236, 72, 153, 0.3)'
                       }}>1</span>
-                      <span style={{ whiteSpace: 'normal', width: '100%' }}>
+                      <span className="flex flex-col md:block gap-1 w-full" style={{ whiteSpace: "normal" }}>
                         {summaryJson.point1_title && (
                           <span style={{
                             display: 'inline-block',
@@ -377,7 +365,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
                             padding: '1px 10px',
                             borderRadius: '8px',
                             border: '1px solid #e9d5ff',
-                            marginRight: '8px',
+                            marginRight: '8px', marginBottom: '4px',
                             fontSize: '0.92rem'
                           }}>
                             {summaryJson.point1_title}
@@ -390,16 +378,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
 
                   {/* 注目ポイント2 */}
                   {summaryJson.point2_desc && (
-                    <li style={{
-                      display: 'flex',
-                      alignItems: 'flex-start',
-                      gap: '14px',
-                      marginBottom: '16px',
-                      fontSize: '1.02rem',
-                      color: '#1e293b',
-                      lineHeight: '1.75',
-                      fontWeight: '500'
-                    }}>
+                    <li className="flex flex-col md:flex-row items-start gap-2 md:gap-[14px] text-[1.02rem] text-slate-800 leading-[1.75] font-medium" style={{ marginBottom: '16px' }}>
                       <span style={{
                         flex: '0 0 auto',
                         width: '28px',
@@ -415,7 +394,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
                         marginTop: '2px',
                         boxShadow: '0 3px 10px rgba(236, 72, 153, 0.3)'
                       }}>2</span>
-                      <span style={{ whiteSpace: 'normal', width: '100%' }}>
+                      <span className="flex flex-col md:block gap-1 w-full" style={{ whiteSpace: "normal" }}>
                         {summaryJson.point2_title && (
                           <span style={{
                             display: 'inline-block',
@@ -425,7 +404,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
                             padding: '1px 10px',
                             borderRadius: '8px',
                             border: '1px solid #e9d5ff',
-                            marginRight: '8px',
+                            marginRight: '8px', marginBottom: '4px',
                             fontSize: '0.92rem'
                           }}>
                             {summaryJson.point2_title}
@@ -452,7 +431,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
                       lineHeight: '1.6'
                     }}>
                       <span style={{ fontSize: '1.4rem', flexShrink: 0 }}>🐰</span>
-                      <span style={{ whiteSpace: 'normal', width: '100%' }}>
+                      <span className="flex flex-col md:block gap-1 w-full" style={{ whiteSpace: "normal" }}>
                         <strong style={{
                           background: 'linear-gradient(90deg, #ea580c, #c026d3)',
                           WebkitBackgroundClip: 'text',
@@ -518,7 +497,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
                           lineHeight: '1.6'
                         }}>
                           <span style={{ fontSize: '1.4rem', flexShrink: 0 }}>🐰</span>
-                          <span style={{ whiteSpace: 'normal', width: '100%' }}>
+                          <span className="flex flex-col md:block gap-1 w-full" style={{ whiteSpace: "normal" }}>
                             <strong style={{
                               background: 'linear-gradient(90deg, #ea580c, #c026d3)',
                               WebkitBackgroundClip: 'text',
@@ -581,16 +560,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
                     const parts = bodyText.split(/(「[^」]+」|【[^】]+】|\b\d+[月日万億円個件台%]?\b)/g);
 
                     return (
-                      <li key={idx} style={{
-                        display: 'flex',
-                        alignItems: 'flex-start',
-                        gap: '14px',
-                        marginBottom: idx < summaryPoints.length - 1 ? '16px' : '0',
-                        fontSize: '1.02rem',
-                        color: '#1e293b',
-                        lineHeight: '1.75',
-                        fontWeight: '500'
-                      }}>
+                      <li key={idx} className="flex flex-col md:flex-row items-start gap-2 md:gap-[14px] text-[1.02rem] text-slate-800 leading-[1.75] font-medium" style={{ marginBottom: idx < summaryPoints.length - 1 ? '16px' : '0' }}>
                         <span style={{
                           flex: '0 0 auto',
                           width: '28px',
@@ -606,7 +576,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
                           marginTop: '2px',
                           boxShadow: '0 3px 10px rgba(236, 72, 153, 0.3)'
                         }}>{currentNum}</span>
-                        <span style={{ whiteSpace: 'normal', width: '100%' }}>
+                        <span className="flex flex-col md:block gap-1 w-full" style={{ whiteSpace: "normal" }}>
                           {headingText && (
                             <span style={{
                               display: 'inline-block',
@@ -616,7 +586,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
                               padding: '1px 10px',
                               borderRadius: '8px',
                               border: '1px solid #e9d5ff',
-                              marginRight: '8px',
+                              marginRight: '8px', marginBottom: '4px',
                               fontSize: '0.92rem'
                             }}>
                               {headingText}
