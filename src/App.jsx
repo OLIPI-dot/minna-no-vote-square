@@ -1946,15 +1946,17 @@ function App() {
 
       if (myVoted) {
         // 投票済みの場合は、自分の投票した選択肢をアピール！
-        xText = `【${currentSurvey.title}】で私は【${myVoted.name}】に投票したよ！ みんなはどう思う？`;
+        xText = `【${currentSurvey.title}】で私は【${myVoted.name}】に投票したよ！\n\n`;
       } else {
         // 未投票（結果を見るだけ）の場合は現状の順位をシェア
         xText = `📊「${title}」\n`;
         if (isWinner) {
           xText += `🏆 現在1位: ${topOption.name} (${Math.round(topOption.votes / currentSurvey.total_votes * 100)}%)\n`;
         }
-        xText += `🔥 現在の合計: ${currentSurvey.total_votes}票！みんなはどう思う？らびっ！`;
+        xText += `🔥 現在の合計: ${currentSurvey.total_votes}票！\n\n`;
       }
+      
+      xText += `みんなはどう思う？🤔 投票してみてね！`;
 
       // 📊 GA4 キーイベント: Xでシェア
       if (window.gtag) {
@@ -1966,7 +1968,7 @@ function App() {
       }
 
       window.open(
-        `https://twitter.com/intent/tweet?text=${encodeURIComponent(xText)}&url=${encodeURIComponent(shareUrl)}&hashtags=アンケート広場`,
+        `https://twitter.com/intent/tweet?text=${encodeURIComponent(xText)}&url=${encodeURIComponent(shareUrl)}&hashtags=${encodeURIComponent('みんなのアンケート広場,投票,アンケート')}`,
         '_blank'
       );
     }
