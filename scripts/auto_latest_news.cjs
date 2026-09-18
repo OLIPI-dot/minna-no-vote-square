@@ -444,6 +444,11 @@ async function startAutoPosting() {
             let imageUrl = await searchYouTubeVideo(news.title);
             if (!imageUrl) imageUrl = richData.image || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=1000';
 
+            // 🚫 Yahoo画像の保存を完全ブロック（期限切れによる白画像化を防ぎ、フロント側で「🐰 No Image」を表示させるため）
+            if (imageUrl && imageUrl.includes('yimg.jp')) {
+                imageUrl = null;
+            }
+
             // 🏷️ 要約AIが生成したタグをそのまま使用（フォールバック完全撤廃）
             let tags = [];
             if (richData.summaryObj && Array.isArray(richData.summaryObj.tags)) {
