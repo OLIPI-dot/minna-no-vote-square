@@ -567,7 +567,7 @@ const SurveyListView = ({
                         </div>
 
                         {/* サムネイル画像 */}
-                        {thumbSrc && (
+                        {thumbSrc && !isBroken && (
                           <img
                             src={thumbSrc}
                             alt={`${s.title} のサムネイル`}
@@ -577,8 +577,7 @@ const SurveyListView = ({
                             onLoad={e => {
                               e.target.classList.add('ready');
                             }}
-                            onError={(e) => {
-                              e.target.style.display = 'none';
+                            onError={() => {
                               setBrokenImages(prev => {
                                 const newSet = new Set(prev);
                                 newSet.add(s.id);

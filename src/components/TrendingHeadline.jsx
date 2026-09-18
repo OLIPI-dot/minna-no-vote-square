@@ -4,6 +4,8 @@ const TrendingHeadline = ({ surveys, navigateTo }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFading, setIsFading] = useState(false);
 
+  const [brokenImages, setBrokenImages] = useState(new Set());
+
   // アンケートリストが変わったらインデックスをリセット
   useEffect(() => {
     setCurrentIndex(0);
@@ -52,6 +54,8 @@ const TrendingHeadline = ({ surveys, navigateTo }) => {
     else if (entries[0]) thumbSrc = entries[0];
   }
 
+  const isBroken = brokenImages.has(s.id);
+
   return (
     <div className="trending-headline-container">
       <div 
@@ -60,8 +64,20 @@ const TrendingHeadline = ({ surveys, navigateTo }) => {
       >
         {/* 背景画像（オーバーレイ付き） */}
         <div className="headline-bg-wrapper">
-          {thumbSrc ? (
-            <img src={thumbSrc} alt="" className="headline-bg-image" key={s.id} />
+          {thumbSrc && !isBroken ? (
+            <img 
+              src={thumbSrc} 
+              alt="" 
+              className="headline-bg-image" 
+              key={s.id} 
+              onError={() => {
+                setBrokenImages(prev => {
+                  const newSet = new Set(prev);
+                  newSet.add(s.id);
+                  return newSet;
+                });
+              }}
+            />
           ) : (
             <div className={`headline-bg-placeholder cat-${s.category || 'その他'}`} key={s.id}></div>
           )}
