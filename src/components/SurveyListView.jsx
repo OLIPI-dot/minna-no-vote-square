@@ -76,11 +76,34 @@ const SurveyListView = ({
       .slice(0, 5); // 上位5件をピックアップ
   }, [surveys, popularSurveys]);
 
-  // ⚡ サーバー側でフィルタ・ソート済みの surveys をそのまま使うらび！
-  // ただし、公式/ユーザー切り替えタブの client-side filtering だけは残すらび（将来的にサーバーへ移行可能）
+  // ⚡ サーバー側でフィルタ済みの surveys を受け取り、クライアント側で確実にソート計算を適用するらび！
   const finalItems = React.useMemo(() => {
-    return surveys;
-  }, [surveys, debouncedSearchQuery, filterTag, activeTab]);
+    let list = [...surveys];
+    if (sortMode === 'popular') {
+      const calcTotalScore = (item) => {
+        const votes = Number(item.total_votes || 0);
+        const views = Number(item.view_count || item.views || 0);
+        const likes = Number(item.likes_count || item.likes || 0);
+        return (votes * 10) + (likes * 5) + views;
+      };
+      const calcTrendingScore = (item) => {
+        const votes = Number(item.total_votes || 0);
+        const views = Number(item.view_count || item.views || 0);
+        return (votes * 5) + views;
+      };
+
+      if (popularMode === 'score') {
+        list.sort((a, b) => calcTotalScore(b) - calcTotalScore(a));
+      } else if (popularMode === 'trending') {
+        list.sort((a, b) => calcTrendingScore(b) - calcTrendingScore(a));
+      } else if (popularMode === 'views') {
+        list.sort((a, b) => Number(b.view_count || b.views || 0) - Number(a.view_count || a.views || 0));
+      } else if (popularMode === 'votes') {
+        list.sort((a, b) => Number(b.total_votes || 0) - Number(a.total_votes || 0));
+      }
+    }
+    return list;
+  }, [surveys, debouncedSearchQuery, filterTag, activeTab, sortMode, popularMode]);
 
   return (
     <>
@@ -462,14 +485,18 @@ const SurveyListView = ({
                 const showScoreBadge = isPopularRanking; // 全てのアンケートにスコアバッジを表示するらび！✨
                 let badgeLabel = '';
                 if (showScoreBadge) {
+                  const votes = Number(s.total_votes || 0);
+                  const views = Number(s.view_count || s.views || 0);
+                  const likes = Number(s.likes_count || s.likes || 0);
+
                   if (popularMode === 'trending') {
-                    badgeLabel = `🔥 ${Math.round(((s.total_votes || 0) * 10 + (s.view_count || 0)) / Math.pow(Math.max(0.5, (new Date() - new Date(s.created_at)) / 3600000) + 2, 1.2))}`;
+                    badgeLabel = `🔥 ${(votes * 5) + views}`;
                   } else if (popularMode === 'views') {
-                    badgeLabel = `👁️ ${s.view_count || 0} View`;
+                    badgeLabel = `👁️ ${views} View`;
                   } else if (popularMode === 'score') {
-                    badgeLabel = `⚡ ${(s.total_votes || 0) * SCORE_VOTE_WEIGHT + (s.view_count || 0)} pt`;
+                    badgeLabel = `⚡ ${(votes * 10) + (likes * 5) + views} pt`;
                   } else {
-                    badgeLabel = `🗳️ ${s.total_votes || 0} 票`;
+                    badgeLabel = `🗳️ ${votes} 票`;
                   }
                 }
 
