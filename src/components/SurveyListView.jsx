@@ -1,6 +1,7 @@
 import React from 'react';
 import RecommendedSection from './RecommendedSection';
 import TrendingHeadline from './TrendingHeadline';
+import CategoryEyecatch from './CategoryEyecatch';
 
 const SurveyListView = ({
   searchQuery, setSearchQuery,
@@ -554,46 +555,7 @@ const SurveyListView = ({
                         )}
 
                         {/* カテゴリ別スタイリッシュ・アイキャッチ (画像なし時のフォールバック) */}
-                        <div className="no-image-fallback" style={{
-                          display: (showFallback ? 'flex' : 'none'),
-                          position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
-                          background: `linear-gradient(135deg, ${catStyle.color || '#94a3b8'} 0%, #1e293b 150%)`,
-                          flexDirection: 'column',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          zIndex: 1,
-                          borderRadius: 'inherit'
-                        }}>
-                          <div style={{ fontSize: '2.5rem', marginBottom: '4px', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }}>
-                            {catStyle.icon}
-                          </div>
-                          <div style={{ 
-                            fontSize: '1rem', 
-                            fontWeight: '900', 
-                            color: 'rgba(255, 255, 255, 0.95)', 
-                            letterSpacing: '0.1em',
-                            textShadow: '0 1px 3px rgba(0,0,0,0.5)',
-                            fontFamily: '"Arial Black", "Impact", sans-serif'
-                          }}>
-                            {
-                              {
-                                "ニュース": "NEWS",
-                                "話題": "TRENDING",
-                                "エンタメ": "ENTERTAIN",
-                                "芸能": "SHOWBIZ",
-                                "レビュー": "REVIEW",
-                                "コラム": "COLUMN",
-                                "ネタ": "FUNNY",
-                                "ゲーム": "GAME",
-                                "クイズ": "QUIZ",
-                                "なぞなぞ": "RIDDLE",
-                                "らび": "LABI",
-                                "その他": "OTHER",
-                                "マイアンケート": "MINE"
-                              }[s.category?.trim() || "その他"] || "OTHER"
-                            }
-                          </div>
-                        </div>
+                        <CategoryEyecatch category={s.category} style={{ display: (showFallback ? 'flex' : 'none') }} />
 
                         {/* サムネイル画像 */}
                         {thumbSrc && !isBroken && (

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import CategoryEyecatch from './CategoryEyecatch';
 
 const TrendingHeadline = ({ surveys, navigateTo }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -77,7 +78,7 @@ const TrendingHeadline = ({ surveys, navigateTo }) => {
               }}
             />
           ) : (
-            <div className={`headline-bg-placeholder cat-${s.category || 'その他'}`} key={s.id}></div>
+            <CategoryEyecatch category={s.category} key={s.id} />
           )}
           <div className="headline-overlay"></div>
         </div>

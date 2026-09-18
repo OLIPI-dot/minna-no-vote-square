@@ -1,6 +1,7 @@
 import React from 'react';
 import AnimatedCounter from './AnimatedCounter';
 import SurveyDescription from './SurveyDescription';
+import CategoryEyecatch from './CategoryEyecatch';
 
 const VideoPlayer = ({ entry, idx }) => {
   const [isPlaying, setIsPlaying] = React.useState(false);
@@ -140,6 +141,7 @@ const SurveyDetailView = ({
   adjacentSurveys = { prev: null, next: null },
   baseCategories = []
 }) => {
+  const [brokenImages, setBrokenImages] = React.useState(new Set());
   if (!currentSurvey) return <div className="empty-msg">読み込み中...</div>;
 
   // 🎨 スタンプリアクションの集計ロジックらび！
@@ -532,17 +534,20 @@ const SurveyDetailView = ({
                     {nav.label}
                   </div>
                   <div style={{ width: '100%', height: '140px', overflow: 'hidden', position: 'relative' }}>
-                    <img
-                      src={thumb}
-                      alt={s.title}
-                      referrerPolicy="no-referrer"
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none';
-                        e.target.onerror = null;
-                        e.target.src = '/ogp-image.png';
-                      }}
-                      style={{ width: '100%', height: '100%', objectFit: 'contain', backgroundColor: '#f9fafb' }}
-                    />
+                    {!thumb || brokenImages.has(s.id) ? (
+                      <CategoryEyecatch category={s.category} />
+                    ) : (
+                      <img
+                        src={thumb}
+                        alt={s.title}
+                        referrerPolicy="no-referrer"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                          setBrokenImages(prev => new Set([...prev, s.id]));
+                        }}
+                        style={{ width: '100%', height: '100%', objectFit: 'contain', backgroundColor: '#f9fafb', position: 'relative', zIndex: 2 }}
+                      />
+                    )}
                     <div style={{ position: 'absolute', bottom: '10px', right: '10px', background: 'rgba(255,255,255,0.9)', padding: '2px 8px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 'bold', color: '#64748b' }}>
                       {s.category}
                     </div>

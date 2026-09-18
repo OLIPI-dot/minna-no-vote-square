@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
+import CategoryEyecatch from './CategoryEyecatch';
 
 const RecommendedSection = ({ surveys, navigateTo }) => {
+  const [brokenImages, setBrokenImages] = useState(new Set());
   if (!surveys || surveys.length === 0) return null;
 
   return (
@@ -57,18 +59,21 @@ const RecommendedSection = ({ surveys, navigateTo }) => {
                 WebkitTapHighlightColor: 'transparent'
               }}
             >
-              <div style={{ width: '100%', height: '100px', borderRadius: '14px', overflow: 'hidden' }}>
-                <img 
-                  src={thumb || '/ogp-image.png'} 
-                  alt="" 
-                  style={{ width: '100%', height: '100%', objectFit: 'contain', backgroundColor: '#f9fafb' }} 
-                  referrerPolicy="no-referrer"
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                    e.target.onerror = null;
-                    e.target.src = '/ogp-image.png';
-                  }}
-                />
+              <div style={{ width: '100%', height: '100px', borderRadius: '14px', overflow: 'hidden', position: 'relative' }}>
+                {!thumb || brokenImages.has(s.id) ? (
+                  <CategoryEyecatch category={s.category} />
+                ) : (
+                  <img 
+                    src={thumb} 
+                    alt="" 
+                    style={{ width: '100%', height: '100%', objectFit: 'contain', backgroundColor: '#f9fafb', position: 'relative', zIndex: 2 }} 
+                    referrerPolicy="no-referrer"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      setBrokenImages(prev => new Set([...prev, s.id]));
+                    }}
+                  />
+                )}
               </div>
               <div>
                 <div style={{ 
