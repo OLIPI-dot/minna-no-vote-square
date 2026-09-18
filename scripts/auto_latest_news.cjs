@@ -409,7 +409,7 @@ async function startAutoPosting() {
                     continue;
                 }
 
-                allNews.push({ title, link });
+                allNews.push({ title, link, pubDateStr });
             }
         } catch (e) {
             log(`❌ フィード取得失敗: ${feed} -> ${e.message}`);
@@ -479,7 +479,8 @@ async function startAutoPosting() {
                     is_official: true,
                     visibility: 'public',
                     tags: tags,
-                    deadline
+                    deadline,
+                    source_published_at: news.pubDateStr ? new Date(news.pubDateStr).toISOString() : null
                 }]).select();
                 if (sErr) throw sErr;
                 const surveyId = sData[0].id;
@@ -488,6 +489,10 @@ async function startAutoPosting() {
             }
             count++;
         } catch (e) { log(`❌ 投稿失敗: ${e.message}`); }
+    }
+    if (count === 0) {
+        log(`❌ 投稿件数が0件だったため、エラーとして異常終了します。`);
+        process.exit(1);
     }
     log(`✨ 自動投稿完了らび！`);
 }

@@ -335,15 +335,18 @@ const SurveyDetailView = ({
         )}
         <div className="deadline-info-block" style={{ marginTop: '30px' }}>
           <div className="absolute-deadline" style={{ marginBottom: '4px', fontSize: '0.9rem', color: '#64748b' }}>
-            🕒 投稿日：{(() => {
-              const d = new Date(currentSurvey.created_at);
+            {(() => {
+              const isSource = !!currentSurvey.source_published_at;
+              const dateToUse = currentSurvey.source_published_at || currentSurvey.created_at;
+              const d = new Date(dateToUse);
               const yyyy = d.getFullYear();
               const mm = String(d.getMonth() + 1).padStart(2, '0');
               const dd = String(d.getDate()).padStart(2, '0');
               const day = ['日','月','火','水','木','金','土'][d.getDay()];
               const hh = String(d.getHours()).padStart(2, '0');
               const min = String(d.getMinutes()).padStart(2, '0');
-              return `${yyyy}/${mm}/${dd}(${day}) ${hh}:${min}`;
+              const formatted = `${yyyy}/${mm}/${dd}(${day}) ${hh}:${min}`;
+              return isSource ? `📰 配信日：${formatted}` : `🕒 投稿日：${formatted}`;
             })()}
           </div>
           {currentSurvey.deadline && (
