@@ -333,6 +333,10 @@ async function fetchRichData(url, newsTitle = '') {
         
         if (geminiModel && fullText.length >= 50) {
             summaryObj = await generateAISummary(fullText);
+            
+            // 🤖 AIAPIを呼び出した場合のみ、レート制限対策として15秒待機する（成功・失敗問わず）
+            log(`⏳ API無料枠の安全のため、次の処理まで15秒待機します...`);
+            await new Promise(r => setTimeout(r, 15000));
         }
 
         // 🚫 従来の手抜きフォールバック（タイトルのコピペ代用など）は完全撤廃。
@@ -417,17 +421,21 @@ async function startAutoPosting() {
     const recentNormTitles = new Set(recentSurveys?.map(s => normalize(s.title)) || []);
 
     let count = 0;
+    let attemptCount = 0;
     const POST_LIMIT = 2; // 1回2件まで厳選！ (1日4回実行で合計最大8本/日) 🥕
+    const MAX_ATTEMPTS = 5; // 無限ループ防止！詳細取得にいく記事は上位5件までに制限するらび！
+
     for (const news of allNews) {
         if (count >= POST_LIMIT) break;
+        if (attemptCount >= MAX_ATTEMPTS) {
+            log(`⚠️ 最大試行回数（${MAX_ATTEMPTS}回）に達したため、処理を打ち切ります。`);
+            break;
+        }
         if (recentNormTitles.has(normalize(news.title))) continue;
 
-        log(`🔍 リード文をリッチ化中: ${news.title}`);
+        attemptCount++;
+        log(`🔍 リード文をリッチ化中 (${attemptCount}/${MAX_ATTEMPTS}): ${news.title}`);
         const richData = await fetchRichData(news.link);
-
-        // 無料枠（Free Tier）レート制限対策：1記事の要約が終わるごとに15秒待機！🥕
-        log(`⏳ API無料枠の安全のため、次の処理まで15秒待機します...`);
-        await new Promise(r => setTimeout(r, 15000));
 
         if (!richData.description || richData.description.length < 50) continue;
 
