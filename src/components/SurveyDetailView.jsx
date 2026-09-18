@@ -503,7 +503,7 @@ const SurveyDetailView = ({
               { type: 'prev', label: '前のアンケート 📜 →', data: adjacentSurveys.prev }
             ].filter(nav => nav.data).map(nav => {
               const s = nav.data;
-              let thumb = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400';
+              let thumb = null;
               if (s.image_url) {
                 const parts = s.image_url.split(',')[0].trim();
                 if (parts.startsWith('yt:')) thumb = `https://img.youtube.com/vi/${parts.substring(3)}/mqdefault.jpg`;
@@ -750,7 +750,7 @@ const SurveyDetailView = ({
           }}>
             {relatedSurveys.map(s => {
               // サムネイル抽出
-              let thumb = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400';
+              let thumb = null;
               if (s.image_url) {
                 const parts = s.image_url.split(',')[0].trim();
                 if (parts.startsWith('yt:')) thumb = `https://img.youtube.com/vi/${parts.substring(3)}/mqdefault.jpg`;
