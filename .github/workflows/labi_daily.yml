@@ -3,8 +3,8 @@ name: Labi News & Daily Survey Launcher 🐰🚀
 on:
   schedule:
     # 朝・昼・夕方・夜の4回実行らびっ！ 🐰🚀
-    # (JST 7:00, 12:00, 18:00, 22:00 -> UTC 22:00, 3:00, 9:00, 13:00)
-    - cron: '0 22,3,9,13 * * *'
+    # (JST 7:14, 12:14, 18:14, 22:14 -> UTC 22:14, 3:14, 9:14, 13:14)
+    - cron: '14 22,3,9,13 * * *'
   workflow_dispatch: # 手動実行も可能らび！
 
 permissions:
@@ -13,6 +13,7 @@ permissions:
 jobs:
   post-survey:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     env:
       VITE_SUPABASE_URL: "${{ secrets.VITE_SUPABASE_URL }}"
       VITE_SUPABASE_ANON_KEY: "${{ secrets.VITE_SUPABASE_ANON_KEY }}"
