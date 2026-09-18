@@ -785,7 +785,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
           </div>
         )}
 
-        {!mainBodyOnly && (
+        {!mainBodyOnly && !summaryJson && (
           <div style={{ textAlign: 'center', padding: '20px 0', color: '#94a3b8', fontStyle: 'italic', fontSize: '0.95rem' }}>
             📝 このアンケートの本文説明は以上です。
           </div>
