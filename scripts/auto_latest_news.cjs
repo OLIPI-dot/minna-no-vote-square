@@ -196,8 +196,8 @@ async function generateAISummary(articleContent) {
     let lastError = null;
     for (let attempt = 1; attempt <= 3; attempt++) {
         if (attempt > 1) {
-            log(`⏳ APIレート制限対策のため 5秒待機します...`);
-            await new Promise(r => setTimeout(r, 5000));
+            log(`⏳ API無料枠レート制限（429）回避のため、大きく65秒待機します... (試行 ${attempt}/3)`);
+            await new Promise(r => setTimeout(r, 65000));
         }
         try {
             const truncated = articleContent.substring(0, 2500); // 少し増やして情報量を確保
