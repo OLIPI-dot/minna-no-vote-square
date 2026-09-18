@@ -577,15 +577,13 @@ const SurveyListView = ({
                             className="survey-item-thumb"
                             loading={idx < 4 ? "eager" : "lazy"}
                             {...(idx < 4 ? { fetchpriority: "high" } : {})}
+                            referrerPolicy="no-referrer"
                             onLoad={e => {
                               e.target.classList.add('ready');
                             }}
-                            onError={() => {
-                              setBrokenImages(prev => {
-                                const newSet = new Set(prev);
-                                newSet.add(s.id);
-                                return newSet;
-                              });
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none';
+                              setBrokenImages(prev => new Set([...prev, s.id]));
                             }}
                             style={viewMode === 'list' ? { position: 'relative', zIndex: 2, display: 'block', maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto', objectFit: 'contain', borderRadius: '4px' } : { position: 'relative', zIndex: 2, display: 'block', width: '100%', height: '100%', objectFit: 'contain', backgroundColor: 'transparent' }}
                           />

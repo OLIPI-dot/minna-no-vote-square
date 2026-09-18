@@ -62,7 +62,9 @@ const RecommendedSection = ({ surveys, navigateTo }) => {
                   src={thumb || '/ogp-image.png'} 
                   alt="" 
                   style={{ width: '100%', height: '100%', objectFit: 'contain', backgroundColor: '#f9fafb' }} 
+                  referrerPolicy="no-referrer"
                   onError={(e) => {
+                    e.currentTarget.style.display = 'none';
                     e.target.onerror = null;
                     e.target.src = '/ogp-image.png';
                   }}

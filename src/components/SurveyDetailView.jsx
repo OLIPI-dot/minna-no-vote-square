@@ -229,7 +229,9 @@ const SurveyDetailView = ({
                     alt="survey-visual"
                     fetchpriority="high"
                     loading="eager"
+                    referrerPolicy="no-referrer"
                     onError={(e) => {
+                      e.currentTarget.style.display = 'none';
                       e.target.onerror = null;
                       e.target.src = '/ogp-image.png';
                     }}
@@ -533,7 +535,9 @@ const SurveyDetailView = ({
                     <img
                       src={thumb}
                       alt={s.title}
+                      referrerPolicy="no-referrer"
                       onError={(e) => {
+                        e.currentTarget.style.display = 'none';
                         e.target.onerror = null;
                         e.target.src = '/ogp-image.png';
                       }}
@@ -763,7 +767,9 @@ const SurveyDetailView = ({
                     <img
                       src={thumb}
                       alt={s.title}
+                      referrerPolicy="no-referrer"
                       onError={(e) => {
+                        e.currentTarget.style.display = 'none';
                         e.target.onerror = null;
                         e.target.src = '/ogp-image.png';
                       }}

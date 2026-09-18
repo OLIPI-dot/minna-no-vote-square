@@ -70,12 +70,10 @@ const TrendingHeadline = ({ surveys, navigateTo }) => {
               alt="" 
               className="headline-bg-image" 
               key={s.id} 
-              onError={() => {
-                setBrokenImages(prev => {
-                  const newSet = new Set(prev);
-                  newSet.add(s.id);
-                  return newSet;
-                });
+              referrerPolicy="no-referrer"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+                setBrokenImages(prev => new Set([...prev, s.id]));
               }}
             />
           ) : (
