@@ -1054,10 +1054,9 @@ function App() {
       // 🕒 日付・状態フィルタ (今日の話題 / アーカイブ)
       const now = new Date();
       if (sort === 'today') {
-        // 「今日の話題」は、今日（0時0分以降）に投稿されたアクティブなものを出すのが筋らび！ 1週間前のが出ないように確実にガードするらび。
-        const todayStart = new Date();
-        todayStart.setHours(0, 0, 0, 0);
-        baseQuery = baseQuery.gte('created_at', todayStart.toISOString());
+        // 「今日の話題」は直近24時間に投稿されたアクティブなものを出すらび！
+        const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+        baseQuery = baseQuery.gte('created_at', twentyFourHoursAgo.toISOString());
         // 終了していないもの
         baseQuery = baseQuery.or(`deadline.is.null,deadline.gt.${now.toISOString()}`);
       } else if (sort === 'ended') {
@@ -1068,7 +1067,16 @@ function App() {
 
       // 📈 ソート順の適用
       if (sort === 'popular') {
-        baseQuery = baseQuery.order('total_votes', { ascending: false });
+        if (pop === 'views') {
+          baseQuery = baseQuery.order('view_count', { ascending: false, nullsFirst: false }).order('total_votes', { ascending: false });
+        } else if (pop === 'votes') {
+          baseQuery = baseQuery.order('total_votes', { ascending: false, nullsFirst: false });
+        } else if (pop === 'score') {
+          baseQuery = baseQuery.order('total_votes', { ascending: false, nullsFirst: false }).order('likes_count', { ascending: false });
+        } else {
+          // trending (盛り上がり) 等のデフォルト
+          baseQuery = baseQuery.order('total_votes', { ascending: false, nullsFirst: false }).order('view_count', { ascending: false });
+        }
       } else {
         // デフォルトは新着順
         baseQuery = baseQuery.order('created_at', { ascending: false });
@@ -1099,9 +1107,8 @@ function App() {
 
               const now = new Date();
               if (sort === 'today') {
-                const todayStart = new Date();
-                todayStart.setHours(0, 0, 0, 0);
-                q = q.gte('created_at', todayStart.toISOString());
+                const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+                q = q.gte('created_at', twentyFourHoursAgo.toISOString());
                 q = q.or(`deadline.is.null,deadline.gt.${now.toISOString()}`);
               } else if (sort === 'ended') {
                 const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
@@ -1916,11 +1923,20 @@ function App() {
       navigator.clipboard.writeText(copyText).then(() => alert('コピーしました！'));
     } else if (type === 'x') {
       // 📝 X用のテキストをリッチに！らび頑張る！🐰✨
-      let xText = `📊「${title}」\n`;
-      if (isWinner) {
-        xText += `🏆 現在1位: ${topOption.name} (${Math.round(topOption.votes / currentSurvey.total_votes * 100)}%)\n`;
+      let xText = '';
+      const myVoted = votedOption ? options.find(o => String(o.id) === String(votedOption)) : null;
+
+      if (myVoted) {
+        // 投票済みの場合は、自分の投票した選択肢をアピール！
+        xText = `【${currentSurvey.title}】で私は【${myVoted.name}】に投票したよ！ みんなはどう思う？`;
+      } else {
+        // 未投票（結果を見るだけ）の場合は現状の順位をシェア
+        xText = `📊「${title}」\n`;
+        if (isWinner) {
+          xText += `🏆 現在1位: ${topOption.name} (${Math.round(topOption.votes / currentSurvey.total_votes * 100)}%)\n`;
+        }
+        xText += `🔥 現在の合計: ${currentSurvey.total_votes}票！みんなはどう思う？らびっ！`;
       }
-      xText += `🔥 現在の合計: ${currentSurvey.total_votes}票！みんなはどう思う？らびっ！`;
 
       // 📊 GA4 キーイベント: Xでシェア
       if (window.gtag) {
