@@ -418,6 +418,45 @@ const SurveyDetailView = ({
       </div>
       </SurveyDescription>
 
+      {/* 🚀 投票直後のシェア導線（新機能！） */}
+      {votedOption && (
+        <div className="vote-success-share-banner" style={{
+          marginTop: '24px',
+          padding: '24px',
+          background: 'linear-gradient(135deg, #f8fafc, #f1f5f9)',
+          borderRadius: '24px',
+          border: '2px solid #e2e8f0',
+          textAlign: 'center',
+          animation: 'fadeInUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+        }}>
+          <h4 style={{ fontSize: '1.2rem', fontWeight: '900', color: '#0f172a', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+            <span>🎉</span> 投票ありがとう！結果をみんなにシェアしよう！
+          </h4>
+          <button onClick={() => handleShareResult('x')} style={{
+            background: '#000000',
+            color: 'white',
+            padding: '16px 32px',
+            borderRadius: '30px',
+            fontWeight: 'bold',
+            fontSize: '1.1rem',
+            border: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '10px',
+            margin: '0 auto',
+            cursor: 'pointer',
+            transition: 'transform 0.2s, boxShadow 0.2s',
+            boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
+          }} onMouseOver={e => { e.currentTarget.style.transform = 'scale(1.05)'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(0,0,0,0.3)'; }} onMouseOut={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.2)'; }}>
+            <svg viewBox="0 0 24 24" style={{ width: '22px', height: '22px', fill: 'white' }}>
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            </svg>
+            Xでシェアする
+          </button>
+        </div>
+      )}
+
 
 
       {/* 🚀 前後のアンケートへのナビゲーション（カード形式にアップグレードらび！） */}
@@ -636,8 +675,15 @@ const SurveyDetailView = ({
         <button className={`like-survey-btn ${likedSurveys.some(id => String(id) === String(currentSurvey.id)) ? 'liked' : ''}`} onClick={handleLikeSurvey} style={{ background: likedSurveys.some(id => String(id) === String(currentSurvey.id)) ? '#ec4899' : '#fbcfe8', color: likedSurveys.some(id => String(id) === String(currentSurvey.id)) ? 'white' : '#be185d', padding: '12px 28px', borderRadius: '30px', fontWeight: 'bold', border: 'none' }}>
           {likedSurveys.some(id => String(id) === String(currentSurvey.id)) ? '💖 いいね済' : '🤍 いいね！'} <AnimatedCounter value={currentSurvey.likes_count || 0} />
         </button>
-        <button className="share-x-btn" onClick={() => handleShareResult('x')}>𝕏 シェア</button>
-        <button className="share-copy-btn" onClick={() => handleShareResult('copy')}>📋 コピー</button>
+        <button className="share-x-btn" onClick={() => handleShareResult('x')} style={{ background: '#000', color: 'white', padding: '12px 28px', borderRadius: '30px', fontWeight: 'bold', border: 'none', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', transition: 'transform 0.2s', boxShadow: '0 4px 10px rgba(0,0,0,0.15)' }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'} onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}>
+          <svg viewBox="0 0 24 24" style={{ width: '18px', height: '18px', fill: 'white' }}>
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+          </svg>
+          シェア
+        </button>
+        <button className="share-copy-btn" onClick={() => handleShareResult('copy')} style={{ background: '#f1f5f9', color: '#475569', padding: '12px 24px', borderRadius: '30px', fontWeight: 'bold', border: 'none', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background = '#e2e8f0'} onMouseOut={e => e.currentTarget.style.background = '#f1f5f9'}>
+          📋 コピー
+        </button>
       </div>
 
       <div style={{ textAlign: 'center', marginTop: '40px' }}>
