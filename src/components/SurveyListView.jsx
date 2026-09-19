@@ -552,14 +552,14 @@ const SurveyListView = ({
                     >
                       {/* 🛡️ ここがリスト表示のすべてのサムネイル（ニュース画像・YouTube・公式などすべて）を描画する場所です！ */}
                       <div className={`video-thumb-wrapper ${viewMode === 'list' || showFallback ? '' : 'skeleton'}`} style={viewMode === 'list' ? {
-                        width: window.innerWidth <= 600 ? '90px' : '160px',
+                        width: '160px',
                         height: '90px',
-                        flexShrink: 0,
                         overflow: 'hidden',
+                        background: '#f1f5f9',
+                        flexShrink: 0,
                         borderRadius: '8px',
-                        backgroundColor: '#f1f5f9', // 画像の余白が自然に見える背景色
                         position: 'relative',
-                        display: 'block' // おすすめセクションと同じく flex を解除して確実なブロック要素に
+                        display: 'block'
                       } : { position: 'relative', width: '100%', aspectRatio: '16/9', overflow: 'hidden' }}>
                         
                         {viewMode !== 'list' && (
@@ -576,6 +576,7 @@ const SurveyListView = ({
                         ) : (
                           /* 画像がある場合はおすすめセクションと完全に同一のスタイルを適用 */
                           <img
+                            data-debug="pc-news-thumb"
                             src={thumbSrc}
                             alt={`${s.title} のサムネイル`}
                             className="survey-item-thumb"
@@ -592,11 +593,10 @@ const SurveyListView = ({
                             style={viewMode === 'list' ? {
                               width: '100%',
                               height: '100%',
-                              objectFit: 'contain', // 画像全体を表示するため contain
-                              backgroundColor: '#f1f5f9',
+                              objectFit: 'contain',
+                              display: 'block',
                               position: 'relative',
-                              zIndex: 2,
-                              display: 'block'
+                              zIndex: 2
                             } : { position: 'relative', zIndex: 2, display: 'block', width: '100%', height: '100%', objectFit: 'cover', backgroundColor: 'transparent', borderRadius: '8px' }}
                           />
                         )}
