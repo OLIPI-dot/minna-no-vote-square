@@ -557,7 +557,7 @@ const SurveyListView = ({
                         flexShrink: 0,
                         overflow: 'hidden',
                         borderRadius: '8px',
-                        backgroundColor: '#f9fafb',
+                        backgroundColor: '#f1f5f9', // 画像の余白が自然に見える背景色
                         position: 'relative',
                         display: 'block' // おすすめセクションと同じく flex を解除して確実なブロック要素に
                       } : { position: 'relative', width: '100%', aspectRatio: '16/9', overflow: 'hidden' }}>
@@ -592,8 +592,8 @@ const SurveyListView = ({
                             style={viewMode === 'list' ? {
                               width: '100%',
                               height: '100%',
-                              objectFit: 'cover', // おすすめは contain だが、ユーザーの強い要望により cover
-                              backgroundColor: '#f9fafb',
+                              objectFit: 'contain', // 画像全体を表示するため contain
+                              backgroundColor: '#f1f5f9',
                               position: 'relative',
                               zIndex: 2,
                               display: 'block'
