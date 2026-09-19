@@ -1066,7 +1066,7 @@ function App() {
       console.log(`🔍 fetchSurveys: STAGE 1 - Fetching page ${page} (range: ${start}-${end}, sort: ${sort}, query: "${query}")...`);
 
       // 1. 公開アンケートの取得（フィルタ適用）
-      let baseQuery = supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,youtube_id,likes_count,total_votes,comment_count,view_count,is_official,created_at,deadline,user_id,user_name,source_published_at', { count: 'exact' });
+      let baseQuery = supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,youtube_id,likes_count,total_votes,is_official,created_at,deadline,user_id,source_published_at', { count: 'exact' });
 
       if (sort === 'mine') {
         if (currentUser) {
@@ -1198,7 +1198,7 @@ function App() {
       let mine = [];
       if (currentUser && page === 1 && !category && !query && sort !== 'mine') {
         console.log("🔍 fetchSurveys: STAGE 2 - Fetching private/limited surveys for user:", currentUser.id);
-        let mQuery = supabase.from('surveys').select('id,title,category,visibility,created_at,deadline,is_official,total_votes,likes_count,view_count,comment_count').neq('visibility', 'public');
+        let mQuery = supabase.from('surveys').select('id,title,category,visibility,created_at,deadline,is_official,total_votes,likes_count').neq('visibility', 'public');
         if (!isActuallyAdmin) {
           mQuery = mQuery.eq('user_id', currentUser.id);
         }
