@@ -2892,6 +2892,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 8px;
   margin-bottom: 12px;
   padding-bottom: 8px;
   border-bottom: 1px solid #f1f5f9;
@@ -2923,6 +2924,7 @@ body {
   font-weight: 800;
   color: #334155;
   font-size: 1.1rem;
+  white-space: nowrap;
 }
 
 .my-comment-badge {
@@ -2932,6 +2934,7 @@ body {
   padding: 2px 8px;
   border-radius: 12px;
   font-weight: bold;
+  white-space: nowrap;
 }
 
 .comment-anchor-link {
@@ -2946,8 +2949,9 @@ body {
 }
 
 .comment-date {
-  font-size: 0.9rem;
+  font-size: 0.75rem;
   color: #94a3b8;
+  white-space: nowrap;
 }
 
 .comment-item-body {
@@ -3046,7 +3050,9 @@ body {
 
 .comment-owner-actions {
   display: flex;
-  gap: 12px;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
 }
 
 .comment-owner-edit,
