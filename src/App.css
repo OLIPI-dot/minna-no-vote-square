@@ -2892,7 +2892,9 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  width: 100%;
+  box-sizing: border-box;
   margin-bottom: 12px;
   padding-bottom: 8px;
   border-bottom: 1px solid #f1f5f9;
@@ -2901,7 +2903,9 @@ body {
 .comment-author-wrap {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
+  min-width: 0;
+  flex-shrink: 1;
 }
 
 .comment-res-num {
@@ -2923,18 +2927,21 @@ body {
 .comment-author {
   font-weight: 800;
   color: #334155;
-  font-size: 1.1rem;
+  font-size: 0.85rem;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .my-comment-badge {
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   background: var(--primary-color);
   color: white;
-  padding: 2px 8px;
-  border-radius: 12px;
+  padding: 2px 6px;
+  border-radius: 4px;
   font-weight: bold;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .comment-anchor-link {
@@ -2949,9 +2956,11 @@ body {
 }
 
 .comment-date {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: #94a3b8;
   white-space: nowrap;
+  flex-shrink: 0;
+  margin-left: auto;
 }
 
 .comment-item-body {
