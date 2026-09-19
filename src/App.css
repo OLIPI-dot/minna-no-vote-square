@@ -807,7 +807,7 @@ body {
 
   /* 🗓️ グリッド表示：作成日（青）は非表示→しめ切日ど1本絞り */
   .view-grid .survey-item-created-at {
-    display: none !important;
+    /* display: none !important; 削除: スマホでも表示する */
   }
 
   .view-grid .survey-item-deadline {
@@ -3973,7 +3973,7 @@ button:active,
 
 /* \ud83d\udda5\ufe0f \u30ea\u30b9\u30c8\u8868\u793a\uff1a\u4f5c\u6210\u65e5\u30d0\u30c3\u30b8\u306fPC\u306e\u307f\u8868\u793a */
 .list-created-at-badge {
-  display: none !important;
+  /* display: none !important; 削除: スマホでも表示する */
 }
 @media (min-width: 768px) {
   .list-created-at-badge {

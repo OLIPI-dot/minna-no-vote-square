@@ -579,7 +579,7 @@ const SurveyListView = ({
                               e.currentTarget.style.display = 'none';
                               setBrokenImages(prev => new Set([...prev, s.id]));
                             }}
-                            style={viewMode === 'list' ? { position: 'relative', zIndex: 2, display: 'block', maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto', objectFit: 'contain', borderRadius: '4px' } : { position: 'relative', zIndex: 2, display: 'block', width: '100%', height: '100%', objectFit: 'contain', backgroundColor: 'transparent' }}
+                            style={viewMode === 'list' ? { position: 'relative', zIndex: 2, display: 'block', width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' } : { position: 'relative', zIndex: 2, display: 'block', width: '100%', height: '100%', objectFit: 'cover', backgroundColor: 'transparent', borderRadius: '8px' }}
                           />
                         )}
 
@@ -624,6 +624,7 @@ const SurveyListView = ({
                                 <span className={`status-badge ${isEnded ? 'ended' : 'active'}`}>
                                   {isEnded ? '終了' : '受付中'}
                                 </span>
+                                <span className="meta-category-badge" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.85em', background: '#f1f5f9', padding: '2px 6px', borderRadius: '4px', color: '#475569', fontWeight: 600 }}>{catStyle.icon} {s.category || 'その他'}</span>
                                 {/* PC のみ表示：作成日（青バッジ） */}
                                 <span className="list-created-at-badge survey-item-created-at">🐣 {formatWithDay(s.created_at)}</span>
                                 {s.deadline
@@ -668,6 +669,7 @@ const SurveyListView = ({
                               <div className="survey-item-meta-upper" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '6px' }}>
                                 {showScoreBadge && <span className="popular-score-badge">{badgeLabel}</span>}
                                 <span className={`status-badge ${isEnded ? 'ended' : 'active'}`}>{isEnded ? '終了' : '受付中'}</span>
+                                <span className="meta-category-badge" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.85em', background: '#f1f5f9', padding: '2px 6px', borderRadius: '4px', color: '#475569', fontWeight: 600 }}>{catStyle.icon} {s.category || 'その他'}</span>
                                 <span className="survey-item-created-at" title="作成日時">🐣 {formatWithDay(s.created_at)}</span>
                                 {s.deadline && <span className="survey-item-deadline">〆: {formatWithDay(s.deadline)}</span>}
                               </div>
