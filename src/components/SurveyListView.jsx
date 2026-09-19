@@ -550,23 +550,18 @@ const SurveyListView = ({
                         ...(viewMode === 'list' ? { display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '12px', padding: '10px', minHeight: '96px' } : {})
                       }}
                     >
-                      {/* 🛡️ 画像の有無に関わらず、必ず同じ枠組み（video-thumb-wrapper）を描画してレイアウト崩れを防ぐ */}
+                      {/* 🛡️ ここがリスト表示のすべてのサムネイル（ニュース画像・YouTube・公式などすべて）を描画する場所です！ */}
                       <div className={`video-thumb-wrapper ${viewMode === 'list' || showFallback ? '' : 'skeleton'}`} style={viewMode === 'list' ? {
-                        width: '160px',
+                        width: window.innerWidth <= 600 ? '90px' : '160px',
                         height: '90px',
-                        minWidth: '160px',
-                        minHeight: '90px',
-                        maxWidth: '160px',
-                        maxHeight: '90px',
+                        flexShrink: 0,
                         overflow: 'hidden',
                         borderRadius: '8px',
-                        flexShrink: 0,
-                        backgroundColor: '#f3f4f6',
+                        backgroundColor: '#f9fafb',
                         position: 'relative',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
+                        display: 'block' // おすすめセクションと同じく flex を解除して確実なブロック要素に
                       } : { position: 'relative', width: '100%', aspectRatio: '16/9', overflow: 'hidden' }}>
+                        
                         {viewMode !== 'list' && (
                           <div className="category-icon-thumb placeholder-base" style={{
                             position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
@@ -575,11 +570,11 @@ const SurveyListView = ({
                           }} />
                         )}
 
-                        {/* カテゴリ別スタイリッシュ・アイキャッチ (画像なし時のフォールバック) */}
-                        <CategoryEyecatch category={s.category} style={{ display: (showFallback ? 'flex' : 'none') }} />
-
-                        {/* サムネイル画像 */}
-                        {thumbSrc && !isBroken && (
+                        {/* 画像がない場合は、おすすめセクションと同じく Eyecatch を表示 */}
+                        {showFallback ? (
+                          <CategoryEyecatch category={s.category} />
+                        ) : (
+                          /* 画像がある場合はおすすめセクションと完全に同一のスタイルを適用 */
                           <img
                             src={thumbSrc}
                             alt={`${s.title} のサムネイル`}
@@ -597,14 +592,11 @@ const SurveyListView = ({
                             style={viewMode === 'list' ? {
                               width: '100%',
                               height: '100%',
-                              minWidth: '100%',
-                              minHeight: '100%',
-                              objectFit: 'cover',
-                              objectPosition: 'center',
-                              display: 'block',
+                              objectFit: 'cover', // おすすめは contain だが、ユーザーの強い要望により cover
+                              backgroundColor: '#f9fafb',
                               position: 'relative',
                               zIndex: 2,
-                              borderRadius: '8px'
+                              display: 'block'
                             } : { position: 'relative', zIndex: 2, display: 'block', width: '100%', height: '100%', objectFit: 'cover', backgroundColor: 'transparent', borderRadius: '8px' }}
                           />
                         )}
