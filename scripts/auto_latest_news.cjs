@@ -448,7 +448,8 @@ async function startAutoPosting() {
     let count = 0;
     let attemptCount = 0;
     const POST_LIMIT = 2; // 1回2件まで厳選！ (1日4回実行で合計最大8本/日) 🥕
-    const MAX_ATTEMPTS = 5; // 無限ループ防止！詳細取得にいく記事は上位5件までに制限するらび！
+    const MAX_ATTEMPTS = 30; // 確実に2件取得できるよう、試行上限を30に大幅緩和らび！
+    const postedCategories = new Set(); // 🎲 カテゴリの偏りを防ぐための記録用
 
     for (const news of allNews) {
         if (count >= POST_LIMIT) break;
@@ -457,6 +458,13 @@ async function startAutoPosting() {
             break;
         }
         if (recentNormTitles.has(normalize(news.title))) continue;
+
+        // 🎲 API呼び出し前にタイトルだけで簡易判定し、カテゴリ重複を事前ブロック！
+        const preCat = classifyNews(news.title, '');
+        if (postedCategories.has(preCat) && preCat !== 'その他') {
+            // log(`⏭️ カテゴリ重複（${preCat}）のため事前スキップ: ${news.title}`);
+            continue;
+        }
 
         attemptCount++;
         log(`🔍 リード文をリッチ化中 (${attemptCount}/${MAX_ATTEMPTS}): ${news.title}`);
@@ -517,7 +525,15 @@ async function startAutoPosting() {
                 await supabase.from('options').insert(options.map(name => ({ survey_id: surveyId, name, votes: 0 })));
                 log(`✅ プレミアム投稿成功らび！: ${news.title}`);
             }
+            
+            postedCategories.add(cat);
             count++;
+            
+            // 🛡️ API制限(429)を100%回避するため、2件目に行く前に10秒間の完全待機を入れる
+            if (count < POST_LIMIT) {
+                log(`⏳ 1件目完了！APIレートリミット回避のため、10秒間待機（スリープ）します...`);
+                await new Promise(r => setTimeout(r, 10000));
+            }
         } catch (e) { log(`❌ 投稿失敗: ${e.message}`); }
     }
     if (count === 0) {
