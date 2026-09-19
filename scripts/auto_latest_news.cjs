@@ -178,7 +178,7 @@ let geminiModel = null;
 if (GEMINI_API_KEY) {
     try {
         const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-        geminiModel = genAI.getGenerativeModel({ model: 'gemini-flash-latest' });
+        geminiModel = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
         log('🤖 Gemini AI モデル初期化完了らび！');
     } catch (e) {
         log(`⚠️ Gemini初期化エラー: ${e.message}（フォールバック処理を使用します）`);
