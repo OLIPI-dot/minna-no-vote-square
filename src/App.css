@@ -2931,17 +2931,19 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  flex-shrink: 0 !important;
+  max-width: 110px !important;
 }
 
 .my-comment-badge {
-  font-size: 0.65rem;
+  font-size: 0.6rem !important;
   background: var(--primary-color);
   color: white;
-  padding: 2px 6px;
+  padding: 1px 5px !important;
   border-radius: 4px;
   font-weight: bold;
   white-space: nowrap;
-  flex-shrink: 0;
+  flex-shrink: 0 !important;
 }
 
 .comment-anchor-link {
@@ -2956,10 +2958,10 @@ body {
 }
 
 .comment-date {
-  font-size: 0.7rem;
+  font-size: 0.7rem !important;
   color: #94a3b8;
   white-space: nowrap;
-  flex-shrink: 0;
+  flex-shrink: 0 !important;
   margin-left: auto;
 }
 
@@ -4151,4 +4153,10 @@ button:active,
   object-fit: contain !important;
   object-position: center !important;
   display: block !important;
+}
+
+@media (max-width: 480px) {
+  .comment-item-card {
+    padding: 12px 10px !important;
+  }
 }
