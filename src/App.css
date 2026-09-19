@@ -2720,11 +2720,13 @@ body {
 
   /* 📱 グリッド専用：スマホの狭いカード幅でも絶対に0を見切らせない引き締め */
   .view-grid .survey-item-meta-row {
-    gap: 4px !important;
+    gap: 3px !important;
+    justify-content: flex-start !important;
   }
   .view-grid .survey-item-meta-row span {
     font-size: 10px !important;
-    padding: 1px 2px !important;
+    padding-left: 2px !important;
+    padding-right: 2px !important;
   }
 
   .survey-item-created-at, .survey-item-deadline, .status-badge {
@@ -3947,10 +3949,10 @@ button:active,
     box-shadow: none !important;
   }
   .survey-list.view-list .video-thumb-wrapper {
-    flex: 0 0 90px !important;
-    width: 90px !important;
+    flex: 0 0 160px !important;
+    width: 160px !important;
     height: 90px !important;
-    aspect-ratio: auto !important;
+    aspect-ratio: 16 / 9 !important;
     border-radius: 8px !important;
     flex-shrink: 0 !important;
     overflow: hidden !important;
