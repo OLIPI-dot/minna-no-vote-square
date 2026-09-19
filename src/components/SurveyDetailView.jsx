@@ -213,7 +213,7 @@ const SurveyDetailView = ({
             onMouseOver={(e) => { e.currentTarget.style.background = '#f8fafc'; e.currentTarget.style.color = '#334155'; e.currentTarget.style.borderColor = '#94a3b8'; }}
             onMouseOut={(e) => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = '#64748b'; e.currentTarget.style.borderColor = '#cbd5e1'; }}
           >
-            ← アンケート一覧に戻る
+            ← 一覧に戻る
           </button>
         </div>
         <h1 className="survey-title">{titlePart}</h1>

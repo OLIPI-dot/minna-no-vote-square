@@ -2176,9 +2176,7 @@ function App() {
       <div className="main-wrap">
         <div className="layout-grid-3">
           <div className="nav-sidebar-left">
-            {view !== 'list' && (
-              <button className="side-back-btn" onClick={() => navigateTo('list')}>⇠ 広場へ戻る</button>
-            )}
+            {/* 以前ここにあった「広場へ戻る」ボタンは SurveyDetailView に統合したため削除らび！ */}
           </div>
 
           <div className="survey-card">
