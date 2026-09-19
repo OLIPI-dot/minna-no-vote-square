@@ -584,7 +584,7 @@ const SurveyListView = ({
                         )}
 
                         {/* カテゴリバッジ */}
-                        {viewMode !== 'list' && (
+                        {true && (
                           <div className="thumb-category-badge" style={{
                             color: catStyle.color,
                             border: `1.5px solid ${catStyle.color}44`,
@@ -618,19 +618,15 @@ const SurveyListView = ({
                             </div>
                             {/* 下段：メタ情報（2段レイアウト） */}
                             <div className="list-item-meta-container" style={{ display: 'flex', flexDirection: 'column', gap: '4px', overflow: 'hidden', minWidth: 0, marginTop: '4px' }}>
-                              {/* 1段目（上段）：バッジ類 */}
-                              <div className="list-item-meta-upper survey-item-meta-row" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '5px' }}>
-                                {showScoreBadge && <span className="popular-score-badge">{badgeLabel}</span>}
-                                <span className={`status-badge ${isEnded ? 'ended' : 'active'}`}>
-                                  {isEnded ? '終了' : '受付中'}
-                                </span>
-                                {/* PC のみ表示：作成日（青バッジ） */}
-                                <span className="list-created-at-badge survey-item-created-at">🐣 {formatWithDay(s.created_at)}</span>
-                                {s.deadline
-                                  ? <span className="survey-item-deadline">〆{new Date(s.deadline).toLocaleDateString('ja-JP', { month: '2-digit', day: '2-digit' })}</span>
-                                  : <span className="survey-item-created-at">🐣{new Date(s.created_at).toLocaleDateString('ja-JP', { month: '2-digit', day: '2-digit' })}</span>
-                                }
-                              </div>
+                                {/* 1段目（上段）：バッジ類 */}
+                                <div className="list-item-meta-upper survey-item-meta-row" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '5px' }}>
+                                  {showScoreBadge && <span className="popular-score-badge">{badgeLabel}</span>}
+                                  <span className={`status-badge ${isEnded ? 'ended' : 'active'}`}>
+                                    {isEnded ? '終了' : '受付中'}
+                                  </span>
+                                  <span className="survey-item-created-at" title="作成日時">🐣 {formatWithDay(s.created_at)}</span>
+                                  {s.deadline && <span className="survey-item-deadline">〆: {formatWithDay(s.deadline)}</span>}
+                                </div>
                               {/* 2段目（下段）：リアクション数字類 */}
                               <div className="list-item-meta-lower survey-item-meta-row" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', minWidth: 0 }}>
                                 <span className="survey-item-votes">🗳️{s.total_votes || 0}</span>

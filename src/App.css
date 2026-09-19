@@ -763,7 +763,7 @@ body {
     align-items: center;
   }
 
-  .view-grid .survey-item-thumb { width: 100% !important; height: 100% !important; object-fit: contain !important; background-color: transparent !important;
+  .view-grid .survey-item-thumb { width: 100% !important; height: 100% !important; object-fit: cover !important; background-color: transparent !important;
     transition: transform 0.5s ease;
   }
 
@@ -959,10 +959,10 @@ body {
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
-  flex: 0 0 96px !important;
+  flex: 0 0 112px !important;
   flex-shrink: 0 !important;
-  width: 96px !important;
-  height: 80px !important;
+  width: 112px !important;
+  height: 63px !important; /* 16:9 ratio */
   border-radius: 8px !important;
   margin-right: 0 !important;
   gap: 8px !important;
@@ -973,30 +973,32 @@ body {
     flex: 0 0 160px !important;
     /* タブレットでは少しスリムにらび！ */
     width: 160px !important;
+    height: 90px !important; /* 16:9 ratio */
     margin-right: 20px !important;
     gap: 12px !important;
   }
 
   .survey-item-thumb {
     width: 160px !important;
-    height: 160px !important;
+    height: 90px !important;
     flex: 0 0 160px !important;
-    border-radius: 20px !important;
+    border-radius: 12px !important;
     margin-right: 0 !important;
   }
 }
 
 @media (min-width: 1240px) {
   .video-thumb-wrapper {
-    flex: 0 0 200px !important;
-    width: 200px !important;
+    flex: 0 0 192px !important;
+    width: 192px !important;
+    height: 108px !important; /* 16:9 ratio */
     margin-right: 32px !important;
   }
 
   .survey-item-thumb {
-    width: 200px !important;
-    height: 200px !important;
-    flex: 0 0 200px !important;
+    width: 192px !important;
+    height: 108px !important;
+    flex: 0 0 192px !important;
   }
 }
 
@@ -1133,10 +1135,16 @@ body {
 }
 
 .status-badge {
-  font-size: 0.8rem;
-  padding: 5px 12px;
-  border-radius: 20px;
-  font-weight: 800;
+  font-size: 0.75rem !important; /* text-xs */
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
+  height: 22px !important;
+  line-height: 1 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-weight: 700 !important;
+  white-space: nowrap !important;
 }
 
 .status-badge.active {
@@ -1172,9 +1180,15 @@ body {
   color: #0369a1 !important;
   padding: 2px 6px !important;
   border-radius: 4px !important;
-  white-space: nowrap !important;
   border: 1px solid #bae6fd !important;
-  font-size: 0.75rem !important; /* PC向けデフォルト */
+  font-size: 0.75rem !important; /* text-xs */
+  height: 22px !important;
+  line-height: 1 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  white-space: nowrap !important;
+  font-weight: 700 !important;
   flex-shrink: 0 !important;
 }
 
@@ -1183,9 +1197,15 @@ body {
   color: #e11d48 !important;
   padding: 2px 6px !important;
   border-radius: 4px !important;
-  white-space: nowrap !important;
   border: 1px solid #fecdd3 !important;
-  font-size: 0.75rem !important; /* PC向けデフォルト */
+  font-size: 0.75rem !important; /* text-xs */
+  height: 22px !important;
+  line-height: 1 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  white-space: nowrap !important;
+  font-weight: 700 !important;
   flex-shrink: 0 !important;
 }
 
@@ -2696,9 +2716,10 @@ body {
   }
 
   .status-badge {
-    padding: 2px 8px !important;
-    font-size: 10px !important;
-    border-radius: 6px !important;
+    padding: 2px 4px !important;
+    font-size: 0.65rem !important; /* スマホ専用：フォント統一 */
+    height: 18px !important;
+    border-radius: 4px !important;
   }
 
   .watch-star-btn {
@@ -2722,7 +2743,9 @@ body {
   }
 
   .survey-item-created-at, .survey-item-deadline, .status-badge {
-    font-size: 10px !important;
+    font-size: 0.65rem !important; /* スマホ専用：フォント統一 */
+    height: 18px !important;
+    padding: 2px 4px !important;
   }
 
   .card-stats-row {
@@ -2736,7 +2759,7 @@ body {
 
   /* 📅 期限表示 */
   .survey-item-deadline {
-    font-size: 11px !important;
+    /* 統一されたのでここでは何もしない */
   }
 
   .countdown-display {
