@@ -200,6 +200,22 @@ const SurveyDetailView = ({
   return (
     <div className="score-card">
       <div className="detail-header">
+        <div style={{ marginBottom: '16px' }}>
+          <button 
+            onClick={() => navigateTo('list')} 
+            className="back-to-list-btn-compact"
+            style={{ 
+              background: 'none', border: '1px solid #cbd5e1', borderRadius: '20px', 
+              padding: '6px 14px', fontSize: '0.85rem', color: '#64748b', 
+              cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '4px',
+              transition: 'all 0.2s'
+            }}
+            onMouseOver={(e) => { e.currentTarget.style.background = '#f8fafc'; e.currentTarget.style.color = '#334155'; e.currentTarget.style.borderColor = '#94a3b8'; }}
+            onMouseOut={(e) => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = '#64748b'; e.currentTarget.style.borderColor = '#cbd5e1'; }}
+          >
+            ← アンケート一覧に戻る
+          </button>
+        </div>
         <h1 className="survey-title">{titlePart}</h1>
 
         {/* 📺 メディア表示（動画・画像） */}
@@ -729,7 +745,12 @@ const SurveyDetailView = ({
                 </div>
               </div>
             );
-          }) : <div style={{ textAlign: 'center', padding: '40px', color: '#94a3b8' }}>まだコメントはありません。🐰🥕</div>}
+          }) : (
+            <div style={{ textAlign: 'center', padding: '40px 20px', color: '#94a3b8', fontSize: '0.95rem', lineHeight: '1.6' }}>
+              🐰 まだコメントはありません。<br />
+              最初の感想を書いてみよう！
+            </div>
+          )}
           <Pagination current={currentCommentPage} total={Math.ceil(comments.length / 5)} onPageChange={setCurrentCommentPage} />
         </div>
       </div>

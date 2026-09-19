@@ -30,7 +30,7 @@ const Sidebar = ({
       <div className="sidebar-section-card" style={{ marginBottom: '24px' }}>
         <h3 className="live-feed-title">🔥 人気ランキング</h3>
         <div className="live-feed-content">
-          {popularSurveys.map((s, idx) => (
+          {popularSurveys.slice(0, 5).map((s, idx) => (
             <div 
               key={s.id} 
               className="live-item popular clickable" 
@@ -97,7 +97,7 @@ const Sidebar = ({
       <div className="sidebar-section-card" style={{ marginBottom: '24px' }}>
         <h3 className="live-feed-title">✨ 広場の最新ニュース</h3>
         <div className="live-feed-content">
-          {liveSurveys.map(s => (
+          {liveSurveys.slice(0, 5).map(s => (
             <div 
               key={s.id} 
               className="live-item clickable" 
