@@ -660,7 +660,7 @@ const SurveyDetailView = ({
       </div>
 
       {/* 💬 コメント（掲示板）セクション */}
-      <div className="comment-section-area" style={{ marginTop: '60px', paddingTop: '40px', borderTop: '2px solid #f1f5f9' }}>
+      <div className="comment-section-area" style={{ marginTop: '50px', padding: '32px 24px', background: '#f8fafc', borderRadius: '24px', border: '1px solid #e2e8f0', boxShadow: '0 4px 15px rgba(0,0,0,0.03)' }}>
         <h3 className="comments-title">💬 みんなのコメント <span style={{ fontSize: '0.9rem', fontWeight: 'normal', color: '#94a3b8' }}>({comments.length}件)</span></h3>
         <div className="comment-form-card">
           <input type="text" placeholder="名無しさん" value={commentName} onChange={e => setCommentName(e.target.value)} className="comment-name-input" />
@@ -746,9 +746,36 @@ const SurveyDetailView = ({
               </div>
             );
           }) : (
-            <div style={{ textAlign: 'center', padding: '40px 20px', color: '#94a3b8', fontSize: '0.95rem', lineHeight: '1.6' }}>
-              🐰 まだコメントはありません。<br />
-              最初の感想を書いてみよう！
+            <div style={{ display: 'flex', justifyContent: 'center', margin: '40px 0' }}>
+              <div style={{
+                background: '#ffffff',
+                border: '2px dashed #cbd5e1',
+                borderRadius: '24px',
+                padding: '24px 32px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '16px',
+                boxShadow: '0 4px 10px rgba(0,0,0,0.02)',
+                position: 'relative'
+              }}>
+                <span style={{ fontSize: '2.5rem' }}>🐰</span>
+                <div style={{ textAlign: 'left' }}>
+                  <span style={{ display: 'block', color: '#64748b', fontSize: '0.95rem', fontWeight: 'bold', marginBottom: '4px' }}>まだ感想がないみたい…</span>
+                  <span style={{ display: 'block', color: '#7c3aed', fontSize: '1.05rem', fontWeight: '900' }}>一番乗りで教えてね！🥕</span>
+                </div>
+                {/* 吹き出しのしっぽ */}
+                <div style={{
+                  position: 'absolute',
+                  bottom: '-8px',
+                  left: '46px',
+                  width: '16px',
+                  height: '16px',
+                  background: '#ffffff',
+                  borderBottom: '2px dashed #cbd5e1',
+                  borderRight: '2px dashed #cbd5e1',
+                  transform: 'rotate(45deg)'
+                }}></div>
+              </div>
             </div>
           )}
           <Pagination current={currentCommentPage} total={Math.ceil(comments.length / 5)} onPageChange={setCurrentCommentPage} />
@@ -762,7 +789,7 @@ const SurveyDetailView = ({
 
 {/* 🔥 関連アンケートセクション (回遊性アップ！) */}
       {relatedSurveys && relatedSurveys.length > 0 && (
-        <div className="related-surveys-section" style={{ marginTop: '60px', paddingTop: '40px', borderTop: '2px solid #f1f5f9' }}>
+        <div className="related-surveys-section" style={{ marginTop: '40px', padding: '32px 24px', background: '#ffffff', borderRadius: '24px', border: '1px solid #e2e8f0', boxShadow: '0 4px 15px rgba(0,0,0,0.03)' }}>
           <h3 style={{ fontSize: '1.4rem', fontWeight: '900', color: '#1e293b', marginBottom: '24px', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
             <span>🔥</span> この話題、みんなはどう思ってる？
           </h3>
@@ -847,47 +874,49 @@ const SurveyDetailView = ({
 
       {/* 🚀 前後のアンケートへのナビゲーション（カード形式にアップグレードらび！） */}
       {(adjacentSurveys.prev || adjacentSurveys.next) && (
-        <div className="adjacent-nav-section" style={{ marginTop: '50px', paddingTop: '30px', borderTop: '2px solid #f1f5f9' }}>
-          <h3 style={{ fontSize: '1.2rem', fontWeight: '900', color: '#1e293b', marginBottom: '20px', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-            <span>📖</span> 前後のアンケートもチェックらび！
-          </h3>
-          <div className="adjacent-cards-container" style={{ display: 'flex', justifyContent: 'center', gap: '20px', flexWrap: 'wrap' }}>
+        <div className="adjacent-nav-section" style={{ marginTop: '40px' }}>
+          <div className="adjacent-nav-grid" style={{ 
+            display: 'grid', 
+            gridTemplateColumns: (adjacentSurveys.prev && adjacentSurveys.next) ? '1fr 1fr' : '1fr', 
+            gap: '16px' 
+          }}>
             {[
-              { type: 'next', label: '← 次のアンケート ✨', data: adjacentSurveys.next },
-              { type: 'prev', label: '前のアンケート 📜 →', data: adjacentSurveys.prev }
+              { type: 'prev', label: '← 前のアンケート', data: adjacentSurveys.prev },
+              { type: 'next', label: '次のアンケート →', data: adjacentSurveys.next }
             ].filter(nav => nav.data).map(nav => {
               const s = nav.data;
               let thumb = null;
               if (s.image_url) {
                 const parts = s.image_url.split(',')[0].trim();
                 if (parts.startsWith('yt:')) thumb = `https://img.youtube.com/vi/${parts.substring(3)}/mqdefault.jpg`;
-                else if (parts.startsWith('nico:')) thumb = '/nico_fallback.jpg'; // 以前決めたフォールバックらび！
+                else if (parts.startsWith('nico:')) thumb = '/nico_fallback.jpg';
                 else thumb = parts;
-              } else if (s.youtube_id) {
-                thumb = `https://img.youtube.com/vi/${s.youtube_id}/mqdefault.jpg`;
               }
 
               return (
-                <div key={s.id} className="related-card" onClick={() => navigateTo('details', s)} style={{
-                  background: '#fff', borderRadius: '20px', overflow: 'hidden', cursor: 'pointer',
-                  boxShadow: '0 4px 15px rgba(0,0,0,0.05)', transition: 'all 0.3s ease',
+                <div key={s.id} onClick={() => navigateTo('details', s)} style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '16px',
+                  background: '#ffffff',
+                  padding: '16px',
+                  borderRadius: '20px',
                   border: '2px solid #f1f5f9',
-                  width: '100%',
-                  maxWidth: '280px',
-                  flex: '1 1 280px',
-                  userSelect: 'none',
-                  WebkitTapHighlightColor: 'transparent',
-                  position: 'relative'
-                }} onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 12px 25px rgba(0,0,0,0.1)'; }} onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.05)'; }}>
-                  <div style={{
-                    position: 'absolute', top: '10px', left: '10px', zIndex: 2,
-                    background: nav.type === 'next' ? 'rgba(124, 58, 237, 0.9)' : 'rgba(71, 85, 105, 0.9)',
-                    color: 'white', padding: '4px 12px', borderRadius: '30px', fontSize: '0.75rem', fontWeight: '900', backdropFilter: 'blur(4px)',
-                    boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
-                  }}>
-                    {nav.label}
-                  </div>
-                  <div style={{ width: '100%', height: '140px', overflow: 'hidden', position: 'relative' }}>
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.02)',
+                  flexDirection: nav.type === 'prev' ? 'row' : 'row-reverse',
+                  textAlign: nav.type === 'prev' ? 'left' : 'right'
+                }} onMouseOver={e => {
+                  e.currentTarget.style.borderColor = '#cbd5e1';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.05)';
+                }} onMouseOut={e => {
+                  e.currentTarget.style.borderColor = '#f1f5f9';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.02)';
+                }}>
+                  <div style={{ width: '80px', height: '80px', flexShrink: 0, borderRadius: '12px', overflow: 'hidden', background: '#f8fafc' }}>
                     {!thumb || brokenImages.has(s.id) ? (
                       <CategoryEyecatch category={s.category} />
                     ) : (
@@ -899,24 +928,16 @@ const SurveyDetailView = ({
                           e.currentTarget.style.display = 'none';
                           setBrokenImages(prev => new Set([...prev, s.id]));
                         }}
-                        style={{ width: '100%', height: '100%', objectFit: 'contain', backgroundColor: '#f9fafb', position: 'relative', zIndex: 2 }}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                       />
                     )}
-                    <div style={{ position: 'absolute', bottom: '10px', right: '10px', background: 'rgba(255,255,255,0.9)', padding: '2px 8px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 'bold', color: '#64748b' }}>
-                      {s.category}
-                    </div>
                   </div>
-                  <div style={{ padding: '15px' }}>
-                    <div style={{ fontWeight: 'bold', fontSize: '0.95rem', lineHeight: '1.4', marginBottom: '10px', height: '2.8em', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
-                      {s.title}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: '0.8rem', fontWeight: 'bold', color: nav.type === 'next' ? '#7c3aed' : '#64748b', marginBottom: '4px' }}>
+                      {nav.label}
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem', color: '#94a3b8' }}>
-                      <span>🗳️ {s.total_votes || 0} 票</span>
-                      <div style={{ display: 'flex', gap: '4px' }}>
-                        {s.tags?.filter(t => !t.startsWith('_STAMP:')).slice(0, 2).map((t, i) => (
-                          <span key={i} style={{ background: '#f8fafc', padding: '1px 6px', borderRadius: '6px', fontSize: '0.7rem' }}>#{t}</span>
-                        ))}
-                      </div>
+                    <div style={{ fontWeight: 'bold', color: '#1e293b', fontSize: '0.95rem', lineHeight: '1.4', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                      {s.title}
                     </div>
                   </div>
                 </div>
