@@ -491,6 +491,7 @@ const SurveyDetailView = ({
 
 
 
+
       {/* 🛡️ 管理パネル (チャッピー・アルゴリズム) */}
       {user && (
         <div className="admin-actions">
@@ -642,102 +643,6 @@ const SurveyDetailView = ({
         </button>
       </div>
 
-      <div style={{ textAlign: 'center', marginTop: '40px' }}>
-        <button className="back-to-list-link" onClick={() => navigateTo('list')} style={{ background: 'none', border: 'none', color: '#94a3b8', textDecoration: 'underline' }}>← 広場に戻る</button>
-      </div>
-
-      {/* 🥕 広告/レコメンドエリア (らび＆おりぴ応援コーナー) */}
-      <div style={{ marginTop: '40px', marginBottom: '20px' }}>
-        <AdSenseBox slot="survey_detail_middle" affiliateType="amazon" />
-      </div>
-
-      {/* 🔥 関連アンケートセクション (回遊性アップ！) */}
-      {relatedSurveys && relatedSurveys.length > 0 && (
-        <div className="related-surveys-section" style={{ marginTop: '60px', paddingTop: '40px', borderTop: '2px solid #f1f5f9' }}>
-          <h3 style={{ fontSize: '1.4rem', fontWeight: '900', color: '#1e293b', marginBottom: '24px', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-            <span>🔥</span> この話題、みんなはどう思ってる？
-          </h3>
-          <div className="related-scroll-container" style={{
-            display: 'flex',
-            overflowX: 'auto',
-            gap: '20px',
-            paddingBottom: '20px',
-            paddingLeft: '4px',
-            paddingRight: '4px',
-            WebkitOverflowScrolling: 'touch',
-            scrollSnapType: 'x proximity'
-          }}>
-            {relatedSurveys.map(s => {
-              // サムネイル抽出
-              let thumb = null;
-              if (s.image_url) {
-                const parts = s.image_url.split(',')[0].trim();
-                if (parts.startsWith('yt:')) thumb = `https://img.youtube.com/vi/${parts.substring(3)}/mqdefault.jpg`;
-                else if (!parts.startsWith('nico:')) thumb = parts;
-              }
-
-              return (
-                <div key={s.id} className="related-card" onClick={() => navigateTo('details', s)} style={{
-                  background: '#fff', borderRadius: '20px', overflow: 'hidden', cursor: 'pointer',
-                  boxShadow: '0 4px 15px rgba(0,0,0,0.05)', transition: 'all 0.3s ease',
-                  border: '1px solid #f1f5f9',
-                  minWidth: '280px',
-                  flex: '0 0 280px',
-                  scrollSnapAlign: 'start',
-                  userSelect: 'none',
-                  WebkitTapHighlightColor: 'transparent'
-                }} onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 12px 25px rgba(0,0,0,0.1)'; }} onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.05)'; }}>
-                  <div style={{ width: '100%', height: '140px', overflow: 'hidden', position: 'relative' }}>
-                    {!thumb || brokenImages.has(s.id) ? (
-                      <CategoryEyecatch category={s.category} />
-                    ) : (
-                      <img
-                        src={thumb}
-                        alt={s.title}
-                        referrerPolicy="no-referrer"
-                        onError={(e) => {
-                          e.currentTarget.style.display = 'none';
-                          setBrokenImages(prev => new Set([...prev, s.id]));
-                        }}
-                        style={{ width: '100%', height: '100%', objectFit: 'contain', backgroundColor: '#f9fafb', position: 'relative', zIndex: 2 }}
-                      />
-                    )}
-                    <div style={{ position: 'absolute', top: '10px', right: '10px', background: 'rgba(255,255,255,0.9)', padding: '2px 8px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 'bold', color: '#64748b' }}>
-                      {s.category}
-                    </div>
-                  </div>
-                  <div style={{ padding: '15px' }}>
-                    <div style={{ fontWeight: 'bold', fontSize: '0.95rem', lineHeight: '1.4', marginBottom: '10px', height: '2.8em', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
-                      {s.title}
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem', color: '#94a3b8' }}>
-                      <span>🗳️ {s.total_votes || 0} 票</span>
-                      <div style={{ display: 'flex', gap: '4px' }}>
-                        {s.tags?.filter(t => !t.startsWith('_STAMP:')).slice(0, 2).map((t, i) => (
-                          <span key={i} onClick={(e) => { e.stopPropagation(); setFilterTag(t); setActiveTab('all'); navigateTo('list'); }}
-                            style={{ background: '#f8fafc', padding: '1px 6px', borderRadius: '6px', fontSize: '0.7rem', cursor: 'pointer' }}>#{t}</span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-          <style>{`
-            .related-scroll-container::-webkit-scrollbar { height: 14px; }
-            .related-scroll-container::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
-            .related-scroll-container::-webkit-scrollbar-thumb { 
-              background: #cbd5e1; 
-              border-radius: 10px; 
-              border: 2px solid #f1f5f9;
-              transition: all 0.3s;
-            }
-            .related-scroll-container::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-          `}</style>
-        </div>
-      )}
-
       {/* 💬 コメント（掲示板）セクション */}
       <div className="comment-section-area" style={{ marginTop: '60px', paddingTop: '40px', borderTop: '2px solid #f1f5f9' }}>
         <h3 className="comments-title">💬 みんなのコメント <span style={{ fontSize: '0.9rem', fontWeight: 'normal', color: '#94a3b8' }}>({comments.length}件)</span></h3>
@@ -828,96 +733,12 @@ const SurveyDetailView = ({
           <Pagination current={currentCommentPage} total={Math.ceil(comments.length / 5)} onPageChange={setCurrentCommentPage} />
         </div>
       </div>
-{/* 💬 コメント（掲示板）セクション */}
-      <div className="comment-section-area" style={{ marginTop: '60px', paddingTop: '40px', borderTop: '2px solid #f1f5f9' }}>
-        <h3 className="comments-title">💬 みんなのコメント <span style={{ fontSize: '0.9rem', fontWeight: 'normal', color: '#94a3b8' }}>({comments.length}件)</span></h3>
-        <div className="comment-form-card">
-          <input type="text" placeholder="名無しさん" value={commentName} onChange={e => setCommentName(e.target.value)} className="comment-name-input" />
-          <textarea placeholder="コメントを書いてね！🐰✨" value={commentContent} onChange={e => setCommentContent(e.target.value)} className="comment-textarea" />
-          <button className="comment-submit-btn" onClick={handlePostComment} disabled={isPostingComment}>{isPostingComment ? '送信中...' : 'コメントを投稿する'}</button>
-        </div>
-        <div className="comments-list">
-          {comments.length > 0 ? comments.slice((currentCommentPage - 1) * 5, currentCommentPage * 5).map((c, idx) => {
-            const absoluteIndex = (currentCommentPage - 1) * 5 + idx;
-            // 🔢 レス番号の計算（全体の投稿順。最新投稿が一番大きな番号になるように）
-            const stableResNum = comments.length - absoluteIndex;
-            const isMyComment = myCommentKeys[c.id] || (user && c.user_id === user.id);
-            const isLabi = c.user_name?.includes('らび');
 
-            return (
-              <div key={c.id} className={`comment-item-card ${isLabi ? 'comment-labi' : ''}`}>
-                <div className="comment-item-header">
-                  <div className="comment-author-wrap">
-                    <span className="comment-res-num" onClick={() => setCommentContent(prev => prev + `>>${stableResNum} `)}>{stableResNum}</span>
-                    <span className="comment-author" style={isLabi ? { color: '#d97706', fontWeight: '900' } : {}}>
-                      {isLabi ? '🐰 らび 🐰 (AI)' : `👤 ${c.user_name}`}
-                    </span>
-                    {isMyComment && <span className="my-comment-badge" style={{ marginLeft: '10px' }}>★ あなたの投稿</span>}
-                  </div>
-                  <span className="comment-date">{new Date(c.created_at).toLocaleString('ja-JP', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}</span>
-                </div>
-
-                <div className="comment-item-body">
-                  {editingCommentId === c.id ? (
-                    <div className="comment-edit-form">
-                      <textarea
-                        value={editContent}
-                        onChange={(e) => setEditContent(e.target.value)}
-                        className="comment-edit-textarea"
-                      />
-                      <div className="comment-edit-actions">
-                        <button className="comment-edit-save" onClick={handleUpdateComment} disabled={isActionLoading}>保存</button>
-                        <button className="comment-edit-cancel" onClick={(e) => { e.preventDefault(); setEditingCommentId(null); setEditContent(''); }}>中止</button>
-                      </div>
-                    </div>
-                  ) : (
-                    renderCommentContent(c.content)
-                  )}
-                </div>
-
-                <div className="comment-footer-row">
-                  <div className="comment-reactions">
-                    <button
-                      className={`reaction-btn ${myReactions[`${c.id}_good`] ? 'active' : ''}`}
-                      onClick={() => handleReaction(c.id, 'good')}
-                    >
-                      👍 {c.reactions?.good || 0}
-                    </button>
-                    <button
-                      className={`reaction-btn ${myReactions[`${c.id}_bad`] ? 'active' : ''}`}
-                      onClick={() => handleReaction(c.id, 'bad')}
-                    >
-                      👎 {c.reactions?.bad || 0}
-                    </button>
-                    <button
-                      className="report-btn"
-                      onClick={() => handleReportContent(c.id, 'comment')}
-                      title="通報"
-                      aria-label="不適切なコメントを通報"
-                      style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', fontSize: '1rem', opacity: 0.7 }}
-                    >
-                      🚩
-                    </button>
-                  </div>
-
-                  <div className="comment-owner-actions">
-                    {isMyComment && !editingCommentId && c.content !== '[[DELETED]]' && (
-                      <>
-                        <button className="comment-owner-edit" onClick={() => startEditComment(c)}>修正</button>
-                        <button className="comment-owner-delete" onClick={() => handleDeleteComment(c.id)}>削除</button>
-                      </>
-                    )}
-                    {isAdmin && !isMyComment && c.content !== '[[DELETED]]' && (
-                      <button className="comment-owner-delete" onClick={() => handleDeleteComment(c.id)}>削除(管)</button>
-                    )}
-                  </div>
-                </div>
-              </div>
-            );
-          }) : <div style={{ textAlign: 'center', padding: '40px', color: '#94a3b8' }}>まだコメントはありません。🐰🥕</div>}
-          <Pagination current={currentCommentPage} total={Math.ceil(comments.length / 5)} onPageChange={setCurrentCommentPage} />
-        </div>
+      {/* 🥕 広告/レコメンドエリア (らび＆おりぴ応援コーナー) */}
+      <div style={{ marginTop: '40px', marginBottom: '20px' }}>
+        <AdSenseBox slot="survey_detail_middle" affiliateType="amazon" />
       </div>
+
 {/* 🔥 関連アンケートセクション (回遊性アップ！) */}
       {relatedSurveys && relatedSurveys.length > 0 && (
         <div className="related-surveys-section" style={{ marginTop: '60px', paddingTop: '40px', borderTop: '2px solid #f1f5f9' }}>
@@ -1001,6 +822,7 @@ const SurveyDetailView = ({
           `}</style>
         </div>
       )}
+
 
       {/* 🚀 前後のアンケートへのナビゲーション（カード形式にアップグレードらび！） */}
       {(adjacentSurveys.prev || adjacentSurveys.next) && (
