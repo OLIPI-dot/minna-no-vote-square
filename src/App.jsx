@@ -999,8 +999,8 @@ function App() {
         try {
           const [{ data: preOpts }, { data: pData }, { data: nData }] = await Promise.all([
             supabase.from('options').select('*').eq('survey_id', sv.id).order('id', { ascending: true }),
-            supabase.from('surveys').select('*').eq('visibility', 'public').lt('created_at', sv.created_at).order('created_at', { ascending: false }).limit(1).maybeSingle(),
-            supabase.from('surveys').select('*').eq('visibility', 'public').gt('created_at', sv.created_at).order('created_at', { ascending: true }).limit(1).maybeSingle()
+            supabase.from('surveys').select('id, title, category, image_url, youtube_id, created_at').eq('visibility', 'public').lt('created_at', sv.created_at).order('created_at', { ascending: false }).limit(1).maybeSingle(),
+            supabase.from('surveys').select('id, title, category, image_url, youtube_id, created_at').eq('visibility', 'public').gt('created_at', sv.created_at).order('created_at', { ascending: true }).limit(1).maybeSingle()
           ]);
           if (preOpts) setOptions(preOpts);
           setAdjacentSurveys({ prev: pData, next: nData });
@@ -1066,7 +1066,7 @@ function App() {
       console.log(`🔍 fetchSurveys: STAGE 1 - Fetching page ${page} (range: ${start}-${end}, sort: ${sort}, query: "${query}")...`);
 
       // 1. 公開アンケートの取得（フィルタ適用）
-      let baseQuery = supabase.from('surveys').select('*', { count: 'exact' });
+      let baseQuery = supabase.from('surveys').select('id, title, category, tags, visibility, image_url, youtube_id, likes_count, total_votes, is_official, created_at, deadline, source_published_at', { count: 'exact' });
 
       if (sort === 'mine') {
         if (currentUser) {
@@ -1163,7 +1163,7 @@ function App() {
           (async () => {
             // 💡 現在のソートやカテゴリの条件を、カウント用クエリにも反映させるらび！
             const getCountQuery = (isOff) => {
-              let q = supabase.from('surveys').select('*', { count: 'exact', head: true }).eq('visibility', 'public').eq('is_official', isOff);
+              let q = supabase.from('surveys').select('id', { count: 'exact', head: true }).eq('visibility', 'public').eq('is_official', isOff);
               if (category && category !== 'すべて') q = q.eq('category', category);
 
               const now = new Date();
@@ -1198,7 +1198,7 @@ function App() {
       let mine = [];
       if (currentUser && page === 1 && !category && !query && sort !== 'mine') {
         console.log("🔍 fetchSurveys: STAGE 2 - Fetching private/limited surveys for user:", currentUser.id);
-        let mQuery = supabase.from('surveys').select('*').neq('visibility', 'public');
+        let mQuery = supabase.from('surveys').select('id, title, category, visibility, created_at, deadline, is_official').neq('visibility', 'public');
         if (!isActuallyAdmin) {
           mQuery = mQuery.eq('user_id', currentUser.id);
         }
@@ -1451,11 +1451,11 @@ function App() {
         setVotedOption(localStorage.getItem(`voted_survey_${survey.id}`));
         try {
           const [prevRes, nextRes] = await Promise.all([
-            supabase.from('surveys').select('*').eq('visibility', 'public').lt('created_at', survey.created_at).order('created_at', { ascending: false }).limit(1).maybeSingle(),
-            supabase.from('surveys').select('*').eq('visibility', 'public').gt('created_at', survey.created_at).order('created_at', { ascending: true }).limit(1).maybeSingle()
+            supabase.from('surveys').select('id, title, category, image_url, youtube_id, created_at').eq('visibility', 'public').lt('created_at', survey.created_at).order('created_at', { ascending: false }).limit(1).maybeSingle(),
+            supabase.from('surveys').select('id, title, category, image_url, youtube_id, created_at').eq('visibility', 'public').gt('created_at', survey.created_at).order('created_at', { ascending: true }).limit(1).maybeSingle()
           ]);
           setAdjacentSurveys({ prev: prevRes.data, next: nextRes.data });
-        } catch (err) { }
+        } catch { }
       })();
 
       // 閲覧数カウントアップ
