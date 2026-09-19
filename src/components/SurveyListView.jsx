@@ -551,7 +551,16 @@ const SurveyListView = ({
                       }}
                     >
                       {/* 🛡️ 画像の有無に関わらず、必ず同じ枠組み（video-thumb-wrapper）を描画してレイアウト崩れを防ぐ */}
-                      <div className={`video-thumb-wrapper ${viewMode === 'list' || showFallback ? '' : 'skeleton'}`} style={viewMode === 'list' ? { position: 'relative', flexShrink: 0, width: '144px', height: '96px', minWidth: '144px', overflow: 'hidden', borderRadius: '8px', backgroundColor: '#f3f4f6', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '4px' } : { position: 'relative', width: '100%', aspectRatio: '16/9', overflow: 'hidden' }}>
+                      <div className={`video-thumb-wrapper ${viewMode === 'list' || showFallback ? '' : 'skeleton'}`} style={viewMode === 'list' ? {
+                        position: 'relative',
+                        width: window.innerWidth <= 600 ? '90px' : '160px',
+                        height: '90px',
+                        aspectRatio: '16 / 9',
+                        overflow: 'hidden',
+                        borderRadius: '8px',
+                        flexShrink: 0,
+                        backgroundColor: '#f3f4f6'
+                      } : { position: 'relative', width: '100%', aspectRatio: '16/9', overflow: 'hidden' }}>
                         {viewMode !== 'list' && (
                           <div className="category-icon-thumb placeholder-base" style={{
                             position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
@@ -579,7 +588,15 @@ const SurveyListView = ({
                               e.currentTarget.style.display = 'none';
                               setBrokenImages(prev => new Set([...prev, s.id]));
                             }}
-                            style={viewMode === 'list' ? { position: 'relative', zIndex: 2, display: 'block', width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' } : { position: 'relative', zIndex: 2, display: 'block', width: '100%', height: '100%', objectFit: 'cover', backgroundColor: 'transparent', borderRadius: '8px' }}
+                            style={viewMode === 'list' ? {
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'cover',
+                              display: 'block',
+                              position: 'relative',
+                              zIndex: 2,
+                              borderRadius: '8px'
+                            } : { position: 'relative', zIndex: 2, display: 'block', width: '100%', height: '100%', objectFit: 'cover', backgroundColor: 'transparent', borderRadius: '8px' }}
                           />
                         )}
 
