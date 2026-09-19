@@ -616,22 +616,28 @@ const SurveyListView = ({
                                 style={{ flexShrink: 0, background: 'none', border: 'none', fontSize: '1rem', cursor: 'pointer', padding: '2px', lineHeight: 1, color: watchedIds.includes(s.id) ? '#f59e0b' : '#94a3b8' }}
                               >{watchedIds.includes(s.id) ? '★' : '☆'}</button>
                             </div>
-                            {/* 下段：受付中 + 〆切日のみ + アイコン類 */}
-                            <div className="list-item-meta" style={{ display: 'flex', alignItems: 'center', gap: '5px', flexWrap: 'nowrap', overflow: 'hidden', minWidth: 0 }}>
-                              {showScoreBadge && <span className="popular-score-badge" style={{ flexShrink: 0 }}>{badgeLabel}</span>}
-                              <span className={`status-badge ${isEnded ? 'ended' : 'active'}`} style={{ fontSize: '0.58rem', padding: '1px 4px', whiteSpace: 'nowrap', flexShrink: 0 }}>
-                                {isEnded ? '終了' : '受付中'}
-                              </span>
-                              {/* PC のみ表示：作成日（青バッジ） */}
-                              <span className="list-created-at-badge">🐣 {formatWithDay(s.created_at)}</span>
-                              {s.deadline
-                                ? <span style={{ fontSize: '0.64rem', color: '#e11d48', whiteSpace: 'nowrap', flexShrink: 0 }}>〆{new Date(s.deadline).toLocaleDateString('ja-JP', { month: '2-digit', day: '2-digit' })}</span>
-                                : <span style={{ fontSize: '0.64rem', color: '#64748b', whiteSpace: 'nowrap', flexShrink: 0 }}>🐣{new Date(s.created_at).toLocaleDateString('ja-JP', { month: '2-digit', day: '2-digit' })}</span>
-                              }
-                              <span style={{ fontSize: '0.64rem', color: '#64748b', whiteSpace: 'nowrap', flexShrink: 0 }}>🗳️{s.total_votes || 0}</span>
-                              <span style={{ fontSize: '0.64rem', color: '#64748b', whiteSpace: 'nowrap', flexShrink: 0 }}>👁️{s.view_count || 0}</span>
-                              <span style={{ fontSize: '0.64rem', color: '#64748b', whiteSpace: 'nowrap', flexShrink: 0 }}>👍{s.likes_count || 0}</span>
-                              <span style={{ fontSize: '0.64rem', color: '#64748b', whiteSpace: 'nowrap', flexShrink: 0 }}>💬{s.comment_count || 0}</span>
+                            {/* 下段：メタ情報（2段レイアウト） */}
+                            <div className="list-item-meta-container" style={{ display: 'flex', flexDirection: 'column', gap: '4px', overflow: 'hidden', minWidth: 0, marginTop: '4px' }}>
+                              {/* 1段目（上段）：バッジ類 */}
+                              <div className="list-item-meta-upper" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '5px' }}>
+                                {showScoreBadge && <span className="popular-score-badge" style={{ flexShrink: 0 }}>{badgeLabel}</span>}
+                                <span className={`status-badge ${isEnded ? 'ended' : 'active'}`} style={{ fontSize: '0.58rem', padding: '1px 4px', whiteSpace: 'nowrap', flexShrink: 0 }}>
+                                  {isEnded ? '終了' : '受付中'}
+                                </span>
+                                {/* PC のみ表示：作成日（青バッジ） */}
+                                <span className="list-created-at-badge">🐣 {formatWithDay(s.created_at)}</span>
+                                {s.deadline
+                                  ? <span style={{ fontSize: '0.64rem', color: '#e11d48', whiteSpace: 'nowrap', flexShrink: 0 }}>〆{new Date(s.deadline).toLocaleDateString('ja-JP', { month: '2-digit', day: '2-digit' })}</span>
+                                  : <span style={{ fontSize: '0.64rem', color: '#64748b', whiteSpace: 'nowrap', flexShrink: 0 }}>🐣{new Date(s.created_at).toLocaleDateString('ja-JP', { month: '2-digit', day: '2-digit' })}</span>
+                                }
+                              </div>
+                              {/* 2段目（下段）：リアクション数字類 */}
+                              <div className="list-item-meta-lower" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', minWidth: 0 }}>
+                                <span style={{ fontSize: '0.64rem', color: '#64748b', whiteSpace: 'nowrap', flexShrink: 0 }}>🗳️{s.total_votes || 0}</span>
+                                <span style={{ fontSize: '0.64rem', color: '#64748b', whiteSpace: 'nowrap', flexShrink: 0 }}>👁️{s.view_count || 0}</span>
+                                <span style={{ fontSize: '0.64rem', color: '#64748b', whiteSpace: 'nowrap', flexShrink: 0 }}>👍{s.likes_count || 0}</span>
+                                <span style={{ fontSize: '0.64rem', color: '#64748b', whiteSpace: 'nowrap', flexShrink: 0 }}>💬{s.comment_count || 0}</span>
+                              </div>
                             </div>
                           </div>
                         ) : (
@@ -657,12 +663,16 @@ const SurveyListView = ({
                                 >{watchedIds.includes(s.id) ? '★' : '☆'}</button>
                               </div>
                             </div>
-                            <div className="survey-item-meta-row">
-                              {showScoreBadge && <span className="popular-score-badge">{badgeLabel}</span>}
-                              <span className={`status-badge ${isEnded ? 'ended' : 'active'}`}>{isEnded ? '終了' : '受付中'}</span>
-                              <span className="survey-item-created-at" title="作成日時">🐣 {formatWithDay(s.created_at)}</span>
-                              {s.deadline && <span className="survey-item-deadline">〆: {formatWithDay(s.deadline)}</span>}
-                              <div className="card-stats-row">
+                            <div className="survey-item-meta-container" style={{ display: 'flex', flexDirection: 'column', gap: '6px', overflow: 'hidden', minWidth: 0, marginTop: '8px' }}>
+                              {/* 1段目（上段）：バッジ類 */}
+                              <div className="survey-item-meta-upper" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '6px' }}>
+                                {showScoreBadge && <span className="popular-score-badge">{badgeLabel}</span>}
+                                <span className={`status-badge ${isEnded ? 'ended' : 'active'}`}>{isEnded ? '終了' : '受付中'}</span>
+                                <span className="survey-item-created-at" title="作成日時">🐣 {formatWithDay(s.created_at)}</span>
+                                {s.deadline && <span className="survey-item-deadline">〆: {formatWithDay(s.deadline)}</span>}
+                              </div>
+                              {/* 2段目（下段）：リアクション数字類 */}
+                              <div className="survey-item-meta-lower" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', minWidth: 0 }}>
                                 <span className="survey-item-votes" title="投票数">🗳️ {s.total_votes || 0}</span>
                                 <span className="survey-item-views" title="閲覧数">👁️ {s.view_count || 0}</span>
                                 <span className="survey-item-likes" title="いいね数">👍 {s.likes_count || 0}</span>
