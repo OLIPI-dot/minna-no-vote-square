@@ -192,6 +192,8 @@ if (GEMINI_API_KEY) {
  */
 async function generateAISummary(articleContent) {
     if (!geminiModel || !articleContent || articleContent.length < 50) return null;
+    if (global.isQuotaExceeded) return null;
+
     
     let lastError = null;
     for (let attempt = 1; attempt <= 3; attempt++) {
@@ -237,6 +239,11 @@ async function generateAISummary(articleContent) {
         } catch (e) {
             lastError = e.message;
             log(`⚠️ AI要約エラー (試行 ${attempt}/3): ${e.message}`);
+            if (e.message.includes('429')) {
+                log(`🛑 429エラー（API制限またはクォータ超過）を検知しました。これ以上のAI処理を安全に打ち切ります。`);
+                global.isQuotaExceeded = true;
+                break; // リトライループを抜ける
+            }
         }
     }
     
@@ -469,6 +476,11 @@ async function startAutoPosting() {
         attemptCount++;
         log(`🔍 リード文をリッチ化中 (${attemptCount}/${MAX_ATTEMPTS}): ${news.title}`);
         const richData = await fetchRichData(news.link);
+
+        if (global.isQuotaExceeded) {
+            log(`🛑 APIリミットに達したため、本日の自動投稿バッチを早期終了します。`);
+            break; // ニュース取得ループ自体を抜けて処理終了
+        }
 
         if (!richData.description || richData.description.length < 50) continue;
 
