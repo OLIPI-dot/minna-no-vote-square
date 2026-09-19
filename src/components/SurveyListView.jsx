@@ -553,7 +553,11 @@ const SurveyListView = ({
                       {/* 🛡️ ここがリスト表示のすべてのサムネイル（ニュース画像・YouTube・公式などすべて）を描画する場所です！ */}
                       <div className={`video-thumb-wrapper ${viewMode === 'list' || showFallback ? '' : 'skeleton'}`} style={viewMode === 'list' ? {
                         width: '160px',
+                        minWidth: '160px',
+                        maxWidth: '160px',
                         height: '90px',
+                        minHeight: '90px',
+                        maxHeight: '90px',
                         overflow: 'hidden',
                         background: '#f1f5f9',
                         flexShrink: 0,

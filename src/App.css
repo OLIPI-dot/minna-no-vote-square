@@ -4083,10 +4083,12 @@ button:active,
 
 /* スマホ（max-width: 600px） */
 @media (max-width: 600px) {
-  .survey-list.view-list .video-thumb-wrapper {
+  .survey-list.view-list .video-thumb-wrapper,
+  .view-list .video-thumb-wrapper {
     width: 90px !important;
-    height: 90px !important;
     min-width: 90px !important;
+    max-width: 90px !important;
+    height: 90px !important;
     min-height: 90px !important;
     max-height: 90px !important;
     flex-shrink: 0 !important;
@@ -4097,15 +4099,18 @@ button:active,
 
 /* PC（min-width: 601px） */
 @media (min-width: 601px) {
-  .survey-list.view-list .video-thumb-wrapper {
+  .survey-list.view-list .video-thumb-wrapper,
+  .view-list .video-thumb-wrapper {
     width: 160px !important;
-    height: 90px !important;
     min-width: 160px !important;
+    max-width: 160px !important;
+    height: 90px !important;
     min-height: 90px !important;
     max-height: 90px !important;
     flex-shrink: 0 !important;
     overflow: hidden !important;
     border-radius: 8px !important;
+    background: #f1f5f9 !important;
   }
 }
 
