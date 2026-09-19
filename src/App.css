@@ -919,10 +919,11 @@ body {
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
-  flex: 0 0 112px !important;
+  flex: 0 0 90px !important;
   flex-shrink: 0 !important;
-  width: 112px !important;
-  height: 63px !important; /* 16:9 ratio */
+  width: 90px !important;
+  height: 90px !important;
+  aspect-ratio: auto !important;
   border-radius: 8px !important;
   margin-right: 0 !important;
   gap: 8px !important;
@@ -930,35 +931,34 @@ body {
 
 @media (min-width: 768px) {
   .video-thumb-wrapper {
-    flex: 0 0 160px !important;
-    /* タブレットでは少しスリムにらび！ */
-    width: 160px !important;
-    height: 90px !important; /* 16:9 ratio */
+    flex: 0 0 90px !important;
+    width: 90px !important;
+    height: 90px !important;
     margin-right: 20px !important;
     gap: 12px !important;
   }
 
   .survey-item-thumb {
-    width: 160px !important;
+    width: 90px !important;
     height: 90px !important;
-    flex: 0 0 160px !important;
-    border-radius: 12px !important;
+    flex: 0 0 90px !important;
+    border-radius: 8px !important;
     margin-right: 0 !important;
   }
 }
 
 @media (min-width: 1240px) {
   .video-thumb-wrapper {
-    flex: 0 0 192px !important;
-    width: 192px !important;
-    height: 108px !important; /* 16:9 ratio */
-    margin-right: 32px !important;
+    flex: 0 0 90px !important;
+    width: 90px !important;
+    height: 90px !important;
+    margin-right: 24px !important;
   }
 
   .survey-item-thumb {
-    width: 192px !important;
-    height: 108px !important;
-    flex: 0 0 192px !important;
+    width: 90px !important;
+    height: 90px !important;
+    flex: 0 0 90px !important;
   }
 }
 
@@ -972,9 +972,9 @@ body {
   align-items: center !important;
   justify-content: center !important;
   gap: 2px !important;
-  padding: 2px 6px !important;
+  padding: 1px 5px !important;
   border-radius: 4px !important;
-  font-size: 0.65rem !important;
+  font-size: 10px !important;
   font-weight: 800 !important;
   white-space: nowrap !important;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06) !important;
@@ -987,11 +987,15 @@ body {
   z-index: 5 !important;
 }
 
+.thumb-category-badge span {
+  font-size: 10px !important;
+}
+
 @media (min-width: 768px) {
   .thumb-category-badge {
     /* PCでも同じサイズ感で控えめに */
-    font-size: 0.65rem !important;
-    padding: 2px 6px !important;
+    font-size: 10px !important;
+    padding: 1px 5px !important;
   }
 }
 
@@ -2693,16 +2697,17 @@ body {
 
   /* 投票数/閲覧数の縦並び調整 */
   .survey-item-meta-row {
-    flex-wrap: wrap !important;
-    white-space: normal !important;
+    flex-wrap: nowrap !important;
+    white-space: nowrap !important;
     overflow: hidden !important; /* ここも枠外突破防止 */
     min-width: 0 !important;
-    gap: 6px 10px !important; /* 縦6px 横10px */
+    width: 100% !important;
+    gap: 8px !important;
     margin-top: 8px !important;
   }
 
   .survey-item-meta-row span {
-    font-size: 10px !important; /* スマホ専用：フォントを一段階小さく */
+    font-size: 11px !important;
     padding: 2px 4px !important;
     white-space: nowrap !important; /* 中身のテキスト自体は折り返さない */
   }
@@ -3927,10 +3932,11 @@ button:active,
     box-shadow: none !important;
   }
   .survey-list.view-list .video-thumb-wrapper {
-    width: 192px !important;
-    height: auto !important;
-    aspect-ratio: 16 / 9 !important;
-    border-radius: 10px !important;
+    flex: 0 0 90px !important;
+    width: 90px !important;
+    height: 90px !important;
+    aspect-ratio: auto !important;
+    border-radius: 8px !important;
     flex-shrink: 0 !important;
     overflow: hidden !important;
     background: transparent !important;
