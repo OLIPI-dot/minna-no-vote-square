@@ -552,10 +552,17 @@ const SurveyListView = ({
                     >
                       {/* 🛡️ 画像の有無に関わらず、必ず同じ枠組み（video-thumb-wrapper）を描画してレイアウト崩れを防ぐ */}
                       <div className={`video-thumb-wrapper ${viewMode === 'list' || showFallback ? '' : 'skeleton'}`} style={viewMode === 'list' ? {
-                        position: 'relative',
+                        width: '160px',
+                        height: '90px',
+                        minWidth: '160px',
+                        minHeight: '90px',
+                        maxWidth: '160px',
+                        maxHeight: '90px',
                         overflow: 'hidden',
                         borderRadius: '8px',
+                        flexShrink: 0,
                         backgroundColor: '#f3f4f6',
+                        position: 'relative',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center'
@@ -587,15 +594,18 @@ const SurveyListView = ({
                               e.currentTarget.style.display = 'none';
                               setBrokenImages(prev => new Set([...prev, s.id]));
                             }}
-                            style={{
+                            style={viewMode === 'list' ? {
                               width: '100%',
                               height: '100%',
+                              minWidth: '100%',
+                              minHeight: '100%',
                               objectFit: 'cover',
+                              objectPosition: 'center',
                               display: 'block',
                               position: 'relative',
                               zIndex: 2,
                               borderRadius: '8px'
-                            }}
+                            } : { position: 'relative', zIndex: 2, display: 'block', width: '100%', height: '100%', objectFit: 'cover', backgroundColor: 'transparent', borderRadius: '8px' }}
                           />
                         )}
 
