@@ -624,11 +624,11 @@ const SurveyListView = ({
                                   <span className={`status-badge ${isEnded ? 'ended' : 'active'}`}>
                                     {isEnded ? '終了' : '受付中'}
                                   </span>
-                                  <span className="survey-item-created-at" title="作成日時">🐣 {formatWithDay(s.created_at)}</span>
-                                  {s.deadline && <span className="survey-item-deadline">〆: {formatWithDay(s.deadline)}</span>}
+                                  <span className="survey-item-created-at" title="作成日時">🐣{new Date(s.created_at).toLocaleDateString('ja-JP', { month: '2-digit', day: '2-digit' })}</span>
+                                  {s.deadline && <span className="survey-item-deadline">〆{new Date(s.deadline).toLocaleDateString('ja-JP', { month: '2-digit', day: '2-digit' })}</span>}
                                 </div>
                               {/* 2段目（下段）：リアクション数字類 */}
-                              <div className="list-item-meta-lower survey-item-meta-row" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', minWidth: 0 }}>
+                              <div className="list-item-meta-lower survey-item-meta-row" style={{ display: 'flex', flexWrap: 'nowrap', whiteSpace: 'nowrap', gap: '8px', minWidth: 0 }}>
                                 <span className="survey-item-votes">🗳️{s.total_votes || 0}</span>
                                 <span className="survey-item-views">👁️{s.view_count || 0}</span>
                                 <span className="survey-item-likes">👍{s.likes_count || 0}</span>
@@ -664,11 +664,11 @@ const SurveyListView = ({
                               <div className="survey-item-meta-upper" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '6px' }}>
                                 {showScoreBadge && <span className="popular-score-badge">{badgeLabel}</span>}
                                 <span className={`status-badge ${isEnded ? 'ended' : 'active'}`}>{isEnded ? '終了' : '受付中'}</span>
-                                <span className="survey-item-created-at" title="作成日時">🐣 {formatWithDay(s.created_at)}</span>
-                                {s.deadline && <span className="survey-item-deadline">〆: {formatWithDay(s.deadline)}</span>}
+                                <span className="survey-item-created-at" title="作成日時">🐣{new Date(s.created_at).toLocaleDateString('ja-JP', { month: '2-digit', day: '2-digit' })}</span>
+                                {s.deadline && <span className="survey-item-deadline">〆{new Date(s.deadline).toLocaleDateString('ja-JP', { month: '2-digit', day: '2-digit' })}</span>}
                               </div>
                               {/* 2段目（下段）：リアクション数字類 */}
-                              <div className="survey-item-meta-lower" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', minWidth: 0 }}>
+                              <div className="survey-item-meta-lower" style={{ display: 'flex', flexWrap: 'nowrap', whiteSpace: 'nowrap', gap: '8px', minWidth: 0 }}>
                                 <span className="survey-item-votes" title="投票数">🗳️ {s.total_votes || 0}</span>
                                 <span className="survey-item-views" title="閲覧数">👁️ {s.view_count || 0}</span>
                                 <span className="survey-item-likes" title="いいね数">👍 {s.likes_count || 0}</span>

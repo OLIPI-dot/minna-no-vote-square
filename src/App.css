@@ -714,48 +714,8 @@ body {
     transform: scale(1.05);
   }
 
-  /* 📱 グリッド表示：サムネイルの上に浮かせる「0.35rem相当」の究極バランス・スタイル */
-  .view-grid .thumb-category-badge {
-    position: absolute;
-    top: auto !important;
-    bottom: 8px !important;
-    left: 8px !important;
-    display: flex !important;
-    align-items: center;
-    gap: 2px;
-    background: rgba(255, 255, 255, 0.95) !important;
-    backdrop-filter: blur(2px);
-    padding: 0px 4px !important;
-    border-radius: 4px !important;
-    font-size: 0.5rem !important;
-    transform: scale(0.7);
-    /* 0.5 * 0.7 = 0.35rem！ おりぴさん専用サイズらび！ */
-    transform-origin: bottom left;
-    font-weight: 900 !important;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
-    z-index: 5;
-    border: 1px solid rgba(0, 0, 0, 0.05) !important;
-    pointer-events: none;
-    white-space: nowrap;
-  }
-
-  /* 📜 リスト表示：サムネイルの下に整列する親切・スタイル */
-  .survey-item-card:not(.view-grid) .thumb-category-badge {
-    margin-top: 10px;
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    background: #ffffff !important;
-    padding: 6px 14px !important;
-    border-radius: 50px !important;
-    font-size: 0.9rem !important;
-    font-weight: 800 !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    border: 1.5px solid var(--cat-color, #e2e8f0) !important;
-    width: fit-content;
-    color: var(--cat-color, #64748b);
-  }
+  /* 📱 グリッド表示：削除（グローバルスタイルに統合） */
+  /* 📜 リスト表示：削除（グローバルスタイルに統合） */
 
   .survey-item-card:not(.view-grid) .video-thumb-wrapper {
     display: flex;
@@ -1008,25 +968,30 @@ body {
 }
 
 .thumb-category-badge {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  padding: 4px 8px;
-  border-radius: 16px;
-  font-size: 0.65rem;
-  font-weight: 800;
-  white-space: nowrap;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 2px !important;
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
+  font-size: 0.65rem !important;
+  font-weight: 800 !important;
+  white-space: nowrap !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06) !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  position: absolute !important;
+  top: 4px !important;
+  left: 4px !important;
+  z-index: 5 !important;
 }
 
 @media (min-width: 768px) {
   .thumb-category-badge {
-    font-size: 0.85rem;
-    padding: 6px 14px;
+    /* PCでも同じサイズ感で控えめに */
+    font-size: 0.65rem !important;
+    padding: 2px 6px !important;
   }
 }
 
