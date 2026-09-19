@@ -268,6 +268,9 @@ function extractMainContent(html) {
     if ($body.length === 0) $body = $('[class*="articleBody"], [class*="article-body"], [class*="entry-content"], main');
     if ($body.length === 0) $body = $('body');
 
+    // 2.5 画像キャプションやクレジットを除去
+    $body.find('figcaption, .caption, .credit, .photo-caption, [class*="caption"], [class*="credit"]').remove();
+
     // 3. 本文中の段落（<p>）を抽出
     const paragraphs = [];
     $body.find('br').replaceWith('\n');
@@ -275,7 +278,14 @@ function extractMainContent(html) {
         const rawText = $(el).text().trim();
         const lines = rawText.split('\n').map(l => l.trim().replace(/\s+/g, ' ')).filter(Boolean);
         lines.forEach(txt => {
-            if (txt.length >= 20 &&
+            const isCaption = txt.length < 100 && (
+                txt.includes('撮影') || txt.includes('REUTERS') || txt.includes('Reuters') || 
+                txt.includes('Photo') || txt.includes('Getty') || txt.includes('AP') || 
+                txt.includes('AFP') || txt.includes('写真：') || txt.includes('提供：')
+            );
+            
+            if (!isCaption && 
+                txt.length >= 20 &&
                 !txt.includes('JavaScript') &&
                 !txt.includes('利用規約') &&
                 !txt.includes('プライバシー') &&
