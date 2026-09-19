@@ -916,7 +916,7 @@ const SurveyDetailView = ({
                   e.currentTarget.style.transform = 'translateY(0)';
                   e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.02)';
                 }}>
-                  <div style={{ width: '80px', height: '80px', flexShrink: 0, borderRadius: '12px', overflow: 'hidden', background: '#f8fafc' }}>
+                  <div style={{ position: 'relative', width: '80px', height: '80px', flexShrink: 0, borderRadius: '12px', overflow: 'hidden', background: '#f8fafc' }}>
                     {!thumb || brokenImages.has(s.id) ? (
                       <CategoryEyecatch category={s.category} />
                     ) : (
