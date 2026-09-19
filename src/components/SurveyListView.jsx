@@ -595,12 +595,14 @@ const SurveyListView = ({
                               setBrokenImages(prev => new Set([...prev, s.id]));
                             }}
                             style={viewMode === 'list' ? {
+                              position: 'absolute',
+                              top: 0,
+                              left: 0,
                               width: '100%',
                               height: '100%',
                               objectFit: 'contain',
                               display: 'block',
-                              position: 'relative',
-                              zIndex: 2
+                              zIndex: 1
                             } : { position: 'relative', zIndex: 2, display: 'block', width: '100%', height: '100%', objectFit: 'cover', backgroundColor: 'transparent', borderRadius: '8px' }}
                           />
                         )}
@@ -610,7 +612,12 @@ const SurveyListView = ({
                           <div className="thumb-category-badge" style={{
                             color: catStyle.color,
                             border: `1.5px solid ${catStyle.color}44`,
-                            background: 'rgba(255, 255, 255, 0.95)', zIndex: 2
+                            background: 'rgba(255, 255, 255, 0.95)',
+                            position: 'absolute',
+                            top: '6px',
+                            left: '6px',
+                            zIndex: 10,
+                            margin: 0
                           }}>
                             <span style={{ fontSize: '1em' }}>{catStyle.icon}</span>
                             <span>{s.category || 'その他'}</span>
