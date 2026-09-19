@@ -3945,7 +3945,7 @@ button:active,
     border-radius: 10px !important;
     flex-shrink: 0 !important;
     overflow: hidden !important;
-    background: #f3f4f6 !important;
+    background: transparent !important;
     box-shadow: none !important;
   }
   .survey-list.view-list .video-thumb-wrapper::before,
@@ -3956,11 +3956,11 @@ button:active,
     background: none !important;
     box-shadow: none !important;
   }
-  /* サムネイル画像：object-containで全景表示 */
+  /* サムネイル画像：コンテナ枠いっぱいに表示 */
   .survey-list.view-list .video-thumb-wrapper .survey-item-thumb {
     width: 100% !important;
     height: 100% !important;
-    object-fit: contain !important;
+    object-fit: cover !important;
   }
   .survey-list.view-list .list-item-title {
     font-size: 1rem !important;
