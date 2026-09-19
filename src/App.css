@@ -2608,6 +2608,7 @@ body {
     flex-direction: row !important;
     align-items: flex-start !important;
     padding: 10px !important;
+    padding-right: 16px !important; /* 枠外突破防止の右余白 */
     gap: 10px !important;
     border-radius: 16px !important;
     /* 💡 背景色と枠線の App.jsx のインラインスタイル（カテゴリカラー）を考慮 */
@@ -2704,13 +2705,21 @@ body {
   /* 投票数/閲覧数の縦並び調整 */
   .survey-item-meta-row {
     flex-wrap: wrap !important;
-    gap: 6px !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    gap: 4px !important; /* gapをコンパクトに */
     margin-top: 8px !important;
   }
 
   .survey-item-meta-row span {
-    font-size: 11px !important;
-    padding: 2px 6px !important;
+    font-size: 10px !important; /* フォントを一段階小さく */
+    padding: 2px 4px !important;
+  }
+
+  .card-stats-row {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 4px !important;
   }
 
   /* 📅 期限表示 */
