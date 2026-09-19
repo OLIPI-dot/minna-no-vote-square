@@ -2711,7 +2711,7 @@ body {
     white-space: normal !important;
     overflow: hidden !important; /* ここも枠外突破防止 */
     min-width: 0 !important;
-    gap: 4px 8px !important; /* 縦4px 横8px */
+    gap: 6px 10px !important; /* 縦6px 横10px */
     margin-top: 8px !important;
   }
 
@@ -2724,7 +2724,7 @@ body {
   .card-stats-row {
     display: flex !important;
     flex-wrap: wrap !important;
-    gap: 4px 8px !important;
+    gap: 6px 10px !important;
     min-width: 0 !important; /* コンテンツに合わせて縮めるように */
     width: 100% !important; /* 横幅100%で確実に下段に押し出す */
     margin-top: 2px !important;
