@@ -50,7 +50,7 @@ const formatWithDay = (dateStr) => {
 
 function App() {
   const [view, setView] = useState(() => {
-    return window.location.pathname.startsWith('/s/') ? 'details' : 'list';
+    return (new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '').has('id') || window.location.pathname.startsWith('/s/')) ? 'details' : 'list';
   }); // 🏷️ 'list' or 'details' or 'create'
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -822,7 +822,7 @@ function App() {
       : 'みんなのアンケート広場は、誰でもかんたんに匿名でアンケートを作成・投票できる場所です。日常の疑問や本音を共有して、みんなの意見を楽しく集約しましょう！';
 
     const currentUrl = currentSurvey
-      ? `${SITE_BASE_URL}/s/${currentSurvey.id}`
+      ? `${SITE_BASE_URL}/?id=${currentSurvey.id}`
       : (view === 'list' ? `${SITE_BASE_URL}/` : `${SITE_BASE_URL}/create`);
 
     // 動画サムネイルがあればOGP画像にする魔法 📸
@@ -902,7 +902,7 @@ function App() {
         "itemListElement": surveys.slice(0, 10).map((sv, index) => ({
           "@type": "ListItem",
           "position": index + 1,
-          "url": `${SITE_BASE_URL}/s/${sv.id}`,
+          "url": `${SITE_BASE_URL}/?id=${sv.id}`,
           "name": sv.title || 'アンケート'
         }))
       };
@@ -935,7 +935,7 @@ function App() {
 
     try {
       const params = new URLSearchParams(window.location.search);
-      let surveyId = params.get('s');
+      let surveyId = params.get('id') || params.get('s');
       let categoryFilter = params.get('c');
       let tagFilter = params.get('t');
 
@@ -978,11 +978,15 @@ function App() {
       setOptions([]);
       setVotedOption(null);
 
-      // 🔗 URLを /s/ID 形式に統一するらび！
-      const normalizedPath = `/s/${sv.id}`;
-      if (window.location.pathname !== normalizedPath || window.location.search.includes('s=')) {
-        console.log("🔗 loadFromUrl: Normalizing URL to", normalizedPath);
-        window.history.replaceState({ view: 'details', surveyId: sv.id }, '', normalizedPath);
+      // 🔗 記事詳細のURLは ?id=ID 形式に統一するらび！（リロード時の404回避）
+      const url = new URL(window.location.href);
+      if (window.location.pathname.startsWith('/s/')) {
+        url.pathname = '/';
+        url.searchParams.set('id', sv.id);
+        window.history.replaceState({ view: 'details', surveyId: sv.id }, '', url);
+      } else if (url.searchParams.get('id') !== sv.id) {
+        url.searchParams.set('id', sv.id);
+        window.history.replaceState({ view: 'details', surveyId: sv.id }, '', url);
       } else if (!window.history.state || !window.history.state.view) {
         window.history.replaceState({ view: 'details', surveyId: sv.id }, '', window.location.href);
       }
@@ -1370,7 +1374,8 @@ function App() {
 
     const handlePopState = (e) => {
       console.log("↩️ popstate event fired!", e.state, "location:", window.location.pathname);
-      const isDetailPath = window.location.pathname.startsWith('/s/');
+      const params = new URLSearchParams(window.location.search);
+      const isDetailPath = params.has('id') || window.location.pathname.startsWith('/s/');
 
       if (isDetailPath) {
         loadFromUrl();
@@ -1409,12 +1414,19 @@ function App() {
 
       if (view !== 'details') {
         // 📍 リストから詳細に入る時のみ、今の位置(リスト)を履歴に刻む
-        window.history.replaceState({ ...window.history.state, view: 'list', scrollY: currentScroll }, '', window.location.href);
-        window.history.pushState({ view: 'details', surveyId: survey.id, fromSquare: true }, '', `/s/${survey.id}`);
+        const listUrl = new URL(window.location.href);
+        listUrl.searchParams.delete('id');
+        window.history.replaceState({ ...window.history.state, view: 'list', scrollY: currentScroll }, '', listUrl);
+        
+        const detailUrl = new URL(window.location.href);
+        detailUrl.searchParams.set('id', survey.id);
+        window.history.pushState({ view: 'details', surveyId: survey.id, fromSquare: true }, '', detailUrl);
       } else {
         // 📍 既に詳細画面にいる場合(前後のアンケート遷移など)は、履歴を積み上げずURLだけ書き換える
         const wasFromSquare = window.history.state?.fromSquare;
-        window.history.replaceState({ view: 'details', surveyId: survey.id, fromSquare: wasFromSquare }, '', `/s/${survey.id}`);
+        const detailUrl = new URL(window.location.href);
+        detailUrl.searchParams.set('id', survey.id);
+        window.history.replaceState({ view: 'details', surveyId: survey.id, fromSquare: wasFromSquare }, '', detailUrl);
       }
 
       setView('details');
@@ -1460,8 +1472,10 @@ function App() {
       }
       return;
     } else if (nextView === 'list') {
-      // 🏘️ 広場に戻る: 常にトップ（/）へプッシュ遷移する
-      window.history.pushState({ view: 'list' }, '', '/');
+      // 🏘️ 広場に戻る: id パラメータだけを消去し、タブやページは維持する
+      const url = new URL(window.location.href);
+      url.searchParams.delete('id');
+      window.history.pushState({ view: 'list' }, '', url);
       setCurrentSurvey(null);
       setAdjacentSurveys({ prev: null, next: null });
       setView('list');
@@ -1970,9 +1984,9 @@ function App() {
       const name = opt.name.length > 8 ? opt.name.slice(0, 8) + '…' : opt.name;
       return `${index + 1}. ${name} ${bar(perc)} ${perc}%`;
     });
-    const url = `${window.location.origin}/s/${currentSurvey.id}`;
+    const url = `${window.location.origin}/?id=${currentSurvey.id}`;
 
-    const shareUrl = `${window.location.origin}/s/${currentSurvey.id}`;
+    const shareUrl = `${window.location.origin}/?id=${currentSurvey.id}`;
 
     // 🏆 1位の項目を見つける
     const sorted = [...options].sort((a, b) => (b.votes || 0) - (a.votes || 0));
