@@ -447,8 +447,8 @@ async function startAutoPosting() {
 
     let count = 0;
     let attemptCount = 0;
-    const POST_LIMIT = 2; // 1回2件まで厳選！ (1日4回実行で合計最大8本/日) 🥕
-    const MAX_ATTEMPTS = 30; // 確実に2件取得できるよう、試行上限を30に大幅緩和らび！
+    const POST_LIMIT = 3; // 1回3件まで厳選！ (1日4回実行で合計最大12本/日) 🥕
+    const MAX_ATTEMPTS = 30; // 確実に3件取得できるよう、試行上限を30に大幅緩和らび！
     const postedCategories = new Set(); // 🎲 カテゴリの偏りを防ぐための記録用
 
     for (const news of allNews) {
