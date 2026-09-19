@@ -4076,3 +4076,59 @@ button:active,
     width: auto !important;
   }
 }
+
+/* =========================================
+   FIX: リスト表示の確実な横並び・サムネイルサイズ固定
+========================================= */
+
+/* スマホ（max-width: 600px） */
+@media (max-width: 600px) {
+  .survey-list.view-list .video-thumb-wrapper {
+    width: 90px !important;
+    height: 90px !important;
+    min-width: 90px !important;
+    min-height: 90px !important;
+    max-height: 90px !important;
+    flex-shrink: 0 !important;
+    overflow: hidden !important;
+    border-radius: 8px !important;
+  }
+}
+
+/* PC（min-width: 601px） */
+@media (min-width: 601px) {
+  .survey-list.view-list .video-thumb-wrapper {
+    width: 160px !important;
+    height: 90px !important;
+    min-width: 160px !important;
+    min-height: 90px !important;
+    max-height: 90px !important;
+    flex-shrink: 0 !important;
+    overflow: hidden !important;
+    border-radius: 8px !important;
+  }
+}
+
+/* カード全体の横並び構造を確実に復旧 */
+.survey-list.view-list .survey-item-card {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+/* 右側のコンテンツ枠（タイトル、バッジ、統計）を右隣に配置 */
+.survey-list.view-list .survey-item-content {
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+/* 中の <img> を完全固定 */
+.survey-list.view-list .video-thumb-wrapper img,
+.view-list .survey-item-thumb {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  display: block !important;
+}

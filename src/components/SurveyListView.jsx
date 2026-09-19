@@ -553,13 +553,12 @@ const SurveyListView = ({
                       {/* 🛡️ 画像の有無に関わらず、必ず同じ枠組み（video-thumb-wrapper）を描画してレイアウト崩れを防ぐ */}
                       <div className={`video-thumb-wrapper ${viewMode === 'list' || showFallback ? '' : 'skeleton'}`} style={viewMode === 'list' ? {
                         position: 'relative',
-                        width: window.innerWidth <= 600 ? '90px' : '160px',
-                        height: '90px',
-                        aspectRatio: '16 / 9',
                         overflow: 'hidden',
                         borderRadius: '8px',
-                        flexShrink: 0,
-                        backgroundColor: '#f3f4f6'
+                        backgroundColor: '#f3f4f6',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
                       } : { position: 'relative', width: '100%', aspectRatio: '16/9', overflow: 'hidden' }}>
                         {viewMode !== 'list' && (
                           <div className="category-icon-thumb placeholder-base" style={{
