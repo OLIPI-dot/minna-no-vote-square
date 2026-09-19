@@ -269,19 +269,21 @@ function extractMainContent(html) {
     if ($body.length === 0) $body = $('body');
 
     // 2.5 画像キャプションやクレジットを除去
-    $body.find('figcaption, .caption, .credit, .photo-caption, [class*="caption"], [class*="credit"]').remove();
+    $body.find('figure, figcaption, .caption, .credit, .photo-caption, [class*="caption"], [class*="credit"], [class*="photo"], .image-credit, .photo-desc').remove();
 
     // 3. 本文中の段落（<p>）を抽出
     const paragraphs = [];
     $body.find('br').replaceWith('\n');
-    $body.find('p, div.article-body-inner, div.paragraph').each((_, el) => {
+    $body.find('p, div.article-body-inner, div.paragraph, .highLightSearchTarget, div[class*="ArticleBody"]').each((_, el) => {
         const rawText = $(el).text().trim();
         const lines = rawText.split('\n').map(l => l.trim().replace(/\s+/g, ' ')).filter(Boolean);
         lines.forEach(txt => {
-            const isCaption = txt.length < 100 && (
+            const isCaption = txt.length < 150 && (
                 txt.includes('撮影') || txt.includes('REUTERS') || txt.includes('Reuters') || 
                 txt.includes('Photo') || txt.includes('Getty') || txt.includes('AP') || 
-                txt.includes('AFP') || txt.includes('写真：') || txt.includes('提供：')
+                txt.includes('AFP') || txt.includes('写真：') || txt.includes('提供：') ||
+                txt.includes('©') || txt.includes('(C)') || txt.includes('（C）') ||
+                txt.match(/[（(][^）)]*(?:通信|新聞|ロイター|写真|撮影)[^）)]*[）)]/)
             );
             
             if (!isCaption && 
@@ -291,7 +293,9 @@ function extractMainContent(html) {
                 !txt.includes('プライバシー') &&
                 !txt.includes('Cookie') &&
                 !txt.match(/^[Cc]opyright/) &&
-                !txt.match(/^All rights/)) {
+                !txt.match(/^All rights/) &&
+                !txt.includes('関連記事：') &&
+                !txt.includes('関連リンク：')) {
                 paragraphs.push(txt);
             }
         });
@@ -338,8 +342,19 @@ async function fetchRichData(url, newsTitle = '') {
         let summaryObj = null;
 
         // 🤖 Gemini APIで要約を生成（APIキーがある場合）
-        const fullText = mainText || richDescription || ogDesc || '';
-        log(`📄 抽出した本文の長さ: ${fullText.length}文字`);
+        let fullText = mainText;
+        if (!fullText || fullText.length < 80) {
+            log(`⚠️ 警告: 抽出された本文が極端に短いです (${fullText?.length || 0}文字)。写真のキャプションのみを誤取得した等のパース漏れの可能性があります。`);
+            // 本文が短すぎる場合、ogDescの方が充実していれば代替または結合してAIの文脈崩壊（ムンバイ事件等）を防ぐ
+            if (ogDesc && ogDesc.length > (fullText?.length || 0)) {
+                fullText = ogDesc + (fullText ? '\n\n' + fullText : '');
+                log(`💡 og:description のテキストで本文を補完しました。補完後の長さ: ${fullText.length}文字`);
+            }
+        } else if (!fullText) {
+            fullText = richDescription || ogDesc || '';
+        }
+
+        log(`📄 最終的に抽出された本文の長さ: ${fullText.length}文字`);
         
         if (geminiModel && fullText.length >= 50) {
             summaryObj = await generateAISummary(fullText);
