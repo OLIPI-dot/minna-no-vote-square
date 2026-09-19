@@ -778,18 +778,20 @@ const SurveyDetailView = ({
               </div>
             </div>
           )}
-          <Pagination current={currentCommentPage} total={Math.ceil(comments.length / 5)} onPageChange={setCurrentCommentPage} />
+          {comments.length > 5 && (
+            <Pagination current={currentCommentPage} total={Math.ceil(comments.length / 5)} onPageChange={setCurrentCommentPage} />
+          )}
         </div>
       </div>
 
       {/* 🥕 広告/レコメンドエリア (らび＆おりぴ応援コーナー) */}
-      <div style={{ marginTop: '40px', marginBottom: '20px' }}>
+      <div style={{ marginTop: '16px', marginBottom: '0px' }}>
         <AdSenseBox slot="survey_detail_middle" affiliateType="amazon" />
       </div>
 
 {/* 🔥 関連アンケートセクション (回遊性アップ！) */}
       {relatedSurveys && relatedSurveys.length > 0 && (
-        <div className="related-surveys-section" style={{ marginTop: '40px', padding: '32px 24px', background: '#ffffff', borderRadius: '24px', border: '1px solid #e2e8f0', boxShadow: '0 4px 15px rgba(0,0,0,0.03)' }}>
+        <div className="related-surveys-section" style={{ marginTop: '16px', padding: '32px 24px', background: '#ffffff', borderRadius: '24px', border: '1px solid #e2e8f0', boxShadow: '0 4px 15px rgba(0,0,0,0.03)' }}>
           <h3 style={{ fontSize: '1.4rem', fontWeight: '900', color: '#1e293b', marginBottom: '24px', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
             <span>🔥</span> この話題、みんなはどう思ってる？
           </h3>
