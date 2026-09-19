@@ -999,8 +999,8 @@ function App() {
         try {
           const [{ data: preOpts }, { data: pData }, { data: nData }] = await Promise.all([
             supabase.from('options').select('*').eq('survey_id', sv.id).order('id', { ascending: true }),
-            supabase.from('surveys').select('id,title,category,tags,total_votes,image_url,youtube_id,created_at').eq('visibility', 'public').lt('created_at', sv.created_at).order('created_at', { ascending: false }).limit(1).maybeSingle(),
-            supabase.from('surveys').select('id,title,category,tags,total_votes,image_url,youtube_id,created_at').eq('visibility', 'public').gt('created_at', sv.created_at).order('created_at', { ascending: true }).limit(1).maybeSingle()
+            supabase.from('surveys').select('id,title,category,tags,total_votes,image_url,created_at').eq('visibility', 'public').lt('created_at', sv.created_at).order('created_at', { ascending: false }).limit(1).maybeSingle(),
+            supabase.from('surveys').select('id,title,category,tags,total_votes,image_url,created_at').eq('visibility', 'public').gt('created_at', sv.created_at).order('created_at', { ascending: true }).limit(1).maybeSingle()
           ]);
           if (preOpts) setOptions(preOpts);
           console.log('ADJACENT FETCHED:', pData, nData); setAdjacentSurveys({ prev: pData, next: nData });
@@ -1066,7 +1066,7 @@ function App() {
       console.log(`🔍 fetchSurveys: STAGE 1 - Fetching page ${page} (range: ${start}-${end}, sort: ${sort}, query: "${query}")...`);
 
       // 1. 公開アンケートの取得（フィルタ適用）
-      let baseQuery = supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,youtube_id,likes_count,total_votes,is_official,created_at,deadline,user_id,source_published_at', { count: 'exact' });
+      let baseQuery = supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,user_id,source_published_at,view_count,comment_count', { count: 'exact' });
 
       if (sort === 'mine') {
         if (currentUser) {
@@ -1451,8 +1451,8 @@ function App() {
         setVotedOption(localStorage.getItem(`voted_survey_${survey.id}`));
         try {
           const [prevRes, nextRes] = await Promise.all([
-            supabase.from('surveys').select('id,title,category,tags,total_votes,image_url,youtube_id,created_at').eq('visibility', 'public').lt('created_at', survey.created_at).order('created_at', { ascending: false }).limit(1).maybeSingle(),
-            supabase.from('surveys').select('id,title,category,tags,total_votes,image_url,youtube_id,created_at').eq('visibility', 'public').gt('created_at', survey.created_at).order('created_at', { ascending: true }).limit(1).maybeSingle()
+            supabase.from('surveys').select('id,title,category,tags,total_votes,image_url,created_at').eq('visibility', 'public').lt('created_at', survey.created_at).order('created_at', { ascending: false }).limit(1).maybeSingle(),
+            supabase.from('surveys').select('id,title,category,tags,total_votes,image_url,created_at').eq('visibility', 'public').gt('created_at', survey.created_at).order('created_at', { ascending: true }).limit(1).maybeSingle()
           ]);
           setAdjacentSurveys({ prev: prevRes.data, next: nextRes.data });
         } catch { }
