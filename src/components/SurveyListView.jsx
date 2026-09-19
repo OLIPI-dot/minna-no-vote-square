@@ -668,11 +668,11 @@ const SurveyListView = ({
                                 {s.deadline && <span className="survey-item-deadline">〆{new Date(s.deadline).toLocaleDateString('ja-JP', { month: '2-digit', day: '2-digit' })}</span>}
                               </div>
                               {/* 2段目（下段）：リアクション数字類 */}
-                              <div className="survey-item-meta-lower" style={{ display: 'flex', flexWrap: 'nowrap', whiteSpace: 'nowrap', gap: '8px', minWidth: 0 }}>
-                                <span className="survey-item-votes" title="投票数">🗳️ {s.total_votes || 0}</span>
-                                <span className="survey-item-views" title="閲覧数">👁️ {s.view_count || 0}</span>
-                                <span className="survey-item-likes" title="いいね数">👍 {s.likes_count || 0}</span>
-                                <span className="survey-item-comments" title="コメント数">💬 {s.comment_count || 0}</span>
+                              <div className="survey-item-meta-lower" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', alignItems: 'center', width: '100%', padding: '0 2px', boxSizing: 'border-box' }}>
+                                <span className="survey-item-votes" title="投票数" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2px', fontSize: '10px', whiteSpace: 'nowrap' }}>🗳️ {s.total_votes || 0}</span>
+                                <span className="survey-item-views" title="閲覧数" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2px', fontSize: '10px', whiteSpace: 'nowrap' }}>👁️ {s.view_count || 0}</span>
+                                <span className="survey-item-likes" title="いいね数" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2px', fontSize: '10px', whiteSpace: 'nowrap' }}>👍 {s.likes_count || 0}</span>
+                                <span className="survey-item-comments" title="コメント数" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2px', fontSize: '10px', whiteSpace: 'nowrap' }}>💬 {s.comment_count || 0}</span>
                               </div>
                             </div>
                             {s.tags && s.tags.length > 0 && (
