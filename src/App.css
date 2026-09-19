@@ -3976,10 +3976,12 @@ button:active,
     box-shadow: none !important;
   }
   /* サムネイル画像：コンテナ枠いっぱいに表示 */
-  .survey-list.view-list .video-thumb-wrapper .survey-item-thumb {
+  .survey-list.view-list .video-thumb-wrapper img,
+  .view-list .survey-item-thumb {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
+    display: block !important;
   }
   .survey-list.view-list .list-item-title {
     font-size: 1rem !important;
