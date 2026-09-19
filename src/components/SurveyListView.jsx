@@ -587,7 +587,7 @@ const SurveyListView = ({
                               e.currentTarget.style.display = 'none';
                               setBrokenImages(prev => new Set([...prev, s.id]));
                             }}
-                            style={viewMode === 'list' ? {
+                            style={{
                               width: '100%',
                               height: '100%',
                               objectFit: 'cover',
@@ -595,7 +595,7 @@ const SurveyListView = ({
                               position: 'relative',
                               zIndex: 2,
                               borderRadius: '8px'
-                            } : { position: 'relative', zIndex: 2, display: 'block', width: '100%', height: '100%', objectFit: 'cover', backgroundColor: 'transparent', borderRadius: '8px' }}
+                            }}
                           />
                         )}
 
