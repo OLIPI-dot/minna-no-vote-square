@@ -797,6 +797,7 @@ const SurveyDetailView = ({
             display: 'flex',
             overflowX: 'auto',
             gap: '20px',
+            paddingTop: '8px',
             paddingBottom: '20px',
             paddingLeft: '4px',
             paddingRight: '4px',
@@ -819,23 +820,28 @@ const SurveyDetailView = ({
                   border: '1px solid #f1f5f9',
                   minWidth: '280px',
                   flex: '0 0 280px',
+                  display: 'flex',
+                  flexDirection: 'column',
                   scrollSnapAlign: 'start',
                   userSelect: 'none',
                   WebkitTapHighlightColor: 'transparent'
                 }} onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 12px 25px rgba(0,0,0,0.1)'; }} onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.05)'; }}>
-                  <div style={{ width: '100%', height: '140px', overflow: 'hidden', position: 'relative' }}>
-                    <img
-                      src={thumb}
-                      alt={s.title}
-                      referrerPolicy="no-referrer"
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none';
-                        e.target.onerror = null;
-                        e.target.src = '/ogp-image.png';
-                      }}
-                      style={{ width: '100%', height: '100%', objectFit: 'contain', backgroundColor: '#f9fafb' }}
-                    />
-                    <div style={{ position: 'absolute', top: '10px', right: '10px', background: 'rgba(255,255,255,0.9)', padding: '2px 8px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 'bold', color: '#64748b' }}>
+                  <div style={{ width: '100%', height: '140px', overflow: 'hidden', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc', flexShrink: 0 }}>
+                    {!thumb || brokenImages.has(s.id) ? (
+                      <CategoryEyecatch category={s.category} />
+                    ) : (
+                      <img
+                        src={thumb}
+                        alt={s.title}
+                        referrerPolicy="no-referrer"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                          setBrokenImages(prev => new Set([...prev, s.id]));
+                        }}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                    )}
+                    <div style={{ position: 'absolute', top: '10px', right: '10px', background: 'rgba(255,255,255,0.9)', padding: '2px 8px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 'bold', color: '#64748b', zIndex: 2 }}>
                       {s.category}
                     </div>
                   </div>
@@ -897,7 +903,8 @@ const SurveyDetailView = ({
                 <div key={s.id} onClick={() => navigateTo('details', s)} style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '16px',
+                  gap: '8px',
+                  overflow: 'hidden',
                   background: '#ffffff',
                   padding: '16px',
                   borderRadius: '20px',
@@ -932,7 +939,7 @@ const SurveyDetailView = ({
                       />
                     )}
                   </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
                     <div style={{ fontSize: '0.8rem', fontWeight: 'bold', color: nav.type === 'next' ? '#7c3aed' : '#64748b', marginBottom: '4px' }}>
                       {nav.label}
                     </div>

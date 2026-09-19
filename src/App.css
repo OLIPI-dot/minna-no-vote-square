@@ -772,8 +772,10 @@ body {
   }
 
   /* 🗓️ グリッド表示：作成日（青）は非表示→しめ切日ど1本絞り */
-  .view-grid .survey-item-created-at {
-    /* display: none !important; 削除: スマホでも表示する */
+  @media (max-width: 600px) {
+    .view-grid .survey-item-created-at {
+      display: none !important;
+    }
   }
 
   .view-grid .survey-item-deadline {
