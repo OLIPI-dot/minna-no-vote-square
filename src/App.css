@@ -2718,6 +2718,15 @@ body {
     white-space: nowrap !important; /* 中身のテキスト自体は折り返さない */
   }
 
+  /* 📱 グリッド専用：スマホの狭いカード幅でも絶対に0を見切らせない引き締め */
+  .view-grid .survey-item-meta-row {
+    gap: 4px !important;
+  }
+  .view-grid .survey-item-meta-row span {
+    font-size: 10px !important;
+    padding: 1px 2px !important;
+  }
+
   .survey-item-created-at, .survey-item-deadline, .status-badge {
     font-size: 0.65rem !important; /* スマホ専用：フォント統一 */
     height: 18px !important;
