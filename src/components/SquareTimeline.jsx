@@ -22,7 +22,10 @@ const SquareTimeline = () => {
   const [name, setName] = useState('');
   const [selectedAvatar, setSelectedAvatar] = useState('🐰');
   const [isPosting, setIsPosting] = useState(false);
-  const [likedIds, setLikedIds] = useState(new Set());
+  const [likedIds, setLikedIds] = useState(() => {
+    const saved = localStorage.getItem('timeline_liked_ids');
+    return saved ? new Set(JSON.parse(saved)) : new Set();
+  });
   const [isLoading, setIsLoading] = useState(true);
   const [lastPostTime, setLastPostTime] = useState(0); // スパム防止
   const scrollRef = useRef(null);
@@ -121,15 +124,26 @@ const SquareTimeline = () => {
     fontSize: '0.88rem'
   };
 
-  // 💖 いいねを押す
+  // 💖 いいねを押す (トグル式)
   const handleLike = async (post) => {
-    if (likedIds.has(post.id)) return; // 重複いいね防止
+    const isLiked = likedIds.has(post.id);
+    const newLikes = isLiked ? Math.max(0, (post.likes || 0) - 1) : (post.likes || 0) + 1;
 
-    const newLikes = (post.likes || 0) + 1;
-    setLikedIds(prev => new Set([...prev, post.id]));
+    setLikedIds(prev => {
+      const next = new Set(prev);
+      if (isLiked) {
+        next.delete(post.id);
+      } else {
+        next.add(post.id);
+      }
+      localStorage.setItem('timeline_liked_ids', JSON.stringify(Array.from(next)));
+      return next;
+    });
+
     // 楽観的更新（UIをすぐ変える）
     setPosts(prev => prev.map(p => p.id === post.id ? { ...p, likes: newLikes } : p));
 
+    // ※タイムラインは高頻度ではないため簡易的なUpdateを使用
     await supabase
       .from('timeline_posts')
       .update({ likes: newLikes })
