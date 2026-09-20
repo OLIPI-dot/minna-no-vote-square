@@ -174,6 +174,18 @@ function App() {
     localStorage.setItem('minna_no_vote_watched', JSON.stringify(watchedIds));
   }, [watchedIds]);
 
+  // 💡 SEO対策: 動的カノニカルURLの設定（SPAの重複・カニバリゼーション回避）
+  useEffect(() => {
+    let canonical = document.querySelector("link[rel='canonical']");
+    if (!canonical) {
+      canonical = document.createElement('link');
+      canonical.rel = 'canonical';
+      document.head.appendChild(canonical);
+    }
+    // URLのパス部分だけを正規URLとして設定（クエリパラメータやハッシュは除外）
+    canonical.href = window.location.origin + window.location.pathname;
+  }, [view, currentSurvey]); // 画面切り替えや詳細ページへの遷移のたびに更新
+
   // 🔗 タブとページネーションを URL に同期する魔法
   useEffect(() => {
     if (view === 'list') {
