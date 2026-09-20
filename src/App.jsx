@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback, lazy, Suspense } from 'react';
 // Deploy Kick: 2026-03-26 18:45 🚀🐰 (Category Fix Forced)
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from './supabaseClient';
 // 🚀 コンポーネントの遅延読み込みで初期バンドルを極限まで削るらび！
 const Sidebar = lazy(() => import('./components/Sidebar'));
 const SurveyListView = lazy(() => import('./components/SurveyListView'));
@@ -27,17 +27,7 @@ import {
 import './App.css';
 
 
-// Supabaseの初期設定
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true,
-    detectSessionInUrl: true,
-    lock: false,
-  },
-});
+// Supabaseの初期設定は ./supabaseClient.js に移動したらび！
 
 // 🚀 Last Deploy: 2026-03-26 18:48:00 (Force Refresh for Category Logic)
 
