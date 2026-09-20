@@ -30,7 +30,14 @@ import './App.css';
 // Supabaseの初期設定
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+    lock: false,
+  },
+});
 
 // 🚀 Last Deploy: 2026-03-26 18:48:00 (Force Refresh for Category Logic)
 
