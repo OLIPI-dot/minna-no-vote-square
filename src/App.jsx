@@ -2501,6 +2501,15 @@ function App() {
         </div>
 
         <div className="footer-bottom" style={{ textAlign: 'center', marginTop: '40px', color: '#94a3b8', fontSize: '0.85rem' }}>
+          <div style={{ marginBottom: '15px' }}>
+            <a id='wot-badge0' className='wot-badge' href='https://www.mywot.com/scorecard/minna-no-vote-square.com?wot_badge=0_white' target='_blank' rel="noopener noreferrer">
+              <div className='wot-logo'></div>
+              <div className='wot-shield'></div>
+              <p className='wot-secured'>Verified Website</p>
+              <div className='wot-vertical'></div>
+              <p className='wot-report'>See Report</p>
+            </a>
+          </div>
           © 2026 みんなのアンケート広場 / Produced by OLIPI-dot Project
         </div>
       </footer>
