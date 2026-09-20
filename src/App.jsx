@@ -1199,7 +1199,7 @@ function App() {
         if (!isActuallyAdmin) {
           mQuery = mQuery.eq('user_id', currentUser.id);
         }
-        const { data: mData, error: mError } = await mQuery.order('id', { ascending: false }).limit(20);
+        const { data: mData, error: mError } = await mQuery.order('created_at', { ascending: false }).limit(20);
         if (mError) console.error("❌ fetchSurveys: PRIVATE FETCH ERROR:", mError);
         if (mData) mine = mData;
       }
@@ -1209,7 +1209,12 @@ function App() {
       [...mine, ...(sData || [])].forEach(s => {
         if (s && s.id) uniqueMap.set(String(s.id), s);
       });
-      const allSurveys = Array.from(uniqueMap.values());
+      let allSurveys = Array.from(uniqueMap.values());
+      
+      // 🚨 必ず created_at の降順（最新が上）になるようにソート（popular以外の場合）
+      if (sort !== 'popular') {
+        allSurveys.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      }
 
       if (allSurveys.length > 0) {
         const updatedList = allSurveys.map(s => {
