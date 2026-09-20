@@ -1066,7 +1066,7 @@ function App() {
       console.log(`🔍 fetchSurveys: STAGE 1 - Fetching page ${page} (range: ${start}-${end}, sort: ${sort}, query: "${query}")...`);
 
       // 1. 公開アンケートの取得（フィルタ適用）
-      let baseQuery = supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,user_id,source_published_at,view_count,comment_count', { count: 'exact' });
+      let baseQuery = supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at', { count: 'exact' });
 
       if (sort === 'mine') {
         if (currentUser) {
