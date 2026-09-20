@@ -958,7 +958,7 @@ function App() {
         return;
       }
 
-      const { data: sv, error: svError } = await supabase.from('surveys').select('*').eq('id', surveyId).single();
+      const { data: sv, error: svError } = await supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at').eq('id', surveyId).single();
       if (svError) {
         window.history.replaceState({ view: 'list' }, '', '/');
         setView('list');
@@ -1290,7 +1290,7 @@ function App() {
       // 1. 新着 (最新10件)
       const { data: latest } = await supabase
         .from('surveys')
-        .select('*')
+        .select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at')
         .eq('visibility', 'public')
         .not('tags', 'cs', '{"お知らせ"}')
         .order('created_at', { ascending: false })
@@ -1300,7 +1300,7 @@ function App() {
       const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
       let { data: popularRaw } = await supabase
         .from('surveys')
-        .select('*')
+        .select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at')
         .eq('visibility', 'public')
         .not('tags', 'cs', '{"お知らせ"}')
         .gte('created_at', thirtyDaysAgo)
@@ -1324,7 +1324,7 @@ function App() {
       if (!popular || popular.length < 5) {
         const { data: fallbackPopularRaw } = await supabase
           .from('surveys')
-          .select('*')
+          .select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at')
           .eq('visibility', 'public')
           .not('tags', 'cs', '{"お知らせ"}')
           .or(`deadline.is.null,deadline.gt.${now.toISOString()}`) // 終了済みは除外
@@ -1338,7 +1338,7 @@ function App() {
       // 3. もうすぐ終了 (24時間以内。全件取得！)
       const { data: ending } = await supabase
         .from('surveys')
-        .select('*')
+        .select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at')
         .eq('visibility', 'public')
         .gt('deadline', now.toISOString())
         .lte('deadline', next24h.toISOString())
@@ -1439,7 +1439,7 @@ function App() {
       // (非同期取得は省略せず維持...)
       (async () => {
         if (!survey.created_at || survey.youtube_id === undefined) {
-          const { data: fullSv } = await supabase.from('surveys').select('*').eq('id', survey.id).single();
+          const { data: fullSv } = await supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at').eq('id', survey.id).single();
           if (fullSv) {
             setCurrentSurvey(fullSv);
             survey = fullSv;
