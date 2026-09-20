@@ -955,7 +955,7 @@ function App() {
         return;
       }
 
-      const { data: sv, error: svError } = await supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at').eq('id', surveyId).single();
+      const { data: sv, error: svError } = await supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count').eq('id', surveyId).single();
       if (svError) {
         window.history.replaceState({ view: 'list' }, '', '/');
         setView('list');
@@ -996,8 +996,8 @@ function App() {
         try {
           const [{ data: preOpts }, { data: pData }, { data: nData }] = await Promise.all([
             supabase.from('options').select('*').eq('survey_id', sv.id).order('id', { ascending: true }),
-            supabase.from('surveys').select('id,title,category,tags,total_votes,image_url,created_at').eq('visibility', 'public').lt('created_at', sv.created_at).order('created_at', { ascending: false }).limit(1).maybeSingle(),
-            supabase.from('surveys').select('id,title,category,tags,total_votes,image_url,created_at').eq('visibility', 'public').gt('created_at', sv.created_at).order('created_at', { ascending: true }).limit(1).maybeSingle()
+            supabase.from('surveys').select('id,title,category,tags,total_votes,image_url,created_at,view_count,comment_count').eq('visibility', 'public').lt('created_at', sv.created_at).order('created_at', { ascending: false }).limit(1).maybeSingle(),
+            supabase.from('surveys').select('id,title,category,tags,total_votes,image_url,created_at,view_count,comment_count').eq('visibility', 'public').gt('created_at', sv.created_at).order('created_at', { ascending: true }).limit(1).maybeSingle()
           ]);
           if (preOpts) setOptions(preOpts);
           console.log('ADJACENT FETCHED:', pData, nData); setAdjacentSurveys({ prev: pData, next: nData });
@@ -1063,7 +1063,7 @@ function App() {
       console.log(`🔍 fetchSurveys: STAGE 1 - Fetching page ${page} (range: ${start}-${end}, sort: ${sort}, query: "${query}")...`);
 
       // 1. 公開アンケートの取得（フィルタ適用）
-      let baseQuery = supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at', { count: 'exact' });
+      let baseQuery = supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count', { count: 'exact' });
 
       if (sort === 'mine') {
         if (currentUser) {
@@ -1195,7 +1195,7 @@ function App() {
       let mine = [];
       if (currentUser && page === 1 && !category && !query && sort !== 'mine') {
         console.log("🔍 fetchSurveys: STAGE 2 - Fetching private/limited surveys for user:", currentUser.id);
-        let mQuery = supabase.from('surveys').select('id,title,category,visibility,created_at,deadline,is_official,total_votes,likes_count').neq('visibility', 'public');
+        let mQuery = supabase.from('surveys').select('id,title,category,visibility,created_at,deadline,is_official,total_votes,likes_count,view_count,comment_count').neq('visibility', 'public');
         if (!isActuallyAdmin) {
           mQuery = mQuery.eq('user_id', currentUser.id);
         }
@@ -1287,7 +1287,7 @@ function App() {
       // 1. 新着 (最新10件)
       const { data: latest } = await supabase
         .from('surveys')
-        .select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at')
+        .select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count')
         .eq('visibility', 'public')
         .not('tags', 'cs', '{"お知らせ"}')
         .order('created_at', { ascending: false })
@@ -1297,7 +1297,7 @@ function App() {
       const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
       let { data: popularRaw } = await supabase
         .from('surveys')
-        .select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at')
+        .select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count')
         .eq('visibility', 'public')
         .not('tags', 'cs', '{"お知らせ"}')
         .gte('created_at', thirtyDaysAgo)
@@ -1321,7 +1321,7 @@ function App() {
       if (!popular || popular.length < 5) {
         const { data: fallbackPopularRaw } = await supabase
           .from('surveys')
-          .select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at')
+          .select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count')
           .eq('visibility', 'public')
           .not('tags', 'cs', '{"お知らせ"}')
           .or(`deadline.is.null,deadline.gt.${now.toISOString()}`) // 終了済みは除外
@@ -1335,7 +1335,7 @@ function App() {
       // 3. もうすぐ終了 (24時間以内。全件取得！)
       const { data: ending } = await supabase
         .from('surveys')
-        .select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at')
+        .select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count')
         .eq('visibility', 'public')
         .gt('deadline', now.toISOString())
         .lte('deadline', next24h.toISOString())
@@ -1436,7 +1436,7 @@ function App() {
       // (非同期取得は省略せず維持...)
       (async () => {
         if (!survey.created_at || survey.youtube_id === undefined) {
-          const { data: fullSv } = await supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at').eq('id', survey.id).single();
+          const { data: fullSv } = await supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count').eq('id', survey.id).single();
           if (fullSv) {
             setCurrentSurvey(fullSv);
             survey = fullSv;
@@ -1448,8 +1448,8 @@ function App() {
         setVotedOption(localStorage.getItem(`voted_survey_${survey.id}`));
         try {
           const [prevRes, nextRes] = await Promise.all([
-            supabase.from('surveys').select('id,title,category,tags,total_votes,image_url,created_at').eq('visibility', 'public').lt('created_at', survey.created_at).order('created_at', { ascending: false }).limit(1).maybeSingle(),
-            supabase.from('surveys').select('id,title,category,tags,total_votes,image_url,created_at').eq('visibility', 'public').gt('created_at', survey.created_at).order('created_at', { ascending: true }).limit(1).maybeSingle()
+            supabase.from('surveys').select('id,title,category,tags,total_votes,image_url,created_at,view_count,comment_count').eq('visibility', 'public').lt('created_at', survey.created_at).order('created_at', { ascending: false }).limit(1).maybeSingle(),
+            supabase.from('surveys').select('id,title,category,tags,total_votes,image_url,created_at,view_count,comment_count').eq('visibility', 'public').gt('created_at', survey.created_at).order('created_at', { ascending: true }).limit(1).maybeSingle()
           ]);
           setAdjacentSurveys({ prev: prevRes.data, next: nextRes.data });
         } catch { }
