@@ -194,12 +194,11 @@ async function generateAISummary(articleContent) {
     if (!geminiModel || !articleContent || articleContent.length < 50) return null;
     if (global.isQuotaExceeded) return null;
 
-    
     let lastError = null;
     for (let attempt = 1; attempt <= 3; attempt++) {
         if (attempt > 1) {
-            log(`⏳ API無料枠レート制限（429）回避のため、大きく65秒待機します... (試行 ${attempt}/3)`);
-            await new Promise(r => setTimeout(r, 65000));
+            log(`⏳ リトライ待機します... (試行 ${attempt}/3)`);
+            await new Promise(r => setTimeout(r, 2000));
         }
         try {
             const truncated = articleContent.substring(0, 2500); // 少し増やして情報量を確保
@@ -239,11 +238,6 @@ async function generateAISummary(articleContent) {
         } catch (e) {
             lastError = e.message;
             log(`⚠️ AI要約エラー (試行 ${attempt}/3): ${e.message}`);
-            if (e.message.includes('429')) {
-                log(`🛑 429エラー（API制限またはクォータ超過）を検知しました。これ以上のAI処理を安全に打ち切ります。`);
-                global.isQuotaExceeded = true;
-                break; // リトライループを抜ける
-            }
         }
     }
     
@@ -366,9 +360,8 @@ async function fetchRichData(url, newsTitle = '') {
         if (geminiModel && fullText.length >= 50) {
             summaryObj = await generateAISummary(fullText);
             
-            // 🤖 AIAPIを呼び出した場合のみ、レート制限対策として15秒待機する（成功・失敗問わず）
-            log(`⏳ API無料枠の安全のため、次の処理まで15秒待機します...`);
-            await new Promise(r => setTimeout(r, 15000));
+            // 🤖 有料枠なので待機時間を短縮（少しだけサーバーに優しく）
+            await new Promise(r => setTimeout(r, 2000));
         }
 
         // 🚫 従来の手抜きフォールバック（タイトルのコピペ代用など）は完全撤廃。
