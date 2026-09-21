@@ -399,6 +399,30 @@ function classifyNews(title, description) {
     return sorted[0][1] === 0 ? 'その他' : sorted[0][0];
 }
 
+const STOP_WORDS = new Set([
+    'ニュース', '今日', '最新', '発表', '更新', '情報', '話題', '日本', '世界', '速報', '記事', '公開', '解説', 'まとめ', '決定', '対応', '注意', '登場', '開始', '開催', '変更', '追加', '一部', '無料', '配信', '発売', '時間', '今回', '内容', '確認', '可能', '予定', '影響', '警戒', '現在', '今後', '理由', '原因', '結果', '過去', '今年', '来年', '時代', '最高', '最大', '注目', '期待', '人気', 'ファン', 'イベント', 'キャンペーン', 'アップデート', 'リリース', '詳細', '紹介', '特集', '映像', '動画', '写真', '画像',
+    'ゲーム', 'アニメ', '映画', '漫画', '音楽', 'スマホ', 'アプリ', 'アイドル', 'テレビ', 'ドラマ', 'キャラクター', 'キャラ', 'コラボ', 'シリーズ', 'プレイ', '主人公', 'グッズ', '作品'
+]);
+
+function extractKeywords(title) {
+    const clean = (title || '').replace(/[「」『』【】（）()！？!?]/g, ' ');
+    const matches = clean.match(/[一-龥]{2,}|[ァ-ヴー]{2,}|[a-zA-Z0-9]{3,}/g) || [];
+    return matches.filter(w => !STOP_WORDS.has(w));
+}
+
+function hasDuplicateTopic(title, postedTitles) {
+    const k1 = extractKeywords(title);
+    if (k1.length === 0) return null;
+    for (const pTitle of postedTitles) {
+        const k2 = extractKeywords(pTitle);
+        const intersection = k1.filter(w => k2.includes(w));
+        if (intersection.length > 0) {
+            return intersection[0];
+        }
+    }
+    return null;
+}
+
 async function startAutoPosting() {
     log('🚀 プレミアム自動投稿エンジン 起動らびっ！！ (長文リッチ＆エンタメ強化版) ' + (IS_DRY_RUN ? ' (DRY RUN)' : ''));
 
@@ -441,7 +465,7 @@ async function startAutoPosting() {
         }
     }
 
-    const { data: recentSurveys } = await supabase.from('surveys').select('title, description').order('created_at', { ascending: false }).limit(500);
+    const { data: recentSurveys } = await supabase.from('surveys').select('title, description, category').order('created_at', { ascending: false }).limit(500);
     const normalize = (t) => (t || '').replace(/[\s、。！？「」『』]/g, '').toLowerCase();
     const recentNormTitles = new Set(recentSurveys?.map(s => normalize(s.title)) || []);
 
@@ -449,7 +473,13 @@ async function startAutoPosting() {
     let attemptCount = 0;
     const POST_LIMIT = 3; // 1回3件まで厳選！ (1日4回実行で合計最大12本/日) 🥕
     const MAX_ATTEMPTS = 30; // 確実に3件取得できるよう、試行上限を30に大幅緩和らび！
-    const postedCategories = new Set(); // 🎲 カテゴリの偏りを防ぐための記録用
+    
+    // 🎲 カテゴリの偏りを防ぐための記録用（1回の実行の中でカテゴリをバラバラにする）
+    const postedCategories = new Set();
+
+    // 📝 話題の重複を防ぐために採用されたタイトルを記録（直近12件＝約3日分を初期値としてセット）
+    const recent12Titles = recentSurveys?.slice(0, 12).map(s => s.title) || [];
+    const postedTitles = [...recent12Titles];
 
     for (const news of allNews) {
         if (count >= POST_LIMIT) break;
@@ -459,10 +489,17 @@ async function startAutoPosting() {
         }
         if (recentNormTitles.has(normalize(news.title))) continue;
 
+        // 🎲 類似話題の重複ブロック！
+        const dupKeyword = hasDuplicateTopic(news.title, postedTitles);
+        if (dupKeyword) {
+            log(`⏭️ 類似話題（キーワード: ${dupKeyword}）のため事前スキップ: ${news.title}`);
+            continue;
+        }
+
         // 🎲 API呼び出し前にタイトルだけで簡易判定し、カテゴリ重複を事前ブロック！
         const preCat = classifyNews(news.title, '');
         if (postedCategories.has(preCat) && preCat !== 'その他') {
-            // log(`⏭️ カテゴリ重複（${preCat}）のため事前スキップ: ${news.title}`);
+            log(`⏭️ カテゴリ重複（${preCat}）のため事前スキップ: ${news.title}`);
             continue;
         }
 
@@ -532,6 +569,7 @@ async function startAutoPosting() {
             }
             
             postedCategories.add(cat);
+            postedTitles.push(news.title); // 今回採用したタイトルを話題ブロック用に追加
             count++;
             
             // 🛡️ API制限(429)を100%回避するため、2件目に行く前に10秒間の完全待機を入れる
