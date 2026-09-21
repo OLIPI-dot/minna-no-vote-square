@@ -1,16 +1,13 @@
 import React from 'react';
 import AdSenseBox from './AdSenseBox';
 import SquareTimeline from './SquareTimeline';
+import { CATEGORY_ICON_STYLE } from '../constants';
 
-const categoryColors = {
-  'ニュース': '#0ea5e9',
-  'エンタメ': '#f43f5e',
-  '話題': '#eab308',
-  '芸能': '#d946ef',
-  'ゲーム': '#10b981',
-  'アニメ': '#8b5cf6'
+const getCatColor = (cat) => {
+  if (!cat) return '#cbd5e1';
+  const style = CATEGORY_ICON_STYLE[cat] || CATEGORY_ICON_STYLE[cat.trim()] || CATEGORY_ICON_STYLE['その他'];
+  return style?.color || '#cbd5e1';
 };
-const getCatColor = (cat) => categoryColors[cat] || '#cbd5e1';
 
 const Sidebar = ({ 
   liveSurveys, 
