@@ -2,6 +2,16 @@ import React from 'react';
 import AdSenseBox from './AdSenseBox';
 import SquareTimeline from './SquareTimeline';
 
+const categoryColors = {
+  'ニュース': '#0ea5e9',
+  'エンタメ': '#f43f5e',
+  '話題': '#eab308',
+  '芸能': '#d946ef',
+  'ゲーム': '#10b981',
+  'アニメ': '#8b5cf6'
+};
+const getCatColor = (cat) => categoryColors[cat] || '#cbd5e1';
+
 const Sidebar = ({ 
   liveSurveys, 
   popularSurveys, 
@@ -39,6 +49,7 @@ const Sidebar = ({
               tabIndex={0}
               onKeyPress={(e) => e.key === 'Enter' && navigateTo('details', s)}
               aria-label={`${idx + 1}位: ${s.title} の詳細を見る`}
+              style={{ borderLeft: `5px solid ${getCatColor(s.category)}` }}
             >
               <span className="rank-label" style={idx > 2 ? { fontSize: '0.85rem', fontWeight: 'bold', color: '#64748b', minWidth: '24px', textAlign: 'center' } : {}}>
                 {idx === 0 ? '👑' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `${idx + 1}位`}
