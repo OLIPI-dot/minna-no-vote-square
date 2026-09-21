@@ -1994,9 +1994,7 @@ function App() {
       const filled = Math.round(perc / 20); // 5マス
       return '█'.repeat(filled) + '░'.repeat(5 - filled);
     };
-    const title = currentSurvey.title.length > 20
-      ? currentSurvey.title.slice(0, 20) + '…'
-      : currentSurvey.title;
+    const title = currentSurvey.title;
     const lines = options.map((opt, index) => {
       const perc = currentSurvey.total_votes > 0 ? Math.round((opt.votes / currentSurvey.total_votes) * 100) : 0;
       const name = opt.name.length > 8 ? opt.name.slice(0, 8) + '…' : opt.name;
