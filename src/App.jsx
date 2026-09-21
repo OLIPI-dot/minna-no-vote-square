@@ -1430,16 +1430,19 @@ function App() {
         // 📍 リストから詳細に入る時のみ、今の位置(リスト)を履歴に刻む
         const listUrl = new URL(window.location.href);
         listUrl.searchParams.delete('id');
+        if (listUrl.pathname.startsWith('/s/')) listUrl.pathname = '/';
         window.history.replaceState({ ...window.history.state, view: 'list', scrollY: currentScroll }, '', listUrl);
         
         const detailUrl = new URL(window.location.href);
-        detailUrl.searchParams.set('id', survey.id);
+        detailUrl.searchParams.delete('id');
+        detailUrl.pathname = `/s/${survey.id}`;
         window.history.pushState({ view: 'details', surveyId: survey.id, fromSquare: true }, '', detailUrl);
       } else {
         // 📍 既に詳細画面にいる場合(前後のアンケート遷移など)は、履歴を積み上げずURLだけ書き換える
         const wasFromSquare = window.history.state?.fromSquare;
         const detailUrl = new URL(window.location.href);
-        detailUrl.searchParams.set('id', survey.id);
+        detailUrl.searchParams.delete('id');
+        detailUrl.pathname = `/s/${survey.id}`;
         window.history.replaceState({ view: 'details', surveyId: survey.id, fromSquare: wasFromSquare }, '', detailUrl);
       }
 
@@ -1489,6 +1492,7 @@ function App() {
       // 🏘️ 広場に戻る: id パラメータだけを消去し、タブやページは維持する
       const url = new URL(window.location.href);
       url.searchParams.delete('id');
+      if (url.pathname.startsWith('/s/')) url.pathname = '/';
       window.history.pushState({ view: 'list' }, '', url);
       setCurrentSurvey(null);
       setAdjacentSurveys({ prev: null, next: null });
@@ -1998,9 +2002,9 @@ function App() {
       const name = opt.name.length > 8 ? opt.name.slice(0, 8) + '…' : opt.name;
       return `${index + 1}. ${name} ${bar(perc)} ${perc}%`;
     });
-    const url = `${window.location.origin}/?id=${currentSurvey.id}`;
+    const url = `${window.location.origin}/s/${currentSurvey.id}`;
 
-    const shareUrl = `${window.location.origin}/?id=${currentSurvey.id}`;
+    const shareUrl = `${window.location.origin}/s/${currentSurvey.id}`;
 
     // 🏆 1位の項目を見つける
     const sorted = [...options].sort((a, b) => (b.votes || 0) - (a.votes || 0));

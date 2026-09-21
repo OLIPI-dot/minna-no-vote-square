@@ -36,11 +36,13 @@ export default async function handler(req, res) {
 
       let imageUrl = `${baseUrl}/ogp-image.png`;
       if (survey.image_url) {
-        if (survey.image_url.includes('yt:')) {
-          const videoId = survey.image_url.split(',').map(v => v.trim()).find(v => v.startsWith('yt:')).substring(3);
+        const parts = survey.image_url.split(',').map(v => v.trim());
+        const ytPart = parts.find(v => v.startsWith('yt:'));
+        if (ytPart) {
+          const videoId = ytPart.substring(3);
           imageUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-        } else if (survey.image_url.startsWith('http')) {
-          imageUrl = survey.image_url;
+        } else if (parts[0] && parts[0].startsWith('http')) {
+          imageUrl = parts[0];
         }
       }
 
