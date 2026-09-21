@@ -39,10 +39,10 @@ const RSS_FEEDS = [
     'http://kai-you.net/contents/feed.rss',
 
     // 🥈 エンタメ・トレンド
-    'https://www.oricon.co.jp/rss/news/',
+    'https://news.yahoo.co.jp/rss/media/natalien/all.xml',
     'https://news.yahoo.co.jp/rss/categories/entertainment.xml',
     'https://animeanime.jp/rss/index.rdf',
-    'https://game.watch.impress.co.jp/data/rss/1.0/gw/feed.rdf',
+    'https://jp.ign.com/feed.xml',
 
     // 🥉 ゲーム・サブカル
     'https://news.denfaminicogamer.jp/feed',
