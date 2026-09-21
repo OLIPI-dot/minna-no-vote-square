@@ -35,19 +35,19 @@ const RSS_FEEDS = [
     // 🥇 ニュース・時事・総合（最優先らび！）
     'https://news.yahoo.co.jp/rss/topics/top-picks.xml',
     'https://news.yahoo.co.jp/rss/categories/it.xml',
-    'https://mantan-web.jp/rss/index.rdf',
+    'https://gigazine.net/news/rss_2.0/',
     'http://kai-you.net/contents/feed.rss',
 
     // 🥈 エンタメ・トレンド
-    'https://mdpr.jp/rss/attention.xml',
+    'https://www.oricon.co.jp/rss/news/',
     'https://news.yahoo.co.jp/rss/categories/entertainment.xml',
-    'https://natalie.mu/comic/rss/news',
-    'https://natalie.mu/music/rss/news',
+    'https://animeanime.jp/rss/index.rdf',
+    'https://game.watch.impress.co.jp/data/rss/1.0/gw/feed.rdf',
 
     // 🥉 ゲーム・サブカル
     'https://news.denfaminicogamer.jp/feed',
     'https://www.gamespark.jp/rss20/index.rdf',
-    'https://www.famitsu.com/rss/fcom_all.rdf',
+    'https://automaton-media.com/feed/',
     'https://www.4gamer.net/rss/news_topics.xml',
 
     // 🏷️ その他
@@ -317,7 +317,7 @@ function extractMainContent(html) {
  */
 async function fetchRichData(url, newsTitle = '') {
     try {
-        let res = await axios.get(url, { timeout: 10000, headers: { 'User-Agent': 'Mozilla/5.0' } });
+        let res = await axios.get(url, { timeout: 10000, headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36' } });
         let html = res.data;
 
         // 🛡️ Yahoo!ニュースの「あっちへ行って」対策（PickUPページから記事本体へ）
@@ -325,7 +325,7 @@ async function fetchRichData(url, newsTitle = '') {
             const articleUrl = html.match(/href="(https:\/\/news\.yahoo\.co\.jp\/articles\/[^"]+)"/)?.[1];
             if (articleUrl) {
                 log(`🔗 Yahoo本体へジャンプ中: ${articleUrl}`);
-                res = await axios.get(articleUrl, { timeout: 10000, headers: { 'User-Agent': 'Mozilla/5.0' } });
+                res = await axios.get(articleUrl, { timeout: 10000, headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36' } });
                 html = res.data;
             }
         }
@@ -417,7 +417,7 @@ async function startAutoPosting() {
     let allNews = [];
     for (const feed of orderedFeeds) {
         try {
-            const response = await axios.get(feed, { timeout: 30000, headers: { 'User-Agent': 'Mozilla/5.0' } });
+            const response = await axios.get(feed, { timeout: 30000, headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36' } });
             const feedData = response.data;
             const items = feedData.match(/<item>([\s\S]*?)<\/item>/g) || [];
             for (const item of items) {
