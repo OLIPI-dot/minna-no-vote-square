@@ -2726,9 +2726,9 @@ body {
   }
 
   .survey-item-created-at, .survey-item-deadline, .status-badge {
-    font-size: 0.65rem !important; /* スマホ専用：フォント統一 */
-    height: 18px !important;
-    padding: 2px 4px !important;
+    font-size: 0.6rem !important; /* スマホ専用：フォントさらに小さく */
+    height: 16px !important;
+    padding: 1px 3px !important;
   }
 
   .card-stats-row {

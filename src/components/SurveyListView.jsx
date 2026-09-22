@@ -690,7 +690,7 @@ const SurveyListView = ({
                             </div>
                             <div className="survey-item-meta-container" style={{ display: 'flex', flexDirection: 'column', gap: '6px', overflow: 'hidden', minWidth: 0, marginTop: '8px' }}>
                               {/* 1段目（上段）：バッジ類 */}
-                              <div className="survey-item-meta-upper" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '4px' }}>
+                              <div className="survey-item-meta-upper" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '2px' }}>
                                 {showScoreBadge && <span className="popular-score-badge">{badgeLabel}</span>}
                                 <span className={`status-badge ${isEnded ? 'ended' : 'active'}`}>{isEnded ? '終了' : '受付中'}</span>
                                 <span className="survey-item-created-at" title="作成日時">🐣{new Date(s.created_at).toLocaleDateString('ja-JP', { month: '2-digit', day: '2-digit' })}</span>
