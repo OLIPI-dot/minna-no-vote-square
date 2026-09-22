@@ -4,11 +4,35 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-09-22T13:40:03.085Z</updated>
+  <updated>2026-09-22T23:16:40.478Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>カナダ大手銀6行、カナダドルのトークン化預金を共同検討(NADA NEWS)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23137"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23137</id>
+    <updated>2026-09-22T23:16:25.973Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;point1_title&quot;: &quot;6行でデジタル預金検討&quot;,
+  &quot;point1_desc&quot;: &quot;カナダの大手銀行6行が、カナダドルを背景としたトークン化預金の共同検討を開始。行間の決済を効率化しデジタルマネー基盤の構築を目指します。&quot;,
+  &quot;point2_title&quot;: &quot;資金移動の効率化へ&quot;,
+  &quot;point2_desc&quot;: &quot;トークン化預金により銀行間での資...</summary>
+  </entry>
+  <entry>
+    <title>日米 経済安保で連携の方針一致</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23136"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23136</id>
+    <updated>2026-09-22T23:15:57.093Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;point1_title&quot;: &quot;日米首脳がNYで会談&quot;,
+  &quot;point1_desc&quot;: &quot;高市首相はニューヨークでトランプ米大統領と会談し、米中首脳会談を前に経済安全保障など多岐にわたる分野で両国が緊密に連携していく方針を確認した。&quot;,
+  &quot;point2_title&quot;: &quot;経済安保で緊密連携&quot;,
+  &quot;point2_desc&quot;: &quot;世界情勢の緊張が高まる中、日...</summary>
+  </entry>
   <entry>
     <title>性能爆上がりでも価格は110万円ダウン！スバルの新型「ソルテラ」がBEV市場を揺るがす理由(＠ＤＩＭＥ)</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23135"/>
@@ -582,29 +606,5 @@
   &quot;point1_desc&quot;: &quot;気象庁によりますと、熱帯低気圧は16日午後3時現在、マリアナ諸島にあって、1時間におよそ10キロの速さで北へ進んでいます。&quot;,
   &quot;point2_title&quot;: &quot;ここにも注目&quot;,
   &quot;point2_desc&quot;: &quot;日本気象協会によりますと、台風となった後は発達しながら北上し、...</summary>
-  </entry>
-  <entry>
-    <title>クラーケン、トークン化株式で利回り獲得の新機能導入(NADA NEWS)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/22929"/>
-    <id>https://minna-no-vote-square.vercel.app/s/22929</id>
-    <updated>2026-09-16T12:13:00.434Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;point1_title&quot;: &quot;株式トークンの運用機能が登場&quot;,
-  &quot;point1_desc&quot;: &quot;クラーケンが株式やETFのトークン保有者向けに運用機能「xStocks Vaults」を導入。対象資産を預けることで値動きに連動させたままDeFi運用で最大年2％の報酬が得られます。&quot;,
-  &quot;point2_title&quot;: &quot;日本を含む一部地域は対象外&quot;,
-  &quot;p...</summary>
-  </entry>
-  <entry>
-    <title>エーザイ認知症薬承認 自ら注射可</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/22922"/>
-    <id>https://minna-no-vote-square.vercel.app/s/22922</id>
-    <updated>2026-09-16T12:12:34.227Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;point1_title&quot;: &quot;自宅で使えるアルツハイマー新薬承認&quot;,
-  &quot;point1_desc&quot;: &quot;アルツハイマー病治療薬「レカネマブ」の皮下注射タイプが承認されました。通院で約1時間の点滴が必要だった従来のタイプと異なり、自宅で週1回、短時間の自己注射で治療可能です。&quot;,
-  &quot;point2_title&quot;: &quot;症状抑制の効果と高額な薬価の課題&quot;,
-  &quot;p...</summary>
   </entry>
 </feed>
