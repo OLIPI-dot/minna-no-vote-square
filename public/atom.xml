@@ -4,11 +4,35 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-09-21T13:57:35.345Z</updated>
+  <updated>2026-09-22T00:18:03.912Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>惑星を「投げて合体」重力パズル『Sputnika Game』Steamにて今ならまだ無料、9月23日に有料化へ。「非常に好評」なゲーム</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23121"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23121</id>
+    <updated>2026-09-22T00:17:51.536Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;point1_title&quot;: &quot;Steam版有料化へ&quot;,
+  &quot;point1_desc&quot;: &quot;物理演算マージパズル『Sputnika Game』のSteam版が9月23日に有料化。期日までにライブラリへ追加しておけば有料化後も無料で遊べるよ。&quot;,
+  &quot;point2_title&quot;: &quot;重力要素と合体パズル&quot;,
+  &quot;point2_desc&quot;: &quot;重力場に向かって全方...</summary>
+  </entry>
+  <entry>
+    <title>副首都 6道府県6政令市「意欲」</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23120"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23120</id>
+    <updated>2026-09-22T00:17:02.819Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;point1_title&quot;: &quot;副首都目指す12自治体&quot;,
+  &quot;point1_desc&quot;: &quot;災害時に東京の首都機能を代替する副首都構想について、北海道や大阪府など６道府県６政令市が指定を目指していることが判明しました。&quot;,
+  &quot;point2_title&quot;: &quot;首都分散への期待と課題&quot;,
+  &quot;point2_desc&quot;: &quot;政府の財政支援や法整備を見据え、各自治...</summary>
+  </entry>
   <entry>
     <title>自分だけのMMORPGを制作するシミュレーションゲーム『Let&amp;#8217;s Build a Dungeon』2027年2月11日に早期アクセス版リリース決定</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23119"/>
@@ -592,29 +616,5 @@
   &quot;point1_desc&quot;: &quot;売上データを活用したコンテンツ企画、レビュー・SNS活用、商品探索、レコメンドの4つのAI機能を提供&quot;,
   &quot;point2_title&quot;: &quot;ここにも注目&quot;,
   &quot;point2_desc&quot;: &quot;ECプラットフォームを展開するW２は9月15日、ECを「商品を売る場所」から「顧客の...</summary>
-  </entry>
-  <entry>
-    <title>パソコン工房、Core Ultra 5 225FとRTX 5060 Ti搭載PCを発売(PC Watch)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/22912"/>
-    <id>https://minna-no-vote-square.vercel.app/s/22912</id>
-    <updated>2026-09-16T10:17:05.923Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;point1_title&quot;: &quot;注目ポイント&quot;,
-  &quot;point1_desc&quot;: &quot;ユニットコムは9月16日、iiyama PCのゲーミングPCシリーズ「LEVEL∞」から、Core Ultra 5シリーズ2を搭載するBTOモデル「LEVEL-R789-225F-SKX」を発売した。&quot;,
-  &quot;point2_title&quot;: &quot;&quot;,
-  &quot;point2_desc&quot;:...</summary>
-  </entry>
-  <entry>
-    <title>半導体の「データ移動」を効率化 米IP新興が日本進出(EE Times Japan)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/22911"/>
-    <id>https://minna-no-vote-square.vercel.app/s/22911</id>
-    <updated>2026-09-16T10:17:04.687Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;point1_title&quot;: &quot;注目ポイント&quot;,
-  &quot;point1_desc&quot;: &quot;Baya Systems 創業者兼CEOのSailesh Kumar氏（左）と最高商務責任者（CCO）のNandan Nayampally氏（右）&quot;,
-  &quot;point2_title&quot;: &quot;ここにも注目&quot;,
-  &quot;point2_desc&quot;: &quot;AIの普及や半導体の高性能化に伴い、C...</summary>
   </entry>
 </feed>
