@@ -477,7 +477,7 @@ async function startAutoPosting() {
     let count = 0;
     let attemptCount = 0;
     const POST_LIMIT = 3; // 1回3件まで厳選！ (1日4回実行で合計最大12本/日) 🥕
-    const MAX_ATTEMPTS = 30; // 確実に3件取得できるよう、試行上限を30に大幅緩和らび！
+    const MAX_ATTEMPTS = 15; // APIコストと無限ループ防止のため、候補検索（アクセス試行）は最大15回まで
     
     // 🎲 カテゴリの偏りを防ぐための記録用（1回の実行の中でカテゴリをバラバラにする）
     const postedCategories = new Set();
@@ -501,12 +501,9 @@ async function startAutoPosting() {
             continue;
         }
 
-        // 🎲 API呼び出し前にタイトルだけで簡易判定し、カテゴリ重複を事前ブロック！
-        const preCat = classifyNews(news.title, '');
-        if (postedCategories.has(preCat) && preCat !== 'その他') {
-            log(`⏭️ カテゴリ重複（${preCat}）のため事前スキップ: ${news.title}`);
-            continue;
-        }
+        // 🎲 API呼び出し前にタイトルだけで簡易判定し、同一カテゴリの連続をなるべく防ぐ（ただし完全に枯渇しないよう今回はブロックを解除）
+        // const preCat = classifyNews(news.title, '');
+        // if (postedCategories.has(preCat) && preCat !== 'その他') { ... }
 
         attemptCount++;
         log(`🔍 リード文をリッチ化中 (${attemptCount}/${MAX_ATTEMPTS}): ${news.title}`);
