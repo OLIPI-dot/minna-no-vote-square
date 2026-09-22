@@ -4,11 +4,35 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-09-22T00:18:03.912Z</updated>
+  <updated>2026-09-22T03:06:49.075Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>ボロボロのバンで荒野を探索し金属探知機で埋もれたお宝を見つけるオープンワールド・スカベンジ・アドベンチャーゲーム『HODKA』発表！</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23123"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23123</id>
+    <updated>2026-09-22T03:06:35.987Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;point1_title&quot;: &quot;タイガを巡る探索ADV&quot;,
+  &quot;point1_desc&quot;: &quot;行方不明の叔父を探すため、金属探知機と車で広大なタイガを探索し、発掘したスクラップを売って装備を強化しながら未知の領域へ挑むゲーム。&quot;,
+  &quot;point2_title&quot;: &quot;2027年にSteamで登場&quot;,
+  &quot;point2_desc&quot;: &quot;バンのカスタマイズや住民か...</summary>
+  </entry>
+  <entry>
+    <title>家借りられない高齢者も 背景は</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23122"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23122</id>
+    <updated>2026-09-22T03:05:56.529Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;point1_title&quot;: &quot;高齢者の賃貸難が深刻化&quot;,
+  &quot;point1_desc&quot;: &quot;65歳以上の人口が過去最高を更新する中、高齢であることを理由に賃貸住宅の契約を拒否される事例が増加しており、社会問題となっています。&quot;,
+  &quot;point2_title&quot;: &quot;家主が抱える貸せない事情&quot;,
+  &quot;point2_desc&quot;: &quot;家主側には孤独死や滞納への懸念...</summary>
+  </entry>
   <entry>
     <title>惑星を「投げて合体」重力パズル『Sputnika Game』Steamにて今ならまだ無料、9月23日に有料化へ。「非常に好評」なゲーム</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23121"/>
@@ -591,30 +615,5 @@
   &quot;point1_desc&quot;: &quot;YouTubeは、子供と家族で楽しめる公式プレイリスト「YouTube Kids &amp; Family Playtime 2026」を、シルバーウィークの2026年9月20日（日）から27日（日）まで特別配信する。&quot;,
   &quot;point2_title&quot;: &quot;&quot;,
   &quot;point2_d...</summary>
-  </entry>
-  <entry>
-    <title>なぜ防災ラジオが売れてるの？ スマホ時代でも需要が続く理由と選び方(BCN)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/22914"/>
-    <id>https://minna-no-vote-square.vercel.app/s/22914</id>
-    <updated>2026-09-16T10:17:08.779Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;point1_title&quot;: &quot;注目ポイント&quot;,
-  &quot;point1_desc&quot;: &quot;地震や台風などの自然災害が相次ぐ中、防災アイテムの一つとして必要なのが「防災ラジオ」です。&quot;,
-  &quot;point2_title&quot;: &quot;&quot;,
-  &quot;point2_desc&quot;: &quot;&quot;,
-  &quot;rabi_comment&quot;: &quot;話題のニュースだね！みんなはどう思う？気になる意見を教えてね...</summary>
-  </entry>
-  <entry>
-    <title>ECを「売る場所」から「売上を生むメディア」へ進化させるAIエージェント基盤「W2 SmartHub」をリリース、W２(ネットショップ担当者フォーラム)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/22913"/>
-    <id>https://minna-no-vote-square.vercel.app/s/22913</id>
-    <updated>2026-09-16T10:17:07.131Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;point1_title&quot;: &quot;注目ポイント&quot;,
-  &quot;point1_desc&quot;: &quot;売上データを活用したコンテンツ企画、レビュー・SNS活用、商品探索、レコメンドの4つのAI機能を提供&quot;,
-  &quot;point2_title&quot;: &quot;ここにも注目&quot;,
-  &quot;point2_desc&quot;: &quot;ECプラットフォームを展開するW２は9月15日、ECを「商品を売る場所」から「顧客の...</summary>
   </entry>
 </feed>
