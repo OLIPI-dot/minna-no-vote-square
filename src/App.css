@@ -2738,11 +2738,6 @@ body {
     padding: 2px 4px !important;
   }
 
-  /* 📱 スマホリスト表示専用：情報過多による右枠突破を防ぐため「投稿日時(🐣)」は非表示 */
-  .view-list .survey-item-created-at {
-    display: none !important;
-  }
-
   .card-stats-row {
     display: flex !important;
     flex-wrap: wrap !important;
