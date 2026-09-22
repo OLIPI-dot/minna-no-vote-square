@@ -771,13 +771,6 @@ body {
     box-sizing: border-box !important;
   }
 
-  /* 🗓️ グリッド表示：作成日（青）は非表示→しめ切日ど1本絞り */
-  @media (max-width: 600px) {
-    .view-grid .survey-item-created-at {
-      display: none !important;
-    }
-  }
-
   .view-grid .survey-item-deadline {
     display: inline-flex !important;
     align-items: center !important;
