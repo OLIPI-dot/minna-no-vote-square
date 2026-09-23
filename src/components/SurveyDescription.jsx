@@ -415,6 +415,45 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
                     </li>
                   )}
 
+                  {/* 注目ポイント3 */}
+                  {summaryJson.point3_desc && (
+                    <li className="summary-point-item flex flex-col md:flex-row items-start gap-2 md:gap-[14px] text-[1.02rem] text-slate-800 leading-[1.75] font-medium" style={{ marginBottom: '16px' }}>
+                      <div className="summary-point-header" style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                        <span style={{
+                          flex: '0 0 auto',
+                          width: '28px',
+                          height: '28px',
+                          background: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
+                          color: 'white',
+                          borderRadius: '50%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '0.85rem',
+                          fontWeight: '900',
+                          boxShadow: '0 3px 10px rgba(236, 72, 153, 0.3)'
+                        }}>3</span>
+                        {summaryJson.point3_title && (
+                          <span style={{
+                            display: 'inline-block',
+                            background: 'linear-gradient(135deg, #f3e8ff 0%, #fae8ff 100%)',
+                            color: '#6b21a8',
+                            fontWeight: '800',
+                            padding: '1px 10px',
+                            borderRadius: '8px',
+                            border: '1px solid #e9d5ff',
+                            fontSize: '0.92rem'
+                          }}>
+                            {summaryJson.point3_title}
+                          </span>
+                        )}
+                      </div>
+                      <span className="summary-point-text" style={{ whiteSpace: "normal" }}>
+                        {summaryJson.point3_desc}
+                      </span>
+                    </li>
+                  )}
+
                   {/* らびのひとこと */}
                   {summaryJson.rabi_comment && (
                     <li style={{

@@ -143,11 +143,14 @@ const AI_SUMMARY_PROMPT = (articleContent) => `
 以下のフォーマットのJSON形式のみを出力してください。余計な解説文やマークダウンの枠組みは不要です。
 
 {
+  "category": "ニュース, 芸能, 話題, エンタメ, ゲーム, その他のいずれか",
   "point1_title": "要点見出し1（15字以内）",
-  "point1_desc": "要点説明1（60〜80字）",
+  "point1_desc": "要点説明1（80〜100字）",
   "point2_title": "要点見出し2（15字以内）",
-  "point2_desc": "要点説明2（60〜80字）",
-  "rabi_comment": "記事の具体名に触れたらびの感想（50〜70字）",
+  "point2_desc": "要点説明2（80〜100字）",
+  "point3_title": "要点見出し3（15字以内）",
+  "point3_desc": "要点説明3（80〜100字）",
+  "rabi_comment": "記事の具体名に触れたらびの長めの感想（80〜120字）",
   "keyword_title": "専門用語（なければ空文字）",
   "keyword_desc": "用語の1行解説（なければ空文字）",
   "tags": ["固有名詞1", "固有名詞2", "トピック"],
@@ -161,13 +164,15 @@ const AI_SUMMARY_PROMPT = (articleContent) => `
 }
 
 【必須ルール（絶対遵守）】
-・point1_title, point1_desc, point2_title, point2_desc, rabi_comment, tags, survey_question, survey_options のキーは【いかなる場合も省略せず、必ず全て】出力してください。
-・要約（desc）は必ず60〜80文字程度で、読者にニュースのメリットや変更点がしっかり伝わる充実した内容にしてください。※【重要】本文の冒頭1〜2文をそのままコピー＆ペーストすることは絶対に禁止です。記事全体の趣旨を咀嚼してあなた自身の言葉で要約してください。タイトルの丸写しも厳禁です。
-・rabi_comment に関する禁止事項：「話題のニュースだね！みんなはどう思う？」のような、どの記事にも使い回せる汎用的な定型文の出力は【厳禁】です。必ず「記事の中身（例：実質7万円は安いね！、噴火警戒は心配だね、等）」に感情を動かされたコメントにし、明るく親しみやすい語尾（うさぎキャラ）にしてください。
-・keyword_title と keyword_desc は原則必須です。一般的な平易なニュース以外は必ず記事内の重要キーワードを1つ選んで解説を出力してください。
-・tags の最優先ルール：記事タイトルに含まれる「作品名（例：ポケモンスリープ、ポケモン）」「製品名（例：iPhone、Galaxy）」「企業名」は【必ず最優先で1〜2個目にタグとして抽出】してください。
-・tags に「注目トピック」「ニュース」「イベント」などの抽象的で無意味なワードは出力禁止です。記事本文から直接3〜4個抽出してください。
+・category は必ず指定された6つのうち1つを選んでください。
+・point1_title から point3_desc、rabi_comment, tags, survey_question, survey_options のキーは【いかなる場合も省略せず、必ず全て】出力してください。
+・要約（desc）は必ず指定の文字数（80〜100文字程度）で、読者にニュースの詳細がしっかり伝わるボリュームにしてください。本文の冒頭の丸写しは厳禁です。
+・rabi_comment に関する禁止事項：「話題のニュースだね！」のような汎用的な定型文は【厳禁】です。必ず記事の核心に触れ、80文字以上のしっかりとした感想にしてください。
+・keyword_title と keyword_desc は原則必須です。
+・tags の最優先ルール：記事タイトルに含まれる「作品名」「製品名」「企業名」「人物名」は【必ず最優先で1〜2個目にタグとして抽出】してください。
+・tags に「ニュース」「まとめ」「注目」「話題」などの抽象的で無意味なワードは出力禁止です。記事から直接、固有名詞を中心に3〜4個抽出してください。
 ・survey_options は必ず4つの文字列の配列として出力してください。
+・途中で文章が切れないよう、必ず完全なJSON形式で最後まで出力してください。
 ・途中で文章が切れないよう、必ず完全なJSON形式で最後まで出力してください。
 
 【記事テキスト】
@@ -531,7 +536,11 @@ async function startAutoPosting() {
         if (!richData.description || richData.description.length < 50) continue;
 
         try {
-            const cat = classifyNews(news.title, richData.description);
+            let cat = richData.summaryObj?.category;
+            const validCategories = ['ニュース', '芸能', '話題', 'エンタメ', 'ゲーム', 'その他'];
+            if (!cat || !validCategories.includes(cat)) {
+                cat = classifyNews(news.title, richData.description);
+            }
             let imageUrl = await searchYouTubeVideo(news.title);
             if (!imageUrl) imageUrl = richData.image || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=1000';
 
