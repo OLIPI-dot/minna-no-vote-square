@@ -2364,7 +2364,7 @@ function App() {
                       </div>
                     )}
                   </div>
-                  <button className="start-button" onClick={handleStartSurvey} style={{ marginTop: '20px', background: isCreateFormValid ? '#10b981' : '#cbd5e1', cursor: isCreateFormValid ? 'pointer' : 'not-allowed', pointerEvents: isCreateFormValid ? 'auto' : 'none' }}>世界に公開する！🚀</button>
+                  <button className="start-button" onClick={handleStartSurvey} style={{ marginTop: '20px', background: isCreateFormValid ? '#10b981' : '#cbd5e1', cursor: isCreateFormValid ? 'pointer' : 'not-allowed' }}>{isCreateFormValid ? '世界に公開する！🚀' : '必須項目を入力して公開🚀'}</button>
                   <p style={{ fontSize: '0.85rem', color: '#64748b', textAlign: 'center', marginTop: '12px' }}>
                     ※ 終了したアンケートは、広場の歴史として<span style={{ fontWeight: 'bold', color: '#7c3aed' }}>アーカイブ（永久保存）</span>されます。🐰💎
                   </p>
