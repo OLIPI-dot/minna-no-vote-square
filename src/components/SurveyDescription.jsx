@@ -14,7 +14,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
     setIsExpanded(!isExpanded);
   };
 
-  if (!description) return null;
+  if (!description) return <>{children}</>;
 
   // 🛡️ サイト内表示（iframe）が禁止されているドメインのリストらび！
   const isIframeRestricted = (url) => {
