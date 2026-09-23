@@ -955,6 +955,9 @@ function App() {
       console.log("🔍 loadFromUrl triggered. surveyId:", surveyId, "Path:", window.location.pathname);
 
       if (!surveyId || surveyId === 'null' || surveyId === 'undefined') {
+        // ✍️ 投稿画面（create）を開いている間にタブ移動等で再評価が走った場合は、勝手にトップへ戻さないらび！
+        if (view === 'create') return;
+
         console.log("🏘️ loadFromUrl: Resetting to list view.");
         if (view !== 'list') {
           setView('list');
