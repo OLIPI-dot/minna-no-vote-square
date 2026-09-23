@@ -4,11 +4,35 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-09-22T23:16:40.478Z</updated>
+  <updated>2026-09-23T07:58:36.050Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>ミスドが中国に再進出 勝算は</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23139"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23139</id>
+    <updated>2026-09-23T07:58:18.965Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;point1_title&quot;: &quot;ミスドが中国へ7年ぶり再進出&quot;,
+  &quot;point1_desc&quot;: &quot;ミスタードーナツが上海に1号店を開き中国市場へ7年ぶりに再進出。2029年までに30店舗の展開を目指し、成長市場での定着と拡大を図ります。&quot;,
+  &quot;point2_title&quot;: &quot;現地企業連携で勝算高める戦略&quot;,
+  &quot;point2_desc&quot;: &quot;過去の撤退原因...</summary>
+  </entry>
+  <entry>
+    <title>漁船と衝突 ボート乗船の男性死亡</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23138"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23138</id>
+    <updated>2026-09-23T07:57:38.170Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;point1_title&quot;: &quot;紋別沖で船同士が衝突&quot;,
+  &quot;point1_desc&quot;: &quot;北海道紋別市の沖合で、プレジャーボートと漁船「第八十八恵徳丸」が衝突する事故が発生しました。ボートの乗員1名が死亡、1名が行方不明となっています。&quot;,
+  &quot;point2_title&quot;: &quot;海保などが懸命の捜索&quot;,
+  &quot;point2_desc&quot;: &quot;衝突事故を受けて、海上...</summary>
+  </entry>
   <entry>
     <title>カナダ大手銀6行、カナダドルのトークン化預金を共同検討(NADA NEWS)</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23137"/>
@@ -582,29 +606,5 @@
   &quot;point2_desc&quot;: &quot;&quot;,
   &quot;rabi_comment&quot;: &quot;話題のニュースだね！みんなはどう思う？気になる意見を教えてね&quot;,
   &quot;ke...</summary>
-  </entry>
-  <entry>
-    <title>よど号事件 赤木容疑者が死亡か</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/22935"/>
-    <id>https://minna-no-vote-square.vercel.app/s/22935</id>
-    <updated>2026-09-16T12:29:29.951Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;point1_title&quot;: &quot;注目ポイント&quot;,
-  &quot;point1_desc&quot;: &quot;韓国ソウル市郊外の金浦空港に着陸した「よど号」から降りる、解放された乗客＝ソウル市の金浦空港で1970年4月3日、関根武撮影&quot;,
-  &quot;point2_title&quot;: &quot;ここにも注目&quot;,
-  &quot;point2_desc&quot;: &quot;1970年の日航機「よど号」ハイジャック事件に関与したとして...</summary>
-  </entry>
-  <entry>
-    <title>熱帯低気圧の進路予想 連休影響は</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/22934"/>
-    <id>https://minna-no-vote-square.vercel.app/s/22934</id>
-    <updated>2026-09-16T12:29:28.050Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;point1_title&quot;: &quot;注目ポイント&quot;,
-  &quot;point1_desc&quot;: &quot;気象庁によりますと、熱帯低気圧は16日午後3時現在、マリアナ諸島にあって、1時間におよそ10キロの速さで北へ進んでいます。&quot;,
-  &quot;point2_title&quot;: &quot;ここにも注目&quot;,
-  &quot;point2_desc&quot;: &quot;日本気象協会によりますと、台風となった後は発達しながら北上し、...</summary>
   </entry>
 </feed>
