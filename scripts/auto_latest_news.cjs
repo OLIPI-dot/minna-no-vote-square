@@ -120,7 +120,11 @@ function stripHtml(str) {
         /◆.*?はこちら/g,
         /📌.*?はこちら/g,
         /【おすすめ記事】.*/g,
-        /【写真】.*/g
+        /【写真】.*/g,
+        // 📸 「=本人提供朝日新聞社」「=撮影」など画像クレジット行を除去
+        /=[^。\n]{0,30}(提供|撮影|新聞社|通信社|ロイター|AFP|AP)/g,
+        /写真・図版/g,
+        /^\s*（?[^。\n]{0,20}(編集部|記者)[）]?\s*$/gm
     ];
     noisePatterns.forEach(p => text = text.replace(p, ''));
 
@@ -269,8 +273,15 @@ function extractMainContent(html) {
     if ($body.length === 0) $body = $('[class*="articleBody"], [class*="article-body"], [class*="entry-content"], main');
     if ($body.length === 0) $body = $('body');
 
-    // 2.5 画像キャプションやクレジットを除去
-    $body.find('figure, figcaption, .caption, .credit, .photo-caption, [class*="caption"], [class*="credit"], [class*="photo"], .image-credit, .photo-desc').remove();
+    // 2.5 画像キャプション・クレジット・figcaptionを完全除去
+    $body.find('figure, figcaption, .caption, .credit, .photo-caption, [class*="caption"], [class*="credit"], [class*="photo"], .image-credit, .photo-desc, [class*="img-caption"], [class*="figure"]').remove();
+    // 「写真・図版」という文字列を含む要素も除去
+    $body.find('p, span, div').each((_, el) => {
+        const t = $(el).text().trim();
+        if (t.length < 80 && (t.includes('写真・図版') || t.match(/=[^。]{0,20}(提供|撮影|新聞社)/))) {
+            $(el).remove();
+        }
+    });
 
     // 3. 本文中の段落（<p>）を抽出
     const paragraphs = [];
@@ -284,7 +295,10 @@ function extractMainContent(html) {
                 txt.includes('Photo') || txt.includes('Getty') || txt.includes('AP') || 
                 txt.includes('AFP') || txt.includes('写真：') || txt.includes('提供：') ||
                 txt.includes('©') || txt.includes('(C)') || txt.includes('（C）') ||
-                txt.match(/[（(][^）)]*(?:通信|新聞|ロイター|写真|撮影)[^）)]*[）)]/)
+                txt.match(/[（(][^）)]*(?:通信|新聞|ロイター|写真|撮影)[^）)]*[）)]/) ||
+                txt.match(/=[^。]{0,20}(提供|撮影|朝日新聞|読売新聞|毎日新聞|産経新聞|共同通信|時事通信|ロイター|AFP)/) ||
+                txt.match(/^[^。]{0,30}(新聞社|通信社|写真部)$/) ||
+                txt.match(/^（?[^。]{0,20}(編集部|記者)[）]?$/)
             );
             
             if (!isCaption && 
