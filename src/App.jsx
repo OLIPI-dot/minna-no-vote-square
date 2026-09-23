@@ -1846,6 +1846,23 @@ function App() {
     }
   };
 
+  // 📝 内容（タイトル・説明文）を更新する（オーナーまたは管理者）
+  const handleUpdateContent = async (newTitle, newDescription) => {
+    if (!currentSurvey || !user || (!isAdmin && currentSurvey.user_id !== user.id)) return;
+    manualUpdatesRef.current[String(currentSurvey.id)] = Date.now();
+    setIsActionLoading(true);
+    const { data, error } = await supabase.from('surveys').update({ title: newTitle, description: newDescription }).eq('id', currentSurvey.id).select();
+    setIsActionLoading(false);
+    if (error) {
+      console.error("Update content error:", error);
+      return alert('更新に失敗しました');
+    }
+    const merged = { ...currentSurvey, ...data[0] };
+    setCurrentSurvey(merged);
+    setSurveys(prev => prev.map(s => String(s.id) === String(currentSurvey.id) ? { ...s, ...merged } : s));
+    alert('アンケート内容を更新しました！');
+  };
+
   // 🔄 公開設定を変更する（オーナーまたは管理者）
   const handleUpdateVisibility = async (newVisibility) => {
     if (!currentSurvey || !user || (!isAdmin && currentSurvey.user_id !== user.id)) return;
@@ -2406,6 +2423,7 @@ function App() {
                   handleUpdateTags={handleUpdateTags}
                   handleUpdateVisibility={handleUpdateVisibility}
                   handleDeleteSurvey={handleDeleteSurvey}
+                  handleUpdateContent={handleUpdateContent}
                   handleReportContent={handleReportContent}
                   navigateTo={navigateTo}
                   comments={comments}

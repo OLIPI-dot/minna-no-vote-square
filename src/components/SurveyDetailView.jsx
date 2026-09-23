@@ -102,6 +102,7 @@ const SurveyDetailView = ({
   tagEditValue,
   setTagEditValue,
   handleUpdateTags,
+  handleUpdateContent,
   navigateTo,
   comments,
   commentName,
@@ -142,6 +143,10 @@ const SurveyDetailView = ({
   baseCategories = []
 }) => {
   const [brokenImages, setBrokenImages] = React.useState(new Set());
+  const [isEditingContent, setIsEditingContent] = React.useState(false);
+  const [editTitle, setEditTitle] = React.useState('');
+  const [editDescription, setEditDescription] = React.useState('');
+  
   if (!currentSurvey) return <div className="empty-msg">読み込み中...</div>;
 
   // 🎨 スタンプリアクションの集計ロジックらび！
@@ -526,7 +531,18 @@ const SurveyDetailView = ({
             </button>
             {(isAdmin || currentSurvey.user_id === user.id) && (
               <>
-                <button onClick={() => setIsEditingCategory(true)} className="admin-btn">🏷️ カテゴリ変更</button>
+                <button onClick={() => {
+                  setIsEditingContent(true);
+                  setIsEditingCategory(false);
+                  setIsEditingTags(false);
+                  setEditTitle(currentSurvey.title || '');
+                  setEditDescription(currentSurvey.description || '');
+                }} className="admin-btn">📝 内容編集</button>
+                <button onClick={() => {
+                  setIsEditingCategory(true);
+                  setIsEditingContent(false);
+                  setIsEditingTags(false);
+                }} className="admin-btn">🏷️ カテゴリ変更</button>
                 <button onClick={() => handleDeleteSurvey(currentSurvey.id)} className="admin-btn delete">🗑️ 削除</button>
               </>
             )}
@@ -540,6 +556,30 @@ const SurveyDetailView = ({
                 ))}
               </div>
               <button onClick={() => setIsEditingCategory(false)} style={{ marginTop: '10px', width: '100%', padding: '8px', background: 'none', border: 'none', color: '#94a3b8' }}>キャンセル</button>
+            </div>
+          )}
+
+          {isEditingContent && (
+            <div className="edit-panel" style={{ width: '100%', marginTop: '15px', padding: '15px', background: '#fff', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
+              <div style={{ marginBottom: '10px', fontSize: '0.9rem', color: '#64748b', fontWeight: 'bold' }}>アンケート内容の編集</div>
+              <input
+                className="admin-textarea"
+                value={editTitle}
+                onChange={e => setEditTitle(e.target.value)}
+                placeholder="タイトル"
+                style={{ width: '100%', padding: '12px', borderRadius: '12px', border: '2px solid #e2e8f0', marginBottom: '10px', fontSize: '1rem', outline: 'none' }}
+              />
+              <textarea
+                className="admin-textarea"
+                value={editDescription}
+                onChange={e => setEditDescription(e.target.value)}
+                placeholder="説明文"
+                style={{ width: '100%', minHeight: '150px', padding: '12px', borderRadius: '12px', border: '2px solid #e2e8f0', marginBottom: '10px', fontSize: '1rem', outline: 'none' }}
+              />
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button onClick={() => setIsEditingContent(false)} style={{ flex: 1, padding: '10px', background: '#f1f5f9', color: '#475569', borderRadius: '10px', border: 'none' }}>中止</button>
+                <button onClick={() => { handleUpdateContent(editTitle, editDescription); setIsEditingContent(false); }} style={{ flex: 2, padding: '10px', background: '#3b82f6', color: '#fff', borderRadius: '10px', border: 'none', fontWeight: 'bold' }}>保存する</button>
+              </div>
             </div>
           )}
 
