@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { Tweet } from 'react-tweet';
 import SourcePreviewModal from './SourcePreviewModal';
 
 const SurveyDescription = ({ description, renderCommentContent, isTimeUp, children }) => {
@@ -767,6 +768,23 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
                     );
                   }
 
+                  // 🐦 X (Twitter) のURL自動カード化 (react-tweet)
+                  const xMatch = trimmed.match(/^https?:\/\/(?:www\.)?(?:twitter|x)\.com\/(?:#!\/)?(?:\w+)\/status(?:es)?\/(\d+)/);
+                  if (xMatch) {
+                    const tweetId = xMatch[1];
+                    return (
+                      <div key={idx} style={{ display: 'flex', justifyContent: 'center', margin: '24px 0', width: '100%' }}>
+                        <div style={{ width: '100%', maxWidth: '500px', margin: '0 auto', display: 'flex', justifyContent: 'center' }}>
+                           <Tweet id={tweetId} />
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  // 🔗 それ以外のリンクは自動でaタグ（クリッカブル）化するらび！
+                  const linkRegex = /(https?:\/\/[^\s]+)/g;
+                  const hasLink = linkRegex.test(trimmed);
+
                   // 通常の段落
                   return (
                     <p key={idx} className="desc-paragraph mb-4 leading-relaxed text-slate-700" style={{
@@ -778,7 +796,16 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
                       letterSpacing: '0.03em',
                       wordBreak: 'break-word'
                     }}>
-                      {trimmed}
+                      {hasLink ? (
+                        trimmed.split(linkRegex).map((part, i) => {
+                          if (part.match(linkRegex)) {
+                            return <a key={i} href={part} target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', textDecoration: 'underline', fontWeight: 'bold' }}>{part}</a>;
+                          }
+                          return <React.Fragment key={i}>{part}</React.Fragment>;
+                        })
+                      ) : (
+                        trimmed
+                      )}
                     </p>
                   );
                 }).filter(Boolean);
