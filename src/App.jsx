@@ -990,14 +990,15 @@ function App() {
       setOptions([]);
       setVotedOption(null);
 
-      // 🔗 記事詳細のURLは ?id=ID 形式に統一するらび！（リロード時の404回避）
+      // 🔗 記事詳細のURLは /s/ID 形式に統一するらび！（動的OGP生成・SEOのため）
       const url = new URL(window.location.href);
-      if (window.location.pathname.startsWith('/s/')) {
-        url.pathname = '/';
-        url.searchParams.set('id', sv.id);
+      if (url.searchParams.has('id') || url.searchParams.has('s')) {
+        url.searchParams.delete('id');
+        url.searchParams.delete('s');
+        url.pathname = `/s/${sv.id}`;
         window.history.replaceState({ view: 'details', surveyId: sv.id }, '', url);
-      } else if (url.searchParams.get('id') !== sv.id) {
-        url.searchParams.set('id', sv.id);
+      } else if (!window.location.pathname.startsWith(`/s/${sv.id}`)) {
+        url.pathname = `/s/${sv.id}`;
         window.history.replaceState({ view: 'details', surveyId: sv.id }, '', url);
       } else if (!window.history.state || !window.history.state.view) {
         window.history.replaceState({ view: 'details', surveyId: sv.id }, '', window.location.href);

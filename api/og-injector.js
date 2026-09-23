@@ -4,6 +4,17 @@ const supabaseUrl = process.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
+function escapeHtml(unsafe) {
+  if (!unsafe) return '';
+  return String(unsafe)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;")
+    .replace(/\n/g, " "); // OGPのdescription用なので改行はスペースに変換
+}
+
 export default async function handler(req, res) {
   const surveyId = req.query.survey || req.query.s;
   const protocol = req.headers['x-forwarded-proto'] || 'https';
@@ -30,8 +41,8 @@ export default async function handler(req, res) {
 
     if (!error && survey) {
       // 3. OGP 情報を生成
-      const title = `📊「${survey.title}」| みんなのアンケート広場`;
-      const description = survey.description || '匿名で気軽に投票・本音が集まるアンケートコミュニティ。あなたの意見を教えてください！';
+      const title = escapeHtml(`📊「${survey.title}」| みんなのアンケート広場`);
+      const description = escapeHtml(survey.description || '匿名で気軽に投票・本音が集まるアンケートコミュニティ。あなたの意見を教えてください！');
       const siteUrl = `${baseUrl}/s/${surveyId}`;
 
       let imageUrl = `${baseUrl}/ogp-image.png`;
