@@ -2,12 +2,13 @@ name: Labi News & Daily Survey Launcher 🐰🚀
 
 on:
   schedule:
+    # 朝・昼・夕方・夜の4回実行らびっ！ 🐰🚀
     # 🌅 朝の便 (JST 8:14 -> UTC 23:14) 
     # ※GitHubの大渋滞を避けるため、あえて中途半端な「14分」に設定らび！
     - cron: '14 23 * * *'
     
-    # ☀️🌙 昼・夕方の便 (JST 12:14, 17:14 -> UTC 3:14, 8:14)
-    - cron: '14 3,8 * * *'
+    # ☀️🌙 昼・夕方・夜の便 (JST 12:14, 17:14, 21:14 -> UTC 3:14, 8:14, 12:14)
+    - cron: '14 3,8,12 * * *'
   workflow_dispatch: # 手動実行も可能らび！
 
 permissions:
