@@ -191,7 +191,7 @@ if (GEMINI_API_KEY) {
  * 🤖 Gemini APIで要約を生成（JSON形式・最大3回リトライ）
  */
 async function generateAISummary(articleContent) {
-    if (!geminiModel || !articleContent || articleContent.length < 150) return null;
+    if (!geminiModel || !articleContent || articleContent.length < 80) return null;
     if (global.isQuotaExceeded) return null;
 
     let lastError = null;
@@ -357,12 +357,12 @@ async function fetchRichData(url, newsTitle = '') {
 
         log(`📄 最終的に抽出された本文の長さ: ${fullText.length}文字`);
         
-        if (fullText.length < 150) {
-            log(`⚠️ 本文が短すぎます（150文字未満）。AIのハルシネーション（嘘の生成や意味不明な選択肢）を防ぐため、このニュースをスキップします。`);
+        if (fullText.length < 80) {
+            log(`⚠️ 本文が短すぎます（80文字未満）。AIのハルシネーション防止のためこのニュースをスキップします。`);
             return { description: null, image: null, summaryObj: null };
         }
 
-        if (geminiModel && fullText.length >= 150) {
+        if (geminiModel && fullText.length >= 80) {
             summaryObj = await generateAISummary(fullText);
             
             // 🤖 有料枠なので待機時間を短縮（少しだけサーバーに優しく）
