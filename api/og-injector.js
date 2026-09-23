@@ -61,6 +61,7 @@ export default async function handler(req, res) {
       const customOgTags = `
   <!-- INJECTED BY OG-INJECTOR -->
   <title>${title}</title>
+  <link rel="canonical" href="${siteUrl}" />
   <meta property="og:title" content="${title}" />
   <meta property="og:description" content="${description}" />
   <meta property="og:type" content="article" />
