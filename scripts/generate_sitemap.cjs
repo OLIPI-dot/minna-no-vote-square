@@ -23,7 +23,7 @@ const getEnv = (key) => {
 
 const url = getEnv('VITE_SUPABASE_URL');
 const key = getEnv('VITE_SUPABASE_ANON_KEY');
-const SITE_URL = 'https://minna-no-vote-square.vercel.app';
+const SITE_URL = 'https://minna-no-vote-square.com';
 
 const escapeXml = (unsafe) => {
     return (unsafe || '').replace(/[<>&"']/g, (c) => {
