@@ -712,7 +712,8 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
         </div>
 
         {/* 本文 💡 (簡易マークダウンパースで見出しと段落をオシャレに装飾) */}
-        {mainBodyOnly && (
+        {/* AIが要約を生成した記事（summaryTagMatchがある場合）は、元記事の生テキストを非表示にするらび！（AdSense・SEO対策＆UX向上） */}
+        {mainBodyOnly && !summaryTagMatch && (
           <div className="max-w-2xl mx-auto" style={{
             position: 'relative',
             zIndex: 1,
