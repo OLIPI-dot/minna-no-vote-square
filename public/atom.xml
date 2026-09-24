@@ -4,11 +4,23 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-09-24T06:48:04.591Z</updated>
+  <updated>2026-09-24T10:52:19.610Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>新党・民主改革の会 18人が入党へ</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23149"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23149</id>
+    <updated>2026-09-24T10:52:00.329Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;民主改革の会が初総会&quot;,
+  &quot;point1_desc&quot;: &quot;新党である民主改革の会は結党後初となる議員総会を開催しました。中道を離党した立憲民主党出身の議員らの扱いについて協議が行われ、新党としての本格的な活動に向けた動向が注目を集めています。&quot;,
+  &quot;point2_title&quot;: &quot;元...</summary>
+  </entry>
   <entry>
     <title>Meta、第3世代「Ray-Ban Meta」を販売開始 “Aviator”デザインの限定モデルも(ITmedia PC USER)</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23148"/>
@@ -591,18 +603,5 @@
   &quot;point1_desc&quot;: &quot;2027年1月公開の劇場版『虎に翼』のオープニングテーマに、米津玄師の『さよーならまたいつか！』が起用された。&quot;,
   &quot;point2_title&quot;: &quot;完全オリジナル&quot;,
   &quot;point2_desc&quot;: &quot;連続テレビ小説の制作陣が再集結。伊藤沙莉らキャスト続投で、ドラマで描...</summary>
-  </entry>
-  <entry>
-    <title>ラスベガス「Sphere」が巨大モンスターボールになっちゃった 『ポケモンスリープ』の特別映像がすごい</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/22945"/>
-    <id>https://minna-no-vote-square.vercel.app/s/22945</id>
-    <updated>2026-09-16T12:29:45.907Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;point1_title&quot;: &quot;注目ポイント&quot;,
-  &quot;point1_desc&quot;: &quot;超巨大施設「スフィア」が象徴する活況 米国のメタバース市場は1800億円に躍進&quot;,
-  &quot;point2_title&quot;: &quot;ここにも注目&quot;,
-  &quot;point2_desc&quot;: &quot;技術革新はエンターテインメント業界に大きな変化をもたらしています。&quot;,
-  &quot;rabi_comment&quot;:...</summary>
   </entry>
 </feed>
