@@ -4,11 +4,23 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-09-25T06:38:37.761Z</updated>
+  <updated>2026-09-25T13:44:22.712Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>ドコモのahamo、価格改定で「40GB以下3135円」など楽天モバイルに似た“段階制”へ 基本は小幅に値上げ(オタク総研)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23159"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23159</id>
+    <updated>2026-09-25T13:44:10.247Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;ahamoが12月刷新&quot;,
+  &quot;point1_desc&quot;: &quot;NTTドコモはスマホの料金プラン「ahamo」を12月1日にリニューアルすると発表しました。ユーザーの利用状況に合わせた利便性の向上や新オプションの追加などが期待されています。&quot;,
+  &quot;point2_title&quot;: &quot;従来のプ...</summary>
+  </entry>
   <entry>
     <title>蘭首相 ICCへの米「攻撃」を批判</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23158"/>
@@ -592,17 +604,5 @@
   &quot;point1_desc&quot;: &quot;『幻想水滸伝 スターリープ』のSteam版やグローバル版が開発中と発表。Steam版はコントローラー対応やイベント復刻が行われます。&quot;,
   &quot;point2_title&quot;: &quot;後発組も安心のイベント復刻施策&quot;,
   &quot;point2_desc&quot;: &quot;後からプレイを始め...</summary>
-  </entry>
-  <entry>
-    <title>台風 21日昼-夜遅くに関東最接近</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23104"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23104</id>
-    <updated>2026-09-20T08:34:09.052Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;point1_title&quot;: &quot;明日関東へ最接近&quot;,
-  &quot;point1_desc&quot;: &quot;明日21日の昼前から夜遅くにかけて関東地方に最接近する見込みです。交通機関の乱れなどに備え、外出スケジュールの調整や変更を検討しましょう。&quot;,
-  &quot;point2_title&quot;: &quot;災害級大雨に要警戒&quot;,
-  &quot;point2_desc&quot;: &quot;大雨により浸水や冠水などの大きな被害...</summary>
   </entry>
 </feed>
