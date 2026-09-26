@@ -2092,8 +2092,20 @@ function App() {
         });
       }
 
+      // 🏷️ ハッシュタグ：ベース + カテゴリ + 記事タグ（最大3つ）
+      const baseTags = ['みんなのアンケート広場', '投票'];
+      const categoryTag = currentSurvey.category
+        ? [currentSurvey.category.replace(/\s/g, '')]
+        : [];
+      const articleTags = Array.isArray(currentSurvey.tags)
+        ? currentSurvey.tags
+            .filter(t => !t.startsWith('_STAMP:') && !t.startsWith('[L]') && t.length >= 2 && t.length <= 15)
+            .slice(0, 3)
+        : [];
+      const allHashtags = [...baseTags, ...categoryTag, ...articleTags].join(',');
+
       window.open(
-        `https://twitter.com/intent/tweet?text=${encodeURIComponent(xText)}&url=${encodeURIComponent(shareUrl)}&hashtags=${encodeURIComponent('みんなのアンケート広場,投票')}`,
+        `https://twitter.com/intent/tweet?text=${encodeURIComponent(xText)}&url=${encodeURIComponent(shareUrl)}&hashtags=${encodeURIComponent(allHashtags)}`,
         '_blank'
       );
     }
