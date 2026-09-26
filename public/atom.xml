@@ -4,11 +4,47 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-09-25T22:58:55.550Z</updated>
+  <updated>2026-09-26T02:19:01.457Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>マイクロソフトが「Copilot」刷新 ユーザーが不在中も働くAIに(CNET Japan)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23165"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23165</id>
+    <updated>2026-09-26T02:18:58.547Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;Copilotの機能刷新&quot;,
+  &quot;point1_desc&quot;: &quot;米マイクロソフトは生成AIサービスであるMicrosoft Copilotの刷新を発表しました。ユーザーがPCから離れている間でも、自律的にタスクを進行させる新機能などが追加されます。&quot;,
+  &quot;point2_title&quot;: ...</summary>
+  </entry>
+  <entry>
+    <title>伝説のSUV再降臨、新型「パジェロ」展示でショールーム来場者数がオープン以来最高を記録！ 継続人気のもうひとつのカギは……(リアルサウンド)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23164"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23164</id>
+    <updated>2026-09-26T02:18:07.928Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;新型パジェロ発表会&quot;,
+  &quot;point1_desc&quot;: &quot;三菱自動車の旗艦モデルである新型「パジェロ」の発表会が、グランドプリンスホテル新高輪で開催されました。会場には映像や新聞、WEBなど多様なメディアが集結し大きな注目を集めています。&quot;,
+  &quot;point2_title&quot;: &quot;豪華な会...</summary>
+  </entry>
+  <entry>
+    <title>深海7000mに「クジラの墓場」なぜ</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23163"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23163</id>
+    <updated>2026-09-26T02:17:01.831Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;深海の「クジラの墓場」&quot;,
+  &quot;point1_desc&quot;: &quot;オーストラリア沖の海底で広大な「クジラの墓場」が発見され、絶滅種を含む多数のクジラの化石が見つかった。約530万年前の最古の化石も含まれ、深海における貴重な発見として大きな注目を集めている。&quot;,
+  &quot;point2_title&quot;...</summary>
+  </entry>
   <entry>
     <title>「Wi-Fi 8」で何が変わる？ 「Wi-Fi 7」と“速さ勝負”はしない、無線LANの新たな進化(＠IT)</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23162"/>
@@ -569,41 +605,5 @@
   &quot;point1_desc&quot;: &quot;お盆時期の８月１６日未明、富士山の吉田ルート９合目付近では山頂を目指す登山者で大混雑が発生しており、安全面での注意が必要な状況です。&quot;,
   &quot;point2_title&quot;: &quot;山頂を目指す夜間登山の危険&quot;,
   &quot;point2_desc&quot;: &quot;ご来光を見るために午前３時...</summary>
-  </entry>
-  <entry>
-    <title>山中湖アイドルフェス「SPARK 2026」台風迫るも明日は予定通り開催、払い戻しや他日程への振替も可能(音楽ナタリー)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23110"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23110</id>
-    <updated>2026-09-21T00:46:56.905Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;point1_title&quot;: &quot;SPARK2026山中湖生中継&quot;,
-  &quot;point1_desc&quot;: &quot;野外フェス「SPARK 2026 in YAMANAKAKO」のDAY1の模様がニコニコ生放送で生中継決定。ビジュアルも公開され注目が集まります。&quot;,
-  &quot;point2_title&quot;: &quot;ニコ生でDAY1を配信&quot;,
-  &quot;point2_desc&quot;: &quot;現地に行け...</summary>
-  </entry>
-  <entry>
-    <title>「TGSが5日間になったせい」で集まった路地裏同盟―尖ったインディーゲームが集う「路地裏デベロッパーズ・クラウド」のタイトルを総まとめプレイレポ【TGS2026】</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23109"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23109</id>
-    <updated>2026-09-21T00:46:32.823Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;point1_title&quot;: &quot;TGS長期間化への共助出展&quot;,
-  &quot;point1_desc&quot;: &quot;5日間開催となったTGSの負担を軽減するため、開発者コミュニティ「路地裏デベロッパーズ・クラウド」が結成され、有志による合同ブース出展が実現した。&quot;,
-  &quot;point2_title&quot;: &quot;個性豊かなインディー5作品&quot;,
-  &quot;point2_desc&quot;: &quot;会場には空...</summary>
-  </entry>
-  <entry>
-    <title>台風 太平洋側は大雨や暴風に警戒</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23108"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23108</id>
-    <updated>2026-09-21T00:46:09.694Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;point1_title&quot;: &quot;台風25号が関東接近&quot;,
-  &quot;point1_desc&quot;: &quot;台風25号が関東地方に接近しており、大雨による土砂災害や低地の浸水、河川の増水に厳重な警戒が必要です。早めの防災対策を心がけましょう。&quot;,
-  &quot;point2_title&quot;: &quot;離れた場所も強風警戒&quot;,
-  &quot;point2_desc&quot;: &quot;台風の中心から離れている地域であっ...</summary>
   </entry>
 </feed>
