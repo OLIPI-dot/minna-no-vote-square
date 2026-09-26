@@ -2051,23 +2051,37 @@ function App() {
       }
       navigator.clipboard.writeText(copyText).then(() => alert('コピーしました！'));
     } else if (type === 'x') {
-      // 📝 X用のテキストをリッチに！らび頑張る！🐰✨
+      // 📝 X用テキスト：クリックしたくなる煽り型に改善！🐰✨
       let xText = '';
       const myVoted = votedOption ? options.find(o => String(o.id) === String(votedOption)) : null;
+      const hasVotes = currentSurvey.total_votes > 0;
 
       if (myVoted) {
-        // 投票済みの場合は、自分の投票した選択肢をアピール！
-        xText = `【${currentSurvey.title}】で私は【${myVoted.name}】に投票したよ！\n\n`;
+        // 投票済み：自分の意見を表明して共感を集める！
+        const templates = [
+          `「${title}」\n私は「${myVoted.name}」派！\n\nあなたはどっち？👇`,
+          `「${title}」\nについて、私は「${myVoted.name}」だと思う！\n\nみんなの意見も聞いてみたい👇`,
+          `正直言うと...「${myVoted.name}」だと思ってる\n（「${title}」）\n\nあなたは？👇`,
+        ];
+        xText = templates[Math.floor(Math.random() * templates.length)];
+      } else if (hasVotes && isWinner) {
+        // 投票あり：意外な結果で好奇心を煽る！
+        const topPerc = Math.round(topOption.votes / currentSurvey.total_votes * 100);
+        const templates = [
+          `「${title}」\n\n今みんなに聞いたら「${topOption.name}」が${topPerc}%！\nあなたはどう思う？👇`,
+          `「${title}」\n\n${currentSurvey.total_votes}人に聞いたら意外な結果が...👀\nあなたの意見も聞かせて👇`,
+          `【賛否両論】「${title}」\n現在「${topOption.name}」が${topPerc}%のリード\n\nあなたは？👇`,
+        ];
+        xText = templates[Math.floor(Math.random() * templates.length)];
       } else {
-        // 未投票（結果を見るだけ）の場合は現状の順位をシェア
-        xText = `📊「${title}」\n`;
-        if (isWinner) {
-          xText += `🏆 現在1位: ${topOption.name} (${Math.round(topOption.votes / currentSurvey.total_votes * 100)}%)\n`;
-        }
-        xText += `🔥 現在の合計: ${currentSurvey.total_votes}票！\n\n`;
+        // 0票：票数を隠して好奇心で引っ張る！
+        const templates = [
+          `「${title}」\nこれ、正直どう思う？\n\nあなたの本音を教えて👇`,
+          `【賛否両論】「${title}」\n\nみんなの意見を集めてます。あなたはどっち派？👇`,
+          `「${title}」について聞いてみたい！\n\nあなたならどう答える？👇`,
+        ];
+        xText = templates[Math.floor(Math.random() * templates.length)];
       }
-      
-      xText += `みんなはどう思う？🤔 投票してみてね！`;
 
       // 📊 GA4 キーイベント: Xでシェア
       if (window.gtag) {
@@ -2079,7 +2093,7 @@ function App() {
       }
 
       window.open(
-        `https://twitter.com/intent/tweet?text=${encodeURIComponent(xText)}&url=${encodeURIComponent(shareUrl)}&hashtags=${encodeURIComponent('みんなのアンケート広場,投票,アンケート')}`,
+        `https://twitter.com/intent/tweet?text=${encodeURIComponent(xText)}&url=${encodeURIComponent(shareUrl)}&hashtags=${encodeURIComponent('みんなのアンケート広場,投票')}`,
         '_blank'
       );
     }
