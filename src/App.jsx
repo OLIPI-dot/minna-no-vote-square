@@ -2059,26 +2059,26 @@ function App() {
       if (myVoted) {
         // 投票済み：自分の意見を表明して共感を集める！
         const templates = [
-          `「${title}」\n私は「${myVoted.name}」派！🐰\n\nあなたはどっち？👇`,
-          `「${title}」\nについて、私は「${myVoted.name}」だと思う！🥕\n\nみんなの意見も聞いてみたい👇`,
-          `正直言うと...「${myVoted.name}」だと思ってる🐰\n（「${title}」）\n\nあなたは？👇`,
+          `🐰🥕 みんなに聞いてみた！\n\n「${title}」\n\n私は「${myVoted.name}」派！\nあなたはどっち？👇`,
+          `🥕 正直に言うと...\n「${myVoted.name}」だと思う！\n\n（「${title}」）\n\n🐰 あなたの意見も聞かせて！👇`,
+          `🐰💬 みんなはどう思う？\n\n「${title}」\n私は「${myVoted.name}」に1票！\n\n🥕 一緒に考えてみよう👇`,
         ];
         xText = templates[Math.floor(Math.random() * templates.length)];
       } else if (hasVotes && isWinner) {
         // 投票あり：意外な結果で好奇心を煽る！
         const topPerc = Math.round(topOption.votes / currentSurvey.total_votes * 100);
         const templates = [
-          `「${title}」\n\n今みんなに聞いたら「${topOption.name}」が${topPerc}%！🐰\nあなたはどう思う？👇`,
-          `「${title}」\n\n${currentSurvey.total_votes}人に聞いたら意外な結果が...👀🥕\nあなたの意見も聞かせて👇`,
-          `【賛否両論】「${title}」\n現在「${topOption.name}」が${topPerc}%のリード🐰\n\nあなたは？👇`,
+          `🐰🥕 みんなに聞いてみたら...\n\n「${title}」\n\nなんと「${topOption.name}」が${topPerc}%！\n🤔 あなたはどう思う？👇`,
+          `🥕✨ ${currentSurvey.total_votes}人の本音がここに...\n\n「${title}」\n\n🐰 結果が気になる人はこちら👇`,
+          `🐰 賛否両論！\n「${title}」\n\n現在「${topOption.name}」が${topPerc}%リード中🥕\nあなたはどっち派？👇`,
         ];
         xText = templates[Math.floor(Math.random() * templates.length)];
       } else {
         // 0票：票数を隠して好奇心で引っ張る！
         const templates = [
-          `「${title}」\nこれ、正直どう思う？🐰\n\nあなたの本音を教えて👇`,
-          `【賛否両論】「${title}」\n\nみんなの意見を集めてます🥕 あなたはどっち派？👇`,
-          `「${title}」について聞いてみたい！🐰🥕\n\nあなたならどう答える？👇`,
+          `🐰🥕 気になるニュース発見！\n\n「${title}」\n\nこれ、正直どう思う？\nあなたの本音を教えて👇`,
+          `🥕 みんなに聞いてみたい！\n\n「${title}」\n\n🐰 あなたはどっち派？👇`,
+          `🐰💭 話題のアレ、どう思う？\n\n「${title}」\n\n🥕 あなたの意見が聞きたい！👇`,
         ];
         xText = templates[Math.floor(Math.random() * templates.length)];
       }
