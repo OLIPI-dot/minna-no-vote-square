@@ -35,7 +35,9 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
       'phileweb.com',
       'impress.co.jp',
       'dengekionline.com',
-      'denfaminicogamer.jp'
+      'denfaminicogamer.jp',
+      'x.com',        // ← X(Twitter)はiframe禁止！
+      'twitter.com',  // ← 旧URLも同様！
     ];
     return restrictedDomains.some(domain => url.includes(domain));
   };
