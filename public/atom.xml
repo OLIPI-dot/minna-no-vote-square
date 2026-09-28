@@ -4,11 +4,37 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-09-27T21:46:40.480Z</updated>
+  <updated>2026-09-28T02:17:52.069Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>「ポタフェス 2026 大阪」出展ブランドや注目製品が発表。今週末グランキューブ大阪にて開催(PHILE WEB)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23188"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23188</id>
+    <updated>2026-09-28T02:17:38.117Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;話題&quot;,
+  &quot;point1_title&quot;: &quot;大阪でポタフェス開催決定&quot;,
+  &quot;point1_desc&quot;: &quot;イヤホンやヘッドホンの専門店であるe☆イヤホンが、ポータブルオーディオの試聴体験イベント「ポタフェス 2026 大阪」を10月3日に開催することを発表した。&quot;,
+  &quot;point2_title&quot;: &quot;出展ブランド詳細を発表&quot;,
+ ...</summary>
+  </entry>
+  <entry>
+    <title>野球観戦中に心肺停止 救った6人</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23187"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23187</id>
+    <updated>2026-09-28T02:17:11.986Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;甲子園で救護連携&quot;,
+  &quot;point1_desc&quot;: &quot;兵庫県西宮市の甲子園球場にて、プロ野球の観戦中に心肺停止となった男性に対し、現場に居合わせた救急救命士や球場警備員らが連携して迅速な救急処置を行いました。&quot;,
+  &quot;point2_title&quot;: &quot;迅速な処置で復帰&quot;,
+  &quot;poin...</summary>
+  </entry>
   <entry>
     <title>天心は涙止まらず 拓真にまた敗北</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23186"/>
@@ -577,29 +603,5 @@
   &quot;point1_desc&quot;: &quot;ミスタードーナツが上海に1号店を開き中国市場へ7年ぶりに再進出。2029年までに30店舗の展開を目指し、成長市場での定着と拡大を図ります。&quot;,
   &quot;point2_title&quot;: &quot;現地企業連携で勝算高める戦略&quot;,
   &quot;point2_desc&quot;: &quot;過去の撤退原因...</summary>
-  </entry>
-  <entry>
-    <title>漁船と衝突 ボート乗船の男性死亡</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23138"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23138</id>
-    <updated>2026-09-23T07:57:38.170Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;point1_title&quot;: &quot;紋別沖で船同士が衝突&quot;,
-  &quot;point1_desc&quot;: &quot;北海道紋別市の沖合で、プレジャーボートと漁船「第八十八恵徳丸」が衝突する事故が発生しました。ボートの乗員1名が死亡、1名が行方不明となっています。&quot;,
-  &quot;point2_title&quot;: &quot;海保などが懸命の捜索&quot;,
-  &quot;point2_desc&quot;: &quot;衝突事故を受けて、海上...</summary>
-  </entry>
-  <entry>
-    <title>カナダ大手銀6行、カナダドルのトークン化預金を共同検討(NADA NEWS)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23137"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23137</id>
-    <updated>2026-09-22T23:16:25.973Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;point1_title&quot;: &quot;6行でデジタル預金検討&quot;,
-  &quot;point1_desc&quot;: &quot;カナダの大手銀行6行が、カナダドルを背景としたトークン化預金の共同検討を開始。行間の決済を効率化しデジタルマネー基盤の構築を目指します。&quot;,
-  &quot;point2_title&quot;: &quot;資金移動の効率化へ&quot;,
-  &quot;point2_desc&quot;: &quot;トークン化預金により銀行間での資...</summary>
   </entry>
 </feed>
