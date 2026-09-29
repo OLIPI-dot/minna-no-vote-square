@@ -4,11 +4,23 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-09-29T07:44:22.661Z</updated>
+  <updated>2026-09-29T12:52:15.692Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>孫も大注目。スーツケースに変形するシニアカー(ギズモード・ジャパン)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23201"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23201</id>
+    <updated>2026-09-29T12:52:00.223Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;話題&quot;,
+  &quot;point1_title&quot;: &quot;SF風折りたたみ電動モビリティ&quot;,
+  &quot;point1_desc&quot;: &quot;足腰が弱い方向けのシニアカーに、SFメカのように合体や分離ができる次世代型電動モビリティが登場しました。スポーティーなデザインと高い機能性を兼ね備えており、乗る人の移動を楽しくサポートします。&quot;,
+  &quot;point2_tit...</summary>
+  </entry>
   <entry>
     <title>免許証画像が漏れると何が“ヤバい”のか タイムズカーで最大約660万件の個人情報漏えいで考えられる「3つのリスク」(ITmedia Mobile)</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23200"/>
@@ -593,17 +605,5 @@
   &quot;point1_title&quot;: &quot;中古iPhoneが人気な理由&quot;,
   &quot;point1_desc&quot;: &quot;毎年最新機能が追加された新型iPhoneが登場していますが日常使いであれば少し前のモデルでも十分な性能を備えています。コストパフォーマンスを重視するユーザーにとって中古端末は魅力的な選択肢です。&quot;,
   &quot;point2_tit...</summary>
-  </entry>
-  <entry>
-    <title>DAT上位20社、mNAV1倍超はわずか4社＝DWF調査(NADA NEWS)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23151"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23151</id>
-    <updated>2026-09-24T13:32:48.960Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;DWF Labsの調査発表&quot;,
-  &quot;point1_desc&quot;: &quot;ドバイを拠点とする暗号資産マーケットメイカーDWF Labsの投資部門がDATに関する調査を発表しました。暗号資産の保有拡大を目的とする企業の実態が明らかになりました。&quot;,
-  &quot;point2_title&quot;: &quot;mNAV1倍...</summary>
   </entry>
 </feed>
