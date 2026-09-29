@@ -45,6 +45,23 @@
   - **対策2**: Cドライブの `AppData\Local\antigravity-updater` に古い「保留中のアップデート（pending）」が残っていたのが原因。らびが保留中フォルダと一時フォルダ（`Temp\antigravity-stable-user-x64`）の中身をクリーンアップしたよ！これで次回起動時からはスッキリ起動するはずらびっ！
   - **ターミナルの警告**: 画面下の黒い小窓（pwsh）に出ていた「Git: 機能の有効化 : git auth provider」による再起動要求は、エラーではなくただのお知らせなので、「ターミナルの再起動」をクリックすればOKらび。
 
+## 🚨 データベース（Supabase）の重要仕様変更（10月30日以降）
+- **変更内容**: `public` スキーマに新しいテーブルを作成する際、データAPIへのアクセス権が自動付与されなくなるらび！
+- **らびへの必須ルール**: 今後、新しいテーブルを作成したりマイグレーションコードを書いたりする時は、必ず以下の `GRANT` ステートメントをセットで実行すること！
+  - 匿名アクセス（選択のみ）: `GRANT SELECT ON public.your_table TO anon;`
+  - 認証済みユーザー（CRUD全般）: `GRANT SELECT, INSERT, UPDATE, DELETE ON public.your_table TO authenticated;`
+  - サービスロール（CRUD全般）: `GRANT SELECT, INSERT, UPDATE, DELETE ON public.your_table TO service_role;`
+- これを書かないとAPIアクセス拒否エラーになってしまうので、テーブル作成時は絶対に忘れないようにするらびっ！📝✨
+
+## 🚀 GitHub Actions スケジュール管理をGASに切り替え（2026年9月26日）
+- **問題**: GitHub Actions無料枠のcronが最大5時間遅延＆欠航を繰り返していた
+- **解決策**: Google Apps Script（GAS）で `workflow_dispatch` APIを叩く仕組みに切り替え
+- **設定済みGASトリガー**: 6〜7時台、11〜12時台、16〜17時台、21〜22時台（JST/GMT+09:00）
+- **GASプロジェクト名**: `labi-scheduler`（おりぴさんのGoogleアカウントで管理）
+- **GitHub PAT**: `labi-gas-trigger`という名前で発行済み（期限なし・Actionsのみ権限）
+- **ワークフロー変更**: `.github/workflows/labi_daily.yml` からcronスケジュールを削除し、`workflow_dispatch`のみに変更済み
+- **効果**: ほぼ時間ピッタリに1日4回、高品質記事を自動投稿できるようになったらびっ！
+
 ## 🛰️ 進行中のコンテキスト
 - デプロイ済み。本番サイトでもSEO魔法が発動中！
 - **デイリーアンケート**: おりぴさんの依頼により、現在は自動実行を一時停止（おやすみ）させているらび。🛌
