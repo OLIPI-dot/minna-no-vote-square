@@ -4,11 +4,47 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-09-30T02:16:57.700Z</updated>
+  <updated>2026-09-30T12:52:01.579Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>麻生氏 土地3カ所の資産報告せず</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23207"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23207</id>
+    <updated>2026-09-30T12:51:58.665Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;麻生氏に未記載不動産発覚&quot;,
+  &quot;point1_desc&quot;: &quot;自民党副総裁の麻生太郎衆院議員が、国会に提出している資産等報告書に記載されていない不動産を所有していることが文春の取材で判明した。法律違反に該当する可能性があると指摘されている。&quot;,
+  &quot;point2_title&quot;: &quot;九州...</summary>
+  </entry>
+  <entry>
+    <title>明治大 アラスカ先住民の遺骨返還</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23206"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23206</id>
+    <updated>2026-09-30T12:51:22.949Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;明治大が先住民遺骨を返還&quot;,
+  &quot;point1_desc&quot;: &quot;明治大学は、1960年代に米アラスカ州から持ち去り学内で保管していた先住民の遺骨を、2023年と2024年8月にそれぞれの子孫側へ返還したと発表した。研究目的で収集された歴史的経緯がある。&quot;,
+  &quot;point2_title&quot;...</summary>
+  </entry>
+  <entry>
+    <title>台風 30日夜から伊豆諸島に接近へ</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23205"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23205</id>
+    <updated>2026-09-30T12:50:46.623Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;台風26号が伊豆諸島接近&quot;,
+  &quot;point1_desc&quot;: &quot;台風26号は10月1日明け方にかけて伊豆諸島に最も接近する見込みです。今夜から明日明け方にかけて大雨や暴風への警戒が必要となりますので、最新の気象情報に注意してください。&quot;,
+  &quot;point2_title&quot;: &quot;関東への直接...</summary>
+  </entry>
   <entry>
     <title>ロッテ 中村奨吾の退団を発表</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23204"/>
@@ -568,42 +604,5 @@
   &quot;point1_title&quot;: &quot;オランダ首相が米制裁を批判&quot;,
   &quot;point1_desc&quot;: &quot;オランダのイェッテン首相は国連総会の一般討論演説において、国際刑事裁判所（ICC）に対する米国による制裁や圧力を「攻撃」と呼び、これを強く批判する姿勢を表明した。&quot;,
   &quot;point2_title&quot;: &quot;国際刑事裁判所の独...</summary>
-  </entry>
-  <entry>
-    <title>米大統領 第2次大戦絡め異例発言</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23157"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23157</id>
-    <updated>2026-09-25T06:38:11.508Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;米中首脳が会談&quot;,
-  &quot;point1_desc&quot;: &quot;トランプ米大統領はホワイトハウスでの歓迎式典で中国の習近平国家主席を迎えました。両首脳は直接会談を行い、これまでの歴史認識や米中両国の関係性について言及を行いました。&quot;,
-  &quot;point2_title&quot;: &quot;過去の歴史に言及&quot;,
-  ...</summary>
-  </entry>
-  <entry>
-    <title>印旛沼の決壊堤防 緊急復旧に着手</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23156"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23156</id>
-    <updated>2026-09-25T06:37:35.115Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;台風による冠水被害&quot;,
-  &quot;point1_desc&quot;: &quot;台風25号の影響により、千葉県の印旛沼周辺で広範囲にわたる冠水被害が発生しています。堤防が決壊した現場の周辺では、水が引き切っておらず現在も深刻な状況が継続しています。&quot;,
-  &quot;point2_title&quot;: &quot;田園地帯の広域浸水&quot;...</summary>
-  </entry>
-  <entry>
-    <title>ファミマ「バイト改革」なぜ今</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23155"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23155</id>
-    <updated>2026-09-24T23:53:51.796Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;話題&quot;,
-  &quot;point1_title&quot;: &quot;ファミマの新ユニフォーム&quot;,
-  &quot;point1_desc&quot;: &quot;ファミリーマートが新しい制服を導入した。業界初となるTシャツスタイルを採用し、店舗スタッフからの要望だった「働きやすさ」や「カジュアルな着こなし」を実現するデザインとなっている。&quot;,
-  &quot;point2_title&quot;: &quot;個性を尊...</summary>
   </entry>
 </feed>
