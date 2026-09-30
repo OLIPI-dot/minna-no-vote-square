@@ -200,7 +200,7 @@ if (GEMINI_API_KEY) {
  * 🤖 Gemini APIで要約を生成（JSON形式・最大3回リトライ）
  */
 async function generateAISummary(articleContent) {
-    if (!geminiModel || !articleContent || articleContent.length < 150) return null;
+    if (!geminiModel || !articleContent || articleContent.length < 80) return null;
     if (global.isQuotaExceeded) return null;
 
     let lastError = null;
@@ -369,6 +369,9 @@ async function fetchRichData(url, newsTitle = '') {
             if (ogDesc && ogDesc.length > (fullText?.length || 0)) {
                 fullText = ogDesc + (fullText ? '\n\n' + fullText : '');
                 log(`💡 og:description のテキストで本文を補完しました。補完後の長さ: ${fullText.length}文字`);
+                if (!richDescription || richDescription.length < 50) {
+                    richDescription = fullText;
+                }
             }
         } else if (!fullText) {
             fullText = richDescription || ogDesc || '';
@@ -381,7 +384,7 @@ async function fetchRichData(url, newsTitle = '') {
             return { description: null, image: null, summaryObj: null };
         }
 
-        if (geminiModel && fullText.length >= 150) {
+        if (geminiModel && fullText.length >= 80) {
             summaryObj = await generateAISummary(fullText);
             
             // 🤖 有料枠なので待機時間を短縮（少しだけサーバーに優しく）
