@@ -4,11 +4,47 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-09-29T12:52:15.692Z</updated>
+  <updated>2026-09-30T02:16:57.700Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>ロッテ 中村奨吾の退団を発表</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23204"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23204</id>
+    <updated>2026-09-30T02:16:43.771Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;中村奨吾がロッテ退団&quot;,
+  &quot;point1_desc&quot;: &quot;ロッテは中村奨吾内野手に対し、来季の契約を結ばない旨を通知したと発表した。球団との話し合いの末に退団が決定したが、中村本人は今後も現役続行を希望しており新たな所属先を探す意向だ。&quot;,
+  &quot;point2_title&quot;: &quot;現役続行...</summary>
+  </entry>
+  <entry>
+    <title>Ryzen 3 5400Uや16GBメモリ搭載の小型PC「GMKtec NucBox M5S」が登場(AKIBA PC Hotline!)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23203"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23203</id>
+    <updated>2026-09-29T22:25:58.646Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;新製品ミニPC登場&quot;,
+  &quot;point1_desc&quot;: &quot;リンクスインターナショナルは、AMD Ryzen 3 5400Uを搭載したGMKtec製の小型ミニPC「GMKtec NucBox M5S」の取り扱いを開始しました。&quot;,
+  &quot;point2_title&quot;: &quot;充実の基本スペック&quot;,...</summary>
+  </entry>
+  <entry>
+    <title>高熱で寝こんでいる長女のうわごとが想定外すぎる⇒「急に出てくる前世！」「何かが憑依した」と話題に（体験マンガ）(BuzzFeed Japan)</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23202"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23202</id>
+    <updated>2026-09-29T22:25:24.980Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;話題&quot;,
+  &quot;point1_title&quot;: &quot;発熱した長女の謎のうわごと&quot;,
+  &quot;point1_desc&quot;: &quot;高熱で寝込んでしまった長女が、突然おかしい一人称でうわごとを呟く様子を描いた体験談漫画がXで話題となっています。思わぬワードチョイスが大きな反響を呼びました。&quot;,
+  &quot;point2_title&quot;: &quot;SNSでの反響と前世説&quot;,...</summary>
+  </entry>
   <entry>
     <title>孫も大注目。スーツケースに変形するシニアカー(ギズモード・ジャパン)</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23201"/>
@@ -569,41 +605,5 @@
   &quot;point1_title&quot;: &quot;ファミマの新ユニフォーム&quot;,
   &quot;point1_desc&quot;: &quot;ファミリーマートが新しい制服を導入した。業界初となるTシャツスタイルを採用し、店舗スタッフからの要望だった「働きやすさ」や「カジュアルな着こなし」を実現するデザインとなっている。&quot;,
   &quot;point2_title&quot;: &quot;個性を尊...</summary>
-  </entry>
-  <entry>
-    <title>米住宅ローン金利7%超 30年固定</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23154"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23154</id>
-    <updated>2026-09-24T23:53:28.004Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;米住宅ローン金利の上昇&quot;,
-  &quot;point1_desc&quot;: &quot;米国で住宅ローン金利の上昇が続いており、市場に影響を与えている。主要な指標となる30年固定金利の上昇傾向が止まらず、住宅購入を検討する層にとって大きな負担となっている。&quot;,
-  &quot;point2_title&quot;: &quot;30年固定金利が...</summary>
-  </entry>
-  <entry>
-    <title>台風26号 強い勢力で沖縄に接近へ</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23153"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23153</id>
-    <updated>2026-09-24T23:53:02.554Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;台風26号が沖縄へ接近&quot;,
-  &quot;point1_desc&quot;: &quot;台風26号は27日に強い勢力で沖縄に接近する見込みです。その後は動きが遅くなるため、沖縄や奄美地方では暴風や警報級の高波、高潮、大雨などの影響が長期間にわたって続くおそれがあります。&quot;,
-  &quot;point2_title&quot;: &quot;本...</summary>
-  </entry>
-  <entry>
-    <title>2026年に買わない方がいい「中古iPhone機種」はどれ？ いま購入すると“損する”iPhoneを専門家が解説(All About)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23152"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23152</id>
-    <updated>2026-09-24T13:33:25.647Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;話題&quot;,
-  &quot;point1_title&quot;: &quot;中古iPhoneが人気な理由&quot;,
-  &quot;point1_desc&quot;: &quot;毎年最新機能が追加された新型iPhoneが登場していますが日常使いであれば少し前のモデルでも十分な性能を備えています。コストパフォーマンスを重視するユーザーにとって中古端末は魅力的な選択肢です。&quot;,
-  &quot;point2_tit...</summary>
   </entry>
 </feed>
