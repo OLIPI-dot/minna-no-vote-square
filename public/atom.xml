@@ -4,11 +4,47 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-01T02:17:39.577Z</updated>
+  <updated>2026-10-01T07:45:41.644Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>アクアラインで多重事故 2人死亡</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23216"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23216</id>
+    <updated>2026-10-01T07:45:38.535Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;アクアラインで事故&quot;,
+  &quot;point1_desc&quot;: &quot;1日午前6時55分ごろ、東京湾アクアラインの上り線にてトラックやトレーラーなど計4台が絡む玉突き事故が発生しました。警察へは車両複数台による事故として110番通報が寄せられました。&quot;,
+  &quot;point2_title&quot;: &quot;5人搬送...</summary>
+  </entry>
+  <entry>
+    <title>食料品の消費減税法案 概要判明</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23215"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23215</id>
+    <updated>2026-10-01T07:45:10.024Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;食料品の消費税減税案&quot;,
+  &quot;point1_desc&quot;: &quot;政府は臨時国会に食料品に対する消費税減税法案を提出する方針を固めました。来年4月から2年間の期間限定で、食料品の消費税率を1％に引き下げる計画が進められており、注目が集まっています。&quot;,
+  &quot;point2_title&quot;: &quot;所得...</summary>
+  </entry>
+  <entry>
+    <title>中継 ニデック新社長らが記者会見</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23214"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23214</id>
+    <updated>2026-10-01T07:44:39.506Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;ニデック不正会計問題&quot;,
+  &quot;point1_desc&quot;: &quot;モーター大手のニデックが不正会計問題を受け、京都市の本社で記者会見を開催する。新社長の戒田理夫氏が公の場に初めて登場し、不祥事からの信頼回復に向けた具体的な再建策について言及する見通しだ。&quot;,
+  &quot;point2_title&quot;: ...</summary>
+  </entry>
   <entry>
     <title>テルアビブ便 乗客らが襲撃者制圧</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23213"/>
@@ -567,41 +603,5 @@
   &quot;point1_title&quot;: &quot;新潟市秋葉区で石油が流出&quot;,
   &quot;point1_desc&quot;: &quot;かつて日本一の産油量を誇っていた新潟市秋葉区で、すでに廃止された油田の井戸から石油の流出が続いていることが判明しました。地域住民や環境への影響についての懸念が高まっています。&quot;,
   &quot;point2_title&quot;: &quot;原因は地...</summary>
-  </entry>
-  <entry>
-    <title>ロンドン地盤沈下 識者が悪化警告</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23166"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23166</id>
-    <updated>2026-09-26T07:44:05.533Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;ロンドンの猛暑と住宅被害&quot;,
-  &quot;point1_desc&quot;: &quot;この夏、ロンドンを襲った猛暑の影響により、住宅の壁にジグザグ状のひび割れが発生したり、ドアや窓が歪んで開閉しづらくなったりする被害が相次いで報告されている。&quot;,
-  &quot;point2_title&quot;: &quot;粘土質地盤の収縮が原因&quot;,...</summary>
-  </entry>
-  <entry>
-    <title>マイクロソフトが「Copilot」刷新 ユーザーが不在中も働くAIに(CNET Japan)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23165"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23165</id>
-    <updated>2026-09-26T02:18:58.547Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;Copilotの機能刷新&quot;,
-  &quot;point1_desc&quot;: &quot;米マイクロソフトは生成AIサービスであるMicrosoft Copilotの刷新を発表しました。ユーザーがPCから離れている間でも、自律的にタスクを進行させる新機能などが追加されます。&quot;,
-  &quot;point2_title&quot;: ...</summary>
-  </entry>
-  <entry>
-    <title>伝説のSUV再降臨、新型「パジェロ」展示でショールーム来場者数がオープン以来最高を記録！ 継続人気のもうひとつのカギは……(リアルサウンド)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23164"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23164</id>
-    <updated>2026-09-26T02:18:07.928Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;新型パジェロ発表会&quot;,
-  &quot;point1_desc&quot;: &quot;三菱自動車の旗艦モデルである新型「パジェロ」の発表会が、グランドプリンスホテル新高輪で開催されました。会場には映像や新聞、WEBなど多様なメディアが集結し大きな注目を集めています。&quot;,
-  &quot;point2_title&quot;: &quot;豪華な会...</summary>
   </entry>
 </feed>
