@@ -4,11 +4,47 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-01T07:45:41.644Z</updated>
+  <updated>2026-10-01T12:52:09.090Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>無許可でモスク建設 市が撤去命令</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23219"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23219</id>
+    <updated>2026-10-01T12:52:05.621Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;川越市でモスクが無許可建設&quot;,
+  &quot;point1_desc&quot;: &quot;埼玉県川越市において、建物の新設が原則認められていない土地に、イスラム教の礼拝堂であるモスクが無許可で建てられたことが発覚し、地域で大きな問題となっています。&quot;,
+  &quot;point2_title&quot;: &quot;市が撤去要請も従わず&quot;...</summary>
+  </entry>
+  <entry>
+    <title>統一地方選 4月11・25日投票へ</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23218"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23218</id>
+    <updated>2026-10-01T12:51:41.398Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;来春の統一地方選期日が判明&quot;,
+  &quot;point1_desc&quot;: &quot;政府は来春に行われる統一地方選挙の日程について方針を固めました。都道府県知事や政令指定都市の首長および議員の選挙は4月11日、その他の一般市区町村の選挙は4月25日に行われる見通しです。&quot;,
+  &quot;point2_title&quot;...</summary>
+  </entry>
+  <entry>
+    <title>青森秋田岩手の3銀行 統合協議へ</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23217"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23217</id>
+    <updated>2026-10-01T12:50:49.386Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;東北3行が経営統合協議へ&quot;,
+  &quot;point1_desc&quot;: &quot;青森みちのく銀行、岩手銀行、秋田銀行の3行が経営統合に向けた協議を開始することが判明した。広域での規模拡大を図り、地域における競争力や経営基盤を大幅に強化する狙いがある。&quot;,
+  &quot;point2_title&quot;: &quot;総資産13兆...</summary>
+  </entry>
   <entry>
     <title>アクアラインで多重事故 2人死亡</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23216"/>
@@ -567,41 +603,5 @@
   &quot;point1_title&quot;: &quot;産総研出張中のアンモニア事故&quot;,
   &quot;point1_desc&quot;: &quot;産業技術総合研究所の研究補助だった男性が、2021年に福島再生可能エネルギー研究所での出張実験中に高濃度のアンモニアに曝露する事態が発生しました。人体に有害な物質への接触事故となっています。&quot;,
   &quot;point2_tit...</summary>
-  </entry>
-  <entry>
-    <title>「超エルニーニョ」経済的損失は</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23169"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23169</id>
-    <updated>2026-09-26T12:50:43.436Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;史上最大級のエルニーニョ&quot;,
-  &quot;point1_desc&quot;: &quot;現在、世界各地で観測史上最大規模とされるエルニーニョ現象が猛威を振るっています。地球規模での海洋水温の上昇に伴い、これまで以上に深刻で激しい異常気象が広範囲に発生するリスクが高まっています。&quot;,
-  &quot;point2_title...</summary>
-  </entry>
-  <entry>
-    <title>米SEC「クリプトママ」パース委員、10月2日退任へ(NADA NEWS)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23168"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23168</id>
-    <updated>2026-09-26T07:45:49.076Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;パース委員が退任発表&quot;,
-  &quot;point1_desc&quot;: &quot;米SECのヘスター・パース委員が10月2日付で退任することを公表した。9月21日付の大統領宛て辞表も公開され、暗号資産業界を支援してきた著名な委員の退任発表に大きな注目が集まっている。&quot;,
-  &quot;point2_title&quot;: &quot;ク...</summary>
-  </entry>
-  <entry>
-    <title>新潟の廃止油田 止まらぬ石油流出</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23167"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23167</id>
-    <updated>2026-09-26T07:44:31.254Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;新潟市秋葉区で石油が流出&quot;,
-  &quot;point1_desc&quot;: &quot;かつて日本一の産油量を誇っていた新潟市秋葉区で、すでに廃止された油田の井戸から石油の流出が続いていることが判明しました。地域住民や環境への影響についての懸念が高まっています。&quot;,
-  &quot;point2_title&quot;: &quot;原因は地...</summary>
   </entry>
 </feed>
