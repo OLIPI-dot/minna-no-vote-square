@@ -4,9 +4,9 @@ const WatermarkLogo = ({ onClick }) => {
   const [sparkles, setSparkles] = useState([]);
 
   const handleClick = (e) => {
-    // Generate 6-8 random sparkles/carrots
+    // Generate 6-8 random sparkles/carrots/hearts
     const count = Math.floor(Math.random() * 3) + 6;
-    const emojis = ['✨', '🥕', '✨', '🐰', '⭐']; // ✨ appears more often
+    const emojis = ['✨', '🥕', '✨', '🐰', '⭐', '💖', '💗']; // ✨ appears more often
     
     const newSparkles = Array.from({ length: count }).map((_, i) => ({
       id: Date.now() + i + Math.random(),
