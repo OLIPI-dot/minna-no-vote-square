@@ -2595,8 +2595,8 @@ function App() {
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
       >
-        <span className="watermark-logo-icon">🐰🥕</span>
         <span className="watermark-logo-text">みんアケ</span>
+        <span className="watermark-logo-icon">🐰🥕</span>
       </div>
 
     </div>
