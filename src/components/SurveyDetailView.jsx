@@ -2,6 +2,7 @@ import React from 'react';
 import AnimatedCounter from './AnimatedCounter';
 import SurveyDescription from './SurveyDescription';
 import CategoryEyecatch from './CategoryEyecatch';
+import RecommendedSection from './RecommendedSection';
 
 const VideoPlayer = ({ entry, idx }) => {
   const [isPlaying, setIsPlaying] = React.useState(false);
@@ -1028,6 +1029,13 @@ const SurveyDetailView = ({
           ← アンケート一覧に戻る
         </button>
       </div>
+
+      {/* 🐰 回遊率アップの要！次のおすすめ記事エリア */}
+      {relatedSurveys && relatedSurveys.length > 0 && (
+        <div style={{ marginTop: '60px' }}>
+          <RecommendedSection surveys={relatedSurveys} navigateTo={navigateTo} />
+        </div>
+      )}
 
     </div>
   );
