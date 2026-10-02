@@ -805,16 +805,16 @@ function App() {
     // 🔍 SEOメタタグとタイトルの更新（undefined対策・堅牢化！）
     const SITE_BASE_URL = 'https://minna-no-vote-square.com';
     const pageTitle = (currentSurvey && currentSurvey.title)
-      ? `${currentSurvey.title} - みんなのアンケート広場`
+      ? `${currentSurvey.title} - みんアケ🐰🥕 | みんあけ | みんなのアンケート広場`
       : (view === 'details'
-          ? 'アンケート詳細 - みんなのアンケート広場'
+          ? 'アンケート詳細 - みんアケ🐰🥕 | みんあけ | みんなのアンケート広場'
           : (view === 'list'
-              ? 'みんなのアンケート広場｜匿名で気軽に投票・本音が集まるアンケートコミュニティ'
-              : 'アンケート作成 - みんなのアンケート広場'));
+              ? 'みんアケ🐰🥕 | みんあけ | みんなのアンケート広場 | 匿名で気軽に投票・本音が集まるアンケートコミュニティ'
+              : 'アンケート作成 - みんアケ🐰🥕 | みんあけ | みんなのアンケート広場'));
 
     const metaKeywords = currentSurvey
-      ? `${currentSurvey.category || 'アンケート'}, ${Array.isArray(currentSurvey.tags) ? currentSurvey.tags.join(', ') : (currentSurvey.tags || '')}, アンケート, 投票, みんなのアンケート広場`
-      : 'アンケート, 投票, 匿名, 掲示板, コミュニティ, 意見共有, トレンド, みんなのアンケート広場, らび';
+      ? `${currentSurvey.category || 'アンケート'}, ${Array.isArray(currentSurvey.tags) ? currentSurvey.tags.join(', ') : (currentSurvey.tags || '')}, みんアケ, みんあけ, アンケート, 投票, みんなのアンケート広場`
+      : 'みんアケ, みんあけ, アンケート, 投票, 匿名, 掲示板, コミュニティ, 意見共有, トレンド, みんなのアンケート広場, らび';
 
     const metaDescription = (currentSurvey && currentSurvey.title)
       ? `【${currentSurvey.category || '注目'}】${currentSurvey.title}のアンケート実施中！みんなはどう思ってる？匿名で1タップ投票して、リアルタイムの結果やコメントをチェックしよう！🐰🥕`
