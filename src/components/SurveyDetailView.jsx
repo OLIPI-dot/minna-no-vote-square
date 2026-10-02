@@ -1034,7 +1034,7 @@ const SurveyDetailView = ({
       {/* 🐰 回遊率アップの要！次のおすすめ記事エリア */}
       {surveys && surveys.length > 0 && (
         <div style={{ marginTop: '60px' }}>
-          <RecommendedSection surveys={surveys} navigateTo={navigateTo} />
+          <RecommendedSection surveys={surveys.filter(s => s.id !== currentSurvey.id)} navigateTo={navigateTo} />
         </div>
       )}
 
