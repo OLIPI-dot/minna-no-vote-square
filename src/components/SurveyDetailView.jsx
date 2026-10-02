@@ -998,7 +998,14 @@ const SurveyDetailView = ({
         </div>
       )}
 
-            <div style={{ textAlign: 'center', marginTop: '50px' }}>
+      {/* 🐰 回遊率アップの要！次のおすすめ記事エリア */}
+      {surveys && surveys.length > 0 && (
+        <div style={{ marginTop: '50px' }}>
+          <RecommendedSection surveys={surveys.filter(s => s.id !== currentSurvey.id)} navigateTo={navigateTo} />
+        </div>
+      )}
+
+      <div style={{ textAlign: 'center', marginTop: '50px' }}>
         <button
           className="back-to-list-link-btn"
           onClick={() => navigateTo('list')}
@@ -1030,13 +1037,6 @@ const SurveyDetailView = ({
           ← アンケート一覧に戻る
         </button>
       </div>
-
-      {/* 🐰 回遊率アップの要！次のおすすめ記事エリア */}
-      {surveys && surveys.length > 0 && (
-        <div style={{ marginTop: '60px' }}>
-          <RecommendedSection surveys={surveys.filter(s => s.id !== currentSurvey.id)} navigateTo={navigateTo} />
-        </div>
-      )}
 
     </div>
   );
