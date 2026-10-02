@@ -4,11 +4,47 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-02T12:51:47.262Z</updated>
+  <updated>2026-10-02T21:46:24.173Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>情報漏えい相次ぐ「異様」と識者</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23234"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23234</id>
+    <updated>2026-10-02T21:46:22.268Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;不正アクセスの発生&quot;,
+  &quot;point1_desc&quot;: &quot;カーシェアリング大手のタイムズカーにおいて、外部からの不正アクセスが確認された。この影響により、最大で約660万件に及ぶ大規模な会員情報などが外部へ漏洩した可能性があることが判明した。&quot;,
+  &quot;point2_title&quot;: &quot;対象...</summary>
+  </entry>
+  <entry>
+    <title>第一ライフG 従業員情報漏えいか</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23233"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23233</id>
+    <updated>2026-10-02T21:45:58.336Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;人事システムに不正アクセス&quot;,
+  &quot;point1_desc&quot;: &quot;第一ライフグループと第一生命保険の2社が利用する人事システムが不正アクセスを受けた。従業員や退職者の重要な情報が外部に漏えいした可能性が浮上しており、企業側の調査が進められている。&quot;,
+  &quot;point2_title&quot;: &quot;...</summary>
+  </entry>
+  <entry>
+    <title>G7 石油備蓄1億バレル協調放出へ</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23232"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23232</id>
+    <updated>2026-10-02T21:45:34.573Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;石油備蓄１億バレル協調放出&quot;,
+  &quot;point1_desc&quot;: &quot;G7は首脳共同声明において、世界的なエネルギー市場の安定化を目指す方針を示した。国際エネルギー機関（IEA）を介して、ディーゼル燃料を含む計1億バレルの石油備蓄を協調して放出することを決定した。&quot;,
+  &quot;point2_ti...</summary>
+  </entry>
   <entry>
     <title>もう辞めたい「フキハラ」の実態</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23231"/>
@@ -576,41 +612,5 @@
   &quot;point1_title&quot;: &quot;34歳で襲った脳幹脳梗塞&quot;,
   &quot;point1_desc&quot;: &quot;34歳だった商社マンの湯浅巧さんは、致死率約6割とされる脳幹の脳梗塞を発症しました。生死の境をさまよい重い後遺症が残ったものの、命の危機を乗り越えて懸命な闘病生活をスタートさせました。&quot;,
   &quot;point2_title&quot;: ...</summary>
-  </entry>
-  <entry>
-    <title>台風接近 沖縄奄美は高波強風続く</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23184"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23184</id>
-    <updated>2026-09-27T21:45:35.575Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;沖縄と奄美で強風と高波&quot;,
-  &quot;point1_desc&quot;: &quot;台風26号の接近に伴い沖縄県や奄美地方では波が高い状態が続いており強風にも警戒が必要です。今後の気象情報に留意し海岸付近など危険な場所には近付かないよう注意が求められています。&quot;,
-  &quot;point2_title&quot;: &quot;大東島地...</summary>
-  </entry>
-  <entry>
-    <title>雪崩事故巡り スキーヤー書類送検</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23183"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23183</id>
-    <updated>2026-09-27T12:51:43.707Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;北穂高岳で起きた雪崩事故&quot;,
-  &quot;point1_desc&quot;: &quot;北アルプスの北穂高岳にて昨年５月、登山中の男性が雪崩に巻き込まれ命を落とす事故が発生した。調査の結果、この雪崩は付近で山スキーを楽しんでいたスキーヤーによって誘発された可能性が高いとみられている。&quot;,
-  &quot;point2_ti...</summary>
-  </entry>
-  <entry>
-    <title>ドクターヘリ 運用見直しに懸念も</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23182"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23182</id>
-    <updated>2026-09-27T12:51:04.336Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;整備士不足による休止&quot;,
-  &quot;point1_desc&quot;: &quot;救急患者を搬送するドクターヘリにおいて、搭乗する整備士の不足が深刻化している。整備士が確保できずに運航休止となる事態が相次いでおり、地域医療への重大な影響が懸念されている。&quot;,
-  &quot;point2_title&quot;: &quot;2パイロット制...</summary>
   </entry>
 </feed>
