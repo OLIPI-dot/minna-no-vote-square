@@ -2469,6 +2469,7 @@ function App() {
                   AdSenseBox={AdSenseBox}
                   CATEGORY_ICON_STYLE={CATEGORY_ICON_STYLE}
                   supabase={supabase}
+                  surveys={surveys}
                   setSurveys={setSurveys}
                   relatedSurveys={relatedSurveys}
                   baseCategories={BASE_CATEGORIES}
