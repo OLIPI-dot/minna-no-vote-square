@@ -174,18 +174,7 @@ function App() {
     localStorage.setItem('minna_no_vote_watched', JSON.stringify(watchedIds));
   }, [watchedIds]);
 
-  // 💡 SEO対策: 動的カノニカルURLの設定（SPAの重複・カニバリゼーション回避）
-  useEffect(() => {
-    let canonical = document.querySelector("link[rel='canonical']");
-    if (!canonical) {
-      canonical = document.createElement('link');
-      canonical.rel = 'canonical';
-      document.head.appendChild(canonical);
-    }
-    // URLのパス部分だけを正規URLとして設定（クエリパラメータやハッシュは除外）
-    canonical.href = window.location.origin + window.location.pathname;
-  }, [view, currentSurvey]); // 画面切り替えや詳細ページへの遷移のたびに更新
-
+  // 💡 以前のカノニカルURLの設定ロジックは下の統合された箇所へ移動しました。
   // 🔗 タブとページネーションを URL に同期する魔法
   useEffect(() => {
     if (view === 'list') {
@@ -831,7 +820,7 @@ function App() {
       : 'みんなのアンケート広場は、誰でもかんたんに匿名でアンケートを作成・投票できる場所です。日常の疑問や本音を共有して、みんなの意見を楽しく集約しましょう！';
 
     const currentUrl = currentSurvey
-      ? `${SITE_BASE_URL}/?id=${currentSurvey.id}`
+      ? `${SITE_BASE_URL}/survey/${currentSurvey.id}`
       : (view === 'list' ? `${SITE_BASE_URL}/` : `${SITE_BASE_URL}/create`);
 
     // 動画サムネイルがあればOGP画像にする魔法 📸
