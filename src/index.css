@@ -31,24 +31,26 @@ html, body {
   bottom: 24px;
   left: 24px;
   z-index: 50;
-  opacity: 0.25;
+  opacity: 0.4; /* 少し色がついたので透明度を少し上げる */
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   font-family: "M PLUS Rounded 1c", "Nunito", sans-serif;
-  background: rgba(255, 255, 255, 0.4);
-  padding: 8px 16px;
+  background: rgba(253, 244, 255, 0.85); /* ほんのりピンク紫 */
+  border: 1px solid rgba(236, 72, 153, 0.3); /* ピンクの可愛いフチ */
+  padding: 10px 20px;
   border-radius: 100px;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 4px 15px rgba(236, 72, 153, 0.15); /* ピンクの影 */
 }
 
 .watermark-logo:hover {
-  opacity: 0.85;
-  transform: scale(1.05);
+  opacity: 0.95;
+  transform: scale(1.05) translateY(-2px);
+  box-shadow: 0 8px 25px rgba(236, 72, 153, 0.3);
 }
 
 .watermark-logo-icon {
@@ -58,8 +60,12 @@ html, body {
 
 .watermark-logo-text {
   font-weight: 900;
-  color: #1e293b;
-  font-size: 1.1rem;
+  /* サイトのコンセプトカラーのグラデーション */
+  background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 1.15rem;
   letter-spacing: 0.5px;
 }
 
@@ -68,9 +74,9 @@ html, body {
   .watermark-logo {
     bottom: 12px;
     left: 12px;
-    padding: 6px 12px;
-    gap: 4px;
-    opacity: 0.15; /* 画面の邪魔にならないようにさらに薄く */
+    padding: 8px 14px;
+    gap: 6px;
+    opacity: 0.25; /* 画面の邪魔にならないように薄く */
   }
   .watermark-logo-icon {
     font-size: 1.1rem;
