@@ -85,3 +85,19 @@ html, body {
     font-size: 0.85rem;
   }
 }
+
+/* キラキラアニメーション */
+@keyframes sparkleAnim {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1) rotate(calc(var(--rot) + 90deg));
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--tx) * 1.5), calc(-50% + var(--ty) * 1.5)) scale(0) rotate(calc(var(--rot) + 180deg));
+  }
+}

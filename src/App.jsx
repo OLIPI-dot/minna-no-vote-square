@@ -10,6 +10,7 @@ const AdSenseBox = lazy(() => import('./components/AdSenseBox'));
 const CountdownTimer = lazy(() => import('./components/CountdownTimer'));
 const FooterModals = lazy(() => import('./components/FooterModals'));
 const AnimatedCounter = lazy(() => import('./components/AnimatedCounter'));
+import WatermarkLogo from './components/WatermarkLogo';
 import {
   ADMIN_EMAILS,
   NG_WORDS,
@@ -2587,17 +2588,13 @@ function App() {
         />
       </Suspense>
 
-      {/* 🐰 左下追従の「みんアケ」透かしロゴ (クリックでトップへ) */}
-      <div 
-        className="watermark-logo"
+      {/* 🐰 左下追従の「みんアケ」透かしロゴ (クリックでトップへ + キラキラ) */}
+      <WatermarkLogo 
         onClick={() => {
           navigateTo('list');
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
-      >
-        <span className="watermark-logo-text">みんアケ</span>
-        <span className="watermark-logo-icon">🐰🥕</span>
-      </div>
+      />
 
     </div>
   );
