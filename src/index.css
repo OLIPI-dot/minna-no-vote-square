@@ -24,3 +24,58 @@ html, body {
     line-height: 1.7 !important;
   }
 }
+
+/* 🐰 左下追従の「みんアケ」透かしロゴ */
+.watermark-logo {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  z-index: 50;
+  opacity: 0.25;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: "M PLUS Rounded 1c", "Nunito", sans-serif;
+  background: rgba(255, 255, 255, 0.4);
+  padding: 8px 16px;
+  border-radius: 100px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.watermark-logo:hover {
+  opacity: 0.85;
+  transform: scale(1.05);
+}
+
+.watermark-logo-icon {
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.watermark-logo-text {
+  font-weight: 900;
+  color: #1e293b;
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
+}
+
+/* スマホ用の調整 */
+@media (max-width: 768px) {
+  .watermark-logo {
+    bottom: 12px;
+    left: 12px;
+    padding: 6px 12px;
+    gap: 4px;
+    opacity: 0.15; /* 画面の邪魔にならないようにさらに薄く */
+  }
+  .watermark-logo-icon {
+    font-size: 1.1rem;
+  }
+  .watermark-logo-text {
+    font-size: 0.85rem;
+  }
+}
