@@ -139,6 +139,7 @@ const SurveyDetailView = ({
   handleSurveyReaction,
   STAMPS,
   surveys,
+  recommendedSurveys,
   setSurveys,
   lastReactionEvent,
   adjacentSurveys = { prev: null, next: null },
@@ -999,9 +1000,9 @@ const SurveyDetailView = ({
       )}
 
       {/* 🐰 回遊率アップの要！次のおすすめ記事エリア */}
-      {surveys && surveys.length > 0 && (
+      {recommendedSurveys && recommendedSurveys.length > 0 && (
         <div style={{ marginTop: '50px' }}>
-          <RecommendedSection surveys={surveys.filter(s => s.id !== currentSurvey.id)} navigateTo={navigateTo} />
+          <RecommendedSection surveys={recommendedSurveys.filter(s => s.id !== currentSurvey.id)} navigateTo={navigateTo} />
         </div>
       )}
 

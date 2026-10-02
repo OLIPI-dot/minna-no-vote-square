@@ -2470,6 +2470,7 @@ function App() {
                   CATEGORY_ICON_STYLE={CATEGORY_ICON_STYLE}
                   supabase={supabase}
                   surveys={surveys}
+                  recommendedSurveys={recommendedSurveys}
                   setSurveys={setSurveys}
                   relatedSurveys={relatedSurveys}
                   baseCategories={BASE_CATEGORIES}
