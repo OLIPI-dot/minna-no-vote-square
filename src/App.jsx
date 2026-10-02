@@ -805,12 +805,12 @@ function App() {
     // 🔍 SEOメタタグとタイトルの更新（undefined対策・堅牢化！）
     const SITE_BASE_URL = 'https://minna-no-vote-square.com';
     const pageTitle = (currentSurvey && currentSurvey.title)
-      ? `${currentSurvey.title} - みんアケ🐰🥕 | みんあけ | みんなのアンケート広場`
+      ? `${currentSurvey.title} - みんアケ🐰🥕 | みんなのアンケート広場`
       : (view === 'details'
-          ? 'アンケート詳細 - みんアケ🐰🥕 | みんあけ | みんなのアンケート広場'
+          ? 'アンケート詳細 - みんアケ🐰🥕 | みんなのアンケート広場'
           : (view === 'list'
-              ? 'みんアケ🐰🥕 | みんあけ | みんなのアンケート広場 | 匿名で気軽に投票・本音が集まるアンケートコミュニティ'
-              : 'アンケート作成 - みんアケ🐰🥕 | みんあけ | みんなのアンケート広場'));
+              ? 'みんアケ🐰🥕 | みんなのアンケート広場 | 匿名で気軽に投票・本音が集まるアンケートコミュニティ'
+              : 'アンケート作成 - みんアケ🐰🥕 | みんなのアンケート広場'));
 
     const metaKeywords = currentSurvey
       ? `${currentSurvey.category || 'アンケート'}, ${Array.isArray(currentSurvey.tags) ? currentSurvey.tags.join(', ') : (currentSurvey.tags || '')}, みんアケ, みんあけ, アンケート, みんなのアンケート, 投票, みんなのアンケート広場`
