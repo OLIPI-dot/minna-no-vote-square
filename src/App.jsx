@@ -2083,7 +2083,7 @@ function App() {
       }
 
       // 🏷️ ハッシュタグ：ベース + カテゴリ + 記事タグ（最大3つ）
-      const baseTags = ['みんなのアンケート広場', '投票'];
+      const baseTags = ['みんアケ', 'みんなのアンケート広場', '投票'];
       const categoryTag = currentSurvey.category
         ? [currentSurvey.category.replace(/\s/g, '')]
         : [];
