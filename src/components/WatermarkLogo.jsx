@@ -4,10 +4,13 @@ const WatermarkLogo = ({ onClick }) => {
   const [sparkles, setSparkles] = useState([]);
 
   const handleClick = (e) => {
-    // Generate 6-8 random sparkles
+    // Generate 6-8 random sparkles/carrots
     const count = Math.floor(Math.random() * 3) + 6;
+    const emojis = ['✨', '🥕', '✨', '🐰', '⭐']; // ✨ appears more often
+    
     const newSparkles = Array.from({ length: count }).map((_, i) => ({
       id: Date.now() + i + Math.random(),
+      emoji: emojis[Math.floor(Math.random() * emojis.length)],
       x: (Math.random() - 0.5) * 80, // spread range -40px to 40px
       y: (Math.random() - 0.5) * 80, 
       size: Math.random() * 0.8 + 0.6, // random size 0.6rem to 1.4rem
@@ -55,7 +58,7 @@ const WatermarkLogo = ({ onClick }) => {
             '--rot': `${s.rotation}deg`
           }}
         >
-          ✨
+          {s.emoji}
         </span>
       ))}
     </div>
