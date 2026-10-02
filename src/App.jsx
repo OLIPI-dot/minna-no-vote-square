@@ -2586,6 +2586,45 @@ function App() {
           isSendingInquiry={isSendingInquiry} handleSubmitInquiry={handleSubmitInquiry}
         />
       </Suspense>
+
+      {/* 🐰 左下追従の「みんアケ」透かしロゴ (クリックでトップへ) */}
+      <div 
+        onClick={() => {
+          navigateTo('list');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+        style={{
+          position: 'fixed',
+          bottom: '24px',
+          left: '24px',
+          zIndex: 50,
+          opacity: 0.25,
+          cursor: 'pointer',
+          transition: 'all 0.3s ease',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px',
+          fontFamily: '"M PLUS Rounded 1c", "Nunito", sans-serif',
+          background: 'rgba(255, 255, 255, 0.4)',
+          padding: '8px 16px',
+          borderRadius: '100px',
+          backdropFilter: 'blur(4px)',
+          WebkitBackdropFilter: 'blur(4px)',
+          boxShadow: '0 4px 15px rgba(0,0,0,0.05)'
+        }}
+        onMouseOver={e => {
+          e.currentTarget.style.opacity = '0.85';
+          e.currentTarget.style.transform = 'scale(1.05)';
+        }}
+        onMouseOut={e => {
+          e.currentTarget.style.opacity = '0.25';
+          e.currentTarget.style.transform = 'scale(1)';
+        }}
+      >
+        <span style={{ fontSize: '1.4rem', lineHeight: '1' }}>🐰🥕</span>
+        <span style={{ fontWeight: '900', color: '#1e293b', fontSize: '1.1rem', letterSpacing: '0.5px' }}>みんアケ</span>
+      </div>
+
     </div>
   );
 }
