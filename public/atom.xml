@@ -4,11 +4,47 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-03T07:45:14.965Z</updated>
+  <updated>2026-10-03T12:51:57.677Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>米中間選挙 長引く物価高が争点</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23243"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23243</id>
+    <updated>2026-10-03T12:51:55.759Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;米中間選挙の最大争点&quot;,
+  &quot;point1_desc&quot;: &quot;米中間選挙では長引く物価高問題への対応が最大の争点となっている。政権によるインフレ対策の実効性が試されており、有権者からの不満が高まる中で選挙戦が展開されている状況だ。&quot;,
+  &quot;point2_title&quot;: &quot;高関税政策の影響&quot;...</summary>
+  </entry>
+  <entry>
+    <title>4人死亡の火災 玄関付近が火元か</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23242"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23242</id>
+    <updated>2026-10-03T12:51:32.809Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;三重県津市で住宅全焼&quot;,
+  &quot;point1_desc&quot;: &quot;2日午後、三重県津市において住宅が全焼する火災が発生した。この火災現場の跡から、子どもとみられる4人の遺体が発見され、警察や消防による確認作業が進められている。&quot;,
+  &quot;point2_title&quot;: &quot;火元は玄関付近の可能性&quot;,...</summary>
+  </entry>
+  <entry>
+    <title>阪神がセ・リーグ連覇 球団史上初</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23241"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23241</id>
+    <updated>2026-10-03T12:51:10.146Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;阪神が広島に逆転負け&quot;,
+  &quot;point1_desc&quot;: &quot;優勝マジック「1」としていた阪神タイガースは、デーゲームで行われた広島東洋カープ戦に4対6で逆転負けを喫しました。自力での優勝決定はナイターの他球場の結果待ちとなる足踏み状態となりました。&quot;,
+  &quot;point2_title&quot;: ...</summary>
+  </entry>
   <entry>
     <title>米殺人犯の死刑失敗 被害者母落胆</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23240"/>
@@ -573,42 +609,5 @@
   &quot;point1_title&quot;: &quot;茨城・埼玉で震度4&quot;,
   &quot;point1_desc&quot;: &quot;29日午前4時45分ごろ、茨城県と埼玉県で最大震度4を観測するやや強い地震が発生しました。早朝の地震であったため、多くの地域で揺れが検知され、住民へ注意が呼びかけられています。&quot;,
   &quot;point2_title&quot;: &quot;震源地は茨城...</summary>
-  </entry>
-  <entry>
-    <title>約3.9億ドル流出のBitget、ビットコイン出金を再開(NADA NEWS)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23193"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23193</id>
-    <updated>2026-09-28T12:52:05.726Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;BTC出金の再開を発表&quot;,
-  &quot;point1_desc&quot;: &quot;暗号資産取引所のBitgetは9月28日、ビットコインの出金を日本時間の17時から再開したことを発表しました。9月24日に発生したセキュリティ事案による一時停止措置からの復旧となります。&quot;,
-  &quot;point2_title&quot;: ...</summary>
-  </entry>
-  <entry>
-    <title>蘭NXPと台湾VISの合弁VSMC、シンガポールで12インチ工場開所 2029年に月4万4000枚(ビジネス＋IT)</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23192"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23192</id>
-    <updated>2026-09-28T12:51:27.821Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;シンガポールで新工場開所&quot;,
-  &quot;point1_desc&quot;: &quot;オランダのNXPセミコンダクターズと台湾のVISの合弁会社であるVSMCが、シンガポールで自社初となる12インチウエハー工場の開所式を開催したことが発表された。&quot;,
-  &quot;point2_title&quot;: &quot;2027年の量産開始を...</summary>
-  </entry>
-  <entry>
-    <title>車と歩行者絡む事故 1人心肺停止</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23191"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23191</id>
-    <updated>2026-09-28T12:50:49.093Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;府中市で乗用車事故&quot;,
-  &quot;point1_desc&quot;: &quot;28日午後6時ごろ、東京都府中市住吉町の京王線中河原駅ロータリー付近にて、乗用車と軽乗用車が絡む交通事故が発生しました。目撃者から110番通報があり発覚しました。&quot;,
-  &quot;point2_title&quot;: &quot;中河原駅付近で発生&quot;,
- ...</summary>
   </entry>
 </feed>
