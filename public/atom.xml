@@ -4,11 +4,47 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-03T12:51:57.677Z</updated>
+  <updated>2026-10-03T21:47:47.252Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>韓国サッカー男子V 国旗揚がらず</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23246"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23246</id>
+    <updated>2026-10-03T21:47:45.559Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;日本、韓国に敗れ優勝逃す&quot;,
+  &quot;point1_desc&quot;: &quot;愛知・名古屋アジア大会のサッカー男子決勝が行われ、U-21日本代表は韓国と対戦。0-1で惜しくも敗れ、4大会ぶりとなる金メダル獲得の快挙を逃す結果となった。&quot;,
+  &quot;point2_title&quot;: &quot;焦りを見せる旗手とブーイン...</summary>
+  </entry>
+  <entry>
+    <title>だんじりが横転し7人けが 転落か</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23245"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23245</id>
+    <updated>2026-10-03T21:46:29.123Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;だんじり横転事故が発生&quot;,
+  &quot;point1_desc&quot;: &quot;3日午後7時半ごろ、大阪府堺市中区で行われていただんじり祭りにおいて、交差点を左折しようとしていた曳行中のだんじりが横転する事故が発生し、現場は騒然とした雰囲気に包まれた。&quot;,
+  &quot;point2_title&quot;: &quot;けが人7人が...</summary>
+  </entry>
+  <entry>
+    <title>米政府のAI 都合の悪い質問を拒否</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23244"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23244</id>
+    <updated>2026-10-03T21:45:27.157Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;米国政府が独自対話型AI公開&quot;,
+  &quot;point1_desc&quot;: &quot;米トランプ政権は政府公式の対話型人工知能であるAmerica.govをウェブサイト上で公開した。国民への情報提供などを目的としているが、行政の公式ツールとして大きな注目を集めている。&quot;,
+  &quot;point2_title&quot;:...</summary>
+  </entry>
   <entry>
     <title>米中間選挙 長引く物価高が争点</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23243"/>
@@ -573,41 +609,5 @@
   &quot;point1_desc&quot;: &quot;不動産取引を通じて得た顧客の資産情報などを悪用し、住宅を強盗の標的にさせたとして、港区の職業不詳の男（53）が強盗未遂と住居侵入の疑いで警視庁に逮捕された。&quot;,
   &quot;point2_title&quot;: &quot;悪用された資産情報&quot;,
   &quot;poi...</summary>
-  </entry>
-  <entry>
-    <title>森保J 試合後に3人が病院直行</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23196"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23196</id>
-    <updated>2026-09-28T21:46:22.862Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;ベネズエラに辛勝&quot;,
-  &quot;point1_desc&quot;: &quot;日本代表は国際親善試合でベネズエラ代表と対戦し、２対１で勝利を収めた。同点で迎えた後半のアディショナルタイムに劇的な勝ち越しゴールが生まれ、接戦を制する形で試合を締めくくった。&quot;,
-  &quot;point2_title&quot;: &quot;劇的勝ち越し弾...</summary>
-  </entry>
-  <entry>
-    <title>車が停車中の車に追突 女性が死亡</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23195"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23195</id>
-    <updated>2026-09-28T21:45:57.263Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;府中市で乗用車の追突事故&quot;,
-  &quot;point1_desc&quot;: &quot;東京都府中市において、乗用車が停車していた軽乗用車に追突する痛ましい事故が発生しました。停車中の車両に乗り込もうとしていた高齢女性が巻き込まれる事態となりました。&quot;,
-  &quot;point2_title&quot;: &quot;80代女性が死亡&quot;,...</summary>
-  </entry>
-  <entry>
-    <title>茨城・埼玉で震度4 津波心配なし</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23194"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23194</id>
-    <updated>2026-09-28T21:45:32.139Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;茨城・埼玉で震度4&quot;,
-  &quot;point1_desc&quot;: &quot;29日午前4時45分ごろ、茨城県と埼玉県で最大震度4を観測するやや強い地震が発生しました。早朝の地震であったため、多くの地域で揺れが検知され、住民へ注意が呼びかけられています。&quot;,
-  &quot;point2_title&quot;: &quot;震源地は茨城...</summary>
   </entry>
 </feed>
