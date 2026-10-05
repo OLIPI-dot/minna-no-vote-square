@@ -32,7 +32,8 @@ if (GEMINI_API_KEY) {
 
 const AI_SUMMARY_OPTIONS = {
     max_tokens: 2048,
-    temperature: 0.7
+    temperature: 0.7,
+    thinkingConfig: { thinkingLevel: 'low' }
 };
 
 const AI_SUMMARY_PROMPT = (articleContent) => `

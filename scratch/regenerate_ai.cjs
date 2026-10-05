@@ -155,7 +155,8 @@ function generateOptions(category, title, description) {
 // 🤖 AI自動要約・タグ生成用の標準プロンプト定義（JSONフォーマット＆十分なmax_tokens）
 const AI_SUMMARY_OPTIONS = {
     max_tokens: 2048, // 文章が途中で途切れないよう十分に確保
-    temperature: 0.7
+    temperature: 0.7,
+    thinkingConfig: { thinkingLevel: 'low' }
 };
 
 const AI_SUMMARY_PROMPT = (articleContent) => `
