@@ -1034,9 +1034,9 @@ function App() {
   };
 
   // 📥 アンケートデータを取得する (サーバーサイド・ページネーション & フィルタ対応)
-  const fetchSurveys = async (currentUser, silent = false, page = 1, category = null, query = '', currentTab = 'official', sort = 'latest', pop = 'trending') => {
+  const fetchSurveys = async (currentUser, silent = false, page = 1, category = null, query = '', currentTab = 'official', sort = 'latest', pop = 'trending', tag = '') => {
     // 🚀 Early Fetch を使う条件: 初回ロード ＆ フィルタなし ＆ 新着順
-    const isFirstLoad = !silent && page === 1 && (!category || category === 'すべて') && !query && currentTab === 'official' && sort === 'latest';
+    const isFirstLoad = !silent && page === 1 && (!category || category === 'すべて') && !query && !tag && currentTab === 'official' && sort === 'latest';
 
     let safetyTimeoutId = null;
     if (!silent) {
@@ -1091,6 +1091,11 @@ function App() {
       // 🏷️ カテゴリフィルタ（カテゴリが選ばれている時は、検索中であってもそのカテゴリ内を探すのが自然らびに！）
       if (category && category !== 'すべて') {
         baseQuery = baseQuery.eq('category', category);
+      }
+
+      // 🏷️ タグフィルタ（サーバー側で絞り込むらび！読み込み済みの1ページ分だけを探すと見つからないため）
+      if (tag) {
+        baseQuery = baseQuery.contains('tags', [tag]);
       }
 
       // 📢 タブフィルタ (公式 vs ユーザー投稿)
@@ -1168,6 +1173,7 @@ function App() {
             const getCountQuery = (isOff) => {
               let q = supabase.from('surveys').select('id', { count: 'exact', head: true }).eq('visibility', 'public').eq('is_official', isOff);
               if (category && category !== 'すべて') q = q.eq('category', category);
+              if (tag) q = q.contains('tags', [tag]);
 
               const now = new Date();
               if (sort === 'today') {
@@ -1199,7 +1205,7 @@ function App() {
 
       // ログイン中なら自分の非公開/限定公開アンケートも別枠で取得（とりあえず最新20件）
       let mine = [];
-      if (currentUser && page === 1 && !category && !query && sort !== 'mine') {
+      if (currentUser && page === 1 && !category && !query && !tag && sort !== 'mine') {
         console.log("🔍 fetchSurveys: STAGE 2 - Fetching private/limited surveys for user:", currentUser.id);
         let mQuery = supabase.from('surveys').select('id,title,category,visibility,created_at,deadline,is_official,total_votes,likes_count,view_count,comment_count').neq('visibility', 'public');
         if (!isActuallyAdmin) {
@@ -1561,12 +1567,12 @@ function App() {
   // 🔄 ページやフィルタが変わったら再取得するらび！（リアルタイム監視も兼ねる）
   useEffect(() => {
     // 初回・変更時の取得
-    fetchSurveys(user, false, currentPage, filterCategory, debouncedSearchQuery, activeTab, sortMode, popularMode);
+    fetchSurveys(user, false, currentPage, filterCategory, debouncedSearchQuery, activeTab, sortMode, popularMode, filterTag);
 
     // 📡 リアルタイム監視
     const ch = supabase.channel('global-changes')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'surveys' }, () => {
-        fetchSurveys(user, true, currentPage, filterCategory, debouncedSearchQuery, activeTab, sortMode, popularMode);
+        fetchSurveys(user, true, currentPage, filterCategory, debouncedSearchQuery, activeTab, sortMode, popularMode, filterTag);
         fetchSidebarData(); // 🆕 サイドバーの「最新ニュース」も更新するらび！
       })
       .subscribe();
@@ -1574,7 +1580,7 @@ function App() {
     return () => {
       supabase.removeChannel(ch);
     };
-  }, [user, currentPage, filterCategory, debouncedSearchQuery, activeTab, sortMode, popularMode]);
+  }, [user, currentPage, filterCategory, debouncedSearchQuery, activeTab, sortMode, popularMode, filterTag]);
 
 
   // 📡 サイドバー用の派生データ（※以前はここで計算していたが、グローバル取得に移行したためお役御免らび！）
