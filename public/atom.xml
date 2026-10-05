@@ -4,11 +4,47 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-05T09:38:26.949Z</updated>
+  <updated>2026-10-05T12:51:43.533Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>「没入型」新感覚の防災訓練 狙い</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23270"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23270</id>
+    <updated>2026-10-05T12:51:36.328Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;話題&quot;,
+  &quot;point1_title&quot;: &quot;演劇風の防災訓練&quot;,
+  &quot;point1_desc&quot;: &quot;演劇や脱出ゲームの要素を取り入れた新しいスタイルの防災訓練が話題となっています。臨場感あふれる演出を通じて、従来の受け身な訓練から一歩進んだ体験型の防災学習を提供しています。&quot;,
+  &quot;point2_title&quot;: &quot;自ら考え判断する&quot;,...</summary>
+  </entry>
+  <entry>
+    <title>ノーベル生理医学賞 米・独の3人</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23269"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23269</id>
+    <updated>2026-10-05T12:51:12.036Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;米独の3名が受賞&quot;,
+  &quot;point1_desc&quot;: &quot;今年のノーベル生理学・医学賞が発表され、アメリカとドイツの研究者あわせて3人が受賞者に選ばれました。世界的な科学技術の発展や医療への貢献が高く評価された形となります。&quot;,
+  &quot;point2_title&quot;: &quot;日本人の連続受賞ならず&quot;...</summary>
+  </entry>
+  <entry>
+    <title>土石流の捜索打ち切り ネパール</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23268"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23268</id>
+    <updated>2026-10-05T12:50:47.642Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;ネパール大規模土石流&quot;,
+  &quot;point1_desc&quot;: &quot;ネパールと中国の国境地帯で大規模な土石流災害が発生した。ネパール政府は捜索活動を続けていたが、新たな情報が得られた場合などの例外を除いて、不明者の捜索や救助活動を原則として打ち切ることを決定した。&quot;,
+  &quot;point2_titl...</summary>
+  </entry>
   <entry>
     <title>元SB選手の宮地克彦氏を不起訴</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23267"/>
@@ -575,41 +611,5 @@
   &quot;point1_title&quot;: &quot;千葉市で切りつけ事件発生&quot;,
   &quot;point1_desc&quot;: &quot;1日夕方、千葉市若葉区の住宅街にて、55歳の男性が刃物で切りつけられる事件が発生しました。被害を受けた男性は負傷し、警察が殺人未遂事件として緊急の捜査を開始していました。&quot;,
   &quot;point2_title&quot;: &quot;隣人の49歳...</summary>
-  </entry>
-  <entry>
-    <title>早紀江さん 拉致巡り「いらだち」</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23220"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23220</id>
-    <updated>2026-10-01T21:45:36.939Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;めぐみさん62歳の誕生日に&quot;,
-  &quot;point1_desc&quot;: &quot;北朝鮮に拉致された横田めぐみさんが10月5日に62歳の誕生日を迎えるにあたり、母の早紀江さんが川崎市で取材に応じました。現在も消息が分からず、長年にわたり再会を果たせない状況が続いています。&quot;,
-  &quot;point2_titl...</summary>
-  </entry>
-  <entry>
-    <title>無許可でモスク建設 市が撤去命令</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23219"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23219</id>
-    <updated>2026-10-01T12:52:05.621Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;川越市でモスクが無許可建設&quot;,
-  &quot;point1_desc&quot;: &quot;埼玉県川越市において、建物の新設が原則認められていない土地に、イスラム教の礼拝堂であるモスクが無許可で建てられたことが発覚し、地域で大きな問題となっています。&quot;,
-  &quot;point2_title&quot;: &quot;市が撤去要請も従わず&quot;...</summary>
-  </entry>
-  <entry>
-    <title>統一地方選 4月11・25日投票へ</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23218"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23218</id>
-    <updated>2026-10-01T12:51:41.398Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;来春の統一地方選期日が判明&quot;,
-  &quot;point1_desc&quot;: &quot;政府は来春に行われる統一地方選挙の日程について方針を固めました。都道府県知事や政令指定都市の首長および議員の選挙は4月11日、その他の一般市区町村の選挙は4月25日に行われる見通しです。&quot;,
-  &quot;point2_title&quot;...</summary>
   </entry>
 </feed>
