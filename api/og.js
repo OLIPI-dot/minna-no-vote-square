@@ -32,7 +32,7 @@ export default async function handler(req, res) {
       .from('surveys')
       .select('*')
       .eq('id', s)
-      .single();
+      .maybeSingle();
 
     if (error || !survey) {
       return res.status(404).send(`Survey not found for ID: ${s}. (Error: ${error?.message})`);

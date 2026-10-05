@@ -37,7 +37,7 @@ export default async function handler(req, res) {
       .from('surveys')
       .select('*')
       .eq('id', surveyId)
-      .single();
+      .maybeSingle();
 
     if (!error && survey) {
       // 3. OGP 情報を生成

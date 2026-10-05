@@ -960,7 +960,7 @@ function App() {
         return;
       }
 
-      const { data: sv, error: svError } = await supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count').eq('id', surveyId).single();
+      const { data: sv, error: svError } = await supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count').eq('id', surveyId).maybeSingle();
       if (svError) {
         window.history.replaceState({ view: 'list' }, '', '/');
         setView('list');
@@ -1456,7 +1456,7 @@ function App() {
       // (非同期取得は省略せず維持...)
       (async () => {
         if (!survey.created_at || survey.youtube_id === undefined) {
-          const { data: fullSv } = await supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count').eq('id', survey.id).single();
+          const { data: fullSv } = await supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count').eq('id', survey.id).maybeSingle();
           if (fullSv) {
             setCurrentSurvey(fullSv);
             survey = fullSv;
