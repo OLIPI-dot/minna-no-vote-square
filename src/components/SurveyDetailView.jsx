@@ -306,11 +306,11 @@ const SurveyDetailView = ({
           );
         })()}
 
-        <div className="detail-meta-bar" style={{ marginBottom: '25px', display: 'flex', flexWrap: 'wrap', gap: '15px', justifyContent: 'center' }}>
-          <span style={{ color: '#10b981', fontWeight: 'bold', background: 'rgba(16, 185, 129, 0.05)', padding: '4px 12px', borderRadius: '20px' }}>👀 いま {surveyOnlineCount} 人がチェック中！</span>
-          <span style={{ background: '#f8fafc', padding: '4px 12px', borderRadius: '20px', color: '#64748b' }}>👁️ {currentSurvey.view_count || 0} 閲覧</span>
-          <span style={{ background: '#f8fafc', padding: '4px 12px', borderRadius: '20px', color: '#64748b' }}>👍 {currentSurvey.likes_count || 0} いいね</span>
-          <span style={{ background: '#f8fafc', padding: '4px 12px', borderRadius: '20px', color: '#64748b', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+        <div className="detail-meta-bar" style={{ marginBottom: '25px', display: 'flex', flexWrap: 'wrap', gap: '15px', justifyContent: 'center', alignItems: 'center' }}>
+          <span style={{ color: '#10b981', fontWeight: 'bold', background: 'rgba(16, 185, 129, 0.05)', padding: '4px 12px', borderRadius: '20px', display: 'flex', alignItems: 'center', gap: '4px' }}>👀 いま {surveyOnlineCount} 人がチェック中！</span>
+          <span style={{ background: '#f8fafc', padding: '4px 12px', borderRadius: '20px', color: '#64748b', display: 'flex', alignItems: 'center', gap: '4px' }}>👁️ {currentSurvey.view_count || 0} 閲覧</span>
+          <span style={{ background: '#f8fafc', padding: '4px 12px', borderRadius: '20px', color: '#64748b', display: 'flex', alignItems: 'center', gap: '4px' }}>👍 {currentSurvey.likes_count || 0} いいね</span>
+          <span style={{ background: '#f8fafc', padding: '4px 12px', borderRadius: '20px', color: '#64748b', display: 'flex', alignItems: 'center', gap: '4px' }}>
             🗳️ <AnimatedCounter value={isTotalVotes || 0} /> 票
           </span>
           {currentSurvey.category && (
