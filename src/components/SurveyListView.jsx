@@ -61,6 +61,43 @@ const SurveyListView = ({
     });
   };
 
+  // 🏷️ 話題のタグ：直近7日間で2本以上のアンケートについたタグを多い順に集計するらび！
+  const [trendingTags, setTrendingTags] = React.useState([]);
+  React.useEffect(() => {
+    if (!supabase) return;
+    let cancelled = false;
+    const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+    supabase
+      .from('surveys')
+      .select('tags, total_votes, view_count')
+      .eq('visibility', 'public')
+      .gte('created_at', since)
+      .limit(1000)
+      .then(({ data, error }) => {
+        if (cancelled || error || !data) return;
+        const count = {};
+        const score = {};
+        data.forEach(s => {
+          [...new Set(s.tags || [])].forEach(t => {
+            if (!t || t === 'お知らせ') return;
+            count[t] = (count[t] || 0) + 1;
+            score[t] = (score[t] || 0) + (s.total_votes || 0) * 2 + (s.view_count || 0) * 0.1;
+          });
+        });
+        const tags = Object.keys(count)
+          .filter(t => count[t] >= 2)
+          .sort((a, b) => (count[b] - count[a]) || (score[b] - score[a]))
+          .slice(0, 14);
+        setTrendingTags(tags);
+      });
+    return () => { cancelled = true; };
+  }, [supabase]);
+
+  // 選択中のタグが一覧にないときは、解除できるよう先頭に残すらび
+  const displayTags = React.useMemo(() => (
+    filterTag && !trendingTags.includes(filterTag) ? [filterTag, ...trendingTags] : trendingTags
+  ), [trendingTags, filterTag]);
+
   // ⚡ useMemoによりソート・フィルタの計算結果をキャッシュ化。filter/sortはレンダーのたびに実行されず、必要な時だけ実行される。
   const trendingHeadlineSurveys = React.useMemo(() => {
     const sourceSurveys = (popularSurveys && popularSurveys.length > 0) ? popularSurveys : surveys;
@@ -284,14 +321,15 @@ const SurveyListView = ({
         `}</style>
       </div>
 
-      {/* 🏷️ 人気のタグバー（おりぴさんリクエスト） */}
+      {/* 🏷️ 話題のタグバー（おりぴさんリクエスト）：0件のときは表示しない */}
+      {displayTags.length > 0 && (
       <div className="tag-filter-bar" style={{
         display: 'flex', overflowX: 'auto', gap: '10px', padding: '0 10px 16px',
         marginBottom: '5px', WebkitOverflowScrolling: 'touch',
         scrollSnapType: 'x proximity',
         scrollbarWidth: 'thin'
       }}>
-        {['ゲーム', 'Switch', 'PS5', 'Steam', 'AI', 'グルメ', 'アニメ', 'VTuber', 'スマホ', 'ライフハック', '映画', 'マンガ', 'ライフスタイル', '経済'].map(tag => (
+        {displayTags.map(tag => (
           <span
             key={tag}
             className={`tag-bubble ${filterTag === tag ? 'active' : ''}`}
@@ -339,6 +377,7 @@ const SurveyListView = ({
           .tag-filter-bar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
         `}</style>
       </div>
+      )}
 
       {/* ✨ あなたへのおすすめセクション (検索が確定するまでは表示を維持してガタつきを防ぐらび！) */}
       {!debouncedSearchQuery && !filterTag && filterCategory === 'すべて' && (
