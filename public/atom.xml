@@ -4,11 +4,47 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-05T02:17:25.119Z</updated>
+  <updated>2026-10-05T07:45:51.824Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>路線バスと車が衝突 乗客8人けが</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23264"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23264</id>
+    <updated>2026-10-05T07:45:50.055Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;金沢でバスと乗用車衝突&quot;,
+  &quot;point1_desc&quot;: &quot;5日午前8時半ごろ、金沢市泉の国道157号泉交差点において、北陸鉄道の路線バスと乗用車が衝突する事故が発生しました。この事故によりバスの車体が損傷し、乗客8人がけがを負ったとのことです。&quot;,
+  &quot;point2_title&quot;: ...</summary>
+  </entry>
+  <entry>
+    <title>首相が所信表明 経済最優先を強調</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23263"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23263</id>
+    <updated>2026-10-05T07:44:35.801Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;積極財政の推進&quot;,
+  &quot;point1_desc&quot;: &quot;高市首相は衆議院本会議の所信表明演説にて、自身の看板政策である「責任ある積極財政」を力強く推進していく方針を表明しました。経済政策を最優先課題に位置付け、成長への強い意欲を示しています。&quot;,
+  &quot;point2_title&quot;: &quot;市場の...</summary>
+  </entry>
+  <entry>
+    <title>予算カット発言 農相が撤回し謝罪</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23262"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23262</id>
+    <updated>2026-10-05T07:44:00.147Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;発言の撤回と謝罪&quot;,
+  &quot;point1_desc&quot;: &quot;簗農林水産大臣が、自民党を支持しなかった自治体の予算をカットしたとする自身の発言を撤回し、謝罪を行いました。問題となった音声記録などの発覚により、大きな批判を浴びる事態となっています。&quot;,
+  &quot;point2_title&quot;: &quot;問題と...</summary>
+  </entry>
   <entry>
     <title>米軍 英空軍基地から爆撃機を撤収</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23261"/>
@@ -574,41 +610,5 @@
   &quot;point1_title&quot;: &quot;食料品の消費税減税案&quot;,
   &quot;point1_desc&quot;: &quot;政府は臨時国会に食料品に対する消費税減税法案を提出する方針を固めました。来年4月から2年間の期間限定で、食料品の消費税率を1％に引き下げる計画が進められており、注目が集まっています。&quot;,
   &quot;point2_title&quot;: &quot;所得...</summary>
-  </entry>
-  <entry>
-    <title>中継 ニデック新社長らが記者会見</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23214"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23214</id>
-    <updated>2026-10-01T07:44:39.506Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;ニデック不正会計問題&quot;,
-  &quot;point1_desc&quot;: &quot;モーター大手のニデックが不正会計問題を受け、京都市の本社で記者会見を開催する。新社長の戒田理夫氏が公の場に初めて登場し、不祥事からの信頼回復に向けた具体的な再建策について言及する見通しだ。&quot;,
-  &quot;point2_title&quot;: ...</summary>
-  </entry>
-  <entry>
-    <title>テルアビブ便 乗客らが襲撃者制圧</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23213"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23213</id>
-    <updated>2026-10-01T02:17:37.468Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;旅客機の緊急着陸&quot;,
-  &quot;point1_desc&quot;: &quot;ドバイ発テルアビブ行きのフライドバイ機が30日、サウジアラビアに緊急着陸した。機内でのトラブル発生に伴い、安全確保のため目的地変更を余儀なくされた状況が明らかになった。&quot;,
-  &quot;point2_title&quot;: &quot;副操縦士が機長を刺傷&quot;...</summary>
-  </entry>
-  <entry>
-    <title>大企業製造業 景況感6期連続改善</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23212"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23212</id>
-    <updated>2026-10-01T02:17:01.835Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;日銀短観で景況感が改善&quot;,
-  &quot;point1_desc&quot;: &quot;日本銀行が発表した９月の短観によると、大企業・製造業の業況判断指数が６期連続で改善した。これは約８年半ぶりの高水準となり、国内経済の着実な回復傾向を示す結果となった。&quot;,
-  &quot;point2_title&quot;: &quot;AIと半導体需要が...</summary>
   </entry>
 </feed>
