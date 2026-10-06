@@ -4,11 +4,47 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-06T02:18:17.107Z</updated>
+  <updated>2026-10-06T07:45:30.135Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>アシックス 失速から売上1兆円へ</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23279"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23279</id>
+    <updated>2026-10-06T07:45:27.912Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;体育館の靴から世界へ&quot;,
+  &quot;point1_desc&quot;: &quot;かつて学校の指定靴というイメージが強かったアシックスだが、現在は世界中で評価されるランニングシューズ大手として躍進している。直近の業績も大幅な増収増益を記録し絶好調だ。&quot;,
+  &quot;point2_title&quot;: &quot;2010年代の赤字...</summary>
+  </entry>
+  <entry>
+    <title>ピアニストの反田恭平氏 在宅起訴</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23278"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23278</id>
+    <updated>2026-10-06T07:45:03.858Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;芸能&quot;,
+  &quot;point1_title&quot;: &quot;反田恭平氏を在宅起訴&quot;,
+  &quot;point1_desc&quot;: &quot;ピアニストの反田恭平氏が、昨年12月に東京都内の首都高速道路で制限速度を84キロ超える時速144キロで乗用車を運転したとして、道路交通法違反の罪で在宅起訴されていたことが判明した。&quot;,
+  &quot;point2_title&quot;: &quot;制限速度8...</summary>
+  </entry>
+  <entry>
+    <title>AI政策の司令塔 米大統領なぜ設置</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23277"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23277</id>
+    <updated>2026-10-06T07:44:38.545Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;米AI司令塔の責任者を発表&quot;,
+  &quot;point1_desc&quot;: &quot;アメリカのトランプ大統領は、政府における人工知能（AI）関連の取り組みを統括・調整する新たな司令塔の責任者を発表しました。民間企業や消費者と政府との連携を強力に推進していく狙いです。&quot;,
+  &quot;point2_title&quot;: ...</summary>
+  </entry>
   <entry>
     <title>大雨で3度浸水のラーメン店 再開</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23276"/>
@@ -576,41 +612,5 @@
   &quot;point1_title&quot;: &quot;スガキヤがドムドムを子会社化&quot;,
   &quot;point1_desc&quot;: &quot;名古屋市に本社を置くラーメンチェーン「スガキヤ」の運営会社スガキコシステムズが、「ドムドムハンバーガー」を展開するドムドムフードサービスを子会社化したことが発表されました。&quot;,
   &quot;point2_title&quot;: &quot;異色コ...</summary>
-  </entry>
-  <entry>
-    <title>免許証画像流出 集団訴訟動き進む</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23229"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23229</id>
-    <updated>2026-10-02T12:50:43.093Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;160万件の免許証画像が流出&quot;,
-  &quot;point1_desc&quot;: &quot;カーシェアリングサービス「タイムズカー」にて不正アクセスが発生し、ユーザーの運転免許証画像など約160万件が流出したことが判明しました。大規模な情報漏洩に大きな懸念が集まっています。&quot;,
-  &quot;point2_title&quot;:...</summary>
-  </entry>
-  <entry>
-    <title>津市で住宅火災 4人と連絡取れず</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23228"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23228</id>
-    <updated>2026-10-02T07:44:50.064Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;三重県津市で住宅火災が発生&quot;,
-  &quot;point1_desc&quot;: &quot;三重県津市香良洲町の住宅街において火災が発生しました。2日午後2時ごろに近隣住民から通報があり、現場には消防車などが駆けつけて現在も懸命な消火活動が続けられている状況です。&quot;,
-  &quot;point2_title&quot;: &quot;子ども4...</summary>
-  </entry>
-  <entry>
-    <title>東海汽船 一部船舶の使用停止処分</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23227"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23227</id>
-    <updated>2026-10-02T07:44:25.964Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;当直中の飲酒問題&quot;,
-  &quot;point1_desc&quot;: &quot;東海汽船の乗組員が当直勤務中に飲酒していた重大な安全管理上の問題が発覚しました。乗客の命を預かる旅客船運航会社としての安全意識の欠如が強く疑問視されており、大きな波紋を呼んでいます。&quot;,
-  &quot;point2_title&quot;: &quot;一部船舶...</summary>
   </entry>
 </feed>
