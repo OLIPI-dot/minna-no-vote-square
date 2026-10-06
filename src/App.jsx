@@ -204,7 +204,7 @@ function App() {
       }
 
       if (changed) {
-        window.history.replaceState(window.history.state, '', url.pathname + url.search);
+        window.history.replaceState(window.history.state, '', url.pathname + url.search + url.hash);
       }
     }
   }, [sortMode, currentPage, view]);
@@ -956,7 +956,7 @@ function App() {
           setCurrentSurvey(null);
           setTimeout(() => window.scrollTo(0, 0), 10);
         }
-        window.history.replaceState({ view: 'list' }, '', '/');
+        window.history.replaceState({ view: 'list' }, '', window.location.pathname + window.location.search + window.location.hash);
         if (categoryFilter) setFilterCategory(categoryFilter);
         if (tagFilter) setFilterTag(tagFilter);
         return;
@@ -964,7 +964,7 @@ function App() {
 
       const { data: sv, error: svError } = await supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count').eq('id', surveyId).maybeSingle();
       if (svError) {
-        window.history.replaceState({ view: 'list' }, '', '/');
+        window.history.replaceState({ view: 'list' }, '', window.location.pathname + window.location.search + window.location.hash);
         setView('list');
         setCurrentSurvey(null);
         return;
@@ -972,7 +972,7 @@ function App() {
 
       if (sv.visibility === 'private' && (!user || user.id !== sv.user_id)) {
         alert('非公開のアンケートです🔒');
-        window.history.replaceState({ view: 'list' }, '', '/');
+        window.history.replaceState({ view: 'list' }, '', window.location.pathname + window.location.search + window.location.hash);
         setView('list');
         return;
       }
