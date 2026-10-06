@@ -4,11 +4,47 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-06T07:45:30.135Z</updated>
+  <updated>2026-10-06T12:52:50.408Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>箱乗りさせ事故 殺人未遂疑い逮捕</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23282"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23282</id>
+    <updated>2026-10-06T12:52:47.598Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;危険運転で19歳男逮捕&quot;,
+  &quot;point1_desc&quot;: &quot;今年1月に大阪府太子町の府道で危険な乗車状態のまま車を走らせ、死傷事故を起こしたとして、19歳の男が殺人未遂などの疑いで逮捕されました。警察が詳しい事故の経緯を調べています。&quot;,
+  &quot;point2_title&quot;: &quot;窓枠に座ら...</summary>
+  </entry>
+  <entry>
+    <title>元軍医に銃殺刑 トランプ氏が承認</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23281"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23281</id>
+    <updated>2026-10-06T12:52:00.073Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;フォートフッド乱射事件&quot;,
+  &quot;point1_desc&quot;: &quot;２００９年に米テキサス州のフォートフッド陸軍基地で発生した銃乱射事件では、１３人が死亡し多数が負傷した。元陸軍精神科医の容疑者によるこの凄惨な事件は全米に大きな衝撃を与えた。&quot;,
+  &quot;point2_title&quot;: &quot;トランプ氏...</summary>
+  </entry>
+  <entry>
+    <title>シチズン 約10万人分情報漏えいか</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23280"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23280</id>
+    <updated>2026-10-06T12:51:27.267Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;シチズンで不正アクセス&quot;,
+  &quot;point1_desc&quot;: &quot;シチズン時計はウェブサイト内の問い合わせシステムが第三者からの不正アクセスを受けたと発表した。顧客の氏名や連絡先など、約10万人分の個人情報が外部へ流出した可能性が生じている。&quot;,
+  &quot;point2_title&quot;: &quot;個人情報...</summary>
+  </entry>
   <entry>
     <title>アシックス 失速から売上1兆円へ</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23279"/>
@@ -576,41 +612,5 @@
   &quot;point1_title&quot;: &quot;人事システムに不正アクセス&quot;,
   &quot;point1_desc&quot;: &quot;第一ライフグループと第一生命保険の2社が利用する人事システムが不正アクセスを受けた。従業員や退職者の重要な情報が外部に漏えいした可能性が浮上しており、企業側の調査が進められている。&quot;,
   &quot;point2_title&quot;: &quot;...</summary>
-  </entry>
-  <entry>
-    <title>G7 石油備蓄1億バレル協調放出へ</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23232"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23232</id>
-    <updated>2026-10-02T21:45:34.573Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;石油備蓄１億バレル協調放出&quot;,
-  &quot;point1_desc&quot;: &quot;G7は首脳共同声明において、世界的なエネルギー市場の安定化を目指す方針を示した。国際エネルギー機関（IEA）を介して、ディーゼル燃料を含む計1億バレルの石油備蓄を協調して放出することを決定した。&quot;,
-  &quot;point2_ti...</summary>
-  </entry>
-  <entry>
-    <title>もう辞めたい「フキハラ」の実態</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23231"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23231</id>
-    <updated>2026-10-02T12:51:44.780Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;話題&quot;,
-  &quot;point1_title&quot;: &quot;職場のフキハラ問題&quot;,
-  &quot;point1_desc&quot;: &quot;不機嫌な態度で周囲を萎縮させる「フキハラ」が職場内で問題視されている。働く人の7割以上が「身近に加害者がいる」と感じており、精神的ストレスから休職や退職に追い込まれるケースも報告されている。&quot;,
-  &quot;point2_title&quot;: &quot;周...</summary>
-  </entry>
-  <entry>
-    <title>スガキヤが「ドムドム」子会社化</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23230"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23230</id>
-    <updated>2026-10-02T12:51:20.849Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;スガキヤがドムドムを子会社化&quot;,
-  &quot;point1_desc&quot;: &quot;名古屋市に本社を置くラーメンチェーン「スガキヤ」の運営会社スガキコシステムズが、「ドムドムハンバーガー」を展開するドムドムフードサービスを子会社化したことが発表されました。&quot;,
-  &quot;point2_title&quot;: &quot;異色コ...</summary>
   </entry>
 </feed>
