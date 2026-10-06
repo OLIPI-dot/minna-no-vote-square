@@ -4,11 +4,48 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-06T12:52:50.408Z</updated>
+  <updated>2026-10-06T21:46:24.992Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>台風で高波 西湘バイパス通行止め</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23285"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23285</id>
+    <updated>2026-10-06T21:46:21.784Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;台風27号が高波を引き起こす&quot;,
+  &quot;point1_desc&quot;: &quot;大型で強い台風27号が日本の東の海上にあり、1時間におよそ30キロの速さで北北東へ進んでいます。この台風の影響により沿岸部では強い高波が発生しており、引き続き厳重な警戒が呼びかけられています。&quot;,
+  &quot;point2_ti...</summary>
+  </entry>
+  <entry>
+    <title>首相 米に日朝首脳会談の仲介要請</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23284"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23284</id>
+    <updated>2026-10-06T21:45:56.490Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;米朝会談時の仲介を依頼&quot;,
+  &quot;point1_desc&quot;: &quot;高市早苗首相が9月に行われたトランプ米大統領との会談において、米朝首脳会談が実現した際には北朝鮮の金正恩総書記に対して日朝首脳会談に応じるよう働きかけてほしいと直接仲介を依頼していたことが判明した。&quot;,
+  &quot;point2_ti...</summary>
+  </entry>
+  <entry>
+    <title>沖縄の米軍関係者 48時間活動停止</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23283"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23283</id>
+    <updated>2026-10-06T21:45:31.357Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;米海兵隊員を逮捕&quot;,
+  &quot;point1_desc&quot;: &quot;沖縄県那覇市のホテルで、39歳の女性を殺害し財布などを奪ったとして強盗殺人容疑で米海兵隊上等兵の男が逮捕された。容疑者は米軍普天間基地に所属している。&quot;,
+  &quot;point2_title&quot;: &quot;凶悪事件への批判&quot;,
+  &quot;point2...</summary>
+  </entry>
   <entry>
     <title>箱乗りさせ事故 殺人未遂疑い逮捕</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23282"/>
@@ -576,41 +613,5 @@
   &quot;point1_title&quot;: &quot;中間選挙まで残り1ヶ月&quot;,
   &quot;point1_desc&quot;: &quot;米国の中間選挙が11月に迫る中、トランプ政権の今後を左右する重要な時期を迎えている。与野党の勢力図がどう変化するかが焦点であり、全米で選挙に向けたアピールや攻防が一段と激しさを増している。&quot;,
   &quot;point2_title&quot;:...</summary>
-  </entry>
-  <entry>
-    <title>人口水増し疑惑 富山市役所を捜索</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23235"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23235</id>
-    <updated>2026-10-03T02:16:36.534Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;富山市役所を家宅捜索&quot;,
-  &quot;point1_desc&quot;: &quot;2025年の国勢調査において市の人口を不正に水増しした疑惑が浮上し、富山県警は統計法違反の容疑で富山市役所の家宅捜索を実施した。総務省からの告発等を受けた異例の強制捜査となった。&quot;,
-  &quot;point2_title&quot;: &quot;統計法違...</summary>
-  </entry>
-  <entry>
-    <title>情報漏えい相次ぐ「異様」と識者</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23234"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23234</id>
-    <updated>2026-10-02T21:46:22.268Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;不正アクセスの発生&quot;,
-  &quot;point1_desc&quot;: &quot;カーシェアリング大手のタイムズカーにおいて、外部からの不正アクセスが確認された。この影響により、最大で約660万件に及ぶ大規模な会員情報などが外部へ漏洩した可能性があることが判明した。&quot;,
-  &quot;point2_title&quot;: &quot;対象...</summary>
-  </entry>
-  <entry>
-    <title>第一ライフG 従業員情報漏えいか</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23233"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23233</id>
-    <updated>2026-10-02T21:45:58.336Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;人事システムに不正アクセス&quot;,
-  &quot;point1_desc&quot;: &quot;第一ライフグループと第一生命保険の2社が利用する人事システムが不正アクセスを受けた。従業員や退職者の重要な情報が外部に漏えいした可能性が浮上しており、企業側の調査が進められている。&quot;,
-  &quot;point2_title&quot;: &quot;...</summary>
   </entry>
 </feed>
