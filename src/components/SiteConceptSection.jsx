@@ -20,7 +20,29 @@ const SiteConceptSection = ({ user, totalVotes = 0, onLogin }) => (
       </h2>
       <p style={{ fontSize: '1.1rem', opacity: 0.95, marginBottom: '28px', lineHeight: '1.6' }}>
         気になる話題に1タップで投票。匿名だから安心。<br />
-        {totalVotes > 0 && <span style={{ fontWeight: 'bold', borderBottom: '2px solid #fff' }}>現在 <AnimatedCounter value={totalVotes} /> 件の投票が集まっています！🔥</span>}
+        {totalVotes > 0 && (
+          <span style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '6px',
+            marginTop: '12px',
+            padding: '6px 18px',
+            borderRadius: '999px',
+            background: 'rgba(255,255,255,0.18)',
+            border: '1px solid rgba(255,255,255,0.3)',
+            fontWeight: 'bold',
+            fontSize: '1rem',
+            cursor: 'default'
+          }}>
+            <span className="vote-badge-fire">🔥</span> 現在
+            <span key={totalVotes} className="vote-badge-pop">
+              <span className="vote-badge-number" style={{ fontSize: '1.3rem', fontWeight: '900', lineHeight: 1 }}>
+                <AnimatedCounter value={totalVotes} />
+              </span>
+            </span>
+            件の投票が集まっています！
+          </span>
+        )}
       </p>
       
       {!user && (

@@ -101,3 +101,50 @@ html, body {
     transform: translate(calc(-50% + var(--tx) * 1.5), calc(-50% + var(--ty) * 1.5)) scale(0) rotate(calc(var(--rot) + 180deg));
   }
 }
+
+/* 🔥 投票数バッジのアニメーション */
+.vote-badge-fire {
+  display: inline-block;
+  transform-origin: 50% 90%;
+  animation: voteFireFlicker 1.6s ease-in-out infinite;
+}
+
+.vote-badge-pop {
+  display: inline-block;
+  animation: voteNumberPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.vote-badge-number {
+  display: inline-block;
+  animation: voteNumberHop 3s ease-in-out infinite;
+  text-shadow: 0 0 12px rgba(255, 230, 150, 0.6);
+}
+
+/* 数字が数秒ごとに「ぴょこっ」と跳ねる */
+@keyframes voteNumberHop {
+  0%, 70%, 100% { transform: translateY(0) scale(1); }
+  78% { transform: translateY(-6px) scale(1.15); }
+  86% { transform: translateY(0) scale(0.95); }
+  92% { transform: translateY(-2px) scale(1.03); }
+}
+
+/* 票が増えた瞬間に「ポンッ」と大きくなる */
+@keyframes voteNumberPop {
+  0% { transform: scale(0.4); opacity: 0; }
+  60% { transform: scale(1.35); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+/* 🔥 がゆらゆら燃える */
+@keyframes voteFireFlicker {
+  0%, 100% { transform: rotate(-6deg) scale(1); }
+  50% { transform: rotate(6deg) scale(1.12); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vote-badge-fire,
+  .vote-badge-pop,
+  .vote-badge-number {
+    animation: none;
+  }
+}
