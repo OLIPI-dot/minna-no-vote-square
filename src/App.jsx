@@ -303,11 +303,13 @@ function App() {
   // 📊 サイト全体の総投票数を取得・同期する魔法
   useEffect(() => {
     const fetchTotalVotes = async () => {
-      // optionsテーブルのvotesカラムを全合算する（小規模ならこれでOK）
-      const { data, error } = await supabase.from('options').select('votes');
-      if (!error && data) {
-        const total = data.reduce((sum, opt) => sum + (opt.votes || 0), 0);
-        setTotalVotes(total);
+      // DB側の関数 get_total_votes() で、今あるアンケートの票だけを合計して受け取る
+      // （以前は options を全件取得していたが、Supabaseの1000件上限で正しく数えられなかった）
+      const { data, error } = await supabase.rpc('get_total_votes');
+      if (!error && data !== null && data !== undefined) {
+        setTotalVotes(Number(data) || 0);
+      } else if (error) {
+        console.warn('⚠️ get_total_votes error:', error.message);
       }
     };
 
