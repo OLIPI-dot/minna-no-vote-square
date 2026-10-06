@@ -4,11 +4,47 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-05T21:46:33.963Z</updated>
+  <updated>2026-10-06T02:18:17.107Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>大雨で3度浸水のラーメン店 再開</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23276"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23276</id>
+    <updated>2026-10-06T02:18:14.607Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;1ヶ月で3度浸水のラーメン店&quot;,
+  &quot;point1_desc&quot;: &quot;千葉県大網白里市にあるラーメン店「みたけ」が、8月の千葉豪雨以降、わずか1ヶ月余りの間に3度も浸水被害に見舞われました。厳しい状況に直面しながらも復旧作業を進め、見事に営業再開を果たしました。&quot;,
+  &quot;point2_ti...</summary>
+  </entry>
+  <entry>
+    <title>那覇強殺事件 短時間で犯行か</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23275"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23275</id>
+    <updated>2026-10-06T02:17:50.113Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;那覇のホテルで強盗殺人事件&quot;,
+  &quot;point1_desc&quot;: &quot;沖縄県那覇市若狭のホテルにおいて、地元に住む３９歳の女性が殺害され、所持品が奪われる強盗殺人事件が発生した。防犯カメラなどの捜査が進められ、事件の全容解明が急がれている。&quot;,
+  &quot;point2_title&quot;: &quot;米海兵隊員...</summary>
+  </entry>
+  <entry>
+    <title>日本の制裁受け 露が対抗措置表明</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23274"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23274</id>
+    <updated>2026-10-06T02:16:34.786Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;ロシアが対日本対抗措置を表明&quot;,
+  &quot;point1_desc&quot;: &quot;日本政府による追加制裁の決定を受け、ロシア外務省は日本が関心を持つ分野を対象に対抗措置を実施すると発表した。これにより両国間の緊張がさらに高まることが予想される。&quot;,
+  &quot;point2_title&quot;: &quot;日本に関心のある...</summary>
+  </entry>
   <entry>
     <title>露のペスト研究所員死亡 米が注視</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23273"/>
@@ -576,41 +612,5 @@
   &quot;point1_title&quot;: &quot;当直中の飲酒問題&quot;,
   &quot;point1_desc&quot;: &quot;東海汽船の乗組員が当直勤務中に飲酒していた重大な安全管理上の問題が発覚しました。乗客の命を預かる旅客船運航会社としての安全意識の欠如が強く疑問視されており、大きな波紋を呼んでいます。&quot;,
   &quot;point2_title&quot;: &quot;一部船舶...</summary>
-  </entry>
-  <entry>
-    <title>露大統領「日本の軍備増強懸念」</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23226"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23226</id>
-    <updated>2026-10-02T07:44:01.509Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;プーチン氏の発言&quot;,
-  &quot;point1_desc&quot;: &quot;ロシアのプーチン大統領は国際有識者会議「バルダイ・クラブ討論会」にて、ウクライナ侵攻後に悪化した日ロ関係に触れ、日本との協力関係の構築に強い関心があることを表明しました。&quot;,
-  &quot;point2_title&quot;: &quot;日ロ関係の現状と対話...</summary>
-  </entry>
-  <entry>
-    <title>3歳死亡 2km超にわたり飲酒運転か</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23225"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23225</id>
-    <updated>2026-10-02T02:17:26.285Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;6人死傷の飲酒運転事故&quot;,
-  &quot;point1_desc&quot;: &quot;福岡市西区で9月20日、男児を含む6人が死傷する凄惨な飲酒運転事故が発生しました。容疑者は自宅で飲酒した後に車を運転しており、自動車運転死傷処罰法違反の疑いで送検されています。&quot;,
-  &quot;point2_title&quot;: &quot;容疑者は...</summary>
-  </entry>
-  <entry>
-    <title>韓国「検察庁」78年の歴史に幕</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23224"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23224</id>
-    <updated>2026-10-02T02:17:01.085Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;韓国で検察庁が廃止&quot;,
-  &quot;point1_desc&quot;: &quot;韓国で1948年の設立から78年にわたり存続してきた検察庁が廃止された。これまで巨大な権力を握っていた検察組織の解体は、同国の司法制度における歴史的な大転換点として大きな注目を集めている。&quot;,
-  &quot;point2_title&quot;: &quot;...</summary>
   </entry>
 </feed>
