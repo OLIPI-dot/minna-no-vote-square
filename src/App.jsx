@@ -963,7 +963,7 @@ function App() {
       }
 
       const { data: sv, error: svError } = await supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count').eq('id', surveyId).maybeSingle();
-      if (svError) {
+      if (svError || !sv) {
         window.history.replaceState({ view: 'list' }, '', window.location.pathname + window.location.search + window.location.hash);
         setView('list');
         setCurrentSurvey(null);

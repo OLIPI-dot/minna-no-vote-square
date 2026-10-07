@@ -39,8 +39,12 @@ export default async function handler(req, res) {
       .eq('id', surveyId)
       .maybeSingle();
 
-    if (!error && survey) {
-      // 3. OGP 情報を生成
+    if (error || !survey) {
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      return res.status(404).send(html); // 返すHTML自体は同じ（SPAでリスト表示等になる）ですがステータスコードを404にします
+    }
+
+    // 3. OGP 情報を生成
       const title = escapeHtml(`📊「${survey.title}」| みんアケ🐰🥕 | みんなのアンケート広場`);
       const description = escapeHtml(survey.description || '匿名で気軽に投票・本音が集まるアンケートコミュニティ。あなたの意見を教えてください！');
       const siteUrl = `${baseUrl}/s/${surveyId}`;
@@ -81,7 +85,7 @@ export default async function handler(req, res) {
 
       // さらに元の <title> タグも置換 (プレースホルダー外にあるため削除)
       html = html.replace(/<title>.*?<\/title>/, '');
-    }
+    // (Removed brace)
 
     // 5. 書き換えた HTML を返す (人間もボットも同じSPAを読み込める)
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
