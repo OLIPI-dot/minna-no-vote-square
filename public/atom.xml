@@ -4,11 +4,47 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-06T21:46:24.992Z</updated>
+  <updated>2026-10-07T02:17:35.355Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>国交省否定の簗氏圧力 市長は疑念</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23288"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23288</id>
+    <updated>2026-10-07T02:17:33.542Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;農相の発言を巡る問題&quot;,
+  &quot;point1_desc&quot;: &quot;簗農相が自身の地元自治体に対する道路予算を大幅にカットしたと発言した問題について、大きな波紋が広がっている。政治的な働きかけの有無や予算配分の透明性が強く問われる事態となっている。&quot;,
+  &quot;point2_title&quot;: &quot;国交省...</summary>
+  </entry>
+  <entry>
+    <title>実質賃金10年ぶり8カ月連続プラス</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23287"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23287</id>
+    <updated>2026-10-07T02:16:56.900Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;実質賃金が8ヶ月連続増&quot;,
+  &quot;point1_desc&quot;: &quot;厚生労働省が発表した8月の毎月勤労統計調査の速報によると、物価変動を反映した1人当たりの実質賃金は前年同月比で1.5％増加した。これで8ヶ月連続のプラスとなり、賃金の増加傾向が継続している。&quot;,
+  &quot;point2_title&quot;...</summary>
+  </entry>
+  <entry>
+    <title>ビール大手4社カルテル疑い 調査</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23286"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23286</id>
+    <updated>2026-10-07T02:16:33.207Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;公取委がビール大手を強制調査&quot;,
+  &quot;point1_desc&quot;: &quot;公正取引委員会は、ビールの卸売業者向け価格を調整するカルテルを結んだ独占禁止法違反の疑いで、大手ビールメーカー４社への強制調査に着手しました。検察への刑事告発も視野に全容解明を進める方針です。&quot;,
+  &quot;point2_ti...</summary>
+  </entry>
   <entry>
     <title>台風で高波 西湘バイパス通行止め</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23285"/>
@@ -577,41 +613,5 @@
   &quot;point1_title&quot;: &quot;富山市役所に強制捜査&quot;,
   &quot;point1_desc&quot;: &quot;2025年の国勢調査において人口を不正に水増ししていた問題で、富山県警は統計法違反の疑いで富山市役所の家宅捜索を実施した。行政機関への異例の強制捜査により、事件は重大な局面を迎えた。&quot;,
   &quot;point2_title&quot;: &quot;統計...</summary>
-  </entry>
-  <entry>
-    <title>台風 週明け小笠原諸島へ接近恐れ</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23238"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23238</id>
-    <updated>2026-10-03T07:44:00.920Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;東京の連続雨記録ストップ&quot;,
-  &quot;point1_desc&quot;: &quot;東京では前日までに過去最長となる37日連続での雨を観測していましたが、本日は九州から関東にかけて久々に晴れてカラッとした暑さとなり、連続降水記録がついにストップしました。&quot;,
-  &quot;point2_title&quot;: &quot;明日は西日本...</summary>
-  </entry>
-  <entry>
-    <title>那覇のホテルに女性遺体 事件か</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23237"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23237</id>
-    <updated>2026-10-03T02:18:00.088Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;那覇のホテルで通報&quot;,
-  &quot;point1_desc&quot;: &quot;3日午前4時20分ごろ、沖縄県那覇市若狭にあるホテルで、従業員から「20代くらいの女性の意識がない」と119番通報がありました。現場では警察官が規制線を張り、詳しい状況の捜査が進められています。&quot;,
-  &quot;point2_title&quot;...</summary>
-  </entry>
-  <entry>
-    <title>トランプ氏自嘲 中間選挙に焦り?</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23236"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23236</id>
-    <updated>2026-10-03T02:17:11.898Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;中間選挙まで残り1ヶ月&quot;,
-  &quot;point1_desc&quot;: &quot;米国の中間選挙が11月に迫る中、トランプ政権の今後を左右する重要な時期を迎えている。与野党の勢力図がどう変化するかが焦点であり、全米で選挙に向けたアピールや攻防が一段と激しさを増している。&quot;,
-  &quot;point2_title&quot;:...</summary>
   </entry>
 </feed>
