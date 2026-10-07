@@ -4,11 +4,47 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-07T07:45:04.439Z</updated>
+  <updated>2026-10-07T12:52:13.384Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>育休でパタハラ 男性が会社側提訴</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23294"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23294</id>
+    <updated>2026-10-07T12:52:12.057Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;育休取得でパタハラ訴訟&quot;,
+  &quot;point1_desc&quot;: &quot;ウェディング関連会社に勤める男性社員が、育児休業の取得を理由に勤務先の社長らから不利益や嫌がらせを受けたとして、損害賠償を求める裁判を起こしました。男性に対する不当な扱いが問われています。&quot;,
+  &quot;point2_title&quot;:...</summary>
+  </entry>
+  <entry>
+    <title>損保J 顧客情報6万件が漏えいか</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23293"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23293</id>
+    <updated>2026-10-07T12:51:45.948Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;委託先への不正アクセス&quot;,
+  &quot;point1_desc&quot;: &quot;損害保険ジャパンは、外部の業務委託先が不正アクセスを受け、約6万件の顧客情報が外部へ漏えいした可能性があると発表しました。対象は事業者向けのドライブレコーダーサービス利用者です。&quot;,
+  &quot;point2_title&quot;: &quot;氏名や...</summary>
+  </entry>
+  <entry>
+    <title>化学賞 日本人は2年連続10人目</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23292"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23292</id>
+    <updated>2026-10-07T12:51:18.096Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;ノーベル化学賞選出&quot;,
+  &quot;point1_desc&quot;: &quot;東京理科大の硲合憲三名誉教授が2026年のノーベル化学賞に選出されました。生命を構成するアミノ酸などの分子がどのように成り立っているかの解明につながる研究成果が、国際的に高く評価されたものです。&quot;,
+  &quot;point2_title&quot;...</summary>
+  </entry>
   <entry>
     <title>採決で居眠り 起立せず「反対」に</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23291"/>
@@ -577,41 +613,5 @@
   &quot;point1_title&quot;: &quot;だんじり横転事故が発生&quot;,
   &quot;point1_desc&quot;: &quot;3日午後7時半ごろ、大阪府堺市中区で行われていただんじり祭りにおいて、交差点を左折しようとしていた曳行中のだんじりが横転する事故が発生し、現場は騒然とした雰囲気に包まれた。&quot;,
   &quot;point2_title&quot;: &quot;けが人7人が...</summary>
-  </entry>
-  <entry>
-    <title>米政府のAI 都合の悪い質問を拒否</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23244"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23244</id>
-    <updated>2026-10-03T21:45:27.157Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;米国政府が独自対話型AI公開&quot;,
-  &quot;point1_desc&quot;: &quot;米トランプ政権は政府公式の対話型人工知能であるAmerica.govをウェブサイト上で公開した。国民への情報提供などを目的としているが、行政の公式ツールとして大きな注目を集めている。&quot;,
-  &quot;point2_title&quot;:...</summary>
-  </entry>
-  <entry>
-    <title>米中間選挙 長引く物価高が争点</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23243"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23243</id>
-    <updated>2026-10-03T12:51:55.759Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;米中間選挙の最大争点&quot;,
-  &quot;point1_desc&quot;: &quot;米中間選挙では長引く物価高問題への対応が最大の争点となっている。政権によるインフレ対策の実効性が試されており、有権者からの不満が高まる中で選挙戦が展開されている状況だ。&quot;,
-  &quot;point2_title&quot;: &quot;高関税政策の影響&quot;...</summary>
-  </entry>
-  <entry>
-    <title>4人死亡の火災 玄関付近が火元か</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23242"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23242</id>
-    <updated>2026-10-03T12:51:32.809Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;三重県津市で住宅全焼&quot;,
-  &quot;point1_desc&quot;: &quot;2日午後、三重県津市において住宅が全焼する火災が発生した。この火災現場の跡から、子どもとみられる4人の遺体が発見され、警察や消防による確認作業が進められている。&quot;,
-  &quot;point2_title&quot;: &quot;火元は玄関付近の可能性&quot;,...</summary>
   </entry>
 </feed>
