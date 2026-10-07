@@ -43,7 +43,7 @@ export default async function handler(req, res) {
       // 3. OGP 情報を生成
       const title = escapeHtml(`📊「${survey.title}」| みんアケ🐰🥕 | みんなのアンケート広場`);
       const description = escapeHtml(survey.description || '匿名で気軽に投票・本音が集まるアンケートコミュニティ。あなたの意見を教えてください！');
-      const siteUrl = `${baseUrl}/survey/${surveyId}`;
+      const siteUrl = `${baseUrl}/s/${surveyId}`;
 
       let imageUrl = `${baseUrl}/ogp-image.png`;
       if (survey.image_url) {

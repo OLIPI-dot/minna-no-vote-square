@@ -823,7 +823,7 @@ function App() {
       : 'みんなのアンケート広場は、誰でもかんたんに匿名でアンケートを作成・投票できる場所です。日常の疑問や本音を共有して、みんなの意見を楽しく集約しましょう！';
 
     const currentUrl = currentSurvey
-      ? `${SITE_BASE_URL}/survey/${currentSurvey.id}`
+      ? `${SITE_BASE_URL}/s/${currentSurvey.id}`
       : (view === 'list' ? `${SITE_BASE_URL}/` : `${SITE_BASE_URL}/create`);
 
     // 動画サムネイルがあればOGP画像にする魔法 📸
@@ -916,7 +916,7 @@ function App() {
 
     if (window.gtag) {
       const virtualPath = currentSurvey
-        ? `/survey/${currentSurvey.id}`
+        ? `/s/${currentSurvey.id}`
         : (view === 'list' ? '/' : '/create');
 
       window.gtag('event', 'page_view', {
