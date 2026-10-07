@@ -32,7 +32,6 @@ if (GEMINI_API_KEY) {
 
 const AI_SUMMARY_OPTIONS = {
     max_tokens: 2048,
-    temperature: 0.7,
     thinkingConfig: { thinkingLevel: 'low' }
 };
 
@@ -81,7 +80,6 @@ async function generateAISummary(articleContent) {
                 contents: [{ role: 'user', parts: [{ text: AI_SUMMARY_PROMPT(truncated) }] }],
                 generationConfig: {
                     maxOutputTokens: AI_SUMMARY_OPTIONS.max_tokens,
-                    temperature: AI_SUMMARY_OPTIONS.temperature,
                     responseMimeType: "application/json",
                 }
             });

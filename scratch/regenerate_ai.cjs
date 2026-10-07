@@ -155,7 +155,6 @@ function generateOptions(category, title, description) {
 // 🤖 AI自動要約・タグ生成用の標準プロンプト定義（JSONフォーマット＆十分なmax_tokens）
 const AI_SUMMARY_OPTIONS = {
     max_tokens: 2048, // 文章が途中で途切れないよう十分に確保
-    temperature: 0.7,
     thinkingConfig: { thinkingLevel: 'low' }
 };
 
@@ -229,7 +228,6 @@ async function generateAISummary(articleContent) {
                 contents: [{ role: 'user', parts: [{ text: AI_SUMMARY_PROMPT(truncated) }] }],
                 generationConfig: {
                     maxOutputTokens: AI_SUMMARY_OPTIONS.max_tokens,
-                    temperature: AI_SUMMARY_OPTIONS.temperature,
                 }
             });
             const responseText = result.response.text().trim();
@@ -273,7 +271,6 @@ async function generateAITags(articleContent) {
             contents: [{ role: 'user', parts: [{ text: AI_TAG_PROMPT(truncated) }] }],
             generationConfig: {
                 maxOutputTokens: 256,
-                temperature: 0.3,
             }
         });
         const responseText = result.response.text().trim();
