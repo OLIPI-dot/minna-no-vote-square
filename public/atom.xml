@@ -4,11 +4,47 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-07T12:52:13.384Z</updated>
+  <updated>2026-10-07T21:46:43.432Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>簗農相 衆院選巡り公選法違反疑い</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23297"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23297</id>
+    <updated>2026-10-07T21:46:40.118Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;予算削減問題の追及&quot;,
+  &quot;point1_desc&quot;: &quot;自身を支持しなかった自治体に対して道路予算を削減したとされる簗和生氏の疑惑について、週刊文春が追及しています。選挙における票の有無が行政予算に影響を与えたのではないかと波紋を呼んでいます。&quot;,
+  &quot;point2_title&quot;: &quot;...</summary>
+  </entry>
+  <entry>
+    <title>硤合氏発見 不斉自己触媒作用とは</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23296"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23296</id>
+    <updated>2026-10-07T21:46:14.391Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;ノーベル化学賞に硤合氏ら&quot;,
+  &quot;point1_desc&quot;: &quot;2026年のノーベル化学賞が、東京理科大学の硤合憲三名誉教授とフランスのアンリ・カガン名誉教授に贈られることが決定した。有機化学分野における長年の顕著な研究業績が高く評価された成果である。&quot;,
+  &quot;point2_title&quot;...</summary>
+  </entry>
+  <entry>
+    <title>千葉県で震度4 津波の心配なし</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23295"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23295</id>
+    <updated>2026-10-07T21:45:48.729Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;千葉県北東部で地震発生&quot;,
+  &quot;point1_desc&quot;: &quot;8日午前4時13分頃、千葉県北東部を震源とする地震が発生しました。地震の規模を示すマグニチュードは4.8と推定されており、早朝の強い揺れに多くの地域で注意が呼びかけられました。&quot;,
+  &quot;point2_title&quot;: &quot;千葉県内...</summary>
+  </entry>
   <entry>
     <title>育休でパタハラ 男性が会社側提訴</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23294"/>
@@ -577,41 +613,5 @@
   &quot;point1_title&quot;: &quot;死刑執行失敗で局長辞任&quot;,
   &quot;point1_desc&quot;: &quot;米テネシー州のビル・リー知事は、死刑執行の手続きに失敗した責任を取り、同州矯正局のフランク・ストラダ局長が辞任したことを発表しました。州の執行手順や体制に対する批判が高まる中での辞任劇となりました。&quot;,
   &quot;point2_ti...</summary>
-  </entry>
-  <entry>
-    <title>横浜市長選が告示 7人が立候補</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23247"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23247</id>
-    <updated>2026-10-04T02:16:33.952Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;横浜市長選が告示&quot;,
-  &quot;point1_desc&quot;: &quot;自身のパワーハラスメント問題によって辞職した前横浜市長の辞職に伴い、新たな市長を選ぶ市長選挙が4日に告示された。今後の市政運営のあり方や是非が大きく問われる選挙戦がスタートした。&quot;,
-  &quot;point2_title&quot;: &quot;前職と新人の...</summary>
-  </entry>
-  <entry>
-    <title>韓国サッカー男子V 国旗揚がらず</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23246"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23246</id>
-    <updated>2026-10-03T21:47:45.559Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;日本、韓国に敗れ優勝逃す&quot;,
-  &quot;point1_desc&quot;: &quot;愛知・名古屋アジア大会のサッカー男子決勝が行われ、U-21日本代表は韓国と対戦。0-1で惜しくも敗れ、4大会ぶりとなる金メダル獲得の快挙を逃す結果となった。&quot;,
-  &quot;point2_title&quot;: &quot;焦りを見せる旗手とブーイン...</summary>
-  </entry>
-  <entry>
-    <title>だんじりが横転し7人けが 転落か</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23245"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23245</id>
-    <updated>2026-10-03T21:46:29.123Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;だんじり横転事故が発生&quot;,
-  &quot;point1_desc&quot;: &quot;3日午後7時半ごろ、大阪府堺市中区で行われていただんじり祭りにおいて、交差点を左折しようとしていた曳行中のだんじりが横転する事故が発生し、現場は騒然とした雰囲気に包まれた。&quot;,
-  &quot;point2_title&quot;: &quot;けが人7人が...</summary>
   </entry>
 </feed>
