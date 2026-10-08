@@ -160,12 +160,17 @@ const AI_SUMMARY_PROMPT = (articleContent) => `
     "選択肢2（別の視点やこだわり）",
     "選択肢3（慎重・懸念・反対・様子見の意見）",
     "選択肢4（あまり関心がない・様子見）"
+  ],
+  "netizen_comments": [
+    "ネット民の反応1（短め、2ch風の口調で）",
+    "ネット民の反応2（短め、2ch風の口調で）",
+    "ネット民の反応3（短め、2ch風の口調で）"
   ]
 }
 
 【必須ルール（絶対遵守）】
 ・category は必ず指定された6つのうち1つを選んでください。
-・point1_title から point3_desc、rabi_comment, tags, survey_question, survey_options のキーは【いかなる場合も省略せず、必ず全て】出力してください。
+・point1_title から point3_desc、rabi_comment, tags, survey_question, survey_options, netizen_comments のキーは【いかなる場合も省略せず、必ず全て】出力してください。
 ・要約（desc）は必ず指定の文字数（80〜100文字程度）で、読者にニュースの詳細がしっかり伝わるボリュームにしてください。本文の冒頭の丸写しは厳禁です。
 ・rabi_comment に関する禁止事項：「話題のニュースだね！」のような汎用的な定型文は【厳禁】です。必ず記事の核心に触れ、80文字以上のしっかりとした感想にしてください。
 ・keyword_title と keyword_desc は原則必須です。
@@ -233,7 +238,8 @@ async function generateAISummary(articleContent) {
                     Array.isArray(parsed.tags) &&
                     parsed.survey_question?.trim() &&
                     Array.isArray(parsed.survey_options) &&
-                    parsed.survey_options.length === 4
+                    parsed.survey_options.length === 4 &&
+                    Array.isArray(parsed.netizen_comments)
                 ) {
                     log(`✨ AI要約＆タグ生成成功！(試行 ${attempt}回目)`);
                     return parsed;
@@ -555,6 +561,13 @@ async function startAutoPosting() {
             let tags = [];
             if (richData.summaryObj && Array.isArray(richData.summaryObj.tags)) {
                 tags = richData.summaryObj.tags.map(t => String(t).trim()).filter(t => t.length > 0);
+            }
+            if (richData.summaryObj && Array.isArray(richData.summaryObj.netizen_comments)) {
+                richData.summaryObj.netizen_comments.forEach(comment => {
+                    if (comment && String(comment).trim()) {
+                        tags.push(`comment:${String(comment).trim()}`);
+                    }
+                });
             }
             let options = ['とても興味がある！', '普通に気になる・知りたい', 'あまり関心がない', '正直、どうでもいいかな'];
             if (richData.summaryObj && Array.isArray(richData.summaryObj.survey_options) && richData.summaryObj.survey_options.length >= 4) {
