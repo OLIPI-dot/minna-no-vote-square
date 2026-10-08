@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback, lazy, Suspense } from 'react';
 import confetti from 'canvas-confetti';
-// Deploy Kick: 2026-10-08 22:04 🚀🐰 (View Count Fix & Netizen Comments Spacing)
+// Deploy Kick: 2026-10-08 22:08 🚀🐰 (Update zero-vote message)
 import { supabase } from './supabaseClient';
 // 🚀 コンポーネントの遅延読み込みで初期バンドルを極限まで削るらび！
 const Sidebar = lazy(() => import('./components/Sidebar'));

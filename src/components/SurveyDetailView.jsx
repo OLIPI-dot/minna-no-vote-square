@@ -486,8 +486,8 @@ const SurveyDetailView = ({
           color: '#b45309',
           animation: 'pulse-glow 2s infinite'
         }}>
-          <div style={{ fontSize: '1.2rem', marginBottom: '4px' }}>⚔️ <strong>あなたが最初の勇者です！</strong> ⚔️</div>
-          <div style={{ fontSize: '0.95rem' }}>まだ誰も投票していません。記念すべき1票を投じて、このアンケートを導いてください！🧙‍♂️✨</div>
+          <div style={{ fontSize: '1.2rem', marginBottom: '4px' }}>🐰 <strong>まだ誰も投票してないらび！</strong> 🥕</div>
+          <div style={{ fontSize: '0.95rem' }}>あなたの記念すべき1票で、最初の結果が決まるよ！気軽にポチッとしてみてね✨</div>
         </div>
       )}
 
