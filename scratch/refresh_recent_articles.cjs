@@ -53,17 +53,23 @@ const AI_SUMMARY_PROMPT = (articleContent) => `
     "選択肢2（別の視点やこだわり）",
     "選択肢3（慎重・懸念・反対・様子見の意見）",
     "選択肢4（あまり関心がない・様子見）"
+  ],
+  "netizen_comments": [
+    "ネット民の反応1（短め、2ch風の口調で）",
+    "ネット民の反応2（短め、2ch風の口調で）",
+    "ネット民の反応3（短め、2ch風の口調で）"
   ]
 }
 
 【必須ルール（絶対遵守）】
-・point1_title, point1_desc, point2_title, point2_desc, rabi_comment, tags, survey_question, survey_options のキーは【いかなる場合も省略せず、必ず全て】出力してください。
+・point1_title, point1_desc, point2_title, point2_desc, rabi_comment, tags, survey_question, survey_options, netizen_comments のキーは【いかなる場合も省略せず、必ず全て】出力してください。
 ・要約（desc）は必ず60〜80文字程度で、読者にニュースのメリットや変更点がしっかり伝わる充実した内容にしてください。※【重要】本文の冒頭1〜2文をそのままコピー＆ペーストすることは絶対に禁止です。記事全体の趣旨を咀嚼してあなた自身の言葉で要約してください。タイトルの丸写しも厳禁です。
 ・rabi_comment に関する禁止事項：「話題のニュースだね！みんなはどう思う？」のような、どの記事にも使い回せる汎用的な定型文の出力は【厳禁】です。必ず「記事の中身（例：実質7万円は安いね！、噴火警戒は心配だね、等）」に感情を動かされたコメントにし、明るく親しみやすい語尾（うさぎキャラ）にしてください。
 ・keyword_title と keyword_desc は原則必須です。一般的な平易なニュース以外は必ず記事内の重要キーワードを1つ選んで解説を出力してください。
 ・tags の最優先ルール：記事タイトルに含まれる「作品名（例：ポケモンスリープ、ポケモン）」「製品名（例：iPhone、Galaxy）」「企業名」は【必ず最優先で1〜2個目にタグとして抽出】してください。
 ・tags に「注目トピック」「ニュース」「イベント」などの抽象的で無意味なワードは出力禁止です。記事本文から直接3〜4個抽出してください。
 ・survey_options は必ず4つの文字列の配列として出力してください。
+・netizen_comments は必ず3つの短い文字列（2ch風、ネット掲示板風のリアルな反応）の配列として出力してください。
 ・途中で文章が切れないよう、必ず完全なJSON形式で最後まで出力してください。
 
 【記事テキスト】
@@ -97,7 +103,9 @@ async function generateAISummary(articleContent) {
                     Array.isArray(parsed.tags) &&
                     parsed.survey_question?.trim() &&
                     Array.isArray(parsed.survey_options) &&
-                    parsed.survey_options.length === 4
+                    parsed.survey_options.length === 4 &&
+                    Array.isArray(parsed.netizen_comments) &&
+                    parsed.netizen_comments.length === 3
                 ) {
                     return parsed;
                 }
@@ -143,12 +151,22 @@ async function generateAISummary(articleContent) {
             // 新しい richDescription を作成
             const newDescription = '[[SUMMARY:\n' + JSON.stringify(summaryObj, null, 2) + '\n]]\n\n' + rawBody;
             
+            // 📝 既存のタグにネット民の反応を追加
+            const newTags = [...summaryObj.tags];
+            if (Array.isArray(summaryObj.netizen_comments)) {
+                summaryObj.netizen_comments.forEach(comment => {
+                    if (comment.trim()) {
+                        newTags.push(`comment:${comment.trim()}`);
+                    }
+                });
+            }
+
             // 3. Supabaseの description と tags カラムを UPDATE
             const { error: updateError } = await supabase
                 .from('surveys')
                 .update({ 
                     description: newDescription, 
-                    tags: summaryObj.tags 
+                    tags: newTags 
                 })
                 .eq('id', survey.id);
                 

@@ -107,8 +107,8 @@ const SurveyListView = ({
       .filter(s => !s.tags?.includes('お知らせ')) // お知らせは除外
       .filter(s => !s.deadline || new Date(s.deadline) > now) // 終了済み(受付終了)を除外
       .sort((a, b) => {
-        const scoreA = (a.total_votes || 0) * 10 + (a.view_count || 0);
-        const scoreB = (b.total_votes || 0) * 10 + (b.view_count || 0);
+        const scoreA = (a.total_votes || 0) * 10 + Math.max(a.view_count || 0, a.total_votes || 0);
+        const scoreB = (b.total_votes || 0) * 10 + Math.max(b.view_count || 0, b.total_votes || 0);
         return scoreB - scoreA;
       })
       .slice(0, 5); // 上位5件をピックアップ
@@ -120,13 +120,13 @@ const SurveyListView = ({
     if (sortMode === 'popular') {
       const calcTotalScore = (item) => {
         const votes = Number(item.total_votes || 0);
-        const views = Number(item.view_count || item.views || 0);
+        const views = Math.max(Number(item.view_count || item.views || 0), votes);
         const likes = Number(item.likes_count || item.likes || 0);
         return (votes * 10) + (likes * 5) + views;
       };
       const calcTrendingScore = (item) => {
         const votes = Number(item.total_votes || 0);
-        const views = Number(item.view_count || item.views || 0);
+        const views = Math.max(Number(item.view_count || item.views || 0), votes);
         return (votes * 5) + views;
       };
 
@@ -135,7 +135,7 @@ const SurveyListView = ({
       } else if (popularMode === 'trending') {
         list.sort((a, b) => calcTrendingScore(b) - calcTrendingScore(a));
       } else if (popularMode === 'views') {
-        list.sort((a, b) => Number(b.view_count || b.views || 0) - Number(a.view_count || a.views || 0));
+        list.sort((a, b) => Math.max(Number(b.view_count || b.views || 0), Number(b.total_votes || 0)) - Math.max(Number(a.view_count || a.views || 0), Number(a.total_votes || 0)));
       } else if (popularMode === 'votes') {
         list.sort((a, b) => Number(b.total_votes || 0) - Number(a.total_votes || 0));
       }
@@ -539,11 +539,11 @@ const SurveyListView = ({
                   const likes = Number(s.likes_count || s.likes || 0);
 
                   if (popularMode === 'trending') {
-                    badgeLabel = `🔥 ${(votes * 5) + views}`;
+                    badgeLabel = `🔥 ${(votes * 5) + Math.max(views, votes)}`;
                   } else if (popularMode === 'views') {
-                    badgeLabel = `👁️ ${views} View`;
+                    badgeLabel = `👁️ ${Math.max(views, votes)} View`;
                   } else if (popularMode === 'score') {
-                    badgeLabel = `⚡ ${(votes * 10) + (likes * 5) + views} pt`;
+                    badgeLabel = `⚡ ${(votes * 10) + (likes * 5) + Math.max(views, votes)} pt`;
                   } else {
                     badgeLabel = `🗳️ ${votes} 票`;
                   }
@@ -727,7 +727,7 @@ const SurveyListView = ({
                               {/* 2段目（下段）：リアクション数字類 */}
                               <div className="list-item-meta-lower survey-item-meta-row" style={{ display: 'flex', flexWrap: 'nowrap', whiteSpace: 'nowrap', gap: '8px', minWidth: 0 }}>
                                 <span className="survey-item-votes">🗳️{s.total_votes || 0}</span>
-                                <span className="survey-item-views">👁️{s.view_count || 0}</span>
+                                <span className="survey-item-views">👁️{Math.max(s.view_count || 0, s.total_votes || 0)}</span>
                                 <span className="survey-item-likes">👍{s.likes_count || 0}</span>
                                 <span className="survey-item-comments">💬{s.comment_count || 0}</span>
                               </div>
@@ -767,7 +767,7 @@ const SurveyListView = ({
                               {/* 2段目（下段）：リアクション数字類 */}
                               <div className="survey-item-meta-lower" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', alignItems: 'center', width: '100%', padding: '0 2px', boxSizing: 'border-box' }}>
                                 <span className="survey-item-votes" title="投票数" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2px', fontSize: '10px', whiteSpace: 'nowrap' }}>🗳️ {s.total_votes || 0}</span>
-                                <span className="survey-item-views" title="閲覧数" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2px', fontSize: '10px', whiteSpace: 'nowrap' }}>👁️ {s.view_count || 0}</span>
+                                <span className="survey-item-views" title="閲覧数" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2px', fontSize: '10px', whiteSpace: 'nowrap' }}>👁️ {Math.max(s.view_count || 0, s.total_votes || 0)}</span>
                                 <span className="survey-item-likes" title="いいね数" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2px', fontSize: '10px', whiteSpace: 'nowrap' }}>👍 {s.likes_count || 0}</span>
                                 <span className="survey-item-comments" title="コメント数" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2px', fontSize: '10px', whiteSpace: 'nowrap' }}>💬 {s.comment_count || 0}</span>
                               </div>

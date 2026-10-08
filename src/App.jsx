@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback, lazy, Suspense } from 'react';
 import confetti from 'canvas-confetti';
-// Deploy Kick: 2026-03-26 18:45 🚀🐰 (Category Fix Forced)
+// Deploy Kick: 2026-10-08 22:04 🚀🐰 (View Count Fix & Netizen Comments Spacing)
 import { supabase } from './supabaseClient';
 // 🚀 コンポーネントの遅延読み込みで初期バンドルを極限まで削るらび！
 const Sidebar = lazy(() => import('./components/Sidebar'));
@@ -1731,6 +1731,17 @@ function App() {
 
     isVotingProcessingRef.current = true; // 🚧 ガード開始！
 
+    // 第一号特権アニメーション 🎉
+    const totalVotesBefore = options.reduce((sum, opt) => sum + (opt.votes || 0), 0);
+    if (totalVotesBefore === 0) {
+      confetti({
+        particleCount: 200,
+        spread: 120,
+        origin: { y: 0.5 },
+        colors: ['#FFD700', '#FFA500', '#FF4500', '#00FA9A', '#1E90FF', '#FF69B4']
+      });
+    }
+
     // 🏎️ 楽観的UI更新: 瞬時に反映させるらび！
     localStorage.setItem(`voted_survey_${currentSurvey.id}`, String(option.id));
     setVotedOption(String(option.id));
@@ -2516,6 +2527,7 @@ function App() {
                   setCommentContent={setCommentContent}
                   handlePostComment={handlePostComment}
                   isPostingComment={isPostingComment}
+                  showFirstVoterAnim={showFirstVoterAnim}
                   currentCommentPage={currentCommentPage}
                   setCurrentCommentPage={setCurrentCommentPage}
                   editingCommentId={editingCommentId}

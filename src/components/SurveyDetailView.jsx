@@ -326,7 +326,7 @@ const SurveyDetailView = ({
 
         <div className="detail-meta-bar" style={{ marginBottom: '25px', display: 'flex', flexWrap: 'wrap', gap: '15px', justifyContent: 'center', alignItems: 'center' }}>
           <span style={{ color: '#10b981', fontWeight: 'bold', background: 'rgba(16, 185, 129, 0.05)', padding: '4px 12px', borderRadius: '20px', display: 'flex', alignItems: 'center', gap: '4px' }}>👀 いま {surveyOnlineCount} 人がチェック中！</span>
-          <span style={{ background: '#f8fafc', padding: '4px 12px', borderRadius: '20px', color: '#64748b', display: 'flex', alignItems: 'center', gap: '4px' }}>👁️ {currentSurvey.view_count || 0} 閲覧</span>
+          <span style={{ background: '#f8fafc', padding: '4px 12px', borderRadius: '20px', color: '#64748b', display: 'flex', alignItems: 'center', gap: '4px' }}>👁️ {Math.max(currentSurvey.view_count || 0, isTotalVotes || 0)} 閲覧</span>
           <span style={{ background: '#f8fafc', padding: '4px 12px', borderRadius: '20px', color: '#64748b', display: 'flex', alignItems: 'center', gap: '4px' }}>👍 {currentSurvey.likes_count || 0} いいね</span>
           <span style={{ background: '#f8fafc', padding: '4px 12px', borderRadius: '20px', color: '#64748b', display: 'flex', alignItems: 'center', gap: '4px' }}>
             🗳️ <AnimatedCounter value={isTotalVotes || 0} /> 票
@@ -465,7 +465,7 @@ const SurveyDetailView = ({
                   <div style={{ marginBottom: '8px' }}>
                     {i + 1} 名前：<span style={{ color: 'green', fontWeight: 'bold' }}>名無しの広場民</span> ：{yyyy}/{mm}/{dd}({day}) {hh}:{min}:{ss}.{ms} {chId}
                   </div>
-                  <div style={{ marginLeft: '2em', wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>
+                  <div style={{ marginLeft: '2em', wordBreak: 'break-word', whiteSpace: 'pre-wrap', letterSpacing: 'normal', textAlign: 'left' }}>
                     {comment}
                   </div>
                 </div>
@@ -486,8 +486,8 @@ const SurveyDetailView = ({
           color: '#b45309',
           animation: 'pulse-glow 2s infinite'
         }}>
-          <div style={{ fontSize: '1.2rem', marginBottom: '4px' }}>👑 <strong>記念すべき第1号チャンス！</strong> 👑</div>
-          <div style={{ fontSize: '0.95rem' }}>まだ誰も投票していません。あなたの1票でこのアンケートの空気が決まります！</div>
+          <div style={{ fontSize: '1.2rem', marginBottom: '4px' }}>⚔️ <strong>あなたが最初の勇者です！</strong> ⚔️</div>
+          <div style={{ fontSize: '0.95rem' }}>まだ誰も投票していません。記念すべき1票を投じて、このアンケートを導いてください！🧙‍♂️✨</div>
         </div>
       )}
 

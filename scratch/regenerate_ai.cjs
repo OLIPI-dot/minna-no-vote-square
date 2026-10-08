@@ -168,13 +168,19 @@ const AI_SUMMARY_PROMPT = (articleContent) => `
   "point2_desc": "内容説明2（60〜80字程度）",
   "rabi_comment": "らびの感想や問いかけ（50字程度・語尾は〜だね！等）",
   "keyword_title": "専門用語（※ある場合のみ。なければ空文字）",
-  "keyword_desc": "用語の1行解説（※ある場合のみ。なければ空文字）"
+  "keyword_desc": "用語の1行解説（※ある場合のみ。なければ空文字）",
+  "netizen_comments": [
+    "ネット民の反応1（短め、2ch風の口調で）",
+    "ネット民の反応2（短め、2ch風の口調で）",
+    "ネット民の反応3（短め、2ch風の口調で）"
+  ]
 }
 
 【必須ルール（絶対遵守）】
-・point1_title, point1_desc, point2_title, point2_desc, rabi_comment の5つのキーは【いかなる場合も省略せず、必ず全て】出力してください。
+・point1_title, point1_desc, point2_title, point2_desc, rabi_comment, netizen_comments のキーは【いかなる場合も省略せず、必ず全て】出力してください。
 ・要約（desc）は必ず70〜100文字程度で、読者にニュースのメリットや変更点がしっかり伝わる充実した内容にしてください。「タイトルの丸写し」や「短すぎる要約」は厳禁です。
 ・rabi_comment では、「〜だね！みんなはどう思う？🐰」のように明るく親しみやすい語尾にしてください。省略は絶対に禁止です。
+・netizen_comments は必ず3つの短い文字列（2ch風、ネット掲示板風のリアルな反応）の配列として出力してください。
 ・keyword_title と keyword_desc は、専門用語や略語がない日常ニュース等の場合は空文字 "" にしてください。
 ・途中で文章が切れないよう、必ず完全なJSON形式で最後まで出力してください。
 
@@ -240,7 +246,8 @@ async function generateAISummary(articleContent) {
                     parsed && 
                     parsed.point1_title?.trim() && parsed.point1_desc?.trim() && 
                     parsed.point2_title?.trim() && parsed.point2_desc?.trim() && 
-                    parsed.rabi_comment?.trim()
+                    parsed.rabi_comment?.trim() &&
+                    Array.isArray(parsed.netizen_comments) && parsed.netizen_comments.length === 3
                 ) {
                     log(`✨ AI要約生成成功！(試行 ${attempt}回目)`);
                     return parsed;
@@ -443,11 +450,11 @@ async function fetchRichData(url, newsTitle = '') {
             richDescription = `[[SUMMARY:\n${JSON.stringify(summaryObj, null, 2)}\n]]\n\n${richDescription}`;
         }
 
-        return { description: richDescription, image: ogImage, mainText: fullText };
+        return { description: richDescription, image: ogImage, mainText: fullText, summaryObj };
     } catch (e) {
         log(`[Rich Fetch Error] ${url} -> ${e.message}`);
     }
-    return { description: null, image: null };
+    return { description: null, image: null, summaryObj: null };
 }
 
 function classifyNews(title, description) {
@@ -544,6 +551,16 @@ async function startAutoPosting() {
                 const merged = new Set([...tags, ...fallbackTags]);
                 tags = filterTags(Array.from(merged)).slice(0, 5);
             }
+            
+            // 📝 ネット民の反応（コメントタグ）を追加
+            if (richData.summaryObj && Array.isArray(richData.summaryObj.netizen_comments)) {
+                richData.summaryObj.netizen_comments.forEach(comment => {
+                    if (comment.trim()) {
+                        tags.push(`comment:${comment.trim()}`);
+                    }
+                });
+            }
+
             const options = generateOptions(cat, news.title, richData.description);
 
             // 🏷️ 出典元をタイトルから抜き出すらび！
