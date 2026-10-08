@@ -138,6 +138,7 @@ const SurveyDetailView = ({
   setActiveTab,
   handleSurveyReaction,
   STAMPS,
+  COMMENT_EMOJIS,
   surveys,
   recommendedSurveys,
   setSurveys,
@@ -149,6 +150,19 @@ const SurveyDetailView = ({
   const [isEditingContent, setIsEditingContent] = React.useState(false);
   const [editTitle, setEditTitle] = React.useState('');
   const [editDescription, setEditDescription] = React.useState('');
+  const [isConfirmingPost, setIsConfirmingPost] = React.useState(false);
+  const [activeStampPicker, setActiveStampPicker] = React.useState(null);
+  const [confirmingDeleteId, setConfirmingDeleteId] = React.useState(null);
+
+  React.useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (!e.target.closest('.stamp-picker-container')) {
+        setActiveStampPicker(null);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
   
   if (!currentSurvey) return <div className="empty-msg">読み込み中...</div>;
 
@@ -204,6 +218,10 @@ const SurveyDetailView = ({
   const descPart = (currentSurvey.tags?.includes('お知らせ') && currentSurvey.title?.includes('||'))
     ? currentSurvey.title.split('||')[1].trim()
     : (currentSurvey.description || '');
+
+  // 💬 ガヤ（コメント）タグを探す
+  const commentTags = currentSurvey.tags?.filter(t => String(t).startsWith('comment:')) || [];
+  const pickupComments = commentTags.map(t => t.replace('comment:', ''));
 
   return (
     <div className="score-card">
@@ -402,6 +420,60 @@ const SurveyDetailView = ({
         renderCommentContent={renderCommentContent}
         isTimeUp={isTimeUp}
       >
+      {/* 💬 みんなのガヤ（ピックアップコメント複数表示 - 2ch風） */}
+      {pickupComments.length > 0 && (
+        <div style={{
+          background: '#efefef',
+          border: '1px solid #ccc',
+          borderRadius: '4px',
+          padding: '16px 20px',
+          margin: '0 0 30px 0',
+          position: 'relative',
+          fontFamily: '"Mona", "MS PGothic", "IPAMonaPGothic", "Monapo", sans-serif'
+        }}>
+          <div style={{ 
+            fontSize: '1.1rem', 
+            fontWeight: 'bold', 
+            color: '#cc0000', 
+            marginBottom: '16px',
+            borderBottom: '1px solid #ccc',
+            paddingBottom: '8px'
+          }}>
+            【ネット民の反応】
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            {pickupComments.map((comment, i) => {
+              const d = new Date(currentSurvey.created_at || Date.now());
+              d.setMinutes(d.getMinutes() + i * 3 + 2);
+              const yyyy = d.getFullYear();
+              const mm = String(d.getMonth() + 1).padStart(2, '0');
+              const dd = String(d.getDate()).padStart(2, '0');
+              const day = ['日','月','火','水','木','金','土'][d.getDay()];
+              const hh = String(d.getHours()).padStart(2, '0');
+              const min = String(d.getMinutes()).padStart(2, '0');
+              const ss = String(d.getSeconds()).padStart(2, '0');
+              const ms = String(d.getMilliseconds()).padStart(2, '0').substring(0, 2);
+              
+              const isNum = typeof currentSurvey.id === 'number';
+              const idVal = isNum ? currentSurvey.id : (String(currentSurvey.id).charCodeAt(0) || 123);
+              const hash = (idVal * 9876543) ^ (i * 123456789) ^ (i * 777777);
+              const idBase = Math.abs(hash).toString(36).padEnd(8, 'X') + 'A1B2C3D4';
+              const chId = 'ID:' + idBase.substring(0, 8).toUpperCase();
+
+              return (
+                <div key={i} style={{ fontSize: '15px', color: '#000', lineHeight: '1.5' }}>
+                  <div style={{ marginBottom: '8px' }}>
+                    {i + 1} 名前：<span style={{ color: 'green', fontWeight: 'bold' }}>名無しの広場民</span> ：{yyyy}/{mm}/{dd}({day}) {hh}:{min}:{ss}.{ms} {chId}
+                  </div>
+                  <div style={{ marginLeft: '2em', wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>
+                    {comment}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
       {/* 🚀 第1号ボーナスの演出 */}
       {!votedOption && !isTimeUp && isTotalVotes === 0 && (
         <div style={{
@@ -720,41 +792,149 @@ const SurveyDetailView = ({
       </div>
 
       {/* 💬 コメント（掲示板）セクション */}
-      <div className="comment-section-area" style={{ marginTop: '50px', padding: '32px 24px', background: '#f8fafc', borderRadius: '24px', border: '1px solid #e2e8f0', boxShadow: '0 4px 15px rgba(0,0,0,0.03)' }}>
-        <h3 className="comments-title">💬 みんなのコメント <span style={{ fontSize: '0.9rem', fontWeight: 'normal', color: '#94a3b8' }}>({comments.length}件)</span></h3>
-        <div className="comment-form-card">
-          <input type="text" placeholder="名無しさん" value={commentName} onChange={e => setCommentName(e.target.value)} className="comment-name-input" />
-          <textarea placeholder="コメントを書いてね！🐰✨" value={commentContent} onChange={e => setCommentContent(e.target.value)} className="comment-textarea" />
-          <button className="comment-submit-btn" onClick={handlePostComment} disabled={isPostingComment}>{isPostingComment ? '送信中...' : 'コメントを投稿する'}</button>
-        </div>
-        <div className="comments-list">
-          {comments.length > 0 ? comments.slice((currentCommentPage - 1) * 5, currentCommentPage * 5).map((c, idx) => {
-            const absoluteIndex = (currentCommentPage - 1) * 5 + idx;
-            // 🔢 レス番号の計算（全体の投稿順。最新投稿が一番大きな番号になるように）
-            const stableResNum = comments.length - absoluteIndex;
+      <div className="comment-section-area" id="comments" style={{ 
+        marginTop: '50px', 
+        padding: '32px 24px', 
+        background: '#efefef', 
+        border: '1px solid #ccc', 
+        borderRadius: '4px', 
+        fontFamily: '"Mona", "MS PGothic", "IPAMonaPGothic", "Monapo", sans-serif'
+      }}>
+        <h3 className="comments-title" style={{ color: '#cc0000', fontSize: '1.2rem', borderBottom: '1px solid #ccc', paddingBottom: '8px', marginBottom: '24px' }}>
+          💬 みんなの書き込み <span style={{ fontSize: '0.9rem', fontWeight: 'normal', color: '#666' }}>({comments.length}件)</span>
+        </h3>
+
+        {isConfirmingPost ? (
+          <div style={{ marginBottom: '32px', padding: '16px', background: '#fff', border: '2px solid #cc0000', borderRadius: '4px' }}>
+            <div style={{ fontSize: '1.1rem', fontWeight: 'bold', color: '#cc0000', marginBottom: '12px' }}>
+              ⚠️ 書き込み確認
+            </div>
+            <div style={{ fontSize: '0.9rem', color: '#333', marginBottom: '16px', lineHeight: '1.6' }}>
+              ・書き込む前に、他の人が読んで不快にならないか確認してください。<br />
+              ・誹謗中傷、個人情報の特定、脅迫など、法的に問題のある書き込みは通報の対象となり、警察への情報提供を行う場合があります。<br />
+              <br />
+              <strong>本当に書き込みますか？</strong>
+            </div>
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <button 
+                onClick={() => {
+                  handlePostComment();
+                  setIsConfirmingPost(false);
+                }}
+                disabled={isPostingComment}
+                style={{ padding: '8px 24px', background: '#cc0000', color: '#fff', border: 'none', borderRadius: '2px', cursor: isPostingComment ? 'not-allowed' : 'pointer', fontWeight: 'bold' }}
+              >
+                {isPostingComment ? '送信中...' : '本当に書き込む'}
+              </button>
+              <button 
+                onClick={() => setIsConfirmingPost(false)}
+                style={{ padding: '8px 24px', background: '#e0e0e0', border: '1px solid #888', borderRadius: '2px', cursor: 'pointer' }}
+              >
+                修正する
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div style={{ marginBottom: '32px', padding: '16px', background: '#fff', border: '1px solid #ccc', borderRadius: '4px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', fontSize: '0.9rem', fontWeight: 'bold' }}>
+              <span>名前：</span>
+              <input 
+                type="text" 
+                placeholder="名無しの広場民" 
+                value={commentName} 
+                onChange={e => setCommentName(e.target.value)} 
+                style={{ padding: '2px 4px', border: '1px solid #aaa', borderRadius: '2px', width: '200px' }}
+              />
+            </div>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+              <textarea 
+                placeholder="書き込む内容を入力" 
+                value={commentContent} 
+                onChange={e => setCommentContent(e.target.value)} 
+                style={{ flex: 1, height: '80px', padding: '4px', border: '1px solid #aaa', borderRadius: '2px', resize: 'vertical', fontFamily: 'inherit' }}
+              />
+              <button 
+                onClick={() => setIsConfirmingPost(true)} 
+                disabled={isPostingComment || !commentContent.trim()}
+                style={{ 
+                  padding: '4px 16px', 
+                  background: '#e0e0e0', 
+                  border: '1px solid #888', 
+                  borderRadius: '2px',
+                  cursor: (isPostingComment || !commentContent.trim()) ? 'not-allowed' : 'pointer',
+                  fontWeight: 'bold',
+                  alignSelf: 'stretch'
+                }}
+              >
+                書き込む
+              </button>
+            </div>
+          </div>
+        )}
+        
+        <div className="comments-list" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          {comments.length > 0 ? comments.slice((currentCommentPage - 1) * 50, currentCommentPage * 50).map((c, idx) => {
+            const absoluteIndex = (currentCommentPage - 1) * 50 + idx;
+            // 🔢 レス番号の計算（全体の投稿順）
+            const stableResNum = absoluteIndex + 1;
             const isMyComment = myCommentKeys[c.id] || (user && c.user_id === user.id);
             const isLabi = c.user_name?.includes('らび');
+            
+            // 2ch風の日付とID
+            const d = new Date(c.created_at);
+            const yyyy = d.getFullYear();
+            const mm = String(d.getMonth() + 1).padStart(2, '0');
+            const dd = String(d.getDate()).padStart(2, '0');
+            const day = ['日','月','火','水','木','金','土'][d.getDay()];
+            const hh = String(d.getHours()).padStart(2, '0');
+            const min = String(d.getMinutes()).padStart(2, '0');
+            const ss = String(d.getSeconds()).padStart(2, '0');
+            const ms = String(d.getMilliseconds()).padStart(2, '0').substring(0, 2);
+            
+            // ID生成 (トリップがあればそれをベースに、なければUUIDをハッシュ化)
+            const authorName = c.user_name || '名無しの広場民';
+            const trip = authorName.includes('◆') ? authorName.split('◆')[1] : null;
+            let generatedId = '';
+            
+            // 日付文字列 (YYYYMMDD) を使って、日替わりIDにする
+            const dateSeed = `${yyyy}${mm}${dd}`;
+            
+            if (c.avatar_url && c.avatar_url.length > 5) {
+              // avatar_url に格納された client_fp を使う
+              const seed = c.avatar_url + dateSeed + c.survey_id;
+              let hash = 0;
+              for (let i = 0; i < seed.length; i++) {
+                hash = Math.imul(31, hash) + seed.charCodeAt(i) | 0;
+              }
+              generatedId = Math.abs(hash).toString(16).substring(0, 8).toUpperCase().padStart(8, '0');
+            } else if (String(c.id).includes('-')) { // UUIDの場合
+              const uuidHash = String(c.id).split('-')[0];
+              generatedId = uuidHash.toUpperCase().substring(0, 8);
+            } else { // 古いbigintの場合
+              generatedId = ((Number(c.id) || 1) * 7).toString(16).substring(0, 8).toUpperCase();
+            }
+            const chId = trip ? `ID:${trip}` : `ID:${generatedId}`;
+            const cleanName = trip ? authorName.split('◆')[0] : authorName;
 
             return (
-              <div key={c.id} className={`comment-item-card ${isLabi ? 'comment-labi' : ''}`}>
-                <div className="comment-item-header">
-                  <div className="comment-author-wrap">
-                    <span className="comment-res-num" onClick={() => setCommentContent(prev => prev + `>>${stableResNum} `)}>{stableResNum}</span>
-                    <span className="comment-author" style={isLabi ? { color: '#d97706', fontWeight: '900' } : {}}>
-                      {isLabi ? '🐰 らび 🐰 (AI)' : `👤 ${c.user_name}`}
-                    </span>
-                    {isMyComment && <span className="my-comment-badge" style={{ marginLeft: '10px' }}>★ あなたの投稿</span>}
-                  </div>
-                  <span className="comment-date">{new Date(c.created_at).toLocaleString('ja-JP', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}</span>
+              <div key={c.id} style={{ fontSize: '15px', color: '#000', lineHeight: '1.5' }}>
+                <div style={{ marginBottom: '8px' }}>
+                  <span onClick={() => setCommentContent(prev => prev + `>>${stableResNum} `)} style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline', marginRight: '4px' }}>{stableResNum}</span>
+                  名前：<span style={{ color: 'green', fontWeight: 'bold' }}>
+                    {isLabi ? '🐰 らび 🐰 (AI)' : cleanName}
+                  </span>
+                  ：{yyyy}/{mm}/{dd}({day}) {hh}:{min}:{ss}.{ms} {chId}
+                  {isMyComment && <span style={{ marginLeft: '10px', fontSize: '0.8rem', color: '#888' }}>★あなたの書き込み</span>}
                 </div>
 
-                <div className="comment-item-body">
+                <div style={{ marginLeft: '2em', wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>
                   {editingCommentId === c.id ? (
                     <div className="comment-edit-form">
                       <textarea
                         value={editContent}
                         onChange={(e) => setEditContent(e.target.value)}
                         className="comment-edit-textarea"
+                        style={{ fontFamily: 'inherit' }}
                       />
                       <div className="comment-edit-actions">
                         <button className="comment-edit-save" onClick={handleUpdateComment} disabled={isActionLoading}>保存</button>
@@ -766,42 +946,120 @@ const SurveyDetailView = ({
                   )}
                 </div>
 
-                <div className="comment-footer-row">
-                  <div className="comment-reactions">
+                <div style={{ marginLeft: '2em', marginTop: '6px', display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
+                  {Object.entries(c.reactions || {}).filter(([_, count]) => count > 0).map(([emoji, count]) => {
+                    const isReacted = myReactions[`${c.id}_${emoji}`];
+                    return (
+                      <button
+                        key={emoji}
+                        style={{
+                          background: isReacted ? '#e0f0ff' : '#f0f0f0',
+                          border: isReacted ? '1px solid #0066cc' : '1px solid transparent',
+                          borderRadius: '12px',
+                          cursor: 'pointer',
+                          padding: '2px 8px',
+                          fontSize: '0.85rem',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          opacity: isActionLoading ? 0.5 : 1
+                        }}
+                        disabled={isActionLoading}
+                        onClick={() => handleReaction(c.id, emoji)}
+                      >
+                        <span>{emoji}</span> <span>{count}</span>
+                      </button>
+                    );
+                  })}
+                  
+                  <div className="stamp-picker-container" style={{ position: 'relative' }}>
                     <button
-                      className={`reaction-btn ${myReactions[`${c.id}_good`] ? 'active' : ''}`}
-                      onClick={() => handleReaction(c.id, 'good')}
+                      style={{
+                        border: 'none',
+                        cursor: 'pointer',
+                        padding: '2px 6px',
+                        fontSize: '0.9rem',
+                        opacity: 0.6,
+                        borderRadius: '12px',
+                        background: '#f0f0f0'
+                      }}
+                      onClick={() => setActiveStampPicker(activeStampPicker === c.id ? null : c.id)}
+                      title="リアクションを追加"
                     >
-                      👍 {c.reactions?.good || 0}
+                      ➕
                     </button>
-                    <button
-                      className={`reaction-btn ${myReactions[`${c.id}_bad`] ? 'active' : ''}`}
-                      onClick={() => handleReaction(c.id, 'bad')}
-                    >
-                      👎 {c.reactions?.bad || 0}
-                    </button>
-                    <button
-                      className="report-btn"
-                      onClick={() => handleReportContent(c.id, 'comment')}
-                      title="通報"
-                      aria-label="不適切なコメントを通報"
-                      style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', fontSize: '1rem', opacity: 0.7 }}
-                    >
-                      🚩
-                    </button>
+                    {activeStampPicker === c.id && (
+                      <div style={{
+                        position: 'absolute',
+                        top: '100%',
+                        left: 0,
+                        background: 'white',
+                        border: '1px solid #ddd',
+                        borderRadius: '8px',
+                        padding: '8px',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                        display: 'flex',
+                        gap: '4px',
+                        zIndex: 10,
+                        width: 'max-content',
+                        flexWrap: 'wrap',
+                        maxWidth: '200px',
+                        marginTop: '4px'
+                      }}>
+                        {COMMENT_EMOJIS.map(emoji => (
+                          <button
+                            key={emoji}
+                            style={{
+                              background: 'none',
+                              border: 'none',
+                              cursor: 'pointer',
+                              fontSize: '1.2rem',
+                              padding: '4px',
+                              borderRadius: '4px'
+                            }}
+                            onMouseOver={(e) => e.target.style.background = '#f0f0f0'}
+                            onMouseOut={(e) => e.target.style.background = 'none'}
+                            onClick={() => {
+                              handleReaction(c.id, emoji);
+                              setActiveStampPicker(null);
+                            }}
+                          >
+                            {emoji}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
-                  <div className="comment-owner-actions">
-                    {isMyComment && !editingCommentId && c.content !== '[[DELETED]]' && (
-                      <>
-                        <button className="comment-owner-edit" onClick={() => startEditComment(c)}>修正</button>
-                        <button className="comment-owner-delete" onClick={() => handleDeleteComment(c.id)}>削除</button>
-                      </>
-                    )}
-                    {isAdmin && !isMyComment && c.content !== '[[DELETED]]' && (
-                      <button className="comment-owner-delete" onClick={() => handleDeleteComment(c.id)}>削除(管)</button>
-                    )}
-                  </div>
+                  <button
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, marginLeft: 'auto', opacity: 0.6, fontSize: '0.85rem' }}
+                    onClick={() => handleReportContent(c.id, 'comment')}
+                    title="通報"
+                  >
+                    🚩 通報
+                  </button>
+                </div>
+
+                <div style={{ marginLeft: '2em', marginTop: '4px' }}>
+                  {isMyComment && !editingCommentId && c.content !== '[[DELETED]]' && (
+                    <span style={{ fontSize: '0.85rem' }}>
+                      <button onClick={() => startEditComment(c)} style={{ background: 'none', border: 'none', color: '#0066cc', cursor: 'pointer', textDecoration: 'underline', padding: '0 8px 0 0' }}>修正</button>
+                      {confirmingDeleteId === c.id ? (
+                        <>
+                          <span style={{ color: '#cc0000', fontWeight: 'bold', padding: '0 8px' }}>本当に消す？</span>
+                          <button onClick={() => { handleDeleteComment(c.id); setConfirmingDeleteId(null); }} style={{ background: '#cc0000', border: 'none', color: '#fff', cursor: 'pointer', padding: '2px 8px', borderRadius: '4px', marginRight: '4px' }}>はい</button>
+                          <button onClick={() => setConfirmingDeleteId(null)} style={{ background: '#e0e0e0', border: 'none', color: '#333', cursor: 'pointer', padding: '2px 8px', borderRadius: '4px' }}>やめる</button>
+                        </>
+                      ) : (
+                        <button onClick={() => setConfirmingDeleteId(c.id)} style={{ background: 'none', border: 'none', color: '#cc0000', cursor: 'pointer', textDecoration: 'underline', padding: '0' }}>削除</button>
+                      )}
+                    </span>
+                  )}
+                  {isAdmin && !isMyComment && c.content !== '[[DELETED]]' && (
+                    <span style={{ fontSize: '0.85rem' }}>
+                      <button onClick={() => handleDeleteComment(c.id)} style={{ background: 'none', border: 'none', color: '#cc0000', cursor: 'pointer', textDecoration: 'underline', padding: '0' }}>削除(管)</button>
+                    </span>
+                  )}
                 </div>
               </div>
             );
@@ -838,8 +1096,8 @@ const SurveyDetailView = ({
               </div>
             </div>
           )}
-          {comments.length > 5 && (
-            <Pagination current={currentCommentPage} total={Math.ceil(comments.length / 5)} onPageChange={setCurrentCommentPage} />
+          {comments.length > 50 && (
+            <Pagination current={currentCommentPage} total={Math.ceil(comments.length / 50)} onPageChange={setCurrentCommentPage} />
           )}
         </div>
       </div>
@@ -1019,7 +1277,7 @@ const SurveyDetailView = ({
       {/* 🐰 回遊率アップの要！次のおすすめ記事エリア */}
       {recommendedSurveys && recommendedSurveys.length > 0 && (
         <div style={{ marginTop: '50px' }}>
-          <RecommendedSection surveys={recommendedSurveys.filter(s => s.id !== currentSurvey.id)} navigateTo={navigateTo} />
+          <RecommendedSection surveys={recommendedSurveys.filter(s => s.id !== currentSurvey.id).slice(0, 6)} navigateTo={navigateTo} layout="grid" />
         </div>
       )}
 

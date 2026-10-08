@@ -570,6 +570,10 @@ const SurveyListView = ({
                 const isBroken = brokenImages.has(s.id);
                 const showFallback = !thumbSrc || isBroken;
 
+                // 💬 ガヤ（コメント）タグを探す
+                const commentTag = s.tags?.find(t => String(t).startsWith('comment:'));
+                const pickupComment = commentTag ? commentTag.replace('comment:', '') : null;
+
                 return (
                   <React.Fragment key={s.id}>
                     <div
@@ -644,6 +648,31 @@ const SurveyListView = ({
                               zIndex: 1
                             } : { position: 'relative', zIndex: 2, display: 'block', width: '100%', height: '100%', objectFit: 'cover', backgroundColor: 'transparent', borderRadius: '8px' }}
                           />
+                        )}
+
+                        {/* 💬 ガヤ吹き出しオーバーレイ (リスト表示用) */}
+                        {pickupComment && (
+                          <div style={{
+                            position: 'absolute',
+                            bottom: '6px',
+                            right: '6px',
+                            background: 'rgba(0, 0, 0, 0.75)',
+                            color: '#fff',
+                            padding: '4px 8px',
+                            borderRadius: '12px',
+                            fontSize: '0.75rem',
+                            fontWeight: 'bold',
+                            zIndex: 10,
+                            backdropFilter: 'blur(4px)',
+                            border: '1px solid rgba(255,255,255,0.2)',
+                            boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
+                            maxWidth: '90%',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis'
+                          }}>
+                            💬 {pickupComment}
+                          </div>
                         )}
 
                         {/* カテゴリバッジ */}

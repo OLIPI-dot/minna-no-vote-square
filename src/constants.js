@@ -53,6 +53,9 @@ export const CATEGORY_ICON_STYLE = {
 export const BASE_CATEGORIES = ['ニュース', '芸能', '話題', 'エンタメ', 'クイズ', 'なぞなぞ', 'レビュー', 'ゲーム', 'コラム', 'ネタ', 'らび', 'その他'];
 export const FILTER_CATEGORIES = ['すべて', ...BASE_CATEGORIES];
 
+// 💬 コメント用リアクション絵文字
+export const COMMENT_EMOJIS = ['👍', '👎', '❤️', '😂', '😲', '😢', '😡', '🐰', '🔥', '✨'];
+
 // 🎨 スタンプリアクションの定義
 export const STAMPS = [
   { id: 'saikou', label: '最高', src: '/stamps/saikou.png' },

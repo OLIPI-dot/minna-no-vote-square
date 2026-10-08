@@ -22,6 +22,7 @@ import {
   BASE_CATEGORIES,
   FILTER_CATEGORIES,
   STAMPS,
+  COMMENT_EMOJIS,
   VIEW_COOLDOWN_MS,
   SUBMISSION_COOLDOWN_MS,
   SCORE_VOTE_WEIGHT
@@ -159,9 +160,9 @@ function App() {
   const isInitialMountRef = useRef(true); // 🚀 初回マウント時の一度きりガード
 
   // 📡 リアルタイム人数
-  const [globalOnlineCount, setGlobalOnlineCount] = useState(1);
+  const [globalOnlineCount, setGlobalOnlineCount] = useState(8);
   const manualUpdatesRef = useRef({}); // 🛡️ { [surveyId]: timestamp } アンケートごとの更新ガード
-  const [surveyOnlineCount, setSurveyOnlineCount] = useState(1);
+  const [surveyOnlineCount, setSurveyOnlineCount] = useState(2);
 
   const isFirstMountForPageReset = useRef(true);
   useEffect(() => {
@@ -290,7 +291,8 @@ function App() {
       .on('presence', { event: 'sync' }, () => {
         const state = channel.presenceState();
         const count = Object.keys(state).length;
-        setGlobalOnlineCount(count > 0 ? count : 1);
+        // 🌸 広場の人数もサクラで底上げ（8人くらい）
+        setGlobalOnlineCount(count > 0 ? count + 7 : 8);
       })
       .subscribe(async (status) => {
         if (status === 'SUBSCRIBED') {
@@ -435,7 +437,7 @@ function App() {
           .from('comments')
           .select('*')
           .eq('survey_id', currentSurvey.id)
-          .order('created_at', { ascending: false })
+          .order('created_at', { ascending: true })
           .limit(100);
         if (!commError) setComments(commData);
         else console.error("❌ initDetailView: Error fetching comments:", commError);
@@ -456,7 +458,7 @@ function App() {
             table: 'comments'
           }, payload => {
             if (payload.eventType === 'INSERT' && payload.new.survey_id === currentSurvey.id) {
-              setComments(prev => [payload.new, ...prev]);
+              setComments(prev => [...prev, payload.new]);
             } else if (payload.eventType === 'UPDATE') {
               setComments(prev => prev.map(c => c.id === payload.new.id ? { ...c, ...payload.new } : c));
             } else if (payload.eventType === 'DELETE' && payload.old?.id) {
@@ -475,7 +477,9 @@ function App() {
           .on('presence', { event: 'sync' }, () => {
             const state = activePresenceChannel.presenceState();
             const count = Object.keys(state).length;
-            setSurveyOnlineCount(count > 0 ? count : 1);
+            // 🌸 個別記事の閲覧数もサクラで底上げ（1〜3人くらい）
+            const fakeOffset = currentSurvey?.id ? ((currentSurvey.id * 7) % 3) + 1 : 2;
+            setSurveyOnlineCount(count > 0 ? count + fakeOffset - 1 : fakeOffset);
           })
           .subscribe(async (status) => {
             if (status === 'SUBSCRIBED') {
@@ -494,7 +498,8 @@ function App() {
     } else {
       setComments([]);
       setCurrentCommentPage(1);
-      setSurveyOnlineCount(1);
+      const fakeOffset = currentSurvey?.id ? ((currentSurvey.id * 7) % 3) + 1 : 2;
+      setSurveyOnlineCount(fakeOffset);
     }
   }, [view, currentSurvey]);
 
@@ -532,9 +537,9 @@ function App() {
       const mdMatch = part.match(/^\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)$/);
       if (mdMatch) {
         elements.push(
-          <a key={i} href={mdMatch[2]} target="_blank" rel="noopener noreferrer" className="comment-url-link">
-            {mdMatch[1]}
-          </a>
+          <span key={i} className="comment-url-link" style={{ color: '#0066cc', wordBreak: 'break-all' }}>
+            {mdMatch[1]} ({mdMatch[2]})
+          </span>
         );
         i += 2; // キャプチャグループ分をスキップ
         continue;
@@ -548,9 +553,9 @@ function App() {
       if (/^https?:\/\/\S+$/.test(part)) {
         const cleanUrl = part.trim();
         elements.push(
-          <a key={i} href={cleanUrl} target="_blank" rel="noopener noreferrer" className="comment-url-link">
+          <span key={i} className="comment-url-link" style={{ color: '#0066cc', wordBreak: 'break-all' }}>
             {cleanUrl}
-          </a>
+          </span>
         );
         continue;
       }
@@ -589,12 +594,19 @@ function App() {
     setIsPostingComment(true);
 
     try {
-      // 未入力時は常に「名無し」にする
-      const nameToUse = commentName.trim() || '名無し';
+      // 未入力時は常に「名無しの広場民」にする
+      const nameToUse = commentName.trim() || '名無しの広場民';
       const finalName = generateTrip(nameToUse);
 
       // 編集・削除用のランダムな鍵を生成
       const editKey = Math.random().toString(36).substring(2);
+      
+      // ID生成用のクライアント指紋（日替わりID用）
+      let clientFp = localStorage.getItem('client_fp');
+      if (!clientFp) {
+        clientFp = Math.random().toString(36).substring(2) + Date.now().toString(36);
+        localStorage.setItem('client_fp', clientFp);
+      }
 
       // 🏎️ UIを先に更新（楽観的UI更新）
       const tempId = 'temp-' + Date.now();
@@ -605,6 +617,7 @@ function App() {
         content: commentContent,
         user_id: user?.id || null,
         edit_key: editKey,
+        avatar_url: clientFp,
         created_at: new Date().toISOString(),
         reactions: {}
       };
@@ -633,7 +646,8 @@ function App() {
         user_name: finalName,
         content: commentContent,
         user_id: user?.id || null,
-        edit_key: editKey
+        edit_key: editKey,
+        avatar_url: clientFp
       }]).select().then(({ data, error }) => {
         if (!error && data) {
           // 成功したら本物のIDに書き換える（編集・削除のため）
@@ -742,26 +756,39 @@ function App() {
   }
 
   async function handleDeleteComment(commentId) {
-    if (isActionLoading) return;
+    console.log("🐰 handleDeleteComment triggered for:", commentId, "isActionLoading:", isActionLoading);
+    if (isActionLoading) {
+      alert("🐰 現在他の処理中です！（isActionLoading = true）");
+      return;
+    }
     const myKeys = JSON.parse(localStorage.getItem('my_comment_keys') || '{}');
     const key = myKeys[commentId];
+    console.log("🐰 myKeys:", myKeys, "key for this comment:", key);
     if (!key && !isAdmin) return alert("🐰 自分のコメントしか消せないよ！");
-    if (!confirm("本当にこのコメントを消しちゃう？🐰💦")) return;
 
     setIsActionLoading(true);
-    // 物理削除から「論理削除（上書き）」に変更 🛡️
-    const { error } = await supabase
-      .from('comments')
-      .update({ content: '[[DELETED]]' })
-      .eq('id', commentId);
+    try {
+      // 物理削除から「論理削除（上書き）」に変更 🛡️
+      let query = supabase
+        .from('comments')
+        .update({ content: '[[DELETED]]' })
+        .eq('id', commentId);
+      
+      // 管理者以外はedit_keyで認証する
+      if (!isAdmin) {
+        query = query.eq('edit_key', key);
+      }
+      
+      const { data, error } = await query.select();
 
-    setIsActionLoading(false);
-
-    if (error) {
-      console.error("Soft delete error:", error);
-      alert("😿 削除処理に失敗したよ…");
-    } else {
-      setComments(prev => prev.map(c => c.id === commentId ? { ...c, content: '[[DELETED]]' } : c));
+      if (error || !data || data.length === 0) {
+        console.error("Soft delete error:", error || "0 rows updated");
+        alert("😿 削除に失敗したよ…（権限がないか、すでに削除されています）");
+      } else {
+        setComments(prev => prev.map(c => c.id === commentId ? { ...c, content: '[[DELETED]]' } : c));
+      }
+    } finally {
+      setIsActionLoading(false);
     }
   }
 
@@ -778,16 +805,20 @@ function App() {
     const key = myKeys[editingCommentId];
 
     setIsActionLoading(true);
-    const { error } = await supabase
-      .from('comments')
-      .update({ content: editContent })
-      .eq('id', editingCommentId)
-      .eq('edit_key', key);
-    setIsActionLoading(false);
+    try {
+      const { data, error } = await supabase
+        .from('comments')
+        .update({ content: editContent })
+        .eq('id', editingCommentId)
+        .eq('edit_key', key)
+        .select();
 
-    if (error) alert("😿 直せなかったみたい…");
-    else {
-      setEditingCommentId(null);
+      if (error || !data || data.length === 0) alert("😿 直せなかったみたい…（権限がないか、エラーです）");
+      else {
+        setEditingCommentId(null);
+      }
+    } finally {
+      setIsActionLoading(false);
     }
   }
 
@@ -1037,6 +1068,22 @@ function App() {
   };
 
   // 📥 アンケートデータを取得する (サーバーサイド・ページネーション & フィルタ対応)
+  // 🌸 サクラ（水増し）関数：ある程度人が増えたらこの関数の中身を return s; にするｗ
+  const applySakuraStats = (s) => {
+    if (!s || !s.id) return s;
+    const isIdNum = typeof s.id === 'number';
+    const idVal = isIdNum ? s.id : (String(s.id).charCodeAt(0) || 0);
+    // 閲覧数を 8〜38 くらい盛る（リアルな数字に！）
+    const sakuraViews = ((idVal * 7) % 30) + 8;
+    // いいね数を 0〜3 くらい盛る
+    const sakuraLikes = ((idVal * 3) % 4);
+    return {
+      ...s,
+      view_count: (s.view_count ?? 0) + sakuraViews,
+      likes_count: (s.likes_count ?? 0) + sakuraLikes
+    };
+  };
+
   const fetchSurveys = async (currentUser, silent = false, page = 1, category = null, query = '', currentTab = 'official', sort = 'latest', pop = 'trending', tag = '') => {
     // 🚀 Early Fetch を使う条件: 初回ロード ＆ フィルタなし ＆ 新着順
     const isFirstLoad = !silent && page === 1 && (!category || category === 'すべて') && !query && !tag && currentTab === 'official' && sort === 'latest';
@@ -1259,6 +1306,7 @@ function App() {
             view_count: s.view_count ?? 0,
             comment_count: s.comment_count ?? 0
           };
+          return applySakuraStats(baseSurvey);
         });
 
         // 🛡️ Flicker Guard: currentSurvey の合計票数も守るらび！
@@ -1334,7 +1382,7 @@ function App() {
 
       let popular = [];
       if (popularRaw) {
-        popular = popularRaw.sort((a, b) => calcTotalScore(b) - calcTotalScore(a)).slice(0, 10);
+        popular = popularRaw.map(applySakuraStats).sort((a, b) => calcTotalScore(b) - calcTotalScore(a)).slice(0, 10);
       }
 
       // 直近の投稿数が少なくてランキングが半分以下（5件未満）しか埋まらない場合は全期間のデータで補正する
@@ -1348,7 +1396,7 @@ function App() {
           .order('created_at', { ascending: false })
           .limit(200);
         if (fallbackPopularRaw) {
-          popular = fallbackPopularRaw.sort((a, b) => calcTotalScore(b) - calcTotalScore(a)).slice(0, 10);
+          popular = fallbackPopularRaw.map(applySakuraStats).sort((a, b) => calcTotalScore(b) - calcTotalScore(a)).slice(0, 10);
         }
       }
 
@@ -1361,9 +1409,9 @@ function App() {
         .lte('deadline', next24h.toISOString())
         .order('deadline', { ascending: true });
 
-      if (latest) setLiveSurveys(latest);
-      if (popular) setPopularSurveys(popular);
-      if (ending) setEndingSoonSurveys(ending);
+      if (latest) setLiveSurveys(latest.map(applySakuraStats));
+      if (popular) setPopularSurveys(popular); // already mapped above
+      if (ending) setEndingSoonSurveys(ending.map(applySakuraStats));
 
       console.log(`✅ fetchSidebarData: Done. (Live:${latest?.length}, Popular:${popular?.length}, Ending:${ending?.length})`);
     } catch (err) {
@@ -2222,9 +2270,9 @@ function App() {
         return { ...s, _finalScore: baseScore + freshnessBonus };
       })
       .sort((a, b) => b._finalScore - a._finalScore)
-      .slice(0, 24) // 優秀な候補を24件選んで...
+      .slice(0, 36) // 優秀な候補を36件選んで...
       .sort(() => Math.random() - 0.5) // シャッフルするらび！🔀
-      .slice(0, 12); // その中から12件を表示
+      .slice(0, 24); // その中から24件を表示
   }, [surveys, popularSurveys, liveSurveys]);
 
   // 🔥 関連アンケート（同じカテゴリ or 類似タグ）
@@ -2471,6 +2519,7 @@ function App() {
                   currentCommentPage={currentCommentPage}
                   setCurrentCommentPage={setCurrentCommentPage}
                   editingCommentId={editingCommentId}
+                  setEditingCommentId={setEditingCommentId}
                   editContent={editContent}
                   setEditContent={setEditContent}
                   handleUpdateComment={handleUpdateComment}
@@ -2497,6 +2546,7 @@ function App() {
                   handleSurveyReaction={handleSurveyReaction}
                   lastReactionEvent={lastReactionEvent}
                   STAMPS={STAMPS}
+                  COMMENT_EMOJIS={COMMENT_EMOJIS}
                 />
               </Suspense>
             )}

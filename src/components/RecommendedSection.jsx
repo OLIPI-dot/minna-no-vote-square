@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import CategoryEyecatch from './CategoryEyecatch';
 
-const RecommendedSection = ({ surveys, navigateTo }) => {
+const RecommendedSection = ({ surveys, navigateTo, layout = 'scroll' }) => {
   const [brokenImages, setBrokenImages] = useState(new Set());
   if (!surveys || surveys.length === 0) return null;
 
@@ -21,13 +21,14 @@ const RecommendedSection = ({ surveys, navigateTo }) => {
         </h2>
       </div>
 
-      <div className="recommended-scroll-container" style={{
-        display: 'flex',
-        overflowX: 'auto',
-        gap: '16px',
+      <div className={layout === 'grid' ? "recommended-grid-container" : "recommended-scroll-container"} style={{
+        display: layout === 'grid' ? 'grid' : 'flex',
+        gridTemplateColumns: layout === 'grid' ? 'repeat(auto-fill, minmax(160px, 1fr))' : 'none',
+        overflowX: layout === 'grid' ? 'visible' : 'auto',
+        gap: '12px',
         paddingBottom: '16px',
-        WebkitOverflowScrolling: 'touch',
-        scrollSnapType: 'x proximity'
+        WebkitOverflowScrolling: layout === 'grid' ? 'auto' : 'touch',
+        scrollSnapType: layout === 'grid' ? 'none' : 'x proximity'
       }}>
         {surveys.map(s => {
           let thumb = null;
@@ -37,6 +38,10 @@ const RecommendedSection = ({ surveys, navigateTo }) => {
             else if (!parts.startsWith('nico:')) thumb = parts;
           }
 
+          // 💬 ガヤ（コメント）タグを探す
+          const commentTag = s.tags?.find(t => String(t).startsWith('comment:'));
+          const pickupComment = commentTag ? commentTag.replace('comment:', '') : null;
+
           return (
             <div 
               key={s.id} 
@@ -44,35 +49,71 @@ const RecommendedSection = ({ surveys, navigateTo }) => {
               onClick={() => navigateTo('details', s)}
               style={{
                 background: '#fff',
-                borderRadius: '20px',
-                padding: '12px',
+                borderRadius: '16px',
+                padding: '10px',
                 cursor: 'pointer',
                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                border: '1px solid rgba(139, 92, 246, 0.1)',
+                border: '1px solid rgba(139, 92, 246, 0.15)',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '10px',
-                minWidth: '220px',
-                flex: '0 0 220px',
-                scrollSnapAlign: 'start',
+                gap: '8px',
+                minWidth: layout === 'grid' ? 'auto' : '200px',
+                flex: layout === 'grid' ? 'auto' : '0 0 200px',
+                scrollSnapAlign: layout === 'grid' ? 'none' : 'start',
                 userSelect: 'none',
-                WebkitTapHighlightColor: 'transparent'
+                WebkitTapHighlightColor: 'transparent',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
+              }}
+              onMouseOver={e => {
+                e.currentTarget.style.transform = 'translateY(-4px)';
+                e.currentTarget.style.boxShadow = '0 12px 24px rgba(139, 92, 246, 0.15)';
+                e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.4)';
+              }}
+              onMouseOut={e => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.04)';
+                e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.15)';
               }}
             >
-              <div style={{ width: '100%', height: '100px', borderRadius: '14px', overflow: 'hidden', position: 'relative' }}>
+              <div style={{ width: '100%', aspectRatio: '16/9', borderRadius: '10px', overflow: 'hidden', position: 'relative' }}>
                 {!thumb || brokenImages.has(s.id) ? (
                   <CategoryEyecatch category={s.category} />
                 ) : (
                   <img 
                     src={thumb} 
                     alt="" 
-                    style={{ width: '100%', height: '100%', objectFit: 'contain', backgroundColor: '#f9fafb', position: 'relative', zIndex: 2 }} 
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', backgroundColor: '#f9fafb', position: 'relative', zIndex: 2 }} 
                     referrerPolicy="no-referrer"
                     onError={(e) => {
                       e.currentTarget.style.display = 'none';
                       setBrokenImages(prev => new Set([...prev, s.id]));
                     }}
                   />
+                )}
+                
+                {/* 💬 ガヤ吹き出しオーバーレイ */}
+                {pickupComment && (
+                  <div style={{
+                    position: 'absolute',
+                    bottom: '8px',
+                    right: '8px',
+                    background: 'rgba(0, 0, 0, 0.75)',
+                    color: '#fff',
+                    padding: '4px 8px',
+                    borderRadius: '12px',
+                    fontSize: '0.75rem',
+                    fontWeight: 'bold',
+                    zIndex: 3,
+                    backdropFilter: 'blur(4px)',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
+                    maxWidth: '85%',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis'
+                  }}>
+                    💬 {pickupComment}
+                  </div>
                 )}
               </div>
               <div>
@@ -89,9 +130,20 @@ const RecommendedSection = ({ surveys, navigateTo }) => {
                 }}>
                   {s.title}
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '6px', fontSize: '0.75rem', color: '#94a3b8' }}>
-                  <span>🗳️ {s.total_votes || 0}票</span>
-                  <span style={{ color: '#8b5cf6', fontWeight: '800' }}>#{s.category}</span>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '6px' }}>
+                  <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>🗳️ {s.total_votes || 0}票</span>
+                  <span style={{ 
+                    fontSize: '0.65rem', 
+                    color: '#8b5cf6', 
+                    fontWeight: '800', 
+                    background: '#f3e8ff', 
+                    padding: '2px 6px', 
+                    borderRadius: '8px',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    maxWidth: '60px'
+                  }}>{s.category}</span>
                 </div>
               </div>
             </div>

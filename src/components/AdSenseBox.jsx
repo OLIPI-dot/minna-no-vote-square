@@ -108,12 +108,15 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null }) => {
           </div>
         )}
       </div>
+      {/* AdSense審査が通るまでは、空白の枠が表示されないようにコメントアウトしておきます */}
+      {/* 
       <ins className="adsbygoogle"
         style={{ display: 'block', width: '100%' }}
         data-ad-client="ca-pub-9429738476925701"
         data-ad-slot={slot}
         data-ad-format={format}
         data-full-width-responsive="true"></ins>
+      */}
     </div>
   );
 };
