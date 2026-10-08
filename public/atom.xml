@@ -4,11 +4,47 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-08T12:51:54.790Z</updated>
+  <updated>2026-10-08T21:46:36.115Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>プルデンシャル 不正巡り64人解雇</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23309"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23309</id>
+    <updated>2026-10-08T21:46:33.511Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;調査報告書の公表&quot;,
+  &quot;point1_desc&quot;: &quot;プルデンシャル生命保険は、営業社員らが顧客から金銭を騙し取っていた問題について、外部弁護士らによる特別調査委員会の報告書を公表した。会社側は管理態勢の不備を認め、関係者が謝罪した。&quot;,
+  &quot;point2_title&quot;: &quot;金銭詐取問...</summary>
+  </entry>
+  <entry>
+    <title>関東-九州は秋晴れ多い 1カ月予報</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23308"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23308</id>
+    <updated>2026-10-08T21:45:57.387Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;来週後半も広範囲で秋晴れ&quot;,
+  &quot;point1_desc&quot;: &quot;関東から九州、沖縄にかけては来週後半にかけて穏やかな秋晴れが続く見込みです。行楽日和となる地域が多い一方で、空気が乾燥するため火の取り扱いや水分補給には引き続き注意が必要です。&quot;,
+  &quot;point2_title&quot;: &quot;全国的...</summary>
+  </entry>
+  <entry>
+    <title>ノーベル平和賞の候補にICC 背景</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23307"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23307</id>
+    <updated>2026-10-08T21:45:33.398Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;ICC赤根所長へ米制裁&quot;,
+  &quot;point1_desc&quot;: &quot;国際刑事裁判所（ICC）の赤根智子所長が米国トランプ政権から制裁対象に指定される事態が発生した。この措置に対し、国内外から強い批判の声が上がり、国際法秩序への影響が懸念されている。&quot;,
+  &quot;point2_title&quot;: &quot;署名...</summary>
+  </entry>
   <entry>
     <title>はま寿司「22時間営業」狙いは</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23306"/>
@@ -16,10 +52,10 @@
     <updated>2026-10-08T12:51:51.407Z</updated>
     <summary>[[SUMMARY:
 {
-  &quot;category&quot;: &quot;話題&quot;,
   &quot;point1_title&quot;: &quot;はま寿司の22時間営業&quot;,
-  &quot;point1_desc&quot;: &quot;回転寿司チェーン「はま寿司」の一部店舗で導入されている「朝7時〜翌朝5時」の22時間営業がSNSで話題だ。ネットでは「緊急寿司外来」と称され、朝から寿司を楽しめる形態が注目を集めている。&quot;,
-  &quot;point2_title&quot;: &quot;朝...</summary>
+  &quot;point1_desc&quot;: &quot;一部店舗で朝7時から翌朝5時まで営業する新形態が登場し、早朝から手軽に寿司を食べられる利便性が注目を集めています。&quot;,
+  &quot;point2_title&quot;: &quot;朝食需要に応える新戦略&quot;,
+  &quot;point2_desc&quot;: &quot;早朝の利用客には約15分の短時間で食事を済ませる人...</summary>
   </entry>
   <entry>
     <title>ペスト疑い WHOが露に情報要求</title>
@@ -28,10 +64,10 @@
     <updated>2026-10-08T12:51:26.093Z</updated>
     <summary>[[SUMMARY:
 {
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;WHOが情報提供を要請&quot;,
-  &quot;point1_desc&quot;: &quot;世界保健機関（WHO）のテドロス事務局長は、ロシアのペスト対策研究所で職員が肺炎で死亡した事態を受け、ロシア政府に対して追加の情報提供を要請していることを記者会見で明らかにした。&quot;,
-  &quot;point2_title&quot;: &quot;ロシア...</summary>
+  &quot;point1_title&quot;: &quot;WHOがロシアに情報要求&quot;,
+  &quot;point1_desc&quot;: &quot;イルクーツク州のペスト対策研究所に勤務する職員が肺炎で死亡した事態を受け、世界保健機関（WHO）はロシア側に対してより詳しい情報の共有を求めています。&quot;,
+  &quot;point2_title&quot;: &quot;感染症研究所での死を警戒&quot;,
+  &quot;point2_desc&quot;: &quot;ペストなど...</summary>
   </entry>
   <entry>
     <title>参院農水委の開催に応じず 立憲</title>
@@ -40,10 +76,10 @@
     <updated>2026-10-08T12:50:59.982Z</updated>
     <summary>[[SUMMARY:
 {
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;野党が委員会審議を拒否&quot;,
-  &quot;point1_desc&quot;: &quot;簗農林水産大臣による予算カット発言を受け、立憲民主党は自民党に対し、大臣が説明責任を果たすか辞任しない限り、参議院農林水産委員会の開催には応じない姿勢を伝えた。&quot;,
-  &quot;point2_title&quot;: &quot;発言めぐる釈明に追われる...</summary>
+  &quot;point1_title&quot;: &quot;簗農水相の発言巡り対立&quot;,
+  &quot;point1_desc&quot;: &quot;簗農林水産大臣による予算削減に関する発言を受けて野党側が反発を強めており、与野党間での国会運営を巡る緊張が急速に高まっています。&quot;,
+  &quot;point2_title&quot;: &quot;立民が審議拒否を通告&quot;,
+  &quot;point2_desc&quot;: &quot;立憲民主党は大臣の辞任や十分な説明責任...</summary>
   </entry>
   <entry>
     <title>愛知・大村知事、タイ代表の食事不満に「来てほしくなかった」と発言</title>
@@ -52,10 +88,10 @@
     <updated>2026-10-08T07:46:21.169Z</updated>
     <summary>[[SUMMARY:
 {
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;知事の不適切発言への批判&quot;,
-  &quot;point1_desc&quot;: &quot;愛知県の大村知事はアジア大会タイ代表監督が食事への不満をSNS投稿した際「来てほしくなかった」と発言しました。この発言に対して配慮に欠けるとの批判が集まり大きな問題となっています。&quot;,
-  &quot;point2_title&quot;: &quot;新...</summary>
+  &quot;point1_title&quot;: &quot;知事の不適切発言に批判&quot;,
+  &quot;point1_desc&quot;: &quot;タイ代表が食事の少なさをSNSで指摘した件に対し、大村知事が来てほしくなかった等と反論したことで、開催都市トップとしての姿勢に疑問の声が上がっています。&quot;,
+  &quot;point2_title&quot;: &quot;大会運営と食事環境に課題&quot;,
+  &quot;point2_desc&quot;: &quot;国際大会を...</summary>
   </entry>
   <entry>
     <title>トランプ大統領、イラン攻撃の準備命令を検討か</title>
@@ -64,10 +100,10 @@
     <updated>2026-10-08T07:44:56.527Z</updated>
     <summary>[[SUMMARY:
 {
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;イラン作戦再開命令&quot;,
-  &quot;point1_desc&quot;: &quot;米報道によると、国防総省は中東を管轄する中央軍に対し、イランでの大規模な戦闘作戦の再開に向けた準備を命令したという。トランプ大統領の意向を踏まえた動きとみられ、軍事的な緊張が再び高まっている。&quot;,
-  &quot;point2_title&quot;:...</summary>
+  &quot;point1_title&quot;: &quot;米軍がイラン作戦準備か&quot;,
+  &quot;point1_desc&quot;: &quot;米報道によると、米国防総省が中東を管轄する中央軍に対し、イランでの大規模戦闘作戦を再開するための準備を指示したことが明らかになりました。&quot;,
+  &quot;point2_title&quot;: &quot;中東情勢の緊迫化に懸念&quot;,
+  &quot;point2_desc&quot;: &quot;トランプ大統領の動向を含め軍...</summary>
   </entry>
   <entry>
     <title>ビール大手4社、カルテル疑惑で強制調査</title>
@@ -76,10 +112,10 @@
     <updated>2026-10-08T07:44:31.482Z</updated>
     <summary>[[SUMMARY:
 {
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;大手4社に強制調査&quot;,
-  &quot;point1_desc&quot;: &quot;公正取引委員会は、ビール大手4社に対し、独占禁止法違反の疑いで強制調査を開始した。卸売業者向けの販売価格を事前に調整するカルテルを結んでいた疑いが持たれており、業界全体への大きな影響が懸念される。&quot;,
-  &quot;point2_title...</summary>
+  &quot;point1_title&quot;: &quot;ビール大手４社に強制調査&quot;,
+  &quot;point1_desc&quot;: &quot;卸売業者向けの販売価格を不正に調整していたカルテルの疑いが浮上し、公正取引委員会が大手ビールメーカー各社への立ち入り検査に踏み切りました。&quot;,
+  &quot;point2_title&quot;: &quot;刑事告発も視野に解明へ&quot;,
+  &quot;point2_desc&quot;: &quot;独占禁止法違反の疑いによ...</summary>
   </entry>
   <entry>
     <title>別府ひき逃げの八田與一容疑者、情報提供1万3千件突破</title>
@@ -88,10 +124,10 @@
     <updated>2026-10-08T02:17:34.792Z</updated>
     <summary>[[SUMMARY:
 {
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;情報提供が1万3千件超に&quot;,
-  &quot;point1_desc&quot;: &quot;2022年に大分県別府市で起きたひき逃げ殺傷事件で、重要指名手配されている八田與一容疑者に関する情報提供が、9月末時点で累計1万3978件に達したことが警察への取材で判明しました。&quot;,
-  &quot;point2_title&quot;: &quot;八...</summary>
+  &quot;point1_title&quot;: &quot;情報提供が約1万4千件に&quot;,
+  &quot;point1_desc&quot;: &quot;2022年に別府市で起きたひき逃げ殺傷事件の八田與一容疑者に対し、9月末時点で寄せられた目撃などの情報提供が累計1万3978件に達しました。&quot;,
+  &quot;point2_title&quot;: &quot;容疑者は重要指名手配中&quot;,
+  &quot;point2_desc&quot;: &quot;警察庁の重要指名手配に...</summary>
   </entry>
   <entry>
     <title>琵琶湖で心肺停止の中1男子、病院で呼吸が回復</title>
@@ -100,10 +136,10 @@
     <updated>2026-10-08T02:17:10.471Z</updated>
     <summary>[[SUMMARY:
 {
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;琵琶湖で中1男子転落&quot;,
-  &quot;point1_desc&quot;: &quot;7日夕方、滋賀県長浜市の港近くで中学1年の男子生徒が琵琶湖に転落する事故が発生しました。男子生徒は救助されたものの、発見当時は心肺停止の重体で速やかに病院へ搬送されました。&quot;,
-  &quot;point2_title&quot;: &quot;心肺停止から呼...</summary>
+  &quot;point1_title&quot;: &quot;琵琶湖転落の中学生が回復&quot;,
+  &quot;point1_desc&quot;: &quot;滋賀県長浜市の琵琶湖で水難事故が発生し、心肺停止状態で救急搬送された中学1年の男子生徒が、搬送先の病院で自発呼吸を取り戻したことが判明しました。&quot;,
+  &quot;point2_title&quot;: &quot;港付近での転落事故&quot;,
+  &quot;point2_desc&quot;: &quot;事故現場は長浜市内の港...</summary>
   </entry>
   <entry>
     <title>陸自情報収集 地検に告訴・告発状</title>
@@ -112,10 +148,10 @@
     <updated>2026-10-08T02:16:35.557Z</updated>
     <summary>[[SUMMARY:
 {
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;自衛隊による個人情報収集&quot;,
-  &quot;point1_desc&quot;: &quot;陸上自衛隊中央情報隊の現地情報隊が、日本人の思想信条などを含む個人情報を組織的に調査・収集していた疑いが浮上しました。対象者の思想や行動履歴まで詳細に報告書へ記録されていたとされています。&quot;,
-  &quot;point2_title&quot;...</summary>
+  &quot;point1_title&quot;: &quot;陸自による市民情報収集&quot;,
+  &quot;point1_desc&quot;: &quot;陸上自衛隊中央情報隊が日本人の思想信条を含む個人情報を組織的に収集し、報告書を作成していた疑惑が浮上し波紋を呼んでいます。&quot;,
+  &quot;point2_title&quot;: &quot;個人情報の扱いに懸念&quot;,
+  &quot;point2_desc&quot;: &quot;防衛組織による民間人の信条調査は憲法が保障す...</summary>
   </entry>
   <entry>
     <title>簗農相 衆院選巡り公選法違反疑い</title>
@@ -124,10 +160,10 @@
     <updated>2026-10-07T21:46:40.118Z</updated>
     <summary>[[SUMMARY:
 {
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;予算削減問題の追及&quot;,
-  &quot;point1_desc&quot;: &quot;自身を支持しなかった自治体に対して道路予算を削減したとされる簗和生氏の疑惑について、週刊文春が追及しています。選挙における票の有無が行政予算に影響を与えたのではないかと波紋を呼んでいます。&quot;,
-  &quot;point2_title&quot;: &quot;...</summary>
+  &quot;point1_title&quot;: &quot;非支持地域の予算削減疑惑&quot;,
+  &quot;point1_desc&quot;: &quot;簗氏が選挙で自身を支持しなかった自治体に対し、道路整備予算を意図的に減額したと発言した疑いが浮上し、公金の私物化ではないかと波紋を広げています。&quot;,
+  &quot;point2_title&quot;: &quot;陣営の送迎バス利用問題&quot;,
+  &quot;point2_desc&quot;: &quot;政治活動や集会など...</summary>
   </entry>
   <entry>
     <title>硤合氏発見 不斉自己触媒作用とは</title>
@@ -136,10 +172,10 @@
     <updated>2026-10-07T21:46:14.391Z</updated>
     <summary>[[SUMMARY:
 {
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;ノーベル化学賞に硤合氏ら&quot;,
-  &quot;point1_desc&quot;: &quot;2026年のノーベル化学賞が、東京理科大学の硤合憲三名誉教授とフランスのアンリ・カガン名誉教授に贈られることが決定した。有機化学分野における長年の顕著な研究業績が高く評価された成果である。&quot;,
-  &quot;point2_title&quot;...</summary>
+  &quot;point1_title&quot;: &quot;理科大の硤合名誉教授ら受賞&quot;,
+  &quot;point1_desc&quot;: &quot;ノーベル化学賞に東京理科大の硤合憲三氏と仏パリ南大のカガン氏が選ばれた。物質の左右非対称性を生み出す化学合成分野での先駆的な功績が高く評価された。（76文字）&quot;,
+  &quot;point2_title&quot;: &quot;不斉合成研究の進展に貢献&quot;,
+  &quot;point2_desc&quot;: &quot;...</summary>
   </entry>
   <entry>
     <title>千葉県で震度4 津波の心配なし</title>
@@ -148,10 +184,10 @@
     <updated>2026-10-07T21:45:48.729Z</updated>
     <summary>[[SUMMARY:
 {
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;千葉県北東部で地震発生&quot;,
-  &quot;point1_desc&quot;: &quot;8日午前4時13分頃、千葉県北東部を震源とする地震が発生しました。地震の規模を示すマグニチュードは4.8と推定されており、早朝の強い揺れに多くの地域で注意が呼びかけられました。&quot;,
-  &quot;point2_title&quot;: &quot;千葉県内...</summary>
+  &quot;point1_title&quot;: &quot;千葉県北東部で震度4&quot;,
+  &quot;point1_desc&quot;: &quot;8日午前4時過ぎに千葉県北東部を震源とするマグニチュード4.8の地震が発生し、県内各地で最大震度4の揺れが観測されました。&quot;,
+  &quot;point2_title&quot;: &quot;津波被害の心配はなし&quot;,
+  &quot;point2_desc&quot;: &quot;気象庁の発表によると今回の地震による津波の心配...</summary>
   </entry>
   <entry>
     <title>育休でパタハラ 男性が会社側提訴</title>
@@ -160,10 +196,10 @@
     <updated>2026-10-07T12:52:12.057Z</updated>
     <summary>[[SUMMARY:
 {
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;育休取得でパタハラ訴訟&quot;,
-  &quot;point1_desc&quot;: &quot;ウェディング関連会社に勤める男性社員が、育児休業の取得を理由に勤務先の社長らから不利益や嫌がらせを受けたとして、損害賠償を求める裁判を起こしました。男性に対する不当な扱いが問われています。&quot;,
-  &quot;point2_title&quot;:...</summary>
+  &quot;point1_title&quot;: &quot;育休取得巡りパタハラ提訴&quot;,
+  &quot;point1_desc&quot;: &quot;男性社員が育児休業を取得しようとした際に社長らから不利益な嫌がらせを受けたとして、会社と社長を相手取り損害賠償を求めて提訴しました。&quot;,
+  &quot;point2_title&quot;: &quot;問われる企業の男性育休対応&quot;,
+  &quot;point2_desc&quot;: &quot;男性の育休取得が社会的に推...</summary>
   </entry>
   <entry>
     <title>損保J 顧客情報6万件が漏えいか</title>
@@ -172,10 +208,10 @@
     <updated>2026-10-07T12:51:45.948Z</updated>
     <summary>[[SUMMARY:
 {
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;委託先への不正アクセス&quot;,
-  &quot;point1_desc&quot;: &quot;損害保険ジャパンは、外部の業務委託先が不正アクセスを受け、約6万件の顧客情報が外部へ漏えいした可能性があると発表しました。対象は事業者向けのドライブレコーダーサービス利用者です。&quot;,
-  &quot;point2_title&quot;: &quot;氏名や...</summary>
+  &quot;point1_title&quot;: &quot;顧客情報6万件が漏洩の恐れ&quot;,
+  &quot;point1_desc&quot;: &quot;損害保険ジャパンの法人向けドラレコサービスで外部委託先が不正アクセスを受け、氏名や電話番号など約6万件の情報が流出した可能性がある。（71文字）&quot;,
+  &quot;point2_title&quot;: &quot;委託先への不正アクセスが原因&quot;,
+  &quot;point2_desc&quot;: &quot;通信機能付...</summary>
   </entry>
   <entry>
     <title>化学賞 日本人は2年連続10人目</title>
@@ -184,10 +220,10 @@
     <updated>2026-10-07T12:51:18.096Z</updated>
     <summary>[[SUMMARY:
 {
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;ノーベル化学賞選出&quot;,
-  &quot;point1_desc&quot;: &quot;東京理科大の硲合憲三名誉教授が2026年のノーベル化学賞に選出されました。生命を構成するアミノ酸などの分子がどのように成り立っているかの解明につながる研究成果が、国際的に高く評価されたものです。&quot;,
-  &quot;point2_title&quot;...</summary>
+  &quot;point1_title&quot;: &quot;硤合憲三氏がノーベル賞受賞&quot;,
+  &quot;point1_desc&quot;: &quot;東京理科大の硤合憲三名誉教授がノーベル化学賞に決定。生命の根幹であるアミノ酸など分子の成り立ちを解き明かす画期的な業績が高く評価された。&quot;,
+  &quot;point2_title&quot;: &quot;生命の起源解明につながる業績&quot;,
+  &quot;point2_desc&quot;: &quot;左右の対称性を持つ...</summary>
   </entry>
   <entry>
     <title>採決で居眠り 起立せず「反対」に</title>
@@ -196,10 +232,10 @@
     <updated>2026-10-07T07:45:01.705Z</updated>
     <summary>[[SUMMARY:
 {
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;議決での居眠り起立なし&quot;,
-  &quot;point1_desc&quot;: &quot;石川県小松市議会定例会の最終日に実施された重要な議案採決の際、最大会派の代表が居眠りをしていたことが発覚した。起立による賛成の意思表示を行わず、結果的に「反対」として扱われた。&quot;,
-  &quot;point2_title&quot;: &quot;対象は未...</summary>
+  &quot;point1_title&quot;: &quot;採決中の居眠りで反対に&quot;,
+  &quot;point1_desc&quot;: &quot;小松市議会の本会議で最大会派の代表が採決時に居眠りをして立ち上がらず、意図せず反対票として記録される事態となり物議を醸している。&quot;,
+  &quot;point2_title&quot;: &quot;重要政策の予算に波紋&quot;,
+  &quot;point2_desc&quot;: &quot;対象となったのは小松市の重要施策である...</summary>
   </entry>
   <entry>
     <title>奈良母娘遺体 殺人疑いで男再逮捕</title>
@@ -208,10 +244,10 @@
     <updated>2026-10-07T07:44:38.270Z</updated>
     <summary>[[SUMMARY:
 {
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;母娘の遺体遺棄事件&quot;,
-  &quot;point1_desc&quot;: &quot;今年7月、奈良市の川岸で母親と娘の遺体が見つかる事件が発生しました。事件の解明に向けて捜査が進められる中、当初は遺体を遺棄した疑いを中心に警察による調べが行われていました。&quot;,
-  &quot;point2_title&quot;: &quot;交際相手の男を逮...</summary>
+  &quot;point1_title&quot;: &quot;交際相手の男を殺人容疑で逮捕&quot;,
+  &quot;point1_desc&quot;: &quot;奈良市の川岸で母娘の遺体が見つかった事件で、警察は死体遺棄罪で起訴されていた交際相手の男を、母親らに対する殺人の疑いで新たに逮捕して捜査を進めています。&quot;,
+  &quot;point2_title&quot;: &quot;遺棄罪で起訴後に容疑拡大&quot;,
+  &quot;point2_desc&quot;: &quot;男は...</summary>
   </entry>
   <entry>
     <title>ガザ戦闘から3年 死者は7万4000人</title>
@@ -220,10 +256,10 @@
     <updated>2026-10-07T07:44:12.629Z</updated>
     <summary>[[SUMMARY:
 {
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;戦闘勃発から3年&quot;,
-  &quot;point1_desc&quot;: &quot;イスラエルとイスラム組織ハマスの大規模な戦闘が開始してから、本日で3年が経過しました。和平へ向けた話し合いが難航するなか、現地ではいまだ緊張状態と攻撃が継続しており、深刻な状況が続いています。&quot;,
-  &quot;point2_title&quot;: ...</summary>
+  &quot;point1_title&quot;: &quot;戦闘開始から3年が経過&quot;,
+  &quot;point1_desc&quot;: &quot;イスラエルとハマスによる軍事衝突が始まってから丸3年が経ちましたが、停戦への道のりは遠く、依然として収束の目途が立たない異常事態が続いています。&quot;,
+  &quot;point2_title&quot;: &quot;ガザ半数以上を軍が支配&quot;,
+  &quot;point2_desc&quot;: &quot;和平交渉の進展が滞留...</summary>
   </entry>
   <entry>
     <title>国交省否定の簗氏圧力 市長は疑念</title>
@@ -232,10 +268,10 @@
     <updated>2026-10-07T02:17:33.542Z</updated>
     <summary>[[SUMMARY:
 {
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;農相の発言を巡る問題&quot;,
-  &quot;point1_desc&quot;: &quot;簗農相が自身の地元自治体に対する道路予算を大幅にカットしたと発言した問題について、大きな波紋が広がっている。政治的な働きかけの有無や予算配分の透明性が強く問われる事態となっている。&quot;,
-  &quot;point2_title&quot;: &quot;国交省...</summary>
+  &quot;point1_title&quot;: &quot;国交省が予算削減圧力を否定&quot;,
+  &quot;point1_desc&quot;: &quot;簗農相が地元自治体の道路予算を削ったと発言した問題で、国交省は調査の結果、簗氏側からの削減への働きかけはなかったと説明しました。&quot;,
+  &quot;point2_title&quot;: &quot;根拠示せず自治体は不信感&quot;,
+  &quot;point2_desc&quot;: &quot;調査結果において働きかけを否定...</summary>
   </entry>
   <entry>
     <title>実質賃金10年ぶり8カ月連続プラス</title>
@@ -244,10 +280,10 @@
     <updated>2026-10-07T02:16:56.900Z</updated>
     <summary>[[SUMMARY:
 {
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;実質賃金が8ヶ月連続増&quot;,
-  &quot;point1_desc&quot;: &quot;厚生労働省が発表した8月の毎月勤労統計調査の速報によると、物価変動を反映した1人当たりの実質賃金は前年同月比で1.5％増加した。これで8ヶ月連続のプラスとなり、賃金の増加傾向が継続している。&quot;,
-  &quot;point2_title&quot;...</summary>
+  &quot;point1_title&quot;: &quot;実質賃金が8か月連続増&quot;,
+  &quot;point1_desc&quot;: &quot;厚労省の調査で8月の実質賃金が前年比1.5％増となり、物価の上昇を上回る給与改善が8か月連続で継続していることが明らかになりました。&quot;,
+  &quot;point2_title&quot;: &quot;賃上げ傾向の定着に期待&quot;,
+  &quot;point2_desc&quot;: &quot;長引く物価高の中で労働者の手取り...</summary>
   </entry>
   <entry>
     <title>ビール大手4社カルテル疑い 調査</title>
@@ -256,10 +292,10 @@
     <updated>2026-10-07T02:16:33.207Z</updated>
     <summary>[[SUMMARY:
 {
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;公取委がビール大手を強制調査&quot;,
-  &quot;point1_desc&quot;: &quot;公正取引委員会は、ビールの卸売業者向け価格を調整するカルテルを結んだ独占禁止法違反の疑いで、大手ビールメーカー４社への強制調査に着手しました。検察への刑事告発も視野に全容解明を進める方針です。&quot;,
-  &quot;point2_ti...</summary>
+  &quot;point1_title&quot;: &quot;ビール大手４社に強制調査&quot;,
+  &quot;point1_desc&quot;: &quot;公正取引委員会は、ビールの卸売価格を事前調整していた独占禁止法違反の疑いで、大手メーカー4社に対する立ち入り調査に踏み切りました。&quot;,
+  &quot;point2_title&quot;: &quot;刑事告発も視野に全容解明へ&quot;,
+  &quot;point2_desc&quot;: &quot;今回のカルテル疑惑について、...</summary>
   </entry>
   <entry>
     <title>台風で高波 西湘バイパス通行止め</title>
@@ -268,10 +304,10 @@
     <updated>2026-10-06T21:46:21.784Z</updated>
     <summary>[[SUMMARY:
 {
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;台風27号が高波を引き起こす&quot;,
-  &quot;point1_desc&quot;: &quot;大型で強い台風27号が日本の東の海上にあり、1時間におよそ30キロの速さで北北東へ進んでいます。この台風の影響により沿岸部では強い高波が発生しており、引き続き厳重な警戒が呼びかけられています。&quot;,
-  &quot;point2_ti...</summary>
+  &quot;point1_title&quot;: &quot;台風27号で高波警戒&quot;,
+  &quot;point1_desc&quot;: &quot;大型で強い台風27号が日本の東を北上しており、沿岸部ではうねりを伴った高波への厳重な警戒が呼びかけられています。&quot;,
+  &quot;point2_title&quot;: &quot;西湘バイパス通行止め&quot;,
+  &quot;point2_desc&quot;: &quot;台風の影響による高波の被害を防ぐため、神奈川県の西湘バイ...</summary>
   </entry>
   <entry>
     <title>首相 米に日朝首脳会談の仲介要請</title>
@@ -280,10 +316,10 @@
     <updated>2026-10-06T21:45:56.490Z</updated>
     <summary>[[SUMMARY:
 {
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;米朝会談時の仲介を依頼&quot;,
-  &quot;point1_desc&quot;: &quot;高市早苗首相が9月に行われたトランプ米大統領との会談において、米朝首脳会談が実現した際には北朝鮮の金正恩総書記に対して日朝首脳会談に応じるよう働きかけてほしいと直接仲介を依頼していたことが判明した。&quot;,
-  &quot;point2_ti...</summary>
+  &quot;point1_title&quot;: &quot;米朝会談時に仲介を要請&quot;,
+  &quot;point1_desc&quot;: &quot;高市首相がトランプ米大統領に対し、米朝首脳会談が実現した際には金正恩総書記へ日朝首脳会談に応じるよう働きかける仲介役を依頼していたことが判明しました。&quot;,
+  &quot;point2_title&quot;: &quot;対話の糸口掴む狙いか&quot;,
+  &quot;point2_desc&quot;: &quot;米国との強力なパ...</summary>
   </entry>
   <entry>
     <title>沖縄の米軍関係者 48時間活動停止</title>
@@ -292,11 +328,10 @@
     <updated>2026-10-06T21:45:31.357Z</updated>
     <summary>[[SUMMARY:
 {
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;米海兵隊員を逮捕&quot;,
-  &quot;point1_desc&quot;: &quot;沖縄県那覇市のホテルで、39歳の女性を殺害し財布などを奪ったとして強盗殺人容疑で米海兵隊上等兵の男が逮捕された。容疑者は米軍普天間基地に所属している。&quot;,
-  &quot;point2_title&quot;: &quot;凶悪事件への批判&quot;,
-  &quot;point2...</summary>
+  &quot;point1_title&quot;: &quot;那覇ホテルで強盗殺人事件&quot;,
+  &quot;point1_desc&quot;: &quot;普天間基地に所属する米海兵隊員が那覇市のホテルで女性を殺害し、財布などを奪ったとして強盗殺人容疑で逮捕され、地域社会に大きな衝撃が広がっています。&quot;,
+  &quot;point2_title&quot;: &quot;在沖米軍トップが対応へ&quot;,
+  &quot;point2_desc&quot;: &quot;重大事件の発生を...</summary>
   </entry>
   <entry>
     <title>箱乗りさせ事故 殺人未遂疑い逮捕</title>
@@ -305,10 +340,10 @@
     <updated>2026-10-06T12:52:47.598Z</updated>
     <summary>[[SUMMARY:
 {
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;危険運転で19歳男逮捕&quot;,
-  &quot;point1_desc&quot;: &quot;今年1月に大阪府太子町の府道で危険な乗車状態のまま車を走らせ、死傷事故を起こしたとして、19歳の男が殺人未遂などの疑いで逮捕されました。警察が詳しい事故の経緯を調べています。&quot;,
-  &quot;point2_title&quot;: &quot;窓枠に座ら...</summary>
+  &quot;point1_title&quot;: &quot;危険運転で３人死傷&quot;,
+  &quot;point1_desc&quot;: &quot;大阪府太子町で車の窓枠に人を乗せた状態で蛇行運転を行い、同乗者３人を死傷させる重大な事故を起こしたとして、１９歳の少年が警察に逮捕されました。&quot;,
+  &quot;point2_title&quot;: &quot;殺人未遂の疑いも視野&quot;,
+  &quot;point2_desc&quot;: &quot;極めて危険な暴走行為を故意に...</summary>
   </entry>
   <entry>
     <title>元軍医に銃殺刑 トランプ氏が承認</title>
@@ -317,10 +352,10 @@
     <updated>2026-10-06T12:52:00.073Z</updated>
     <summary>[[SUMMARY:
 {
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;フォートフッド乱射事件&quot;,
-  &quot;point1_desc&quot;: &quot;２００９年に米テキサス州のフォートフッド陸軍基地で発生した銃乱射事件では、１３人が死亡し多数が負傷した。元陸軍精神科医の容疑者によるこの凄惨な事件は全米に大きな衝撃を与えた。&quot;,
-  &quot;point2_title&quot;: &quot;トランプ氏...</summary>
+  &quot;point1_title&quot;: &quot;フォートフッド乱射犯の死刑&quot;,
+  &quot;point1_desc&quot;: &quot;2009年にテキサス州の米軍基地で13人を射殺した元陸軍精神科医に対し、トランプ米大統領が死刑執行に向けた手続きを進めるよう指示を出しました。&quot;,
+  &quot;point2_title&quot;: &quot;軍の死刑承認は極めて異例&quot;,
+  &quot;point2_desc&quot;: &quot;米軍における軍法...</summary>
   </entry>
   <entry>
     <title>シチズン 約10万人分情報漏えいか</title>
@@ -329,10 +364,10 @@
     <updated>2026-10-06T12:51:27.267Z</updated>
     <summary>[[SUMMARY:
 {
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;シチズンで不正アクセス&quot;,
-  &quot;point1_desc&quot;: &quot;シチズン時計はウェブサイト内の問い合わせシステムが第三者からの不正アクセスを受けたと発表した。顧客の氏名や連絡先など、約10万人分の個人情報が外部へ流出した可能性が生じている。&quot;,
-  &quot;point2_title&quot;: &quot;個人情報...</summary>
+  &quot;point1_title&quot;: &quot;約10万人分の情報漏洩か&quot;,
+  &quot;point1_desc&quot;: &quot;シチズン時計のお問い合わせ窓口システムが不正アクセスを受け、利用者約１０万人分の氏名や連絡先といった個人情報が外部へ流出した可能性が浮上しています。&quot;,
+  &quot;point2_title&quot;: &quot;サイバー防衛の投資重要&quot;,
+  &quot;point2_desc&quot;: &quot;相次ぐサイバー...</summary>
   </entry>
   <entry>
     <title>アシックス 失速から売上1兆円へ</title>
@@ -341,10 +376,10 @@
     <updated>2026-10-06T07:45:27.912Z</updated>
     <summary>[[SUMMARY:
 {
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;体育館の靴から世界へ&quot;,
-  &quot;point1_desc&quot;: &quot;かつて学校の指定靴というイメージが強かったアシックスだが、現在は世界中で評価されるランニングシューズ大手として躍進している。直近の業績も大幅な増収増益を記録し絶好調だ。&quot;,
-  &quot;point2_title&quot;: &quot;2010年代の赤字...</summary>
+  &quot;point1_title&quot;: &quot;アシックス苦境からの大逆転&quot;,
+  &quot;point1_desc&quot;: &quot;2010年代に業績が低迷し赤字へ沈んだアシックスですが、海外戦略の抜本的な見直しやランニング市場の開拓によって急成長を遂げ、初の売上高1兆円規模へと迫っています。&quot;,
+  &quot;point2_title&quot;: &quot;海外地域で売上が急拡大へ&quot;,
+  &quot;point2_desc&quot;:...</summary>
   </entry>
   <entry>
     <title>ピアニストの反田恭平氏 在宅起訴</title>
@@ -353,10 +388,10 @@
     <updated>2026-10-06T07:45:03.858Z</updated>
     <summary>[[SUMMARY:
 {
-  &quot;category&quot;: &quot;芸能&quot;,
-  &quot;point1_title&quot;: &quot;反田恭平氏を在宅起訴&quot;,
-  &quot;point1_desc&quot;: &quot;ピアニストの反田恭平氏が、昨年12月に東京都内の首都高速道路で制限速度を84キロ超える時速144キロで乗用車を運転したとして、道路交通法違反の罪で在宅起訴されていたことが判明した。&quot;,
-  &quot;point2_title&quot;: &quot;制限速度8...</summary>
+  &quot;point1_title&quot;: &quot;ピアニスト反田氏が速度超過で起訴&quot;,
+  &quot;point1_desc&quot;: &quot;ピアニストの反田恭平氏が都内の首都高で法定速度を84キロ超過する時速144キロで走行したとして、道路交通法違反の罪で在宅起訴されたことが判明しました。&quot;,
+  &quot;point2_title&quot;: &quot;危険な暴走運転で刑事責任を追及&quot;,
+  &quot;point2_desc&quot;:...</summary>
   </entry>
   <entry>
     <title>AI政策の司令塔 米大統領なぜ設置</title>
@@ -365,10 +400,10 @@
     <updated>2026-10-06T07:44:38.545Z</updated>
     <summary>[[SUMMARY:
 {
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;米AI司令塔の責任者を発表&quot;,
-  &quot;point1_desc&quot;: &quot;アメリカのトランプ大統領は、政府における人工知能（AI）関連の取り組みを統括・調整する新たな司令塔の責任者を発表しました。民間企業や消費者と政府との連携を強力に推進していく狙いです。&quot;,
-  &quot;point2_title&quot;: ...</summary>
+  &quot;point1_title&quot;: &quot;米政府にAI司令塔を新設&quot;,
+  &quot;point1_desc&quot;: &quot;トランプ米大統領は政府内のAI施策を一元管理し推進するため、官民の連携や規制緩和を主導する新たな司令塔組織と責任者の設置を表明しました。（73文字）&quot;,
+  &quot;point2_title&quot;: &quot;官民連携で開発加速へ&quot;,
+  &quot;point2_desc&quot;: &quot;企業や消費者との...</summary>
   </entry>
   <entry>
     <title>大雨で3度浸水のラーメン店 再開</title>
@@ -575,42 +610,5 @@
   &quot;point1_title&quot;: &quot;イエメン暫定政権の動向&quot;,
   &quot;point1_desc&quot;: &quot;サウジアラビアの支援を受けるイエメン暫定政権のアリーミ大統領評議会議長が新たな表明を行いました。親イラン武装組織フーシ派との緊張が高まる中、地域の安定に向けた政権側の姿勢が注視されています。&quot;,
   &quot;point2_title&quot;...</summary>
-  </entry>
-  <entry>
-    <title>日経平均が一時7万円台 3カ月ぶり</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23259"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23259</id>
-    <updated>2026-10-05T02:16:34.555Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;日経平均株価が急反発&quot;,
-  &quot;point1_desc&quot;: &quot;週明けの東京株式市場で日経平均株価が一時1700円以上値上がりした。約3か月ぶりに7万円台の大台を一時的に回復し、市場に強い買い注文が集まる展開となった。&quot;,
-  &quot;point2_title&quot;: &quot;米追加利上げ観測の後退&quot;,
-  ...</summary>
-  </entry>
-  <entry>
-    <title>知人女性の腹刺した疑い 男を逮捕</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23258"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23258</id>
-    <updated>2026-10-04T21:46:33.182Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;茨城県大洗町で刺傷事件&quot;,
-  &quot;point1_desc&quot;: &quot;茨城県大洗町で41歳の知人女性の左腹部を剪定ばさみで刺したとして、30歳の男が緊急逮捕された。女性は負傷したものの、警察は犯行の動機や詳しい事件の経緯について捜査を進めている。&quot;,
-  &quot;point2_title&quot;: &quot;現場近く...</summary>
-  </entry>
-  <entry>
-    <title>ブラジル大統領選 決選投票の公算</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23257"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23257</id>
-    <updated>2026-10-04T21:46:08.169Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;ブラジル大統領選投開票&quot;,
-  &quot;point1_desc&quot;: &quot;南米ブラジルにて4日、現職のルラ大統領の任期満了に伴う大統領選挙の投票が実施されました。同日夕方に投票が締め切られた後、即日開票作業が行われ、選挙の情勢に大きな注目が集まっています。&quot;,
-  &quot;point2_title&quot;: &quot;主...</summary>
   </entry>
 </feed>
