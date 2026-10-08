@@ -148,3 +148,15 @@ html, body {
     animation: none;
   }
 }
+
+/* 👑 第1号メッセージのふわふわ点滅アニメーション */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.4);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 20px 5px rgba(251, 191, 36, 0.2);
+    transform: scale(1.02);
+  }
+}

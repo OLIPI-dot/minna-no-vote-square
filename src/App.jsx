@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback, lazy, Suspense } from 'react';
+import confetti from 'canvas-confetti';
 // Deploy Kick: 2026-03-26 18:45 🚀🐰 (Category Fix Forced)
 import { supabase } from './supabaseClient';
 // 🚀 コンポーネントの遅延読み込みで初期バンドルを極限まで削るらび！
@@ -1685,6 +1686,15 @@ function App() {
     // 🏎️ 楽観的UI更新: 瞬時に反映させるらび！
     localStorage.setItem(`voted_survey_${currentSurvey.id}`, String(option.id));
     setVotedOption(String(option.id));
+
+    // 🎉 紙吹雪エフェクト！キモチイイ！！
+    confetti({
+      particleCount: 150,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: ['#7c3aed', '#ec4899', '#fcd34d', '#3b82f6', '#10b981'],
+      zIndex: 9999
+    });
 
     const currentTotal = (currentSurvey.total_votes || 0) + 1;
     const updatedOptions = options.map(o => o.id === option.id ? { ...o, votes: (o.votes || 0) + 1 } : o);

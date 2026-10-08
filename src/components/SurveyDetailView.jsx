@@ -402,6 +402,23 @@ const SurveyDetailView = ({
         renderCommentContent={renderCommentContent}
         isTimeUp={isTimeUp}
       >
+      {/* 🚀 第1号ボーナスの演出 */}
+      {!votedOption && !isTimeUp && isTotalVotes === 0 && (
+        <div style={{
+          background: 'linear-gradient(135deg, #fffbeb, #fef3c7)',
+          border: '2px dashed #fbbf24',
+          borderRadius: '16px',
+          padding: '16px 20px',
+          margin: '0 0 24px 0',
+          textAlign: 'center',
+          color: '#b45309',
+          animation: 'pulse-glow 2s infinite'
+        }}>
+          <div style={{ fontSize: '1.2rem', marginBottom: '4px' }}>👑 <strong>記念すべき第1号チャンス！</strong> 👑</div>
+          <div style={{ fontSize: '0.95rem' }}>まだ誰も投票していません。あなたの1票でこのアンケートの空気が決まります！</div>
+        </div>
+      )}
+
       <div className="options-container" style={{ margin: '20px 0 40px 0' }}>
         {options.length > 0 ? options.map((opt, index) => {
           const perc = isTotalVotes > 0 ? Math.round((opt.votes / isTotalVotes) * 100) : 0;
