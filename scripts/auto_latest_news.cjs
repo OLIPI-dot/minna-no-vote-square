@@ -591,8 +591,32 @@ async function startAutoPosting() {
                 }]).select();
                 if (sErr) throw sErr;
                 const surveyId = sData[0].id;
-                await supabase.from('options').insert(options.map(name => ({ survey_id: surveyId, name, votes: 0 })));
-                log(`✅ プレミアム投稿成功らび！: ${news.title}`);
+
+                // 🌸 サクラ票（初期票）の生成ロジック
+                // 3〜7票をランダムに生成して選択肢に振り分けるらび！
+                const totalSeedVotes = Math.floor(Math.random() * 5) + 3; 
+                const optionVotes = [0, 0, 0, 0];
+                for (let i = 0; i < totalSeedVotes; i++) {
+                    // 少し偏りを持たせるために、最初の2つの選択肢が選ばれやすくする
+                    const rnd = Math.random();
+                    let targetIdx = 0;
+                    if (rnd > 0.4) targetIdx = 1;
+                    if (rnd > 0.7) targetIdx = 2;
+                    if (rnd > 0.9) targetIdx = 3;
+                    if (targetIdx >= options.length) targetIdx = 0;
+                    optionVotes[targetIdx]++;
+                }
+
+                await supabase.from('options').insert(options.map((name, idx) => ({ 
+                    survey_id: surveyId, 
+                    name, 
+                    votes: optionVotes[idx] 
+                })));
+                
+                // 🌸 アンケートの総投票数も更新しておく
+                await supabase.from('surveys').update({ total_votes: totalSeedVotes }).eq('id', surveyId);
+
+                log(`✅ プレミアム投稿成功らび！(初期票:${totalSeedVotes}票): ${news.title}`);
             }
             
             postedCategories.add(cat);
