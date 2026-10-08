@@ -4,13 +4,49 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-08T07:46:23.894Z</updated>
+  <updated>2026-10-08T12:51:54.790Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
   <entry>
-    <title>タイで波紋 大村知事が発言を説明</title>
+    <title>はま寿司「22時間営業」狙いは</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23306"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23306</id>
+    <updated>2026-10-08T12:51:51.407Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;話題&quot;,
+  &quot;point1_title&quot;: &quot;はま寿司の22時間営業&quot;,
+  &quot;point1_desc&quot;: &quot;回転寿司チェーン「はま寿司」の一部店舗で導入されている「朝7時〜翌朝5時」の22時間営業がSNSで話題だ。ネットでは「緊急寿司外来」と称され、朝から寿司を楽しめる形態が注目を集めている。&quot;,
+  &quot;point2_title&quot;: &quot;朝...</summary>
+  </entry>
+  <entry>
+    <title>ペスト疑い WHOが露に情報要求</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23305"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23305</id>
+    <updated>2026-10-08T12:51:26.093Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;WHOが情報提供を要請&quot;,
+  &quot;point1_desc&quot;: &quot;世界保健機関（WHO）のテドロス事務局長は、ロシアのペスト対策研究所で職員が肺炎で死亡した事態を受け、ロシア政府に対して追加の情報提供を要請していることを記者会見で明らかにした。&quot;,
+  &quot;point2_title&quot;: &quot;ロシア...</summary>
+  </entry>
+  <entry>
+    <title>参院農水委の開催に応じず 立憲</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23304"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23304</id>
+    <updated>2026-10-08T12:50:59.982Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;野党が委員会審議を拒否&quot;,
+  &quot;point1_desc&quot;: &quot;簗農林水産大臣による予算カット発言を受け、立憲民主党は自民党に対し、大臣が説明責任を果たすか辞任しない限り、参議院農林水産委員会の開催には応じない姿勢を伝えた。&quot;,
+  &quot;point2_title&quot;: &quot;発言めぐる釈明に追われる...</summary>
+  </entry>
+  <entry>
+    <title>愛知・大村知事、タイ代表の食事不満に「来てほしくなかった」と発言</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23303"/>
     <id>https://minna-no-vote-square.vercel.app/s/23303</id>
     <updated>2026-10-08T07:46:21.169Z</updated>
@@ -22,7 +58,7 @@
   &quot;point2_title&quot;: &quot;新...</summary>
   </entry>
   <entry>
-    <title>米国防総省 イラン攻撃準備命令か</title>
+    <title>トランプ大統領、イラン攻撃の準備命令を検討か</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23302"/>
     <id>https://minna-no-vote-square.vercel.app/s/23302</id>
     <updated>2026-10-08T07:44:56.527Z</updated>
@@ -34,7 +70,7 @@
   &quot;point2_title&quot;:...</summary>
   </entry>
   <entry>
-    <title>ビール4社 業者間の「合意」焦点</title>
+    <title>ビール大手4社、カルテル疑惑で強制調査</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23301"/>
     <id>https://minna-no-vote-square.vercel.app/s/23301</id>
     <updated>2026-10-08T07:44:31.482Z</updated>
@@ -46,7 +82,7 @@
   &quot;point2_title...</summary>
   </entry>
   <entry>
-    <title>八田與一容疑者目撃情報 関東で増</title>
+    <title>別府ひき逃げの八田與一容疑者、情報提供1万3千件突破</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23300"/>
     <id>https://minna-no-vote-square.vercel.app/s/23300</id>
     <updated>2026-10-08T02:17:34.792Z</updated>
@@ -58,7 +94,7 @@
   &quot;point2_title&quot;: &quot;八...</summary>
   </entry>
   <entry>
-    <title>湖に転落し中1心肺停止 呼吸回復</title>
+    <title>琵琶湖で心肺停止の中1男子、病院で呼吸が回復</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23299"/>
     <id>https://minna-no-vote-square.vercel.app/s/23299</id>
     <updated>2026-10-08T02:17:10.471Z</updated>
@@ -576,41 +612,5 @@
   &quot;point1_title&quot;: &quot;ブラジル大統領選投開票&quot;,
   &quot;point1_desc&quot;: &quot;南米ブラジルにて4日、現職のルラ大統領の任期満了に伴う大統領選挙の投票が実施されました。同日夕方に投票が締め切られた後、即日開票作業が行われ、選挙の情勢に大きな注目が集まっています。&quot;,
   &quot;point2_title&quot;: &quot;主...</summary>
-  </entry>
-  <entry>
-    <title>台風被害の千葉 なぜ盛り土崩落</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23256"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23256</id>
-    <updated>2026-10-04T21:45:32.446Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;県内4箇所で盛り土が崩落&quot;,
-  &quot;point1_desc&quot;: &quot;台風25号の影響により、千葉県内では合計4か所で盛り土の崩落被害が相次いで発生しました。崩壊した土砂が周辺の水路を塞いでしまったことで、周辺住宅10棟以上が浸水する二次被害も引き起こされています。&quot;,
-  &quot;point2_ti...</summary>
-  </entry>
-  <entry>
-    <title>露元首相 プーチン氏の過ち語る</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23255"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23255</id>
-    <updated>2026-10-04T12:52:24.843Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;ウクライナ侵攻の継続&quot;,
-  &quot;point1_desc&quot;: &quot;ロシアのプーチン大統領は、経済の低迷や国内のエリート層・国民の間に不安が広がっている状況下でも、ウクライナ侵攻を停止するための平和交渉に応じる姿勢を見せていないと報じられています。&quot;,
-  &quot;point2_title&quot;: &quot;ロシア...</summary>
-  </entry>
-  <entry>
-    <title>那覇強殺事件 遺族がコメント発表</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23254"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23254</id>
-    <updated>2026-10-04T12:51:37.436Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;米兵を強盗殺人容疑で逮捕&quot;,
-  &quot;point1_desc&quot;: &quot;沖縄県那覇市のホテルで女性を殺害し物品を奪ったとして、在沖米海兵隊普天間基地所属の上等兵が強盗殺人の疑いで緊急逮捕されました。事件は地域社会に大きな衝撃と激しい憤りを与えています。&quot;,
-  &quot;point2_title&quot;: &quot;被...</summary>
   </entry>
 </feed>
