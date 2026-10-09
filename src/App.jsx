@@ -1737,6 +1737,27 @@ function App() {
     }
     if (!user) return alert('ログインが必要です！');
     if (!checkRateLimit()) return; // 🛡️ 連投チェック
+
+    // 🛡️ 1日の投稿上限チェック (DB)
+    if (!isAdmin) {
+      setIsLoading(true);
+      const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+      const { count: dailyCount, error: countErr } = await supabase
+        .from('surveys')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+        .gte('created_at', twentyFourHoursAgo);
+      setIsLoading(false);
+
+      if (countErr) {
+        console.error("Rate limit check error:", countErr);
+        return alert('サーバーエラーが発生しました。もう一度お試しください。');
+      }
+
+      if (dailyCount >= 10) {
+        return alert('🚨 1日に作成できるアンケートは最大10件までです！（スパム・サーバーダウン防止のため制限しています。明日また作ってね🐰💦）');
+      }
+    }
     if (!surveyTitle.trim()) return alert('お題（タイトル）を入力してください✨');
     if (!surveyCategory) return alert('カテゴリを選択してください🍜');
 
