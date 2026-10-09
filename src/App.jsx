@@ -1382,7 +1382,7 @@ function App() {
               (s.title || '').includes('【レビュー】') ? 'レビュー' :
                 (s.title || '').includes('【ネタ】') ? 'ネタ' : (s.category || 'その他'));
 
-          return {
+          const baseSurvey = {
             ...s,
             category: effectiveCategory,
             is_official: isOfficialPattern,
