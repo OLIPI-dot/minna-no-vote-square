@@ -316,6 +316,8 @@ function App() {
     localStorage.setItem('min_ake_equipment', JSON.stringify(equipment));
   }, [equipment]);
 
+  const hasProcessedLoginBonus = useRef(false);
+
   useEffect(() => {
     const handleAuthExp = (currentUser) => {
       setUser(currentUser);
@@ -344,7 +346,8 @@ function App() {
         }
         
         // 🎁 1日1回のアクセスボーナス判定！
-        if (lastLoginDate !== todayStr) {
+        if (lastLoginDate !== todayStr && !hasProcessedLoginBonus.current) {
+          hasProcessedLoginBonus.current = true;
           newTotalExp += 10;
           newTotalTickets += 1; // ログボでガチャチケ1枚
           updates.last_login_date = todayStr;
