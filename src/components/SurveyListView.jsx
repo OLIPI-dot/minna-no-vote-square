@@ -1,4 +1,6 @@
 import React from 'react';
+import GachaMiniGame from './GachaMiniGame';
+import BattleMiniGame from './BattleMiniGame';
 import RecommendedSection from './RecommendedSection';
 import TrendingHeadline from './TrendingHeadline';
 import CategoryEyecatch from './CategoryEyecatch';
@@ -46,6 +48,9 @@ const SurveyListView = ({
   baseCategories = [],
   filterCategories = [],
   viewMode, setViewMode,
+  equipment, setEquipment,
+  userExp, addExp, levelInfo,
+  globalOnlineCount
 }) => {
   const [brokenImages, setBrokenImages] = React.useState(new Set());
   const ITEMS_PER_PAGE = viewMode === 'grid' ? 40 : 15;
@@ -231,10 +236,10 @@ const SurveyListView = ({
         <button
           className={sortMode === 'mine' ? 'active' : ''}
           onClick={() => {
-            if (!user) return alert("👤 マイアンケートはログインしていないと使えません🙇‍♀️\n上の「Googleでログイン」ボタンからログインしてね！");
+            if (!user) return alert("👤 マイページ＆みんクエはログインしていないと使えません🙇‍♀️\n上の「Googleでログイン」ボタンからログインしてね！");
             setSortMode('mine');
           }}
-        >👤 マイアンケート</button>
+        >👤 マイページ＆みんクエ</button>
 
       </div>
 
@@ -468,6 +473,21 @@ const SurveyListView = ({
           </button>
         </div>
       </div>
+
+      {/* みんクエ UI（マイページタブ時のみ表示） */}
+      {sortMode === 'mine' && (
+        <div style={{ marginBottom: '40px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
+            <div style={{ flex: '1 1 300px' }}>
+              <GachaMiniGame userExp={userExp} addExp={addExp} equipment={equipment} setEquipment={setEquipment} />
+            </div>
+            <div style={{ flex: '1 1 300px' }}>
+              <BattleMiniGame userLevel={levelInfo?.level || 1} equipment={equipment} globalOnlineCount={globalOnlineCount} />
+            </div>
+          </div>
+          <h2 style={{ fontSize: '1.2rem', color: '#1e293b', borderBottom: '2px solid #e2e8f0', paddingBottom: '8px', marginTop: '20px' }}>📋 過去に作成したアンケート</h2>
+        </div>
+      )}
 
       {/* 📋 アンケートリスト */}
       <div className={`survey-list view-${viewMode}`} ref={listRef}>

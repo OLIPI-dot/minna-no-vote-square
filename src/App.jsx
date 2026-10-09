@@ -274,6 +274,18 @@ function App() {
 
   // 🏆 レベル＆経験値（EXP）システム
   const [userExp, setUserExp] = useState(0);
+  const [equipment, setEquipment] = useState(() => {
+    try {
+      const saved = localStorage.getItem('min_ake_equipment');
+      return saved ? JSON.parse(saved) : { weapon: null, armor: null, accessory: null };
+    } catch {
+      return { weapon: null, armor: null, accessory: null };
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem('min_ake_equipment', JSON.stringify(equipment));
+  }, [equipment]);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -2437,6 +2449,12 @@ function App() {
                   filterCategories={FILTER_CATEGORIES}
                   viewMode={viewMode}
                   setViewMode={setViewMode}
+                  equipment={equipment}
+                  setEquipment={setEquipment}
+                  userExp={userExp}
+                  addExp={addExp}
+                  levelInfo={levelInfo}
+                  globalOnlineCount={globalOnlineCount}
                 />
               </Suspense>
             )}
@@ -2645,6 +2663,8 @@ function App() {
               levelInfo={levelInfo}
               user={user}
               addExp={addExp}
+              equipment={equipment}
+              setEquipment={setEquipment}
             />
           </Suspense>
         </div>

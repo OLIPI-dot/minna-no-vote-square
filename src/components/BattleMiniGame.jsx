@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-const BattleMiniGame = ({ userLevel, addExp, equipment }) => {
+const BattleMiniGame = ({ userLevel, addExp, equipment, globalOnlineCount }) => {
   const [battleState, setBattleState] = useState('idle'); // idle, searching, battling, result
   const [opponent, setOpponent] = useState(null);
   const [playerHp, setPlayerHp] = useState(0);
@@ -32,6 +32,14 @@ const BattleMiniGame = ({ userLevel, addExp, equipment }) => {
 
   const startBattle = () => {
     if (cooldown > 0) return;
+    
+    // 広場に自分しかいない場合はバトルできない
+    if (typeof globalOnlineCount !== 'undefined' && globalOnlineCount <= 1) {
+      setBattleState('idle');
+      setBattleLog(['📡 近くの広場民をスキャン中...', '❌ ...誰もいないようだ。（広場ぼっち）']);
+      return;
+    }
+
     setBattleState('searching');
     setBattleLog(['📡 近くの広場民をスキャン中...']);
     

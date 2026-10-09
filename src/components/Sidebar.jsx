@@ -24,20 +24,10 @@ const Sidebar = ({
   userExp,
   levelInfo,
   user,
-  addExp
+  addExp,
+  equipment,
+  setEquipment
 }) => {
-  const [equipment, setEquipment] = useState(() => {
-    try {
-      const saved = localStorage.getItem('min_ake_equipment');
-      return saved ? JSON.parse(saved) : { weapon: null, armor: null, accessory: null };
-    } catch {
-      return { weapon: null, armor: null, accessory: null };
-    }
-  });
-
-  useEffect(() => {
-    localStorage.setItem('min_ake_equipment', JSON.stringify(equipment));
-  }, [equipment]);
 
   return (
     <div className="live-feed-sidebar" style={{ minWidth: '320px', boxSizing: 'border-box' }}>
@@ -67,7 +57,7 @@ const Sidebar = ({
         )}
 
         <GachaMiniGame userExp={userExp} addExp={addExp} equipment={equipment} setEquipment={setEquipment} />
-        <BattleMiniGame userLevel={levelInfo?.level || 1} addExp={addExp} equipment={equipment} />
+        <BattleMiniGame userLevel={levelInfo?.level || 1} addExp={addExp} equipment={equipment} globalOnlineCount={globalOnlineCount} />
       </div>
 
       <div className="sidebar-section-card" style={{ marginBottom: '24px', background: 'linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%)', border: '1px solid #ddd6fe' }}>
