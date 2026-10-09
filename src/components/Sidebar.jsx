@@ -56,8 +56,10 @@ const Sidebar = ({
           </div>
         )}
 
+        {/* 
         <GachaMiniGame userExp={userExp} addExp={addExp} equipment={equipment} setEquipment={setEquipment} />
         <BattleMiniGame userLevel={levelInfo?.level || 1} addExp={addExp} equipment={equipment} globalOnlineCount={globalOnlineCount} />
+        */}
       </div>
 
       <div className="sidebar-section-card" style={{ marginBottom: '24px', background: 'linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%)', border: '1px solid #ddd6fe' }}>
