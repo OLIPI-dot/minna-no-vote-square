@@ -1,221 +1,198 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
+import { supabase } from '../supabaseClient';
 
-const BattleMiniGame = ({ userLevel, addExp, equipment, globalOnlineCount }) => {
-  const [battleState, setBattleState] = useState('idle'); // idle, searching, battling, result
-  const [opponent, setOpponent] = useState(null);
-  const [playerHp, setPlayerHp] = useState(0);
+const BattleMiniGame = ({ userLevel, addExp, equipment, globalOnlineCount, user }) => {
+  const [battleState, setBattleState] = useState('idle');
   const [battleLog, setBattleLog] = useState([]);
-  const [isWinner, setIsWinner] = useState(false);
-  const [cooldown, setCooldown] = useState(0);
+  const [isPosting, setIsPosting] = useState(false);
+  
+  // 今日の曜日に合わせたボス名
+  const days = ['日', '月', '火', '水', '木', '金', '土'];
+  const todayDay = days[new Date().getDay()];
+  const bossName = `${todayDay}曜日の魔物`;
 
-  // 装備ボーナスの計算
+  // 🐉 レイドボスの状態
+  const BOSS_MAX_HP = 5000000; // 500万HP
+  const [totalDamage, setTotalDamage] = useState(0);
+  const [isBossLoading, setIsBossLoading] = useState(true);
+
+  // 1日のバトル回数制限 (最大3回)
+  const getTodayBattles = () => {
+    const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
+    let data;
+    try { data = JSON.parse(localStorage.getItem('daily_battles_v2') || '{}'); } catch { data = {}; }
+    if (data.date !== todayStr) return { date: todayStr, count: 0 };
+    return data;
+  };
+  const [battlesToday, setBattlesToday] = useState(getTodayBattles().count);
+  const MAX_BATTLES = 3;
+
+  // ステータス計算
   const equipAtk = (equipment?.weapon?.atk || 0) + (equipment?.accessory?.atk || 0);
-  const equipDef = (equipment?.armor?.def || 0) + (equipment?.accessory?.def || 0);
-  const equipHp = (equipment?.weapon?.hp || 0) + (equipment?.armor?.hp || 0) + (equipment?.accessory?.hp || 0);
-
-  // 基本ステータス
-  const baseMaxHp = userLevel * 20 + 30;
   const baseAtk = userLevel * 5 + 10;
-  const baseDef = userLevel * 2 + 5;
-
-  // ステータス計算 (基本値 + 装備ボーナス)
-  const myMaxHp = baseMaxHp + equipHp;
   const myAtk = baseAtk + equipAtk;
-  const myDef = baseDef + equipDef;
 
+  const weaponName = equipment?.weapon?.name || '素手';
+  const weaponRarity = equipment?.weapon?.rarity || 'N';
+  const rarityStar = weaponRarity === 'UR' ? '✨UR ' : weaponRarity === 'SR' ? '⭐SR ' : weaponRarity === 'R' ? '🔸R ' : '';
+
+  // 📡 ボスのダメージ履歴をタイムラインから集計
   useEffect(() => {
-    if (cooldown > 0) {
-      const timer = setTimeout(() => setCooldown(cooldown - 1), 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [cooldown]);
-
-  const startBattle = () => {
-    if (cooldown > 0) return;
-    
-    // 広場に自分しかいない場合はバトルできない
-    if (typeof globalOnlineCount !== 'undefined' && globalOnlineCount <= 1) {
-      setBattleState('idle');
-      setBattleLog(['📡 近くの広場民をスキャン中...', '❌ ...誰もいないようだ。（広場ぼっち）']);
-      return;
-    }
-
-    setBattleState('searching');
-    setBattleLog(['📡 近くの広場民をスキャン中...']);
-    
-    setTimeout(() => {
-      // 相手の生成
-      const opLevel = Math.max(1, userLevel + Math.floor(Math.random() * 5) - 2);
-      const opTitles = ['ひよっこ広場民', '見習い広場民', '一人前の広場民', '熟練の広場民', '伝説の広場民'];
-      const opTitle = opTitles[Math.min(4, Math.max(0, Math.floor(opLevel / 5)))] || '歴戦の広場民';
+    const fetchDamage = async () => {
+      const { data } = await supabase
+        .from('timeline_posts')
+        .select('content')
+        .eq('name', '🤖 コロシアム実況');
       
-      const opMaxHp = opLevel * 20 + 30;
-      const opAtk = opLevel * 5 + 10;
-      const opDef = opLevel * 2 + 5;
-      
-      setOpponent({ level: opLevel, title: opTitle, hp: opMaxHp, maxHp: opMaxHp, atk: opAtk, def: opDef });
-      setPlayerHp(myMaxHp);
-      
-      setBattleLog(prev => [...prev, `⚠️ 野生の「${opTitle} (Lv.${opLevel})」が現れた！`]);
-      setBattleState('battling');
-      
-      processBattle(opMaxHp, myMaxHp, opAtk, opDef);
-    }, 1500);
-  };
-
-  const processBattle = (initialOpHp, initialMyHp, opAtk, opDef) => {
-    let currentOpHp = initialOpHp;
-    let currentMyHp = initialMyHp;
-
-    const attack = () => {
-      if (currentMyHp <= 0 || currentOpHp <= 0) {
-        finishBattle(currentMyHp > 0);
-        return;
+      if (data) {
+        let dmg = 0;
+        data.forEach(p => {
+          const match = p.content.match(/で ([\d,]+) ダメージ/);
+          if (match) {
+            dmg += parseInt(match[1].replace(/,/g, ''), 10);
+          }
+        });
+        setTotalDamage(dmg);
       }
-
-      // 自分の攻撃 (ダメージ = 自分の攻撃力 - 相手の防御力 + 乱数)
-      const baseMyDmg = Math.max(1, myAtk - opDef);
-      const myDmg = Math.max(1, baseMyDmg + Math.floor(Math.random() * 10) - 5);
-      currentOpHp = Math.max(0, currentOpHp - myDmg);
-      
-      setOpponent(prev => ({ ...prev, hp: currentOpHp }));
-      setBattleLog(prev => [...prev.slice(-4), `⚔️ あなたの攻撃！ 相手に ${myDmg} ダメージ！`]); // ログは最新5件のみ保持
-      
-      if (currentOpHp <= 0) {
-        setTimeout(() => finishBattle(true), 1000);
-        return;
-      }
-
-      // 相手の攻撃
-      setTimeout(() => {
-        const baseOpDmg = Math.max(1, opAtk - myDef);
-        const opDmg = Math.max(1, baseOpDmg + Math.floor(Math.random() * 10) - 5);
-        currentMyHp = Math.max(0, currentMyHp - opDmg);
-        
-        setPlayerHp(currentMyHp);
-        setBattleLog(prev => [...prev.slice(-4), `💥 相手の反撃！ あなたに ${opDmg} ダメージ！`]);
-        
-        if (currentMyHp <= 0) {
-          setTimeout(() => finishBattle(false), 1000);
-        } else {
-          setTimeout(attack, 1000);
-        }
-      }, 1000);
+      setIsBossLoading(false);
     };
+    fetchDamage();
 
-    setTimeout(attack, 1500);
-  };
+    // リアルタイムで誰かが殴ったのを検知
+    const channel = supabase.channel('boss_realtime')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'timeline_posts' }, (payload) => {
+        if (payload.new.name === '🤖 コロシアム実況') {
+          const match = payload.new.content.match(/で ([\d,]+) ダメージ/);
+          if (match) {
+            const newDmg = parseInt(match[1].replace(/,/g, ''), 10);
+            setTotalDamage(prev => prev + newDmg);
+            setBattleLog(prev => [...prev.slice(-3), payload.new.content]); // 他人のログも表示
+          }
+        }
+      }).subscribe();
 
-  const finishBattle = (won) => {
-    setIsWinner(won);
-    setBattleState('result');
-    if (won) {
-      setBattleLog(prev => [...prev.slice(-4), `🎉 勝利！！ 15 EXP 獲得した！`]);
-      if (addExp) addExp(15);
-    } else {
-      setBattleLog(prev => [...prev.slice(-4), `💀 敗北... ボコボコにされた。(+2 EXP)`]);
-      if (addExp) addExp(2);
-    }
-    setCooldown(15); // 15秒クールダウン
-  };
+    return () => supabase.removeChannel(channel);
+  }, []);
 
-  const resetBattle = () => {
-    setBattleState('idle');
-    setBattleLog([]);
-    setOpponent(null);
-  };
+  const bossHp = Math.max(0, BOSS_MAX_HP - totalDamage);
+  const hpPercent = Math.max(0, Math.min(100, (bossHp / BOSS_MAX_HP) * 100));
 
-  const renderHpBar = (hp, maxHp, isOpponent = false) => {
-    const percent = Math.max(0, Math.min(100, (hp / maxHp) * 100));
-    const color = percent > 50 ? '#10b981' : percent > 20 ? '#f59e0b' : '#ef4444';
-    return (
-      <div style={{ marginBottom: '8px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', fontWeight: 'bold', color: '#475569', marginBottom: '2px' }}>
-          <span>{isOpponent ? '敵のHP' : 'あなたのHP'}</span>
-          <span>{hp} / {maxHp}</span>
-        </div>
-        <div style={{ width: '100%', background: '#e2e8f0', height: '10px', borderRadius: '5px', overflow: 'hidden' }}>
-          <div style={{ width: `${percent}%`, height: '100%', background: color, transition: 'width 0.3s ease-in-out, background 0.3s' }}></div>
-        </div>
-      </div>
-    );
+  const hitSandbag = async () => {
+    if (battlesToday >= MAX_BATTLES || isPosting || bossHp <= 0) return;
+    setIsPosting(true);
+    setBattleState('battling');
+    
+    // ダメージ計算（レア度でインフレする脳汁仕様）
+    let damage = myAtk;
+    if (weaponRarity === 'UR') damage *= (800 + Math.random() * 400); // 約1000倍
+    else if (weaponRarity === 'SR') damage *= (80 + Math.random() * 40); // 約100倍
+    else if (weaponRarity === 'R') damage *= (8 + Math.random() * 4); // 約10倍
+    else damage *= (0.8 + Math.random() * 0.4); // 素手・N装備
+    
+    damage = Math.floor(damage);
+    
+    const playerName = user?.user_metadata?.display_name || '匿名広場民';
+    const timelineMessage = `📢 [${playerName}] が【${rarityStar}${weaponName}】で ${damage.toLocaleString()} ダメージを与えた！！！💥`;
+
+    // タイムラインへ投稿 (これが全員のHPを減らすトリガーになる)
+    await supabase
+      .from('timeline_posts')
+      .insert([{
+        name: '🤖 コロシアム実況',
+        avatar: '📢',
+        content: timelineMessage,
+        is_official: true
+      }]);
+
+    // 報酬と回数消費
+    const currentData = getTodayBattles();
+    currentData.count += 1;
+    localStorage.setItem('daily_battles_v2', JSON.stringify(currentData));
+    setBattlesToday(currentData.count);
+
+    if (addExp) addExp(5);
+    if (window.addTicketsGlobal) window.addTicketsGlobal(1);
+
+    setTimeout(() => {
+      setBattleState('result');
+      setIsPosting(false);
+    }, 1000);
   };
 
   return (
-    <div style={{ marginTop: '16px', background: '#f8fafc', borderRadius: '12px', border: '2px dashed #cbd5e1', padding: '12px' }}>
-      <h4 style={{ margin: '0 0 8px 0', fontSize: '1rem', color: '#334155', display: 'flex', alignItems: 'center', gap: '6px' }}>
-        ⚔️ 広場民コロシアム
-      </h4>
+    <div style={{ marginTop: '16px', background: 'linear-gradient(180deg, #1e293b 0%, #0f172a 100%)', borderRadius: '12px', border: '2px solid #334155', padding: '16px', color: 'white', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.5)' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '12px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <h4 style={{ margin: 0, fontSize: '1rem', color: '#f8fafc', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: '900', lineHeight: '1.4' }}>
+            🚨 【緊急討伐】<br />{bossName}
+          </h4>
+          <span style={{ fontSize: '0.65rem', background: '#ef4444', padding: '4px 8px', borderRadius: '12px', fontWeight: 'bold', animation: 'pulse-red 2s infinite', whiteSpace: 'nowrap', flexShrink: 0 }}>全プレイヤー協力戦</span>
+        </div>
+      </div>
       
+      {/* 🐲 ボスのHPバー */}
+      <div style={{ background: '#334155', padding: '12px', borderRadius: '8px', marginBottom: '16px', border: '1px inset #475569' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', fontWeight: 'bold', marginBottom: '4px' }}>
+          <span>ボスの残りHP</span>
+          <span style={{ color: bossHp === 0 ? '#10b981' : '#f8fafc' }}>
+            {isBossLoading ? '読込中...' : bossHp === 0 ? '討伐完了！' : `${bossHp.toLocaleString()} / ${BOSS_MAX_HP.toLocaleString()}`}
+          </span>
+        </div>
+        <div style={{ width: '100%', background: '#0f172a', height: '14px', borderRadius: '7px', overflow: 'hidden', border: '1px solid #1e293b' }}>
+          <div style={{ width: `${hpPercent}%`, height: '100%', background: 'linear-gradient(90deg, #ef4444, #b91c1c)', transition: 'width 0.5s ease-out' }}></div>
+        </div>
+      </div>
+
       {/* 自分のステータス表示 */}
-      {battleState === 'idle' && (
-        <div style={{ background: 'white', padding: '10px', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '12px', fontSize: '0.85rem' }}>
-          <div style={{ fontWeight: 'bold', color: '#475569', marginBottom: '6px', textAlign: 'center', borderBottom: '1px solid #e2e8f0', paddingBottom: '4px' }}>
-            📊 あなたのステータス (Lv.{userLevel})
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'space-around', color: '#64748b' }}>
-            <div>
-              <span style={{ color: '#10b981' }}>HP:</span> {myMaxHp}
-              {equipHp > 0 && <span style={{ fontSize: '0.7rem', color: '#10b981', marginLeft: '2px' }}>(+{equipHp})</span>}
-            </div>
-            <div>
-              <span style={{ color: '#ef4444' }}>ATK:</span> {myAtk}
-              {equipAtk > 0 && <span style={{ fontSize: '0.7rem', color: '#ef4444', marginLeft: '2px' }}>(+{equipAtk})</span>}
-            </div>
-            <div>
-              <span style={{ color: '#3b82f6' }}>DEF:</span> {myDef}
-              {equipDef > 0 && <span style={{ fontSize: '0.7rem', color: '#3b82f6', marginLeft: '2px' }}>(+{equipDef})</span>}
-            </div>
+      <div style={{ background: 'rgba(255,255,255,0.05)', padding: '10px', borderRadius: '8px', marginBottom: '16px', fontSize: '0.85rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', color: '#cbd5e1' }}>
+          <div style={{ textAlign: 'center' }}>
+            <span style={{ color: '#f87171', fontWeight: 'bold' }}>あなたの攻撃力 (ATK): {myAtk}</span>
+            <div style={{ fontSize: '0.75rem', marginTop: '4px', color: '#94a3b8' }}>装備中: {rarityStar}{weaponName}</div>
           </div>
         </div>
-      )}
+      </div>
 
       {battleState === 'idle' && (
         <button 
-          onClick={startBattle}
-          disabled={cooldown > 0}
+          onClick={hitSandbag}
+          disabled={battlesToday >= MAX_BATTLES || isPosting || bossHp === 0}
           style={{
-            width: '100%', padding: '10px', borderRadius: '8px', border: 'none',
-            background: cooldown > 0 ? '#e2e8f0' : 'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)', 
-            color: cooldown > 0 ? '#94a3b8' : 'white',
-            fontWeight: 'bold', cursor: cooldown > 0 ? 'not-allowed' : 'pointer',
-            transition: 'all 0.2s', boxShadow: cooldown > 0 ? 'none' : '0 4px 6px -1px rgba(239, 68, 68, 0.4)'
+            width: '100%', padding: '12px', borderRadius: '8px', border: 'none',
+            background: bossHp === 0 ? '#10b981' : battlesToday >= MAX_BATTLES ? '#475569' : 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)', 
+            color: bossHp === 0 || battlesToday >= MAX_BATTLES ? '#cbd5e1' : 'white',
+            fontWeight: '900', cursor: (battlesToday >= MAX_BATTLES || bossHp === 0) ? 'not-allowed' : 'pointer',
+            boxShadow: (battlesToday >= MAX_BATTLES || bossHp === 0) ? 'none' : '0 0 15px rgba(245, 158, 11, 0.5)',
+            textShadow: '0 1px 2px rgba(0,0,0,0.5)', fontSize: '1rem'
           }}
         >
-          {cooldown > 0 ? `体力回復中... (${cooldown}秒)` : '💥 近くの奴に戦いを挑む'}
+          {bossHp === 0 ? '🎉 討伐成功！（報酬配布待ち）' : battlesToday >= MAX_BATTLES ? '✅ 本日の攻撃権を使い切りました' : `⚔️ ボスを攻撃する！ (残り${MAX_BATTLES - battlesToday}回)`}
         </button>
       )}
 
       {battleState !== 'idle' && (
-        <div style={{ background: 'white', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          
-          {/* 戦闘中のHPゲージ */}
-          {(battleState === 'battling' || battleState === 'result') && opponent && (
-            <div style={{ padding: '8px', background: '#f1f5f9', borderRadius: '8px', marginBottom: '4px' }}>
-              <div style={{ fontSize: '0.8rem', fontWeight: 'bold', color: '#ef4444', marginBottom: '4px' }}>
-                😈 {opponent.title} (Lv.{opponent.level})
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div style={{ fontSize: '0.75rem', color: '#cbd5e1', background: '#0f172a', padding: '8px', borderRadius: '6px', border: '1px solid #334155', minHeight: '60px' }}>
+            <div style={{ color: '#94a3b8', marginBottom: '4px', borderBottom: '1px solid #334155', paddingBottom: '2px' }}>📡 リアルタイム攻撃ログ</div>
+            {battleLog.length === 0 ? <div style={{ color: '#64748b' }}>待機中...</div> : battleLog.map((log, i) => (
+              <div key={i} style={{ padding: '2px 0', animation: 'fadeIn 0.3s ease-out', color: i === battleLog.length - 1 ? '#f87171' : '#94a3b8' }}>
+                {log}
               </div>
-              {renderHpBar(opponent.hp, opponent.maxHp, true)}
-              <div style={{ marginTop: '12px' }}>
-                {renderHpBar(playerHp, myMaxHp, false)}
-              </div>
-            </div>
-          )}
-
-          {/* バトルログ (最新4件を表示) */}
-          <div style={{ fontSize: '0.8rem', color: '#334155', background: '#f8fafc', padding: '8px', borderRadius: '6px', border: '1px inset #e2e8f0', minHeight: '90px' }}>
-            {battleLog.map((log, i) => (
-              <div key={i} style={{ padding: '2px 0', animation: 'fadeIn 0.3s ease-out' }}>{log}</div>
             ))}
           </div>
           
           {battleState === 'result' && (
-            <button 
-              onClick={resetBattle}
-              style={{ marginTop: '8px', padding: '8px', background: isWinner ? '#10b981' : '#64748b', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}
-            >
-              広場に戻る
-            </button>
+            <div style={{ textAlign: 'center', marginTop: '8px' }}>
+              <div style={{ fontSize: '0.85rem', color: '#10b981', fontWeight: 'bold', marginBottom: '8px' }}>
+                🎁 参加報酬：5 EXP & ガチャチケ🎫x1
+              </div>
+              <button 
+                onClick={() => setBattleState('idle')}
+                style={{ padding: '8px 24px', background: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}
+              >
+                戻る
+              </button>
+            </div>
           )}
         </div>
       )}

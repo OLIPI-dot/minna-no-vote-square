@@ -161,7 +161,34 @@ function App() {
   const isInitialMountRef = useRef(true); // 🚀 初回マウント時の一度きりガード
 
   // 📡 リアルタイム人数
-  const [globalOnlineCount, setGlobalOnlineCount] = useState(8);
+  const [globalOnlineCount, setGlobalOnlineCount] = useState(13);
+  const [fakeOffset, setFakeOffset] = useState(12);
+
+  useEffect(() => {
+    // 🐰 サクラの人数をもっとダイナミックに変化させる（0〜50人規模）
+    const interval = setInterval(() => {
+      setFakeOffset(prev => {
+        // -5人 から +5人 の間で一気に変動させる
+        const change = Math.floor(Math.random() * 11) - 5; 
+        let next = prev + change;
+        
+        // 0人だと寂しいので最低でも3人はいるように見せかけ、最大50人くらいにする
+        if (next < 3) next = 3;
+        if (next > 55) next = 55;
+        
+        return next;
+      });
+    }, 12000 + Math.random() * 8000); // 12秒〜20秒おき
+    return () => clearInterval(interval);
+  }, []);
+
+  // fakeOffsetが変わるたびにglobalOnlineCountも更新する
+  useEffect(() => {
+    setGlobalOnlineCount(prev => {
+      // 現在の値が fakeOffset から離れすぎないように追従させる
+      return fakeOffset + 1; // 簡易的に +1 (自分) とする
+    });
+  }, [fakeOffset]);
   const manualUpdatesRef = useRef({}); // 🛡️ { [surveyId]: timestamp } アンケートごとの更新ガード
   const [surveyOnlineCount, setSurveyOnlineCount] = useState(2);
 
@@ -275,6 +302,7 @@ function App() {
 
   // 🏆 レベル＆経験値（EXP）システム
   const [userExp, setUserExp] = useState(0);
+  const [gachaTickets, setGachaTickets] = useState(0);
   const [equipment, setEquipment] = useState(() => {
     try {
       const saved = localStorage.getItem('min_ake_equipment');
@@ -289,56 +317,104 @@ function App() {
   }, [equipment]);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      const currentUser = session?.user ?? null;
+    const handleAuthExp = (currentUser) => {
       setUser(currentUser);
-      
       const localExp = parseInt(localStorage.getItem('min_ake_exp') || '0', 10);
+      const localTickets = parseInt(localStorage.getItem('min_ake_tickets') || '0', 10);
+      
       if (currentUser) {
         const dbExp = currentUser.user_metadata?.vote_exp || 0;
-        if (localExp > 0) {
-          const newTotalExp = dbExp + localExp;
-          supabase.auth.updateUser({ data: { vote_exp: newTotalExp } }).then(() => {
-            localStorage.removeItem('min_ake_exp');
+        const dbTickets = currentUser.user_metadata?.gacha_tickets || 0;
+        const lastLoginDate = currentUser.user_metadata?.last_login_date || '';
+        
+        // JSTでの今日の日付を取得
+        const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
+        
+        let newTotalExp = dbExp;
+        let newTotalTickets = dbTickets;
+        const updates = {};
+        let shouldUpdate = false;
+        
+        if (localExp > 0 || localTickets > 0) {
+          newTotalExp += localExp;
+          newTotalTickets += localTickets;
+          localStorage.removeItem('min_ake_exp');
+          localStorage.removeItem('min_ake_tickets');
+          shouldUpdate = true;
+        }
+        
+        // 🎁 1日1回のアクセスボーナス判定！
+        if (lastLoginDate !== todayStr) {
+          newTotalExp += 10;
+          newTotalTickets += 1; // ログボでガチャチケ1枚
+          updates.last_login_date = todayStr;
+          shouldUpdate = true;
+          // 少し遅らせてアラートを出す（画面描画後）
+          setTimeout(() => {
+            alert('🎉 今日のアクセスボーナス！\n広場に遊びに来てくれてありがとう！\n＋10 EXP と 【ガチャチケット🎫 x1】 を獲得しました！🐰✨');
+          }, 1000);
+        }
+        
+        if (shouldUpdate) {
+          updates.vote_exp = newTotalExp;
+          updates.gacha_tickets = newTotalTickets;
+          supabase.auth.updateUser({ data: updates }).then(() => {
             setUserExp(newTotalExp);
+            setGachaTickets(newTotalTickets);
           });
         } else {
           setUserExp(dbExp);
+          setGachaTickets(dbTickets);
         }
       } else {
         setUserExp(localExp);
+        setGachaTickets(localTickets);
       }
+    };
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      handleAuthExp(session?.user ?? null);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      const currentUser = session?.user ?? null;
-      setUser(currentUser);
-      
-      const localExp = parseInt(localStorage.getItem('min_ake_exp') || '0', 10);
-      if (currentUser) {
-        const dbExp = currentUser.user_metadata?.vote_exp || 0;
-        if (localExp > 0) {
-          const newTotalExp = dbExp + localExp;
-          supabase.auth.updateUser({ data: { vote_exp: newTotalExp } }).then(() => {
-            localStorage.removeItem('min_ake_exp');
-            setUserExp(newTotalExp);
-          });
-        } else {
-          setUserExp(dbExp);
-        }
-      } else {
-        setUserExp(localExp);
-      }
+      handleAuthExp(session?.user ?? null);
     });
+    
     return () => subscription.unsubscribe();
   }, []);
 
   const getLevelInfo = (exp) => {
-    if (exp >= 1000) return { level: 5, title: '伝説の広場民 👑', next: null };
-    if (exp >= 300) return { level: 4, title: '熟練の広場民 🏅', next: 1000 };
-    if (exp >= 100) return { level: 3, title: '一人前の広場民 🔰', next: 300 };
-    if (exp >= 30) return { level: 2, title: '見習い広場民 🐥', next: 100 };
-    return { level: 1, title: 'ひよっこ広場民 🥚', next: 30 };
+    // 📊 王道RPGのレベル計算（Lv.99まで）
+    let currentLevel = 1;
+    let expNeededForNext = 30; // Lv1 -> Lv2 に必要なEXP
+    let currentExpThreshold = 0;
+    let nextExpThreshold = 30;
+
+    // 現在のEXPが次の閾値を超えている限りレベルアップ！
+    while (exp >= nextExpThreshold && currentLevel < 99) {
+      currentLevel++;
+      currentExpThreshold = nextExpThreshold;
+      expNeededForNext = currentLevel * 20 + 10; // どんどん必要EXPが増える
+      nextExpThreshold += expNeededForNext;
+    }
+
+    let title = 'ひよっこ広場民 🥚';
+    if (currentLevel >= 99) title = 'アンケートの神 👼✨';
+    else if (currentLevel >= 90) title = '伝説の広場民 👑';
+    else if (currentLevel >= 80) title = '英雄広場民 🦸‍♂️';
+    else if (currentLevel >= 70) title = '広場の守護者 🛡️';
+    else if (currentLevel >= 60) title = '広場の達人 🥋';
+    else if (currentLevel >= 50) title = '歴戦の勇者 ⚔️';
+    else if (currentLevel >= 40) title = '熟練の広場民 🏅';
+    else if (currentLevel >= 30) title = '一人前の広場民 🔰';
+    else if (currentLevel >= 20) title = '駆け出しの冒険者 🎒';
+    else if (currentLevel >= 10) title = '見習い広場民 🐥';
+
+    return { 
+      level: currentLevel, 
+      title: title, 
+      next: currentLevel >= 99 ? null : nextExpThreshold 
+    };
   };
 
   const levelInfo = getLevelInfo(userExp);
@@ -355,6 +431,52 @@ function App() {
     });
   };
 
+  const addTickets = async (amount) => {
+    setGachaTickets(prev => {
+      const newTickets = prev + amount;
+      if (user) {
+        supabase.auth.updateUser({ data: { gacha_tickets: newTickets } });
+      } else {
+        localStorage.setItem('min_ake_tickets', String(newTickets));
+      }
+      return newTickets;
+    });
+  };
+
+  useEffect(() => {
+    window.addTicketsGlobal = addTickets;
+    return () => {
+      delete window.addTicketsGlobal;
+    };
+  }, [user]);
+
+  const grantActionExp = (actionType, surveyId) => {
+    if (!user) return; // ログイン中のみ
+    const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
+    const dailyActionsStr = localStorage.getItem('daily_actions_v2') || '{}';
+    let dailyActions;
+    try { dailyActions = JSON.parse(dailyActionsStr); } catch { dailyActions = {}; }
+    
+    if (dailyActions.date !== todayStr) {
+       dailyActions = { date: todayStr, viewed: [], voted: [] };
+    }
+    
+    if (actionType === 'view') {
+      if (!dailyActions.viewed.includes(surveyId) && dailyActions.viewed.length < 10) {
+        dailyActions.viewed.push(surveyId);
+        localStorage.setItem('daily_actions_v2', JSON.stringify(dailyActions));
+        addExp(1);
+      }
+    } else if (actionType === 'vote') {
+      if (!dailyActions.voted.includes(surveyId) && dailyActions.voted.length < 3) {
+        dailyActions.voted.push(surveyId);
+        localStorage.setItem('daily_actions_v2', JSON.stringify(dailyActions));
+        addExp(3);
+        addTickets(1); // 投票1回でガチャチケ1枚（1日最大3枚）
+      }
+    }
+  };
+
   // 📡 広場全体のリアルタイム人数追跡
   useEffect(() => {
     // 💡 タブ・端末ごとに一意のIDを生成 (crypto.randomUUID または Math.random)
@@ -368,8 +490,9 @@ function App() {
       .on('presence', { event: 'sync' }, () => {
         const state = channel.presenceState();
         const count = Object.keys(state).length;
-        // 🌸 広場の人数もサクラで底上げ（8人くらい）
-        setGlobalOnlineCount(count > 0 ? count + 7 : 8);
+        // 🌸 リアルな人数を保持しつつ、表示にはfakeOffsetを足す仕組みにするため、
+        // ここでは setGlobalOnlineCount(count + fakeOffset) とするらび！
+        setGlobalOnlineCount(count > 0 ? count + fakeOffset : fakeOffset + 1);
       })
       .subscribe(async (status) => {
         if (status === 'SUBSCRIBED') {
@@ -1130,9 +1253,10 @@ function App() {
       const lastView = parseInt(localStorage.getItem(viewKey) || '0', 10);
       if (Date.now() - lastView > VIEW_COOLDOWN_MS) {
         localStorage.setItem(viewKey, Date.now().toString());
+        grantActionExp('view', sv.id); // 🌟 みんクエEXP付与
         supabase.rpc('increment_survey_view', { survey_id_arg: sv.id }).then(({ data: newViews }) => {
           if (newViews !== undefined) {
-            setCurrentSurvey(prev => prev && prev.id === sv.id ? { ...prev, view_count: newViews } : prev);
+            setCurrentSurvey(prev => prev && prev.id === sv.id ? { ...prev, view_count: prev.view_count + 1 } : prev);
           }
         });
       }
@@ -1589,14 +1713,14 @@ function App() {
       setAdjacentSurveys({ prev: null, next: null });
       setIsTimeUp(survey.deadline && new Date(survey.deadline) < new Date());
 
-      // (非同期取得は省略せず維持...)
       (async () => {
-        if (!survey.created_at || survey.youtube_id === undefined) {
+        if (!survey.created_at) {
           const { data: fullSv } = await supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count').eq('id', survey.id).maybeSingle();
           if (fullSv) {
-            setCurrentSurvey(fullSv);
-            survey = fullSv;
-            setIsTimeUp(fullSv.deadline && new Date(fullSv.deadline) < new Date());
+            const mappedSv = applySakuraStats(fullSv);
+            setCurrentSurvey(mappedSv);
+            survey = mappedSv;
+            setIsTimeUp(mappedSv.deadline && new Date(mappedSv.deadline) < new Date());
           }
         }
         const { data: preOpts } = await supabase.from('options').select('*').eq('survey_id', survey.id).order('id', { ascending: true });
@@ -1616,10 +1740,11 @@ function App() {
       const lastView = parseInt(localStorage.getItem(viewKey) || '0', 10);
       if (Date.now() - lastView > VIEW_COOLDOWN_MS) {
         localStorage.setItem(viewKey, Date.now().toString());
+        grantActionExp('view', survey.id); // 🌟 みんクエEXP付与
         supabase.rpc('increment_survey_view', { survey_id_arg: survey.id }).then(({ data: newViews }) => {
           if (newViews !== undefined) {
-            setCurrentSurvey(prev => prev && prev.id === survey.id ? { ...prev, view_count: newViews } : prev);
-            setSurveys(prev => prev.map(s => s.id === survey.id ? { ...s, view_count: newViews } : s));
+            setCurrentSurvey(prev => prev && prev.id === survey.id ? { ...prev, view_count: prev.view_count + 1 } : prev);
+            setSurveys(prev => prev.map(s => s.id === survey.id ? { ...s, view_count: s.view_count + 1 } : s));
           }
         });
       }
@@ -1836,6 +1961,7 @@ function App() {
     if (!option || isTimeUp || votedOption) return;
 
     isVotingProcessingRef.current = true; // 🚧 ガード開始！
+    grantActionExp('vote', currentSurvey.id); // 🌟 みんクエEXP付与
 
     // 第一号特権アニメーション 🎉
     const totalVotesBefore = options.reduce((sum, opt) => sum + (opt.votes || 0), 0);
@@ -1940,13 +2066,9 @@ function App() {
       console.error("❌ Like increment error:", likeError);
     } else {
       console.log("✅ Like increment success (New Likes):", serverLikes);
-      if (serverLikes !== undefined) {
-        // 🏆 サーバーから返ってきた「真実のいいね数」で同期させるらび！
-        const mapper = s => String(s.id) === String(currentSurvey.id) ? { ...s, likes_count: serverLikes } : s;
-        setSurveys(prev => prev.map(mapper));
-        setPopularSurveys(prev => prev.map(mapper));
-        setCurrentSurvey(prev => prev && String(prev.id) === String(currentSurvey.id) ? { ...prev, likes_count: serverLikes } : prev);
-      }
+      // 🏆 サーバーからの返り値 (serverLikes) は生のDB値なので、
+      // サクラで盛った表示値 (likes_count) を上書きすると表示が減ってしまうらび！
+      // なので、楽観的UI更新の値をそのまま信じて何もしないのが正解らび！
     }
   };
 
@@ -2483,7 +2605,9 @@ function App() {
                   equipment={equipment}
                   setEquipment={setEquipment}
                   userExp={userExp}
+                  gachaTickets={gachaTickets}
                   addExp={addExp}
+                  addTickets={addTickets}
                   levelInfo={levelInfo}
                   globalOnlineCount={globalOnlineCount}
                 />
@@ -2694,8 +2818,10 @@ function App() {
               levelInfo={levelInfo}
               user={user}
               addExp={addExp}
+              addTickets={addTickets}
               equipment={equipment}
               setEquipment={setEquipment}
+              gachaTickets={gachaTickets}
             />
           </Suspense>
         </div>

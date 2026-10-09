@@ -6,20 +6,21 @@ const rarityColors = {
   N: '#94a3b8',
   R: '#3b82f6',
   SR: '#ec4899',
-  UR: '#f59e0b'
+  UR: '#f59e0b',
+  LR: '#ef4444' // 真っ赤（PSO赤箱リスペクト）
 };
 
-const GachaMiniGame = ({ userExp, addExp, equipment, setEquipment }) => {
+const GachaMiniGame = ({ gachaTickets, addTickets, equipment, setEquipment, addExp }) => {
   const [gachaResult, setGachaResult] = useState(null);
   const [selectedEquip, setSelectedEquip] = useState(null);
   const [isRolling, setIsRolling] = useState(false);
-  const COST = 50;
+  const COST = 1; // 1回1チケット
 
   const handleRoll = () => {
-    if (userExp < COST || isRolling) return;
+    if (gachaTickets < COST || isRolling) return;
     
     setIsRolling(true);
-    addExp(-COST); // EXP消費
+    addTickets(-COST); // チケット消費
     setGachaResult(null);
 
     // ガチャ演出
@@ -74,7 +75,7 @@ const GachaMiniGame = ({ userExp, addExp, equipment, setEquipment }) => {
       <div 
         onClick={() => item && setSelectedEquip(item)}
         title={tooltipText}
-        style={{ flex: 1, background: 'white', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '6px', textAlign: 'center', cursor: item ? 'pointer' : 'default', transition: 'background 0.2s' }}
+        style={{ flex: 1, minWidth: 0, overflow: 'hidden', background: 'white', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '6px', textAlign: 'center', cursor: item ? 'pointer' : 'default', transition: 'background 0.2s' }}
         onMouseOver={e => { if (item) e.currentTarget.style.background = '#f1f5f9'; }}
         onMouseOut={e => { e.currentTarget.style.background = 'white'; }}
       >
@@ -100,16 +101,17 @@ const GachaMiniGame = ({ userExp, addExp, equipment, setEquipment }) => {
 
   const getRecycleExp = (rarity) => {
     switch(rarity) {
-      case 'UR': return 50;
-      case 'SR': return 25;
-      case 'R': return 10;
-      default: return 5;
+      case 'LR': return 9999; // 絶対売らないだろうけど
+      case 'UR': return 8;
+      case 'SR': return 5;
+      case 'R': return 3;
+      default: return 1;
     }
   };
 
   const handleRecycle = () => {
     const expBack = getRecycleExp(gachaResult.rarity);
-    addExp(expBack);
+    addExp(expBack); // 売却時は少量のEXPにする
     setGachaResult(null);
   };
 
@@ -179,16 +181,16 @@ const GachaMiniGame = ({ userExp, addExp, equipment, setEquipment }) => {
       {/* ガチャボタン */}
       <button 
         onClick={handleRoll}
-        disabled={userExp < COST || isRolling || gachaResult}
+        disabled={gachaTickets < COST || isRolling || gachaResult}
         style={{
           width: '100%', padding: '10px', borderRadius: '8px', border: 'none',
-          background: userExp >= COST && !isRolling ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' : '#e2e8f0',
-          color: userExp >= COST && !isRolling ? 'white' : '#94a3b8',
-          fontWeight: 'bold', cursor: userExp >= COST && !isRolling ? 'pointer' : 'not-allowed',
-          boxShadow: userExp >= COST && !isRolling ? '0 4px 6px -1px rgba(245, 158, 11, 0.4)' : 'none'
+          background: gachaTickets >= COST && !isRolling ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' : '#e2e8f0',
+          color: gachaTickets >= COST && !isRolling ? 'white' : '#94a3b8',
+          fontWeight: 'bold', cursor: gachaTickets >= COST && !isRolling ? 'pointer' : 'not-allowed',
+          boxShadow: gachaTickets >= COST && !isRolling ? '0 4px 6px -1px rgba(245, 158, 11, 0.4)' : 'none'
         }}
       >
-        {isRolling ? 'ガチャを回しています...' : `🎁 ガチャを回す (50 EXP)`}
+        {isRolling ? 'ガチャを回しています...' : `🎫 ガチャを回す (チケット${COST}枚)`}
       </button>
     </div>
   );
