@@ -84,6 +84,7 @@ function App() {
   }, [user]);
   const [totalOfficialCount, setTotalOfficialCount] = useState(0); // 📊 公式の総件数
   const [totalUserCount, setTotalUserCount] = useState(0); // 📊 ユーザー投稿の総件数
+  const [totalMineCount, setTotalMineCount] = useState(0); // 📊 マイアンケートの総件数
   const [liveSurveys, setLiveSurveys] = useState([]);
   const [popularSurveys, setPopularSurveys] = useState([]);
   const [endingSoonSurveys, setEndingSoonSurveys] = useState([]);
@@ -1225,13 +1226,7 @@ function App() {
       }
 
       // 📢 タブフィルタ (公式 vs ユーザー投稿)
-      if (sort !== 'mine' && sort !== 'watching') {
-        if (currentTab === 'official') {
-          baseQuery = baseQuery.eq('is_official', true);
-        } else if (currentTab === 'user') {
-          baseQuery = baseQuery.eq('is_official', false);
-        }
-      }
+      // (上で適用済みのためスキップ)
 
       // 🔍 検索クエリの適用
       if (query.trim()) {
@@ -1281,6 +1276,7 @@ function App() {
           sData = data;
           sError = error;
           count = c;
+          if (sort === 'mine') setTotalMineCount(c || 0);
         }
       }
 
@@ -2412,6 +2408,7 @@ function App() {
                   }}
                   totalOfficialCount={totalOfficialCount}
                   totalUserCount={totalUserCount}
+                  totalMineCount={totalMineCount}
                   surveys={filteredBaseSurveys}
                   popularSurveys={popularSurveys}
                   currentPage={currentPage}

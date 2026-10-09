@@ -40,6 +40,7 @@ const SurveyListView = ({
   handleStartSurvey,
   totalOfficialCount,
   totalUserCount,
+  totalMineCount,
   recommendedSurveys,
   debouncedSearchQuery,
   searchStats = { categories: {}, official: 0, user: 0 },
@@ -863,7 +864,7 @@ const SurveyListView = ({
       <div className="pagination-container-outer">
         <Pagination
           current={currentPage}
-          total={Math.ceil((activeTab === 'official' ? totalOfficialCount : totalUserCount) / ITEMS_PER_PAGE)}
+          total={Math.ceil((sortMode === 'mine' ? (totalMineCount || 0) : (activeTab === 'official' ? totalOfficialCount : totalUserCount)) / ITEMS_PER_PAGE)}
           onPageChange={p => {
             setCurrentPage(p);
 
