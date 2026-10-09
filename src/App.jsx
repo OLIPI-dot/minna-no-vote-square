@@ -324,6 +324,8 @@ function App() {
       const localExp = parseInt(localStorage.getItem('min_ake_exp') || '0', 10);
       const localTickets = parseInt(localStorage.getItem('min_ake_tickets') || '0', 10);
       
+      const localLastLogin = localStorage.getItem('min_ake_last_login') || '';
+      
       if (currentUser) {
         const dbExp = currentUser.user_metadata?.vote_exp || 0;
         const dbTickets = currentUser.user_metadata?.gacha_tickets || 0;
@@ -370,8 +372,31 @@ function App() {
           setGachaTickets(dbTickets);
         }
       } else {
-        setUserExp(localExp);
-        setGachaTickets(localTickets);
+        // ▼ ゲスト（未ログイン）ユーザーのボーナス処理 ▼
+        const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
+        let newTotalExp = localExp;
+        let newTotalTickets = localTickets;
+        let shouldUpdate = false;
+
+        // 🎁 1日1回のアクセスボーナス判定！
+        if (localLastLogin !== todayStr && !hasProcessedLoginBonus.current) {
+          hasProcessedLoginBonus.current = true;
+          newTotalExp += 10;
+          newTotalTickets += 1;
+          shouldUpdate = true;
+          setTimeout(() => {
+            alert('🎉 今日のアクセスボーナス！\n広場に遊びに来てくれてありがとう！\n＋10 EXP と 【ガチャチケット🎫 x1】 を獲得しました！🐰✨');
+          }, 1000);
+        }
+
+        if (shouldUpdate) {
+          localStorage.setItem('min_ake_exp', newTotalExp.toString());
+          localStorage.setItem('min_ake_tickets', newTotalTickets.toString());
+          localStorage.setItem('min_ake_last_login', todayStr);
+        }
+
+        setUserExp(newTotalExp);
+        setGachaTickets(newTotalTickets);
       }
     };
 
