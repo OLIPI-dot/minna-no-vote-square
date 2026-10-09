@@ -4,11 +4,47 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-09T02:19:21.482Z</updated>
+  <updated>2026-10-09T07:45:05.834Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>元防衛庁長官 斉藤斗志二さん死去</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23315"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23315</id>
+    <updated>2026-10-09T07:45:02.371Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;斉藤斗志二元長官が81歳で死去&quot;,
+  &quot;point1_desc&quot;: &quot;元防衛庁長官で衆議院議員を7期務めた斉藤斗志二氏が81歳で死去したことが判明した。静岡県富士市出身で、政界や地元経済界に多大な影響を与えた人物の訃報に悲しみの声が上がっている。&quot;,
+  &quot;point2_title&quot;: &quot;...</summary>
+  </entry>
+  <entry>
+    <title>JR東 個人情報のべ206万件漏洩か</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23314"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23314</id>
+    <updated>2026-10-09T07:44:38.011Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;約206万件の情報流出の恐れ&quot;,
+  &quot;point1_desc&quot;: &quot;JR東日本は、「えきねっと」と「大人の休日倶楽部」の会員のべ約206万件の個人情報が漏洩した可能性があると発表した。メールアドレスなどが対象となっており、今後の影響が懸念されている。&quot;,
+  &quot;point2_title&quot;:...</summary>
+  </entry>
+  <entry>
+    <title>参院野党 農相の問責決議案検討へ</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23313"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23313</id>
+    <updated>2026-10-09T07:44:00.609Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;簗農水相の発言問題&quot;,
+  &quot;point1_desc&quot;: &quot;簗農林水産大臣が過去に道路予算を大幅にカットしたとする旨の発言を行ったことが波紋を広げている。この発言を受けて野党側は閣僚としての資質や発言の撤回・責任を強く問題視する構えを見せている。&quot;,
+  &quot;point2_title&quot;: &quot;野...</summary>
+  </entry>
   <entry>
     <title>紅白司会にVIVANTの「兄弟」</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23312"/>
@@ -574,41 +610,5 @@
   &quot;point1_desc&quot;: &quot;5日午前10時頃、横浜市中区のコインパーキングで乗用車が建物に向かって突っ込む事故が発生しました。目撃者から「人が車に巻き込まれた」と警察に通報が寄せられました。&quot;,
   &quot;point2_title&quot;: &quot;草刈り中の男性死亡&quot;,
  ...</summary>
-  </entry>
-  <entry>
-    <title>スペイン 議会解散し11月に総選挙</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23265"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23265</id>
-    <updated>2026-10-05T09:37:25.545Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;スペイン総選挙を11月実施&quot;,
-  &quot;point1_desc&quot;: &quot;サンチェス首相が11月29日に総選挙を実施すると発表しました。政権運営の停滞を打開するために議会解散に踏み切り、改めて国民に信を問う形となります。与野党の攻防が激化しそうです。&quot;,
-  &quot;point2_title&quot;: &quot;住宅...</summary>
-  </entry>
-  <entry>
-    <title>路線バスと車が衝突 乗客8人けが</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23264"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23264</id>
-    <updated>2026-10-05T07:45:50.055Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;金沢でバスと乗用車衝突&quot;,
-  &quot;point1_desc&quot;: &quot;5日午前8時半ごろ、金沢市泉の国道157号泉交差点において、北陸鉄道の路線バスと乗用車が衝突する事故が発生しました。この事故によりバスの車体が損傷し、乗客8人がけがを負ったとのことです。&quot;,
-  &quot;point2_title&quot;: ...</summary>
-  </entry>
-  <entry>
-    <title>首相が所信表明 経済最優先を強調</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23263"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23263</id>
-    <updated>2026-10-05T07:44:35.801Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;積極財政の推進&quot;,
-  &quot;point1_desc&quot;: &quot;高市首相は衆議院本会議の所信表明演説にて、自身の看板政策である「責任ある積極財政」を力強く推進していく方針を表明しました。経済政策を最優先課題に位置付け、成長への強い意欲を示しています。&quot;,
-  &quot;point2_title&quot;: &quot;市場の...</summary>
   </entry>
 </feed>
