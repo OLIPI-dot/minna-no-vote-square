@@ -128,13 +128,13 @@ const SurveyListView = ({
     if (sortMode === 'popular') {
       const calcTotalScore = (item) => {
         const votes = Number(item.total_votes || 0);
-        const views = Math.max(Number(item.view_count || item.views || 0), votes > 0 ? votes * 3 + 12 : 0);
+        const views = Number(item.view_count || item.views || 0);
         const likes = Number(item.likes_count || item.likes || 0);
         return (votes * 10) + (likes * 5) + views;
       };
       const calcTrendingScore = (item) => {
         const votes = Number(item.total_votes || 0);
-        const views = Math.max(Number(item.view_count || item.views || 0), votes > 0 ? votes * 3 + 12 : 0);
+        const views = Number(item.view_count || item.views || 0);
         return (votes * 5) + views;
       };
 
@@ -144,8 +144,8 @@ const SurveyListView = ({
         list.sort((a, b) => calcTrendingScore(b) - calcTrendingScore(a));
       } else if (popularMode === 'views') {
         list.sort((a, b) => {
-          const viewsA = Math.max(Number(a.view_count || a.views || 0), Number(a.total_votes || 0) > 0 ? Number(a.total_votes || 0) * 3 + 12 : 0);
-          const viewsB = Math.max(Number(b.view_count || b.views || 0), Number(b.total_votes || 0) > 0 ? Number(b.total_votes || 0) * 3 + 12 : 0);
+          const viewsA = Number(a.view_count || a.views || 0);
+          const viewsB = Number(b.view_count || b.views || 0);
           return viewsB - viewsA;
         });
       } else if (popularMode === 'votes') {
@@ -758,7 +758,7 @@ const SurveyListView = ({
                               {/* 2段目（下段）：リアクション数字類 */}
                               <div className="list-item-meta-lower survey-item-meta-row" style={{ display: 'flex', flexWrap: 'nowrap', whiteSpace: 'nowrap', gap: '8px', minWidth: 0 }}>
                                 <span className="survey-item-votes">🗳️{s.total_votes || 0}</span>
-                                <span className="survey-item-views">👁️{Math.max(s.view_count || 0, s.total_votes > 0 ? s.total_votes * 3 + 12 + ((String(s.id).charCodeAt(0)||0)%17) : 0)}</span>
+                                <span className="survey-item-views">👁️{s.view_count || 0}</span>
                                 <span className="survey-item-likes">👍{s.likes_count || 0}</span>
                                 <span className="survey-item-comments">💬{s.comment_count || 0}</span>
                               </div>
@@ -798,7 +798,7 @@ const SurveyListView = ({
                               {/* 2段目（下段）：リアクション数字類 */}
                               <div className="survey-item-meta-lower" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', alignItems: 'center', width: '100%', padding: '0 2px', boxSizing: 'border-box' }}>
                                 <span className="survey-item-votes" title="投票数" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2px', fontSize: '10px', whiteSpace: 'nowrap' }}>🗳️ {s.total_votes || 0}</span>
-                                <span className="survey-item-views" title="閲覧数" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2px', fontSize: '10px', whiteSpace: 'nowrap' }}>👁️ {Math.max(s.view_count || 0, s.total_votes > 0 ? s.total_votes * 3 + 12 + ((String(s.id).charCodeAt(0)||0)%17) : 0)}</span>
+                                <span className="survey-item-views" title="閲覧数" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2px', fontSize: '10px', whiteSpace: 'nowrap' }}>👁️ {s.view_count || 0}</span>
                                 <span className="survey-item-likes" title="いいね数" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2px', fontSize: '10px', whiteSpace: 'nowrap' }}>👍 {s.likes_count || 0}</span>
                                 <span className="survey-item-comments" title="コメント数" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2px', fontSize: '10px', whiteSpace: 'nowrap' }}>💬 {s.comment_count || 0}</span>
                               </div>
