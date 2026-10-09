@@ -33,6 +33,9 @@ jobs:
       - name: Run Auto News Poster Script 🥕
         run: node scripts/auto_latest_news.cjs
 
+      - name: Run Auto Cleanup Script 🧹
+        run: node scripts/auto_cleanup_official.cjs
+
       - name: Generate Sitemap & Feed 🗺️
         run: |
           node scripts/generate_sitemap.cjs
