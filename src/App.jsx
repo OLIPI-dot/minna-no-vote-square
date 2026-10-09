@@ -1215,18 +1215,24 @@ function App() {
         baseQuery = baseQuery.eq('visibility', 'public');
       }
 
-      // 🏷️ カテゴリフィルタ（カテゴリが選ばれている時は、検索中であってもそのカテゴリ内を探すのが自然らびに！）
-      if (category && category !== 'すべて') {
+      // 🏷️ カテゴリフィルタ（マイページ等は無視）
+      if (category && category !== 'すべて' && sort !== 'mine' && sort !== 'watching') {
         baseQuery = baseQuery.eq('category', category);
       }
 
-      // 🏷️ タグフィルタ（サーバー側で絞り込むらび！読み込み済みの1ページ分だけを探すと見つからないため）
-      if (tag) {
+      // 🏷️ タグフィルタ（マイページ等は無視）
+      if (tag && sort !== 'mine' && sort !== 'watching') {
         baseQuery = baseQuery.contains('tags', [tag]);
       }
 
       // 📢 タブフィルタ (公式 vs ユーザー投稿)
-      // (上で適用済みのためスキップ)
+      if (sort !== 'mine' && sort !== 'watching') {
+        if (currentTab === 'official') {
+          baseQuery = baseQuery.eq('is_official', true);
+        } else if (currentTab === 'user') {
+          baseQuery = baseQuery.eq('is_official', false);
+        }
+      }
 
       // 🔍 検索クエリの適用
       if (query.trim()) {
