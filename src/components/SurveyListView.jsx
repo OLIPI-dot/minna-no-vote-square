@@ -237,10 +237,10 @@ const SurveyListView = ({
         <button
           className={sortMode === 'mine' ? 'active' : ''}
           onClick={() => {
-            if (!user) return alert("👤 マイページ＆みんクエはログインしていないと使えません🙇‍♀️\n上の「Googleでログイン」ボタンからログインしてね！");
+            if (!user) return alert("👤 マイページはログインしていないと使えません🙇‍♀️\n上の「Googleでログイン」ボタンからログインしてね！");
             setSortMode('mine');
           }}
-        >👤 マイページ＆みんクエ</button>
+        >👤 マイページ</button>
 
       </div>
 
@@ -478,6 +478,7 @@ const SurveyListView = ({
       {/* みんクエ UI（マイページタブ時のみ表示） */}
       {sortMode === 'mine' && (
         <div style={{ marginBottom: '40px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          {/*
           <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
             <div style={{ flex: '1 1 300px' }}>
               <GachaMiniGame userExp={userExp} addExp={addExp} equipment={equipment} setEquipment={setEquipment} />
@@ -486,6 +487,7 @@ const SurveyListView = ({
               <BattleMiniGame userLevel={levelInfo?.level || 1} equipment={equipment} globalOnlineCount={globalOnlineCount} />
             </div>
           </div>
+          */}
           <h2 style={{ fontSize: '1.2rem', color: '#1e293b', borderBottom: '2px solid #e2e8f0', paddingBottom: '8px', marginTop: '20px' }}>📋 過去に作成したアンケート</h2>
         </div>
       )}
