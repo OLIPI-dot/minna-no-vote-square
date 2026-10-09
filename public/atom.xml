@@ -4,11 +4,47 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-08T21:46:36.115Z</updated>
+  <updated>2026-10-09T02:19:21.482Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>紅白司会にVIVANTの「兄弟」</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23312"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23312</id>
+    <updated>2026-10-09T02:19:19.831Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;芸能&quot;,
+  &quot;point1_title&quot;: &quot;第77回紅白の司会発表&quot;,
+  &quot;point1_desc&quot;: &quot;NHKは大みそかに放送される第77回NHK紅白歌合戦の司会者を発表した。今年は女優の芦田愛菜、俳優の堺雅人、タレントの二宮和也、そして鈴木奈穂子アナウンサーの4名が担当することが決定した。&quot;,
+  &quot;point2_title&quot;: &quot;...</summary>
+  </entry>
+  <entry>
+    <title>ハーランド ファンに団結呼びかけ</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23311"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23311</id>
+    <updated>2026-10-09T02:18:54.235Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;ハーランドがクラブに言及&quot;,
+  &quot;point1_desc&quot;: &quot;マンチェスター・シティに所属するノルウェー代表FWアーリング・ハーランドが、クラブが直面しているプレミアリーグの財務規定違反疑惑について自身の見解を語り、周囲の注目を集めている。&quot;,
+  &quot;point2_title&quot;: &quot;疑惑...</summary>
+  </entry>
+  <entry>
+    <title>ブックオフ 約643万件情報流出か</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23310"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23310</id>
+    <updated>2026-10-09T02:18:28.548Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;大規模な個人情報流出&quot;,
+  &quot;point1_desc&quot;: &quot;ブックオフグループホールディングスは、子会社の会員管理システムが第三者から不正アクセスを受けたと発表。会員情報が最大で約643万件も外部へ流出した可能性があることが明らかになった。&quot;,
+  &quot;point2_title&quot;: &quot;不正ア...</summary>
+  </entry>
   <entry>
     <title>プルデンシャル 不正巡り64人解雇</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23309"/>
@@ -574,41 +610,5 @@
   &quot;point1_title&quot;: &quot;積極財政の推進&quot;,
   &quot;point1_desc&quot;: &quot;高市首相は衆議院本会議の所信表明演説にて、自身の看板政策である「責任ある積極財政」を力強く推進していく方針を表明しました。経済政策を最優先課題に位置付け、成長への強い意欲を示しています。&quot;,
   &quot;point2_title&quot;: &quot;市場の...</summary>
-  </entry>
-  <entry>
-    <title>予算カット発言 農相が撤回し謝罪</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23262"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23262</id>
-    <updated>2026-10-05T07:44:00.147Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;発言の撤回と謝罪&quot;,
-  &quot;point1_desc&quot;: &quot;簗農林水産大臣が、自民党を支持しなかった自治体の予算をカットしたとする自身の発言を撤回し、謝罪を行いました。問題となった音声記録などの発覚により、大きな批判を浴びる事態となっています。&quot;,
-  &quot;point2_title&quot;: &quot;問題と...</summary>
-  </entry>
-  <entry>
-    <title>米軍 英空軍基地から爆撃機を撤収</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23261"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23261</id>
-    <updated>2026-10-05T02:17:22.355Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;米軍がB1爆撃機を撤収&quot;,
-  &quot;point1_desc&quot;: &quot;米国防総省は英国のフェアフォード空軍基地に配備されていたB1爆撃機を全機撤収させたことを認めた。同基地周辺では不審な事件が発生しており、安全確保や運用の見直しが行われた可能性がある。&quot;,
-  &quot;point2_title&quot;: &quot;基...</summary>
-  </entry>
-  <entry>
-    <title>イエメン フーシ派へ軍事作戦開始</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23260"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23260</id>
-    <updated>2026-10-05T02:16:58.322Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;イエメン暫定政権の動向&quot;,
-  &quot;point1_desc&quot;: &quot;サウジアラビアの支援を受けるイエメン暫定政権のアリーミ大統領評議会議長が新たな表明を行いました。親イラン武装組織フーシ派との緊張が高まる中、地域の安定に向けた政権側の姿勢が注視されています。&quot;,
-  &quot;point2_title&quot;...</summary>
   </entry>
 </feed>
