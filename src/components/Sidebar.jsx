@@ -32,6 +32,7 @@ const Sidebar = ({
   return (
     <div className="live-feed-sidebar" style={{ minWidth: '320px', boxSizing: 'border-box' }}>
       {/* 🏆 ユーザー称号＆レベル */}
+      {/*
       <div className="sidebar-section-card" style={{ marginBottom: '24px', background: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)', border: '2px solid #fbbf24', textAlign: 'center' }}>
         <h3 className="live-feed-title" style={{ color: '#b45309', border: 'none', padding: 0, justifyContent: 'center' }}>🐰 あなたの称号 🥕</h3>
         <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#d97706', margin: '8px 0' }}>
@@ -56,11 +57,10 @@ const Sidebar = ({
           </div>
         )}
 
-        {/* 
         <GachaMiniGame userExp={userExp} addExp={addExp} equipment={equipment} setEquipment={setEquipment} />
         <BattleMiniGame userLevel={levelInfo?.level || 1} addExp={addExp} equipment={equipment} globalOnlineCount={globalOnlineCount} />
-        */}
       </div>
+      */}
 
       <div className="sidebar-section-card" style={{ marginBottom: '24px', background: 'linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%)', border: '1px solid #ddd6fe' }}>
         <h3 className="live-feed-title" style={{ color: '#7c3aed', marginBottom: '8px', fontSize: '1.1rem', borderLeft: '5px solid #7c3aed', paddingLeft: '12px' }}>📡 広場の状況</h3>
