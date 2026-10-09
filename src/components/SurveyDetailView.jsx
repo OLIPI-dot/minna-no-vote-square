@@ -153,6 +153,8 @@ const SurveyDetailView = ({
   const [isConfirmingPost, setIsConfirmingPost] = React.useState(false);
   const [activeStampPicker, setActiveStampPicker] = React.useState(null);
   const [confirmingDeleteId, setConfirmingDeleteId] = React.useState(null);
+  const [showEmbedModal, setShowEmbedModal] = React.useState(false);
+  const embedCode = `<iframe src="${window.location.origin}/embed/${currentSurvey?.id}" width="100%" height="400" frameborder="0" style="border:1px solid #e2e8f0; border-radius:12px; max-width:600px; display:block; margin: 0 auto;"></iframe>`;
 
   React.useEffect(() => {
     const handleClickOutside = (e) => {
@@ -461,9 +463,9 @@ const SurveyDetailView = ({
               const chId = 'ID:' + idBase.substring(0, 8).toUpperCase();
 
               return (
-                <div key={i} style={{ fontSize: '15px', color: '#000', lineHeight: '1.5' }}>
+                <div key={i} style={{ fontSize: '15px', color: '#000', lineHeight: '1.5', textAlign: 'left', wordBreak: 'break-all' }}>
                   <div style={{ marginBottom: '8px' }}>
-                    {i + 1} 名前：<span style={{ color: 'green', fontWeight: 'bold' }}>名無しの広場民</span> ：{yyyy}/{mm}/{dd}({day}) {hh}:{min}:{ss}.{ms} {chId}
+                    {i + 1} 名前：<span style={{ color: 'green', fontWeight: 'bold' }}>名無しの広場民</span> ：{yyyy}/{mm}/{dd}({day}) {hh}:{min}:{ss}.{ms} <br className="mobile-only-br" />{chId}
                   </div>
                   <div style={{ marginLeft: '2em', wordBreak: 'break-word', whiteSpace: 'pre-wrap', letterSpacing: 'normal', textAlign: 'left' }}>
                     {comment}
@@ -599,6 +601,61 @@ const SurveyDetailView = ({
             </svg>
             Xでシェアする
           </button>
+          
+          <button onClick={() => setShowEmbedModal(true)} style={{
+            background: 'white',
+            color: '#3b82f6',
+            padding: '12px 24px',
+            borderRadius: '30px',
+            fontWeight: 'bold',
+            fontSize: '1rem',
+            border: '2px solid #3b82f6',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            margin: '16px auto 0 auto',
+            cursor: 'pointer',
+            transition: 'all 0.2s',
+          }}>
+            🔗 ブログに埋め込む
+          </button>
+        </div>
+      )}
+
+      {/* 埋め込みコードモーダル */}
+      {showEmbedModal && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
+          background: 'rgba(0,0,0,0.5)', zIndex: 10000, display: 'flex', justifyContent: 'center', alignItems: 'center'
+        }}>
+          <div style={{ background: 'white', padding: '24px', borderRadius: '16px', maxWidth: '500px', width: '90%', boxShadow: '0 10px 25px rgba(0,0,0,0.2)' }}>
+            <h3 style={{ marginTop: 0, color: '#1e293b' }}>🔗 サイトに埋め込む</h3>
+            <p style={{ fontSize: '0.9rem', color: '#64748b', marginBottom: '16px' }}>
+              以下のコードをコピーして、ご自身のブログ（WordPressなど）のHTML編集画面に貼り付けてください。
+            </p>
+            <textarea 
+              readOnly 
+              value={embedCode}
+              style={{ width: '100%', height: '100px', padding: '12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.85rem', color: '#334155', fontFamily: 'monospace', resize: 'none', marginBottom: '16px', boxSizing: 'border-box' }}
+              onClick={e => e.target.select()}
+            />
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+              <button onClick={() => setShowEmbedModal(false)} style={{ padding: '8px 16px', background: '#f1f5f9', color: '#64748b', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>
+                閉じる
+              </button>
+              <button 
+                onClick={() => {
+                  navigator.clipboard.writeText(embedCode);
+                  alert('コピーしました！🐰');
+                  setShowEmbedModal(false);
+                }} 
+                style={{ padding: '8px 16px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}
+              >
+                コードをコピー
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

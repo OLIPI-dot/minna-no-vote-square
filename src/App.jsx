@@ -272,11 +272,75 @@ function App() {
   const [contactMessage, setContactMessage] = useState('');
   const [isSendingInquiry, setIsSendingInquiry] = useState(false);
 
+  // 🏆 レベル＆経験値（EXP）システム
+  const [userExp, setUserExp] = useState(0);
+
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => setUser(session?.user ?? null));
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => setUser(session?.user ?? null));
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      const currentUser = session?.user ?? null;
+      setUser(currentUser);
+      
+      const localExp = parseInt(localStorage.getItem('min_ake_exp') || '0', 10);
+      if (currentUser) {
+        const dbExp = currentUser.user_metadata?.vote_exp || 0;
+        if (localExp > 0) {
+          const newTotalExp = dbExp + localExp;
+          supabase.auth.updateUser({ data: { vote_exp: newTotalExp } }).then(() => {
+            localStorage.removeItem('min_ake_exp');
+            setUserExp(newTotalExp);
+          });
+        } else {
+          setUserExp(dbExp);
+        }
+      } else {
+        setUserExp(localExp);
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      const currentUser = session?.user ?? null;
+      setUser(currentUser);
+      
+      const localExp = parseInt(localStorage.getItem('min_ake_exp') || '0', 10);
+      if (currentUser) {
+        const dbExp = currentUser.user_metadata?.vote_exp || 0;
+        if (localExp > 0) {
+          const newTotalExp = dbExp + localExp;
+          supabase.auth.updateUser({ data: { vote_exp: newTotalExp } }).then(() => {
+            localStorage.removeItem('min_ake_exp');
+            setUserExp(newTotalExp);
+          });
+        } else {
+          setUserExp(dbExp);
+        }
+      } else {
+        setUserExp(localExp);
+      }
+    });
     return () => subscription.unsubscribe();
   }, []);
+
+  const getLevelInfo = (exp) => {
+    if (exp >= 1000) return { level: 5, title: '伝説の広場民 👑', next: null };
+    if (exp >= 300) return { level: 4, title: '熟練の広場民 🏅', next: 1000 };
+    if (exp >= 100) return { level: 3, title: '一人前の広場民 🔰', next: 300 };
+    if (exp >= 30) return { level: 2, title: '見習い広場民 🐥', next: 100 };
+    return { level: 1, title: 'ひよっこ広場民 🥚', next: 30 };
+  };
+
+  const levelInfo = getLevelInfo(userExp);
+
+  const addExp = async (amount) => {
+    setUserExp(prev => {
+      const newExp = prev + amount;
+      if (user) {
+        supabase.auth.updateUser({ data: { vote_exp: newExp } });
+      } else {
+        localStorage.setItem('min_ake_exp', String(newExp));
+      }
+      return newExp;
+    });
+  };
 
   // 📡 広場全体のリアルタイム人数追跡
   useEffect(() => {
@@ -1745,6 +1809,9 @@ function App() {
     // 🏎️ 楽観的UI更新: 瞬時に反映させるらび！
     localStorage.setItem(`voted_survey_${currentSurvey.id}`, String(option.id));
     setVotedOption(String(option.id));
+    
+    // 🏆 経験値を付与！
+    addExp(10);
 
     // 🎉 紙吹雪エフェクト！キモチイイ！！
     confetti({
@@ -2574,6 +2641,10 @@ function App() {
               globalOnlineCount={globalOnlineCount}
               formatWithDay={formatWithDay}
               AnimatedCounter={AnimatedCounter}
+              userExp={userExp}
+              levelInfo={levelInfo}
+              user={user}
+              addExp={addExp}
             />
           </Suspense>
         </div>

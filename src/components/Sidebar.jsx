@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import AdSenseBox from './AdSenseBox';
 import SquareTimeline from './SquareTimeline';
+import BattleMiniGame from './BattleMiniGame';
+import GachaMiniGame from './GachaMiniGame';
 import { CATEGORY_ICON_STYLE } from '../constants';
 
 const getCatColor = (cat) => {
@@ -18,10 +20,56 @@ const Sidebar = ({
   navigateTo, 
   globalOnlineCount, 
   formatWithDay, 
-  AnimatedCounter 
+  AnimatedCounter,
+  userExp,
+  levelInfo,
+  user,
+  addExp
 }) => {
+  const [equipment, setEquipment] = useState(() => {
+    try {
+      const saved = localStorage.getItem('min_ake_equipment');
+      return saved ? JSON.parse(saved) : { weapon: null, armor: null, accessory: null };
+    } catch {
+      return { weapon: null, armor: null, accessory: null };
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem('min_ake_equipment', JSON.stringify(equipment));
+  }, [equipment]);
+
   return (
     <div className="live-feed-sidebar" style={{ minWidth: '320px', boxSizing: 'border-box' }}>
+      {/* 🏆 ユーザー称号＆レベル */}
+      <div className="sidebar-section-card" style={{ marginBottom: '24px', background: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)', border: '2px solid #fbbf24', textAlign: 'center' }}>
+        <h3 className="live-feed-title" style={{ color: '#b45309', border: 'none', padding: 0, justifyContent: 'center' }}>🐰 あなたの称号 🥕</h3>
+        <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#d97706', margin: '8px 0' }}>
+          {levelInfo?.title || 'ひよっこ広場民 🥚'}
+        </div>
+        <div style={{ fontSize: '0.85rem', color: '#92400e', marginBottom: '8px' }}>
+          Lv.{levelInfo?.level || 1} (EXP: {userExp || 0})
+        </div>
+        {levelInfo?.next && (
+          <div style={{ width: '100%', background: '#fde68a', borderRadius: '10px', height: '12px', overflow: 'hidden', position: 'relative', marginBottom: '4px' }}>
+            <div style={{ height: '100%', background: 'linear-gradient(90deg, #f59e0b, #d97706)', width: `${Math.min(100, Math.max(0, ((userExp || 0) / levelInfo.next) * 100))}%` }}></div>
+          </div>
+        )}
+        {levelInfo?.next ? (
+          <div style={{ fontSize: '0.75rem', color: '#b45309' }}>次の称号まであと {levelInfo.next - (userExp || 0)} EXP！(投票で+10)</div>
+        ) : (
+          <div style={{ fontSize: '0.75rem', color: '#b45309' }}>最大レベル到達！あなたは伝説です✨</div>
+        )}
+        {!user && (
+          <div style={{ fontSize: '0.7rem', color: '#ef4444', marginTop: '8px', background: '#fee2e2', padding: '4px', borderRadius: '6px' }}>
+            ※ログインすると他の端末にも称号を引き継げます！
+          </div>
+        )}
+
+        <GachaMiniGame userExp={userExp} addExp={addExp} equipment={equipment} setEquipment={setEquipment} />
+        <BattleMiniGame userLevel={levelInfo?.level || 1} addExp={addExp} equipment={equipment} />
+      </div>
+
       <div className="sidebar-section-card" style={{ marginBottom: '24px', background: 'linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%)', border: '1px solid #ddd6fe' }}>
         <h3 className="live-feed-title" style={{ color: '#7c3aed', marginBottom: '8px', fontSize: '1.1rem', borderLeft: '5px solid #7c3aed', paddingLeft: '12px' }}>📡 広場の状況</h3>
         <div style={{ fontSize: '0.9rem', color: '#4c1d95', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px' }}>
