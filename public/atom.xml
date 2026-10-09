@@ -4,11 +4,47 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-09T12:52:22.835Z</updated>
+  <updated>2026-10-09T21:47:37.646Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>個人情報巡る対策 政府が緊急要請</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23321"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23321</id>
+    <updated>2026-10-09T21:47:34.036Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;JR東日本等で情報流出の恐れ&quot;,
+  &quot;point1_desc&quot;: &quot;JR東日本とブックオフHDは、外部からの不正アクセスを受けたことを発表した。それぞれの企業で約600万件規模という非常に大規模な個人情報が流出した可能性があるとしている。&quot;,
+  &quot;point2_title&quot;: &quot;被害拡大...</summary>
+  </entry>
+  <entry>
+    <title>ビール4社担当者 価格協議認める</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23320"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23320</id>
+    <updated>2026-10-09T21:46:17.839Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;カルテル協議認める&quot;,
+  &quot;point1_desc&quot;: &quot;ビール大手4社の担当者が、公正取引委員会の聴取に対し価格に関する事前協議を行った事実を認める説明をしたことが発覚。業界全体に及ぶ大規模な価格カルテル疑惑が重大な局面を迎えている。&quot;,
+  &quot;point2_title&quot;: &quot;公取委の立...</summary>
+  </entry>
+  <entry>
+    <title>文科相 議員会館内でパーティーか</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23319"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23319</id>
+    <updated>2026-10-09T21:45:40.005Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;議員会館でパーティー開催&quot;,
+  &quot;point1_desc&quot;: &quot;関芳弘文部科学相が2024年に自身の政治資金パーティーを衆議院議員会館内で開催していた疑いが浮上した。会館内での開催は衆議院の内規で禁止されており問題視されている。&quot;,
+  &quot;point2_title&quot;: &quot;衆院内規に抵触の可...</summary>
+  </entry>
   <entry>
     <title>屋外授業で女児死亡 父親が市提訴</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23318"/>
@@ -573,41 +609,5 @@
   &quot;point1_desc&quot;: &quot;製パン大手のフジパンは、熊本地震で被災し操業停止中だった九州フジパン熊本工場の生産再開を断念すると発表。建屋や生産設備の損傷が予想以上に激しく困難と判断された。&quot;,
   &quot;point2_title&quot;: &quot;設備損傷が深刻な理由&quot;,
  ...</summary>
-  </entry>
-  <entry>
-    <title>首相所信表明 野党から批判相次ぐ</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23271"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23271</id>
-    <updated>2026-10-05T21:45:31.826Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;高市首相の所信表明演説&quot;,
-  &quot;point1_desc&quot;: &quot;高市早苗首相が所信表明演説を行い、消費税減税を目指す姿勢を示した。しかし野党側からは、減税に伴う具体的な財源の裏付けが示されていないとして批判の声が相次いでいる。&quot;,
-  &quot;point2_title&quot;: &quot;野党からの批判と懸念&quot;...</summary>
-  </entry>
-  <entry>
-    <title>「没入型」新感覚の防災訓練 狙い</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23270"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23270</id>
-    <updated>2026-10-05T12:51:36.328Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;話題&quot;,
-  &quot;point1_title&quot;: &quot;演劇風の防災訓練&quot;,
-  &quot;point1_desc&quot;: &quot;演劇や脱出ゲームの要素を取り入れた新しいスタイルの防災訓練が話題となっています。臨場感あふれる演出を通じて、従来の受け身な訓練から一歩進んだ体験型の防災学習を提供しています。&quot;,
-  &quot;point2_title&quot;: &quot;自ら考え判断する&quot;,...</summary>
-  </entry>
-  <entry>
-    <title>ノーベル生理医学賞 米・独の3人</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23269"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23269</id>
-    <updated>2026-10-05T12:51:12.036Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;米独の3名が受賞&quot;,
-  &quot;point1_desc&quot;: &quot;今年のノーベル生理学・医学賞が発表され、アメリカとドイツの研究者あわせて3人が受賞者に選ばれました。世界的な科学技術の発展や医療への貢献が高く評価された形となります。&quot;,
-  &quot;point2_title&quot;: &quot;日本人の連続受賞ならず&quot;...</summary>
   </entry>
 </feed>
