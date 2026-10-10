@@ -49,11 +49,16 @@ const Sidebar = ({
     if (savedHn) {
       setHn(savedHn);
       setTempHn(savedHn);
+    } else if (user && user.user_metadata && (user.user_metadata.full_name || user.user_metadata.name)) {
+      const authName = user.user_metadata.full_name || user.user_metadata.name;
+      setHn(authName);
+      setTempHn(authName);
+      localStorage.setItem('minake_hn', authName);
     } else {
       setHn('匿名広場民');
       setTempHn('匿名広場民');
     }
-  }, []);
+  }, [user]);
 
   const generateTripcode = (password) => {
     let hash = 0;
@@ -171,7 +176,7 @@ const Sidebar = ({
 
       {/* 4. 🏆 ユーザー称号＆レベル (みんクエ) */}
       <div className="sidebar-section-card" style={{ marginBottom: '24px', background: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)', border: '2px solid #fbbf24', textAlign: 'center' }}>
-        <h3 className="live-feed-title" style={{ color: '#b45309', border: 'none', padding: 0, justifyContent: 'center' }}>🐰 あなたの称号 🥕</h3>
+        
         {isEditingHn ? (
           <div style={{ margin: '8px 0', display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center' }}>
             <input 
@@ -185,16 +190,17 @@ const Sidebar = ({
             <button onClick={saveHn} style={{ padding: '4px 16px', background: '#f59e0b', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>決定</button>
           </div>
         ) : (
-          <div style={{ margin: '8px 0' }}>
-            <div style={{ fontSize: '1rem', fontWeight: 'bold', color: hn.includes('◆OLiPi') ? '#ef4444' : (levelInfo?.color || '#78350f'), textShadow: hn.includes('◆OLiPi') ? '0 0 8px rgba(239, 68, 68, 0.4)' : (levelInfo?.textShadow || 'none'), display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-              {hn.includes('◆OLiPi') ? `👑 ${hn}` : hn} 
-              <button onClick={() => setIsEditingHn(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.8rem', color: '#d97706', padding: '2px 4px', borderRadius: '4px' }}>✏️</button>
-            </div>
-            <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#d97706', marginTop: '4px' }}>
-              {levelInfo?.title || 'ひよっこ広場民 🥚'}
-            </div>
+          <div style={{ fontSize: '1rem', fontWeight: 'bold', color: hn.includes('◆OLiPi') ? '#ef4444' : (levelInfo?.color || '#78350f'), textShadow: hn.includes('◆OLiPi') ? '0 0 8px rgba(239, 68, 68, 0.4)' : (levelInfo?.textShadow || 'none'), display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', margin: '8px 0' }}>
+            {hn.includes('◆OLiPi') ? `👑 ${hn}` : hn} 
+            <button onClick={() => setIsEditingHn(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.8rem', color: '#d97706', padding: '2px 4px', borderRadius: '4px' }}>✏️</button>
           </div>
         )}
+
+        <h3 className="live-feed-title" style={{ color: '#b45309', border: 'none', padding: 0, justifyContent: 'center', marginTop: '12px' }}>🐰 あなたの称号 🥕</h3>
+        
+        <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#d97706', margin: '4px 0 12px 0' }}>
+          {levelInfo?.title || 'ひよっこ広場民 🥚'}
+        </div>
         <div style={{ fontSize: '0.85rem', color: '#92400e', marginBottom: '8px', display: 'flex', justifyContent: 'center', gap: '12px' }}>
           <span>Lv.{levelInfo?.level || 1} (EXP: {userExp || 0})</span>
           <span style={{ fontWeight: 'bold' }}>🎫 {gachaTickets || 0} 枚</span>
