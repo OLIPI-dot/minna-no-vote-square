@@ -201,24 +201,7 @@ const Sidebar = ({
             <button onClick={() => setIsEditingHn(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.8rem', color: '#d97706', padding: '2px 4px', borderRadius: '4px' }}>✏️</button>
           </div>
         )}
-        <div style={{ fontSize: '0.85rem', color: '#92400e', marginBottom: '8px', display: 'flex', justifyContent: 'center', gap: '12px' }}>
-          <span>Lv.{levelInfo?.level || 1} (EXP: {userExp || 0})</span>
-          {/* 一時的に完全に非表示
-          {import.meta.env.DEV && (
-            <span style={{ fontWeight: 'bold' }}>🎫 {gachaTickets || 0} 枚</span>
-          )}
-          */}
-        </div>
-        {levelInfo?.next && (
-          <div style={{ width: '100%', background: '#fde68a', borderRadius: '10px', height: '12px', overflow: 'hidden', position: 'relative', marginBottom: '4px' }}>
-            <div style={{ height: '100%', background: 'linear-gradient(90deg, #f59e0b, #d97706)', width: `${Math.min(100, Math.max(0, ((userExp || 0) / levelInfo.next) * 100))}%` }}></div>
-          </div>
-        )}
-        {levelInfo?.next ? (
-          <div style={{ fontSize: '0.75rem', color: '#b45309' }}>次の称号まであと {levelInfo.next - (userExp || 0)} EXP！</div>
-        ) : (
-          <div style={{ fontSize: '0.75rem', color: '#b45309' }}>最大レベル到達！あなたは伝説です✨</div>
-        )}
+
         {!user && (
           <div style={{ fontSize: '0.7rem', color: '#ef4444', marginTop: '8px', background: '#fee2e2', padding: '4px', borderRadius: '6px' }}>
             ※ログインすると他の端末にも称号を引き継げます！
