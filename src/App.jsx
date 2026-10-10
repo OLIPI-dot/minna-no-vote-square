@@ -485,7 +485,18 @@ function App() {
 
   const levelInfo = getLevelInfo(userExp);
 
+  const [rewardPopups, setRewardPopups] = useState([]);
+
+  const showRewardPopup = (text, color = '#10b981') => {
+    const id = Date.now() + Math.random();
+    setRewardPopups(prev => [...prev, { id, text, color }]);
+    setTimeout(() => {
+      setRewardPopups(prev => prev.filter(p => p.id !== id));
+    }, 2500);
+  };
+
   const addExp = async (amount) => {
+    showRewardPopup(`✨ + ${amount} EXP !!`, '#10b981');
     setUserExp(prev => {
       const newExp = prev + amount;
       if (user) {
@@ -498,6 +509,7 @@ function App() {
   };
 
   const addTickets = async (amount) => {
+    if (amount > 0) showRewardPopup(`🎫 + ${amount} チケット !!`, '#f59e0b');
     setGachaTickets(prev => {
       const newTickets = prev + amount;
       if (user) {
@@ -2020,6 +2032,10 @@ function App() {
     updateRateLimit(); // 🛡️ 作成時間を記録
     await supabase.from('options').insert(validOptions.map(name => ({ name, votes: 0, survey_id: data[0].id })));
 
+    // 🎉 アンケート作成ボーナス！
+    addExp(50);
+    addTickets(1);
+
     // 全ての状態をリセット
     setSurveyTitle('');
     setSurveyCategory('');
@@ -3011,6 +3027,29 @@ function App() {
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
       />
+
+      {/* 報酬ポップアップ */}
+      {rewardPopups.map((popup, i) => (
+        <div key={popup.id} style={{
+          position: 'fixed',
+          top: `calc(50% - ${i * 50}px)`,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          background: 'rgba(255, 255, 255, 0.95)',
+          padding: '12px 32px',
+          borderRadius: '50px',
+          boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.2)',
+          border: `2px solid ${popup.color}`,
+          color: popup.color,
+          fontWeight: '900',
+          fontSize: '1.5rem',
+          pointerEvents: 'none',
+          animation: 'popUp 2s ease-out forwards',
+          zIndex: 999999
+        }}>
+          {popup.text}
+        </div>
+      ))}
 
     </div>
   );

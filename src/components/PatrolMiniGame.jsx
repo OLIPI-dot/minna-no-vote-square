@@ -403,12 +403,20 @@ const PatrolMiniGame = ({ userLevel, userExp, addExp, equipment, setEquipment, a
   const handleWin = (defeatedEnemy) => {
     setBattleState('won');
     
-    if (defeatedEnemy.type === 'rare') addExp(50);
-    else if (defeatedEnemy.type === 'elite') {
-      addExp(30);
+    // 敵のステータスからEXPを算出（大盤振る舞い）
+    let earnedExp = Math.floor(defeatedEnemy.hp / 5 + defeatedEnemy.atk + defeatedEnemy.def);
+    
+    // 激怒個体だった場合はさらに倍
+    if (defeatedEnemy.isEnraged) earnedExp *= 2;
+    
+    addExp(earnedExp);
+    setBattleLog(prev => [...prev, `✨ ${earnedExp} EXP を獲得した！`]);
+
+    if (defeatedEnemy.type === 'rare') {
+      addTickets(3); // レアならガチャチケ3枚！
+    } else if (defeatedEnemy.type === 'elite') {
       addTickets(1); // エリートならガチャチケ1枚確定！
     }
-    else addExp(10);
     
     // レアエネミーなら赤箱ドロップ判定
     if (defeatedEnemy.type === 'rare') {

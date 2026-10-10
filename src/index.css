@@ -160,3 +160,10 @@ html, body {
     transform: scale(1.02);
   }
 }
+
+@keyframes popUp {
+  0% { transform: translate(-50%, 50px); opacity: 0; }
+  20% { transform: translate(-50%, 0); opacity: 1; }
+  80% { transform: translate(-50%, -10px); opacity: 1; }
+  100% { transform: translate(-50%, -50px); opacity: 0; }
+}
