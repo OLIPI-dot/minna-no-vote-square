@@ -161,22 +161,7 @@ function App() {
   const isInitialMountRef = useRef(true); // 🚀 初回マウント時の一度きりガード
 
   // 📡 リアルタイム人数
-  const [globalOnlineCount, setGlobalOnlineCount] = useState(13);
-  const [fakeOffset, setFakeOffset] = useState(12);
-
-  useEffect(() => {
-    // 🐰 さくラビたん撤退！（サクラの増減ロジックを停止）
-    // 将来的には Supabase Presence などを活用して完全なリアルタイム人数を出したいところ。
-    setFakeOffset(0); // 嘘の人数はゼロにする
-  }, []);
-
-  // fakeOffsetが変わるたびにglobalOnlineCountも更新する
-  useEffect(() => {
-    setGlobalOnlineCount(prev => {
-      // 現在の値が fakeOffset から離れすぎないように追従させる
-      return fakeOffset + 1; // 簡易的に +1 (自分) とする
-    });
-  }, [fakeOffset]);
+  const [globalOnlineCount, setGlobalOnlineCount] = useState(1);
   const manualUpdatesRef = useRef({}); // 🛡️ { [surveyId]: timestamp } アンケートごとの更新ガード
   const [surveyOnlineCount, setSurveyOnlineCount] = useState(2);
 
@@ -549,9 +534,8 @@ function App() {
       .on('presence', { event: 'sync' }, () => {
         const state = channel.presenceState();
         const count = Object.keys(state).length;
-        // 🌸 リアルな人数を保持しつつ、表示にはfakeOffsetを足す仕組みにするため、
-        // ここでは setGlobalOnlineCount(count + fakeOffset) とするらび！
-        setGlobalOnlineCount(count > 0 ? count + fakeOffset : fakeOffset + 1);
+        // 🌸 リアルな接続人数をそのまま表示する
+        setGlobalOnlineCount(count > 0 ? count : 1);
       })
       .subscribe(async (status) => {
         if (status === 'SUBSCRIBED') {
@@ -738,7 +722,7 @@ function App() {
             const count = Object.keys(state).length;
             // 🌸 個別記事の閲覧数もサクラで底上げ（1〜3人くらい）
             const fakeOffset = currentSurvey?.id ? ((currentSurvey.id * 7) % 3) + 1 : 2;
-            setSurveyOnlineCount(count > 0 ? count + fakeOffset - 1 : fakeOffset);
+            setSurveyOnlineCount(count > 0 ? count : 1);
           })
           .subscribe(async (status) => {
             if (status === 'SUBSCRIBED') {
@@ -758,7 +742,7 @@ function App() {
       setComments([]);
       setCurrentCommentPage(1);
       const fakeOffset = currentSurvey?.id ? ((currentSurvey.id * 7) % 3) + 1 : 2;
-      setSurveyOnlineCount(fakeOffset);
+      setSurveyOnlineCount(1);
     }
   }, [view, currentSurvey]);
 
