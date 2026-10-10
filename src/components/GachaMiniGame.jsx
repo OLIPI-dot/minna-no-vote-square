@@ -222,26 +222,41 @@ const GachaMiniGame = ({ gachaTickets, addTickets, equipment, setEquipment, addE
               {inventory.length === 0 ? (
                 <div style={{ textAlign: 'center', color: '#94a3b8', padding: '40px 0' }}>アイテムがありません</div>
               ) : (
-                inventory.map(item => (
-                  <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', background: '#f8fafc', border: `1px solid ${rarityColors[item.rarity]}`, borderRadius: '8px' }}>
-                    <div style={{ fontSize: '2rem' }}>{item.icon}</div>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ fontWeight: 'bold', color: rarityColors[item.rarity] }}>[{item.rarity}] {item.name}</div>
-                      <div style={{ fontSize: '0.75rem', color: '#475569' }}>
-                        ATK+{item.atk} / DEF+{item.def} / HP+{item.hp}
+                inventory.map(item => {
+                  const currentEquip = equipment[item.type];
+                  const diffAtk = item.atk - (currentEquip ? currentEquip.atk : 0);
+                  const diffDef = item.def - (currentEquip ? currentEquip.def : 0);
+                  const diffHp = item.hp - (currentEquip ? currentEquip.hp : 0);
+
+                  const renderDiff = (diff) => {
+                    if (diff > 0) return <span style={{ color: '#10b981', fontWeight: 'bold', marginLeft: '2px' }}>(+{diff})</span>;
+                    if (diff < 0) return <span style={{ color: '#ef4444', fontWeight: 'bold', marginLeft: '2px' }}>({diff})</span>;
+                    return <span style={{ color: '#94a3b8', marginLeft: '2px' }}>(±0)</span>;
+                  };
+
+                  return (
+                    <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', background: '#f8fafc', border: `1px solid ${rarityColors[item.rarity]}`, borderRadius: '8px' }}>
+                      <div style={{ fontSize: '2rem' }}>{item.icon}</div>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontWeight: 'bold', color: rarityColors[item.rarity] }}>[{item.rarity}] {item.name}</div>
+                        <div style={{ fontSize: '0.75rem', color: '#475569', display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '2px', marginBottom: '2px' }}>
+                          <span>ATK: {item.atk}{renderDiff(diffAtk)}</span>
+                          <span>DEF: {item.def}{renderDiff(diffDef)}</span>
+                          <span>HP: {item.hp}{renderDiff(diffHp)}</span>
+                        </div>
+                        <div style={{ fontSize: '0.7rem', color: '#64748b' }}>{item.desc}</div>
                       </div>
-                      <div style={{ fontSize: '0.7rem', color: '#64748b' }}>{item.desc}</div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                        <button onClick={() => equipFromInventory(item)} style={{ background: '#10b981', color: 'white', border: 'none', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.8rem' }}>
+                          装備
+                        </button>
+                        <button onClick={() => handleSellFromInventory(item)} style={{ background: '#f59e0b', color: 'white', border: 'none', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem' }}>
+                          売却
+                        </button>
+                      </div>
                     </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                      <button onClick={() => equipFromInventory(item)} style={{ background: '#10b981', color: 'white', border: 'none', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.8rem' }}>
-                        装備
-                      </button>
-                      <button onClick={() => handleSellFromInventory(item)} style={{ background: '#f59e0b', color: 'white', border: 'none', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem' }}>
-                        売却
-                      </button>
-                    </div>
-                  </div>
-                ))
+                  );
+                })
               )}
             </div>
           </div>
