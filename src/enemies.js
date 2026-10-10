@@ -59,7 +59,40 @@ export const ENEMIES = [
   { id: 'r101', type: 'rare', name: '✨ 黄金のスパムボット', hp: 1000, atk: 150, def: 100, icon: '🪙', desc: '全身が純金でできた謎のボット。逃げ足が速い。' },
   { id: 'r102', type: 'rare', name: '✨ 特級呪物クソリッパー', hp: 3000, atk: 350, def: 250, icon: '💩', desc: '絶対に反省しない究極の煽り屋。防御力がカチカチ。' },
   { id: 'r103', type: 'rare', name: '✨ シン・増税メガネ', hp: 5000, atk: 400, def: 800, icon: '👓🔥', desc: '国民の怒りを吸収して巨大化した姿。すべてを無に帰す。' },
-  { id: 'r104', type: 'rare', name: '✨ アルゴリズムの化身', hp: 7777, atk: 500, def: 500, icon: '🤖🌀', desc: 'おすすめタブを支配する存在。誰も逆らうことはできない。' }
+  { id: 'r104', type: 'rare', name: '✨ アルゴリズムの化身', hp: 7777, atk: 500, def: 500, icon: '🤖🌀', desc: 'おすすめタブを支配する存在。誰も逆らうことはできない。' },
+
+
+  // ================= 🐰 第5弾 追加エネミー (ディープなネットの闇・歌舞伎町編：30種) =================
+  { id: 'el201', type: 'elite', name: 'トー横キッズ（たちんぼ）', hp: 400, atk: 50, def: 20, icon: '👧', desc: '歌舞伎町の片隅で獲物を待つ。攻撃を受けると金銭を要求される。' },
+  { id: 'el202', type: 'elite', name: 'トー横四天王', hp: 900, atk: 85, def: 60, icon: '👑', desc: '界隈を牛耳るヤバい奴ら。4人揃うと手がつけられない。' },
+  { id: 'el203', type: 'elite', name: '歌舞伎町のホスト', hp: 600, atk: 70, def: 40, icon: '🍾', desc: '甘い言葉で近づき、最終的に大ダメージを与えてくる。' },
+  { id: 'e204', type: 'normal', name: 'ホスト狂いの地雷系女子', hp: 300, atk: 40, def: 10, icon: '🎀', desc: '推しのためにすべてを捧げる。怒らせると恐ろしい。' },
+  { id: 'el205', type: 'elite', name: '頂き女子', hp: 550, atk: 90, def: 20, icon: '💕', desc: '巧みな話術でプレイヤーのHPを限界まで搾り取る。' },
+  { id: 'e206', type: 'normal', name: '頂きおぢ', hp: 800, atk: 10, def: 5, icon: '👴', desc: 'ただ搾取されるだけの存在。倒すと少しお金を落とすかも。' },
+  { id: 'el207', type: 'elite', name: '私人逮捕系YouTuber', hp: 750, atk: 80, def: 50, icon: '🚔', desc: '勝手に罪をでっち上げて突撃してくる危険人物。' },
+  { id: 'e208', type: 'normal', name: '回転寿司テロリスト', hp: 200, atk: 30, def: 10, icon: '🍣', desc: '醤油ボトルを舐め回してバイオテロを引き起こす。' },
+  { id: 'e209', type: 'normal', name: 'インプレゾンビの群れ', hp: 100, atk: 10, def: 99, icon: '🧟', desc: '無意味なリプライを大量に送ってくる。倒してもキリがない。' },
+  { id: 'el210', type: 'elite', name: 'インプレゾンビの王', hp: 1000, atk: 50, def: 150, icon: '🧟‍♂️', desc: '青バッジを大量に纏い、アルゴリズムの寵愛を受けるゾンビの王。' },
+  { id: 'el211', type: 'elite', name: '闇金業者', hp: 850, atk: 95, def: 40, icon: '💴', desc: '法外な利息でHPを削ってくる。絶対に逃げられない。' },
+  { id: 'el212', type: 'elite', name: '情報商材屋', hp: 650, atk: 60, def: 70, icon: '📈', desc: '「これで絶対に勝てる」と言いながら何の効果もない攻撃をしてくる。' },
+  { id: 'r213', type: 'rare', name: '✨ 女装パ◯ダ', hp: 4000, atk: 250, def: 300, icon: '🐼', desc: 'トー横の伝説の存在。圧倒的なインパクトでプレイヤーを圧倒する。' },
+  { id: 'r214', type: 'rare', name: '✨ ぷ◯ん', hp: 3500, atk: 300, def: 250, icon: '🍮', desc: 'トー横界隈の象徴的な存在。その闇は底知れない。' },
+  { id: 'e215', type: 'normal', name: '闇バイトの実行犯', hp: 250, atk: 45, def: 15, icon: '🥷', desc: '使い捨てのコマ。何も知らずに襲いかかってくる。' },
+  { id: 'el216', type: 'elite', name: '指示役「ル〇ィ」', hp: 1500, atk: 120, def: 80, icon: '📱', desc: '海外から匿名で指示を出し、安全圏から強力な攻撃を仕掛ける。' },
+  { id: 'el217', type: 'elite', name: 'パパ活議員', hp: 950, atk: 50, def: 120, icon: '💼', desc: '表向きはクリーンだが、裏ではHPを大量に消費している。' },
+  { id: 'el218', type: 'elite', name: 'ゴシップ週刊誌の記者', hp: 500, atk: 85, def: 30, icon: '📸', desc: '隠し撮りでプレイヤーの弱点を暴き、致命傷を与える。' },
+  { id: 'e219', type: 'normal', name: '退職代行利用者', hp: 150, atk: 0, def: 50, icon: '🏃', desc: '攻撃はしてこないが、ある日突然目の前から消え去る。' },
+  { id: 'e220', type: 'normal', name: '陰謀論者', hp: 350, atk: 40, def: 25, icon: '🛸', desc: '「すべてはディープステートの陰謀だ！」と叫びながら殴ってくる。' },
+  { id: 'e221', type: 'normal', name: '地球平面説論者', hp: 300, atk: 35, def: 30, icon: '🌍', desc: '物理法則を無視した直線的な攻撃しかしてこない。' },
+  { id: 'el222', type: 'elite', name: '転売ヤーの元締め', hp: 800, atk: 70, def: 90, icon: '📦', desc: 'あらゆる物資を買い占め、プレイヤーの回復を妨害する。' },
+  { id: 'e223', type: 'normal', name: 'クレカ現金化業者', hp: 200, atk: 25, def: 40, icon: '💳', desc: '一時的にHPをくれるが、後で莫大な利息を取り立てに来る。' },
+  { id: 'e224', type: 'normal', name: 'オレオレ詐欺の受け子', hp: 180, atk: 20, def: 20, icon: '📞', desc: '常に怯えている。たまに警察に捕まって自滅する。' },
+  { id: 'el225', type: 'elite', name: 'ネットの特定班', hp: 600, atk: 100, def: 10, icon: '🔍', desc: 'プレイヤーの個人情報を特定し、防御力を0にしてくる恐ろしい敵。' },
+  { id: 'el226', type: 'elite', name: '炎上中の配信者', hp: 700, atk: 60, def: 60, icon: '🔥', desc: '炎上を燃料にして延々と攻撃を続ける無敵の人。' },
+  { id: 'e227', type: 'normal', name: '自粛警察', hp: 250, atk: 30, def: 80, icon: '🚓', desc: '少しでもはみ出した行動をとると過剰に攻撃してくる。' },
+  { id: 'e228', type: 'normal', name: 'コラボカフェ転売ヤー', hp: 220, atk: 20, def: 30, icon: '☕', desc: '特典のコースターだけを奪って去っていく。' },
+  { id: 'e229', type: 'normal', name: 'スパチャで破産したおじさん', hp: 900, atk: 5, def: 5, icon: '💸', desc: 'HPは高いが中身はスッカラカン。哀愁が漂う。' },
+  { id: 'el230', type: 'elite', name: 'Vチューバーのガチ恋勢', hp: 850, atk: 90, def: 50, icon: '😍', desc: '推しのためなら命を投げ出す狂戦士。' }
 
 ];
 

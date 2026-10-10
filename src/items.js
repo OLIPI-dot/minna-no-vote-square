@@ -159,7 +159,45 @@ export const ITEMS = [
   { id: 'ac310', type: 'accessory', rarity: 'SR', name: '示談書', atk: 0, def: 50, hp: 50, icon: '🤝', desc: '札束で和解した証。防御とHPが大きく上がる。' },
 
   // ================= 👑 レジェンドレア (LR) =================
-  { id: 'w_lr1', type: 'weapon', rarity: 'LR', name: '真・エクスカリバー（本物）', atk: 9999, def: 9999, hp: 9999, icon: '🗡️✨', desc: 'この広場の創造主が落としたとされる、すべてを破壊する神の剣。' }
+  { id: 'w_lr1', type: 'weapon', rarity: 'LR', name: '真・エクスカリバー（本物）', atk: 9999, def: 9999, hp: 9999, icon: '🗡️✨', desc: 'この広場の創造主が落としたとされる、すべてを破壊する神の剣。' },
+
+  // ================= 🐰 第5弾 追加アイテム（ディープなネットの闇編：30種） =================
+  // --- 武器 ---
+  { id: 'w401', type: 'weapon', rarity: 'N', name: '魔法のストロングゼロ（缶）', atk: 30, def: -10, hp: -10, icon: '🍺', desc: '飲むと痛覚が麻痺して強くなるが、寿命が縮む。' },
+  { id: 'w402', type: 'weapon', rarity: 'R', name: '私人逮捕用の手錠', atk: 45, def: 0, hp: 0, icon: '🔗', desc: '勝手に相手を拘束する。やりすぎると自分が捕まる。' },
+  { id: 'w403', type: 'weapon', rarity: 'N', name: '回転寿司の醤油ボトル', atk: 15, def: 0, hp: -5, icon: '🍶', desc: '舐め回してから相手に投げつけるバイオ兵器。' },
+  { id: 'w404', type: 'weapon', rarity: 'SR', name: 'ホストの売掛金', atk: 120, def: 0, hp: 0, icon: '📝', desc: '重すぎるツケを鈍器にして殴る。相手は死ぬ。' },
+  { id: 'w405', type: 'weapon', rarity: 'R', name: '陰謀論のビラ', atk: 35, def: 0, hp: 0, icon: '📄', desc: '読ませることで相手の脳を破壊する。' },
+  { id: 'w406', type: 'weapon', rarity: 'SR', name: '頂き女子のマニュアル', atk: 100, def: 0, hp: 50, icon: '📔', desc: '相手からHPと金を効率よく吸い取る禁断の書。' },
+  { id: 'w407', type: 'weapon', rarity: 'UR', name: '青いチェックマーク（物理）', atk: 250, def: 100, hp: 0, icon: '☑️', desc: '角が尖っていて物理的に刺さる。' },
+  { id: 'w408', type: 'weapon', rarity: 'SR', name: '特定班のカメラ', atk: 80, def: 0, hp: 0, icon: '📷', desc: 'フラッシュを焚いて相手の個人情報を奪う。' },
+  { id: 'w409', type: 'weapon', rarity: 'R', name: '炎上ツイートのスクショ', atk: 50, def: 0, hp: 0, icon: '📱', desc: '印刷して丸めて投げる。精神ダメージが大きい。' },
+  { id: 'w410', type: 'weapon', rarity: 'UR', name: '退職代行の通知書', atk: 400, def: 0, hp: 0, icon: '✉️', desc: 'これを出された相手は一切の反論を許されず消滅する。' },
+
+  // --- 防具 ---
+  { id: 'a401', type: 'armor', rarity: 'N', name: '地雷系メイク', atk: 0, def: 20, hp: 10, icon: '💄', desc: '泣きはらしたような目で相手の同情を誘う。' },
+  { id: 'a402', type: 'armor', rarity: 'R', name: '歌舞伎町のランドセル', atk: 0, def: 40, hp: 20, icon: '🎒', desc: 'MCMのリュック。謎の防御力を誇る。' },
+  { id: 'a403', type: 'armor', rarity: 'N', name: 'アルミホイルの帽子', atk: 0, def: 15, hp: 0, icon: '🧢', desc: '5G電波や思考盗聴から脳を守ってくれる（らしい）。' },
+  { id: 'a404', type: 'armor', rarity: 'SR', name: '転売ヤーの段ボール砦', atk: 0, def: 80, hp: 0, icon: '📦', desc: '大量の在庫で作られた要塞。非常に硬い。' },
+  { id: 'a405', type: 'armor', rarity: 'UR', name: 'パパのプラチナカード', atk: 0, def: 200, hp: 100, icon: '💳', desc: 'すべての攻撃を財力で跳ね返す最強の盾。' },
+  { id: 'a406', type: 'armor', rarity: 'SR', name: '配信部屋の防音壁', atk: 0, def: 90, hp: 0, icon: '🧱', desc: 'どんなに叫んでも外部に音が漏れないため安全。' },
+  { id: 'a407', type: 'armor', rarity: 'UR', name: '匿名VPNの盾', atk: 0, def: 250, hp: 0, icon: '🌐', desc: '発信元を完全に偽装し、一切の追跡を許さない。' },
+  { id: 'a408', type: 'armor', rarity: 'R', name: 'マイナンバーカード', atk: 0, def: 50, hp: -10, icon: '🪪', desc: '防御力は高いが、持っているだけで個人情報が漏れていく。' },
+  { id: 'a409', type: 'armor', rarity: 'N', name: '立ちんぼの看板', atk: 0, def: 25, hp: 0, icon: '🪧', desc: '「助けてください」と書かれたダンボール。同情を買う。' },
+  { id: 'a410', type: 'armor', rarity: 'SR', name: 'ホストクラブのVIPルーム', atk: 0, def: 150, hp: 50, icon: '🛋️', desc: '一般人は絶対に入れない安全地帯。' },
+
+  // --- アクセサリー ---
+  { id: 'ac401', type: 'accessory', rarity: 'R', name: '魔法の咳止めシロップ', atk: 20, def: 0, hp: -20, icon: '💊', desc: '飲むとフワフワして強くなるが、体に悪い。' },
+  { id: 'ac402', type: 'accessory', rarity: 'N', name: 'マッチングアプリのアカウント', atk: 0, def: 10, hp: 10, icon: '📱', desc: '常に誰かと繋がっている安心感を得られる。' },
+  { id: 'ac403', type: 'accessory', rarity: 'SR', name: '港区女子のインスタ垢', atk: 30, def: 20, hp: 40, icon: '📸', desc: 'キラキラした日常を見せつけることで相手を絶望させる。' },
+  { id: 'ac404', type: 'accessory', rarity: 'UR', name: 'ホストのシャンパンタワー', atk: 100, def: 50, hp: 200, icon: '🥂', desc: '圧倒的な財力の象徴。すべてのステータスが爆上がりする。' },
+  { id: 'ac405', type: 'accessory', rarity: 'SR', name: 'FXのロスカット通知', atk: 80, def: -30, hp: 0, icon: '📉', desc: '絶望で痛覚が麻痺し、捨て身の攻撃力が上がる。' },
+  { id: 'ac406', type: 'accessory', rarity: 'R', name: '仮想通貨のウォレット', atk: 15, def: 15, hp: 15, icon: '🪙', desc: '残高はゼロだが、いつか上がると信じている。' },
+  { id: 'ac407', type: 'accessory', rarity: 'SR', name: '闇金の借用書', atk: 100, def: -50, hp: 0, icon: '📜', desc: '追い詰められた人間の底力を引き出す。' },
+  { id: 'ac408', type: 'accessory', rarity: 'UR', name: '情報商材のUSBメモリ', atk: 150, def: 100, hp: 50, icon: '💾', desc: '「これで月収1000万」という幻覚で超人になれる。' },
+  { id: 'ac409', type: 'accessory', rarity: 'N', name: 'スパチャの領収書', atk: 0, def: 0, hp: 25, icon: '🧾', desc: '推しに貢いだ証。ただの紙切れだが心は満たされる。' },
+  { id: 'ac410', type: 'accessory', rarity: 'R', name: '推しのチェキ', atk: 25, def: 25, hp: 50, icon: '🖼️', desc: 'スマホの裏に挟んでいる。見るだけでHPが回復する。' }
+
 ];
 
 export const rollGacha = () => {
