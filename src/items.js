@@ -121,6 +121,43 @@ export const ITEMS = [
   { id: 'ac209', type: 'accessory', rarity: 'R', name: '深夜テンション', atk: 25, def: -10, hp: 0, icon: '🌙', desc: '夜中だけ攻撃力が上がるが翌朝に後悔する。' },
   { id: 'ac210', type: 'accessory', rarity: 'SR', name: '特定班のメガネ', atk: 30, def: 30, hp: 0, icon: '👓', desc: '相手の弱点を瞬時に見抜く恐ろしいメガネ。' },
 
+  // ================= 🐰 第4弾 追加アイテム（時事ネタ・ネットミーム爆増編：30種） =================
+  // --- 武器 ---
+  { id: 'w301', type: 'weapon', rarity: 'N', name: '謝罪文のスクショ', atk: 5, def: 0, hp: 0, icon: '📸', desc: '真っ黒な背景に白い文字。相手のミスを突きつける。' },
+  { id: 'w302', type: 'weapon', rarity: 'N', name: 'ポエムのメモ帳', atk: 3, def: 0, hp: 0, icon: '📓', desc: '深夜に書かれた痛いポエム。精神攻撃用。' },
+  { id: 'w303', type: 'weapon', rarity: 'R', name: '誹謗中傷のメガホン', atk: 25, def: 0, hp: 0, icon: '📣', desc: '大声で相手を非難する。非常にやかましい。' },
+  { id: 'w304', type: 'weapon', rarity: 'R', name: '論破のソース（Wiki）', atk: 30, def: 0, hp: 0, icon: '🌐', desc: 'WikipediaのURLを貼り付けて相手を黙らせる。' },
+  { id: 'w305', type: 'weapon', rarity: 'SR', name: '炎上中のアフィブログ', atk: 65, def: 0, hp: 0, icon: '🔥', desc: '他人の不幸を金に換える燃え盛る鈍器。' },
+  { id: 'w306', type: 'weapon', rarity: 'SR', name: '暴露本', atk: 75, def: 0, hp: 0, icon: '📖', desc: '裏事情を暴露して社会的に抹殺する。' },
+  { id: 'w307', type: 'weapon', rarity: 'UR', name: '未公開の文春砲', atk: 350, def: 0, hp: 0, icon: '💣', desc: '発射されたら最後、社会的地位が木端微塵になる。' },
+  { id: 'w308', type: 'weapon', rarity: 'UR', name: '裏金の帳簿', atk: 500, def: -50, hp: 0, icon: '📒', desc: 'とんでもない破壊力を持つが、持っているだけでリスクがある。' },
+  { id: 'w309', type: 'weapon', rarity: 'R', name: '有名人のサイン（偽）', atk: 15, def: 0, hp: 0, icon: '🖋️', desc: 'メルカリで買った。偽物だが殴れば痛い。' },
+  { id: 'w310', type: 'weapon', rarity: 'SR', name: 'AI生成のフェイク画像', atk: 55, def: 0, hp: 0, icon: '🖼️', desc: '世論を操作する恐ろしい情報兵器。' },
+
+  // --- 防具 ---
+  { id: 'a301', type: 'armor', rarity: 'N', name: 'ガラケー', atk: 0, def: 10, hp: 0, icon: '📱', desc: 'とにかく物理的に硬い。二つ折りの盾。' },
+  { id: 'a302', type: 'armor', rarity: 'N', name: 'エコーチェンバーの壁', atk: 0, def: 5, hp: 5, icon: '🧱', desc: '自分に都合のいい意見しか聞こえなくなる壁。' },
+  { id: 'a303', type: 'armor', rarity: 'R', name: 'デジタルタトゥー', atk: 10, def: 30, hp: -10, icon: '🕸️', desc: '一生消えない呪いの防具。防御は高いがHPが減る。' },
+  { id: 'a304', type: 'armor', rarity: 'R', name: 'サブアカウントの盾', atk: 0, def: 40, hp: 0, icon: '🛡️', desc: '本垢を守るための捨て駒。' },
+  { id: 'a305', type: 'armor', rarity: 'SR', name: '通報ボタン', atk: 0, def: 75, hp: 0, icon: '🚨', desc: '押せば運営が飛んでくる（かもしれない）最強の盾。' },
+  { id: 'a306', type: 'armor', rarity: 'SR', name: '限界オタクのパーカー', atk: 0, def: 50, hp: 50, icon: '🧥', desc: '推しへの執念で編み込まれた防御服。' },
+  { id: 'a307', type: 'armor', rarity: 'UR', name: '上級国民の特権', atk: 0, def: 300, hp: 100, icon: '👑', desc: 'あらゆる攻撃を「なかったこと」にする最強の盾。' },
+  { id: 'a308', type: 'armor', rarity: 'UR', name: '完全なる匿名性', atk: 0, def: 400, hp: 0, icon: '🥷', desc: '誰にも特定されない。実質無敵。' },
+  { id: 'a309', type: 'armor', rarity: 'R', name: '課金アイテムの領収書', atk: 0, def: 25, hp: 15, icon: '🧾', desc: '束ねると意外と分厚い防御層になる。' },
+  { id: 'a310', type: 'armor', rarity: 'SR', name: '記憶喪失（都合のいい）', atk: 0, def: 85, hp: 0, icon: '🤔', desc: '「記憶にございません」ですべての攻撃を無効化する。' },
+
+  // --- アクセサリー ---
+  { id: 'ac301', type: 'accessory', rarity: 'N', name: '謎の情報商材', atk: -5, def: -5, hp: 25, icon: '📀', desc: '買った後悔でHPだけが無駄に上がる。' },
+  { id: 'ac302', type: 'accessory', rarity: 'N', name: 'サクラのレビュー', atk: 5, def: 0, hp: 5, icon: '🌸', desc: '星5の評価で少しだけ強くなった気がする。' },
+  { id: 'ac303', type: 'accessory', rarity: 'R', name: 'バズったツイートの通知', atk: 20, def: 0, hp: 10, icon: '🔔', desc: '鳴り止まない通知音でアドレナリンが分泌される。' },
+  { id: 'ac304', type: 'accessory', rarity: 'R', name: '推しのアクスタ', atk: 10, def: 10, hp: 20, icon: '🧍', desc: '一緒に戦ってくれているような気がする。' },
+  { id: 'ac305', type: 'accessory', rarity: 'SR', name: 'パパ活の指南書', atk: 30, def: 0, hp: 50, icon: '📖', desc: '恐ろしい錬金術が書かれた禁書。' },
+  { id: 'ac306', type: 'accessory', rarity: 'SR', name: '炎上保険', atk: 0, def: 60, hp: 40, icon: '📜', desc: '炎上した時のための備え。安心感が段違い。' },
+  { id: 'ac307', type: 'accessory', rarity: 'UR', name: 'インサイダー情報', atk: 200, def: 0, hp: 0, icon: '📈', desc: '絶対に勝てる戦いしかしないための禁断の果実。' },
+  { id: 'ac308', type: 'accessory', rarity: 'UR', name: '国家の機密データ', atk: 300, def: 300, hp: -100, icon: '💽', desc: '強大な力を得るが、常に命を狙われる。' },
+  { id: 'ac309', type: 'accessory', rarity: 'R', name: '投げ銭の履歴', atk: 15, def: 5, hp: 0, icon: '💸', desc: '過去の栄光を振り返って自分を奮い立たせる。' },
+  { id: 'ac310', type: 'accessory', rarity: 'SR', name: '示談書', atk: 0, def: 50, hp: 50, icon: '🤝', desc: '札束で和解した証。防御とHPが大きく上がる。' },
+
   // ================= 👑 レジェンドレア (LR) =================
   { id: 'w_lr1', type: 'weapon', rarity: 'LR', name: '真・エクスカリバー（本物）', atk: 9999, def: 9999, hp: 9999, icon: '🗡️✨', desc: 'この広場の創造主が落としたとされる、すべてを破壊する神の剣。' }
 ];

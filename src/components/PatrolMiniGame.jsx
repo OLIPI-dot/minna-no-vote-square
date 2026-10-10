@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { rollEnemy } from '../enemies';
 
-const PatrolMiniGame = ({ userLevel, userExp, addExp, equipment, setEquipment, addTickets, gachaTickets, inventory, setInventory }) => {
+const PatrolMiniGame = ({ userLevel, userExp, addExp, equipment, setEquipment, addTickets, gachaTickets, inventory, setInventory, globalOnlineCount }) => {
   const [battleState, setBattleState] = useState('idle'); // idle, battling, won, lost
   const [enemy, setEnemy] = useState(null);
   const [playerHp, setPlayerHp] = useState(0);
@@ -9,6 +9,12 @@ const PatrolMiniGame = ({ userLevel, userExp, addExp, equipment, setEquipment, a
   const [battleLog, setBattleLog] = useState([]);
   const [dropItem, setDropItem] = useState(null);
   const [healCount, setHealCount] = useState(0); // 何回回復したか
+  const [usedSos, setUsedSos] = useState(false); // 救援を呼んだか
+  const [sosState, setSosState] = useState('idle'); // idle, voting, completed
+  const [sosVotes, setSosVotes] = useState({ A: 0, B: 0, C: 0, D: 0 });
+  const [sosTime, setSosTime] = useState(30);
+  const timerRef = useRef(null);
+  const botIntervalRef = useRef(null);
 
   // 1日のパトロール回数制限 (最大5回)
   const getTodayPatrols = () => {
@@ -19,7 +25,7 @@ const PatrolMiniGame = ({ userLevel, userExp, addExp, equipment, setEquipment, a
     return data;
   };
   const [patrolsToday, setPatrolsToday] = useState(getTodayPatrols().count);
-  const MAX_PATROLS = 5;
+  const MAX_PATROLS = 9999; // テスト用に一時的に無制限
 
   // プレイヤーステータス計算
   const pMaxHp = (userLevel * 10 + 100) + (equipment?.accessory?.hp || 0);
@@ -39,10 +45,21 @@ const PatrolMiniGame = ({ userLevel, userExp, addExp, equipment, setEquipment, a
     const newEnemy = rollEnemy();
     setEnemy(newEnemy);
     setEnemyHp(newEnemy.hp);
-    setPlayerHp(pMaxHp);
+    setPlayerHp(pMaxHp); // 修正: 追加
     setDropItem(null);
     setHealCount(0);
-    setBattleLog([`🚓 パトロール中...`, `⚠️ 【${newEnemy.name}】 に遭遇した！`]);
+    setUsedSos(false);
+    setSosState('idle');
+    setSosVotes({ A: 0, B: 0, C: 0, D: 0 });
+    setSosTime(30);
+    if (timerRef.current) clearInterval(timerRef.current);
+    if (botIntervalRef.current) clearInterval(botIntervalRef.current);
+    
+    let logs = [`🚓 パトロール中...`, `⚠️ 【Lv.${newEnemy.level || 1} ${newEnemy.name}】 に遭遇した！`];
+    if (newEnemy.isEnraged) {
+      logs.push(`💢 相手は異常に怒り狂っている！！気をつけろ！`);
+    }
+    setBattleLog(logs);
     setBattleState('battling');
   };
 
@@ -65,7 +82,10 @@ const PatrolMiniGame = ({ userLevel, userExp, addExp, equipment, setEquipment, a
       newLogs.push(`💨 あなたの攻撃... しかし【${enemy.name}】に避けられた！`);
     } else {
       let dmgToEnemy = pAtk - enemy.def;
-      if (dmgToEnemy < 1) dmgToEnemy = 1;
+      const variance = 1.0 + (Math.random() * 0.4 - 0.2); // ±20%のブレ
+      dmgToEnemy = Math.floor(dmgToEnemy * variance);
+      const minDmg = Math.max(1, Math.floor(pAtk * 0.2)); // 最低でも攻撃力の20%は通る
+      if (dmgToEnemy < minDmg) dmgToEnemy = minDmg;
       if (pCrit) dmgToEnemy = Math.floor(dmgToEnemy * 2.5); // クリティカル！
       
       currentEnemyHp = Math.max(0, currentEnemyHp - dmgToEnemy);
@@ -88,7 +108,10 @@ const PatrolMiniGame = ({ userLevel, userExp, addExp, equipment, setEquipment, a
       newLogs.push(`💨 敵の反撃... しかしあなたはヒョイッと避けた！`);
     } else {
       let dmgToPlayer = enemy.atk - pDef;
-      if (dmgToPlayer < 1) dmgToPlayer = 1;
+      const variance = 1.0 + (Math.random() * 0.4 - 0.2); // ±20%のブレ
+      dmgToPlayer = Math.floor(dmgToPlayer * variance);
+      const minDmg = Math.max(1, Math.floor(enemy.atk * 0.2)); // 最低でも攻撃力の20%は通る
+      if (dmgToPlayer < minDmg) dmgToPlayer = minDmg;
       if (ePainful) dmgToPlayer = Math.floor(dmgToPlayer * 2.5); // 痛恨の一撃！
       
       currentPlayerHp = Math.max(0, currentPlayerHp - dmgToPlayer);
@@ -131,7 +154,10 @@ const PatrolMiniGame = ({ userLevel, userExp, addExp, equipment, setEquipment, a
     
     // 敵は容赦なく殴ってくる
     let dmgToPlayer = enemy.atk - pDef;
-    if (dmgToPlayer < 1) dmgToPlayer = 1;
+    const variance = 1.0 + (Math.random() * 0.4 - 0.2);
+    dmgToPlayer = Math.floor(dmgToPlayer * variance);
+    const minDmg = Math.max(1, Math.floor(enemy.atk * 0.2));
+    if (dmgToPlayer < minDmg) dmgToPlayer = minDmg;
     const ePainful = Math.random() < (enemy.type === 'rare' ? 0.15 : 0.05);
     if (ePainful) dmgToPlayer = Math.floor(dmgToPlayer * 2.5);
 
@@ -151,6 +177,126 @@ const PatrolMiniGame = ({ userLevel, userExp, addExp, equipment, setEquipment, a
     setPlayerHp(finalHp);
     setBattleLog(newLogs);
   };
+
+  const handleSos = () => {
+    if (battleState !== 'battling' || usedSos || sosState !== 'idle') return;
+    
+    setUsedSos(true);
+    setSosState('voting');
+    setSosTime(30);
+    setSosVotes({ A: 0, B: 0, C: 0, D: 0 });
+    
+    let newLogs = [...battleLog, `📢 広場のみんなに救援アンケートを送信した！！！`];
+    setBattleLog(newLogs);
+    
+    // タイマー開始
+    timerRef.current = setInterval(() => {
+      setSosTime(prev => {
+        if (prev <= 1) {
+          resolveSos();
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    
+    // Bot自動投票シミュレーション（オンライン人数に応じた頻度）
+    const voteInterval = Math.max(200, 2000 / (globalOnlineCount || 1));
+    botIntervalRef.current = setInterval(() => {
+      setSosVotes(prev => {
+        const keys = ['A', 'B', 'C', 'D'];
+        // ランダムに誰かが投票した風にする。少し偏りを持たせる
+        const rand = Math.random();
+        let voteKey = 'A';
+        if (rand < 0.4) voteKey = 'A';
+        else if (rand < 0.7) voteKey = 'B';
+        else if (rand < 0.9) voteKey = 'C';
+        else voteKey = 'D';
+        
+        return { ...prev, [voteKey]: prev[voteKey] + 1 };
+      });
+    }, voteInterval);
+  };
+
+  const resolveSos = () => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    if (botIntervalRef.current) clearInterval(botIntervalRef.current);
+    
+    setSosState('completed');
+    
+    // 開票（強制再レンダリング前に最新のStateを取れない場合があるので、setState内ではなく現在のsosVotesを使う。React 18のバッチングに注意）
+    // 最新状態を取得するためにコールバック形式で処理するか、単に現在の `sosVotes` を参照する。
+    // タイマー内で呼ばれた場合、クロージャにより古い値になるため関数型アップデータの中で処理する。
+    setSosVotes(currentVotes => {
+      let maxVotes = -1;
+      let winner = 'A';
+      Object.entries(currentVotes).forEach(([key, val]) => {
+        if (val > maxVotes) { maxVotes = val; winner = key; }
+      });
+
+      setBattleLog(prevLogs => {
+        let newLogs = [...prevLogs, `🗳️ 投票終了！一番票を集めたのはパネル【${winner}】だ！`];
+        
+        let currentEnemyHp = enemyHp;
+        let currentPlayerHp = playerHp;
+        let isWin = false;
+
+        if (winner === 'A') {
+          // 超絶ダメージ
+          newLogs.push(`💥 ✨ 究極魔法アルテマ！！！ 敵を一撃で粉砕した！`);
+          currentEnemyHp = 0;
+          isWin = true;
+        } else if (winner === 'B') {
+          // 割合ダメージ
+          newLogs.push(`🔨 ✨ みんなの鉄槌！敵のHPを80%削り取った！`);
+          currentEnemyHp = Math.max(1, Math.floor(currentEnemyHp - (enemy.hp * 0.8)));
+          if (currentEnemyHp === 0) isWin = true;
+        } else if (winner === 'C') {
+          // レアドロップ確定バフ（今回は仮で、敵のHPを半減する等）
+          newLogs.push(`🎁 ✨ アイテム発見率MAX！(※今は未実装なのでとりあえず敵のHPを半減！)`);
+          currentEnemyHp = Math.floor(currentEnemyHp / 2);
+        } else if (winner === 'D') {
+          // EXP10倍
+          newLogs.push(`📈 ✨ 覚醒バフ！次の攻撃の威力が10倍になる！（※仮で大ダメージ）`);
+          currentEnemyHp = Math.max(0, currentEnemyHp - pAtk * 10);
+          if (currentEnemyHp === 0) isWin = true;
+        }
+        
+        // 即座にState更新
+        setEnemyHp(currentEnemyHp);
+        setPlayerHp(currentPlayerHp);
+        
+        if (isWin) {
+          setTimeout(() => handleWin(enemy), 0);
+        } else {
+          // 敵の反撃
+          let dmgToPlayer = enemy.atk - pDef;
+          const variance = 1.0 + (Math.random() * 0.4 - 0.2);
+          dmgToPlayer = Math.floor(dmgToPlayer * variance);
+          const minDmg = Math.max(1, Math.floor(enemy.atk * 0.2));
+          if (dmgToPlayer < minDmg) dmgToPlayer = minDmg;
+          
+          currentPlayerHp = Math.max(0, currentPlayerHp - dmgToPlayer);
+          newLogs.push(`💥 敵の反撃！ ${dmgToPlayer} のダメージを受けた！`);
+          setPlayerHp(currentPlayerHp);
+          
+          if (currentPlayerHp === 0) {
+            newLogs.push(`💀 目の前が真っ暗になった... 敵に逃げられた。`);
+            setBattleState('lost');
+          }
+        }
+        return newLogs;
+      });
+      return currentVotes;
+    });
+  };
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+      if (botIntervalRef.current) clearInterval(botIntervalRef.current);
+    };
+  }, []);
 
   const handleWin = (defeatedEnemy) => {
     setBattleState('won');
@@ -238,6 +384,7 @@ const PatrolMiniGame = ({ userLevel, userExp, addExp, equipment, setEquipment, a
               {enemy.icon}
             </div>
             <div style={{ textAlign: 'center', fontWeight: 'bold', color: enemy.type === 'rare' ? '#b45309' : '#334155', marginBottom: '8px' }}>
+              <span style={{ fontSize: '0.8rem', color: '#64748b', marginRight: '4px' }}>Lv.{enemy.level || 1}</span>
               {enemy.name}
             </div>
             {/* 敵のHPバー */}
@@ -253,31 +400,88 @@ const PatrolMiniGame = ({ userLevel, userExp, addExp, equipment, setEquipment, a
             <div style={{ background: '#e2e8f0', height: '10px', borderRadius: '5px', overflow: 'hidden' }}>
               <div style={{ width: `${Math.max(0, (playerHp / pMaxHp) * 100)}%`, height: '100%', background: '#10b981', transition: 'width 0.3s' }}></div>
             </div>
+            {/* 自分のステータス */}
+            <div style={{ fontSize: '0.7rem', color: '#475569', display: 'flex', gap: '12px', marginTop: '6px', justifyContent: 'flex-end', fontWeight: 'bold' }}>
+              <span>🗡️ ATK: {pAtk}</span>
+              <span>🛡️ DEF: {pDef}</span>
+            </div>
           </div>
 
           {/* ログ */}
           <div style={{ fontSize: '0.75rem', color: '#475569', background: '#f1f5f9', padding: '8px', borderRadius: '6px', minHeight: '80px', maxHeight: '120px', overflowY: 'auto', marginBottom: '12px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            {battleLog.map((log, i) => (
-              <div key={i} style={{ animation: 'fadeIn 0.3s' }}>{log}</div>
-            ))}
+            {[...battleLog].reverse().map((log, i) => {
+              let logStyle = { animation: 'fadeIn 0.3s', borderBottom: i !== battleLog.length - 1 ? '1px dashed #cbd5e1' : 'none', paddingBottom: '4px' };
+              if (log.includes('あなたの攻撃') || log.includes('会心')) {
+                logStyle.color = '#2563eb'; // 青
+                logStyle.fontWeight = 'bold';
+              } else if (log.includes('敵の反撃') || log.includes('痛恨') || log.includes('敵の猛攻')) {
+                logStyle.color = '#dc2626'; // 赤
+              } else if (log.includes('回復') || log.includes('応急手当')) {
+                logStyle.color = '#16a34a'; // 緑
+                logStyle.fontWeight = 'bold';
+              } else if (log.includes('救援') || log.includes('総攻撃') || log.includes('駆けつけた')) {
+                logStyle.color = '#d97706'; // オレンジ
+                logStyle.fontWeight = 'bold';
+              }
+              return (
+                <div key={i} style={logStyle}>{log}</div>
+              );
+            })}
           </div>
 
           {/* アクションボタン */}
-          {battleState === 'battling' && (
-            <div style={{ display: 'flex', gap: '8px' }}>
+          {battleState === 'battling' && sosState !== 'voting' && (
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
               <button 
                 onClick={handleAttack}
-                style={{ flex: 2, padding: '12px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(239, 68, 68, 0.4)' }}
+                style={{ flex: '1 1 40%', padding: '12px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(239, 68, 68, 0.4)' }}
               >
                 🗡️ 攻撃する！
               </button>
               <button 
                 onClick={handleHeal}
                 disabled={healCount > 0 && gachaTickets < 1}
-                style={{ flex: 1, padding: '12px', background: (healCount > 0 && gachaTickets < 1) ? '#cbd5e1' : '#10b981', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: (healCount > 0 && gachaTickets < 1) ? 'not-allowed' : 'pointer', boxShadow: (healCount > 0 && gachaTickets < 1) ? 'none' : '0 4px 6px -1px rgba(16, 185, 129, 0.4)', fontSize: '0.8rem' }}
+                style={{ flex: '1 1 30%', padding: '12px', background: (healCount > 0 && gachaTickets < 1) ? '#cbd5e1' : '#10b981', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: (healCount > 0 && gachaTickets < 1) ? 'not-allowed' : 'pointer', boxShadow: (healCount > 0 && gachaTickets < 1) ? 'none' : '0 4px 6px -1px rgba(16, 185, 129, 0.4)', fontSize: '0.8rem' }}
                 title="1回目は無料、2回目以降はガチャチケ1枚消費"
               >
                 💊 回復<br/>({healCount === 0 ? '初回無料' : 'チケ1枚'})
+              </button>
+              <button 
+                onClick={handleSos}
+                disabled={usedSos}
+                style={{ flex: '1 1 100%', padding: '10px', background: usedSos ? '#cbd5e1' : '#f59e0b', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: usedSos ? 'not-allowed' : 'pointer', boxShadow: usedSos ? 'none' : '0 4px 6px -1px rgba(245, 158, 11, 0.4)', fontSize: '0.85rem' }}
+              >
+                📢 広場のみんなに救援アンケートを呼ぶ！ (1回のみ)
+              </button>
+            </div>
+          )}
+
+          {/* 救援アンケート投票画面 */}
+          {battleState === 'battling' && sosState === 'voting' && (
+            <div style={{ background: '#fef3c7', border: '2px solid #f59e0b', borderRadius: '8px', padding: '12px', marginTop: '12px', animation: 'fadeIn 0.3s' }}>
+              <div style={{ textAlign: 'center', fontWeight: 'bold', color: '#b45309', marginBottom: '8px' }}>
+                📢 みんなの投票を待っています！ (残り {sosTime} 秒)
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '12px' }}>
+                {['A', 'B', 'C', 'D'].map(key => {
+                  const total = Math.max(1, sosVotes.A + sosVotes.B + sosVotes.C + sosVotes.D);
+                  const percent = Math.floor((sosVotes[key] / total) * 100);
+                  return (
+                    <div key={key} style={{ background: 'white', border: '1px solid #d1d5db', borderRadius: '6px', padding: '8px', position: 'relative', overflow: 'hidden' }}>
+                      <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: `${percent}%`, background: '#fef08a', zIndex: 1, transition: 'width 0.3s' }}></div>
+                      <div style={{ position: 'relative', zIndex: 2, display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', fontWeight: 'bold' }}>
+                        <span>パネル {key}</span>
+                        <span>{sosVotes[key]}票</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <button 
+                onClick={resolveSos}
+                style={{ width: '100%', padding: '8px', background: '#f59e0b', color: 'white', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }}
+              >
+                待てない！今すぐ開票！
               </button>
             </div>
           )}

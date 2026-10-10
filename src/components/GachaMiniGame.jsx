@@ -161,8 +161,11 @@ const GachaMiniGame = ({ gachaTickets, addTickets, equipment, setEquipment, addE
         <div style={{ background: '#fffbeb', border: `2px solid ${rarityColors[gachaResult.rarity]}`, borderRadius: '8px', padding: '12px', textAlign: 'center', marginBottom: '12px', animation: 'fadeIn 0.3s' }}>
           <div style={{ fontSize: '0.8rem', color: '#b45309', fontWeight: 'bold' }}>ガチャ結果！</div>
           <div style={{ fontSize: '2rem', margin: '8px 0' }}>{gachaResult.icon}</div>
-          <div style={{ fontWeight: 'bold', color: rarityColors[gachaResult.rarity] }}>
-            [{gachaResult.rarity}] {gachaResult.name}
+          <div style={{ fontWeight: 'bold', color: rarityColors[gachaResult.rarity], display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+            <span>[{gachaResult.rarity}] {gachaResult.name}</span>
+            <span style={{ fontSize: '0.7rem', background: '#e2e8f0', color: '#475569', padding: '2px 6px', borderRadius: '4px' }}>
+              {{ weapon: '🗡️ 武器', armor: '🛡️ 防具', accessory: '💍 アクセ' }[gachaResult.type] || gachaResult.type}
+            </span>
           </div>
           <div style={{ fontSize: '0.75rem', color: '#475569', margin: '6px 0' }}>
             ATK+{gachaResult.atk} / DEF+{gachaResult.def} / HP+{gachaResult.hp}
@@ -234,11 +237,18 @@ const GachaMiniGame = ({ gachaTickets, addTickets, equipment, setEquipment, addE
                     return <span style={{ color: '#94a3b8', marginLeft: '2px' }}>(±0)</span>;
                   };
 
+                  const typeLabels = { weapon: '🗡️ 武器', armor: '🛡️ 防具', accessory: '💍 アクセ' };
+
                   return (
                     <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', background: '#f8fafc', border: `1px solid ${rarityColors[item.rarity]}`, borderRadius: '8px' }}>
                       <div style={{ fontSize: '2rem' }}>{item.icon}</div>
                       <div style={{ flex: 1 }}>
-                        <div style={{ fontWeight: 'bold', color: rarityColors[item.rarity] }}>[{item.rarity}] {item.name}</div>
+                        <div style={{ fontWeight: 'bold', color: rarityColors[item.rarity], display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span>[{item.rarity}] {item.name}</span>
+                          <span style={{ fontSize: '0.7rem', background: '#e2e8f0', color: '#475569', padding: '2px 6px', borderRadius: '4px' }}>
+                            {typeLabels[item.type] || item.type}
+                          </span>
+                        </div>
                         <div style={{ fontSize: '0.75rem', color: '#475569', display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '2px', marginBottom: '2px' }}>
                           <span>ATK: {item.atk}{renderDiff(diffAtk)}</span>
                           <span>DEF: {item.def}{renderDiff(diffDef)}</span>
