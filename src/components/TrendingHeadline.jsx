@@ -12,17 +12,6 @@ const TrendingHeadline = ({ surveys, navigateTo }) => {
     setCurrentIndex(0);
   }, [surveys]);
 
-  // 自動スライド機能（5秒おき）
-  useEffect(() => {
-    if (!surveys || surveys.length <= 1) return;
-
-    const interval = setInterval(() => {
-      handleNext();
-    }, 6000); // ちょっとゆったりめの6秒にするらび！
-
-    return () => clearInterval(interval);
-  }, [surveys, currentIndex]);
-
   const handleNext = () => {
     setIsFading(true);
     setTimeout(() => {
@@ -38,6 +27,17 @@ const TrendingHeadline = ({ surveys, navigateTo }) => {
       setIsFading(false);
     }, 400);
   };
+
+  // 自動スライド機能（5秒おき）
+  useEffect(() => {
+    if (!surveys || surveys.length <= 1) return;
+
+    const interval = setInterval(() => {
+      handleNext();
+    }, 6000); // ちょっとゆったりめの6秒にするらび！
+
+    return () => clearInterval(interval);
+  }, [surveys, currentIndex]);
 
   if (!surveys || surveys.length === 0) return null;
 
