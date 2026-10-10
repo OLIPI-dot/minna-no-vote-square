@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { rollEnemy } from '../enemies';
 
-const PatrolMiniGame = ({ userLevel, userExp, addExp, equipment, setEquipment, addTickets }) => {
+const PatrolMiniGame = ({ userLevel, userExp, addExp, equipment, setEquipment, addTickets, gachaTickets, inventory, setInventory }) => {
   const [battleState, setBattleState] = useState('idle'); // idle, battling, won, lost
   const [enemy, setEnemy] = useState(null);
   const [playerHp, setPlayerHp] = useState(0);
