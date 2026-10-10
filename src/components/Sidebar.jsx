@@ -177,6 +177,12 @@ const Sidebar = ({
       {/* 4. 🏆 ユーザー称号＆レベル (みんクエ) */}
       <div className="sidebar-section-card" style={{ marginBottom: '24px', background: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)', border: '2px solid #fbbf24', textAlign: 'center' }}>
         
+        <h3 className="live-feed-title" style={{ color: '#b45309', border: 'none', padding: 0, justifyContent: 'center', marginTop: '12px' }}>🐰 あなたの称号 🥕</h3>
+        
+        <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#d97706', margin: '4px 0 12px 0' }}>
+          {levelInfo?.title || 'ひよっこ広場民 🥚'}
+        </div>
+
         {isEditingHn ? (
           <div style={{ margin: '8px 0', display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center' }}>
             <input 
@@ -195,12 +201,6 @@ const Sidebar = ({
             <button onClick={() => setIsEditingHn(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.8rem', color: '#d97706', padding: '2px 4px', borderRadius: '4px' }}>✏️</button>
           </div>
         )}
-
-        <h3 className="live-feed-title" style={{ color: '#b45309', border: 'none', padding: 0, justifyContent: 'center', marginTop: '12px' }}>🐰 あなたの称号 🥕</h3>
-        
-        <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#d97706', margin: '4px 0 12px 0' }}>
-          {levelInfo?.title || 'ひよっこ広場民 🥚'}
-        </div>
         <div style={{ fontSize: '0.85rem', color: '#92400e', marginBottom: '8px', display: 'flex', justifyContent: 'center', gap: '12px' }}>
           <span>Lv.{levelInfo?.level || 1} (EXP: {userExp || 0})</span>
           {/* 一時的に完全に非表示
