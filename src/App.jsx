@@ -2638,6 +2638,16 @@ function App() {
 
   const isCreateFormValid = Boolean(surveyTitle.trim() && surveyCategory && setupOptions.filter(o => o.trim()).length >= 2 && deadline);
 
+  if (!import.meta.env.DEV) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', backgroundColor: '#fdf2f8', color: '#831843', fontFamily: 'sans-serif' }}>
+        <h1 style={{ fontSize: '2rem', marginBottom: '16px' }}>🚧 現在メンテナンス中です 🚧</h1>
+        <p style={{ fontSize: '1.2rem', marginBottom: '24px' }}>ただいまスパム対策等のシステム調整を行っております。</p>
+        <p>再開まで今しばらくお待ちください🐰🥕</p>
+      </div>
+    );
+  }
+
   return (
     <div className="survey-main-portal">
       <div className="main-wrap">
