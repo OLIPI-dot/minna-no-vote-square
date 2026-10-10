@@ -203,9 +203,11 @@ const Sidebar = ({
         </div>
         <div style={{ fontSize: '0.85rem', color: '#92400e', marginBottom: '8px', display: 'flex', justifyContent: 'center', gap: '12px' }}>
           <span>Lv.{levelInfo?.level || 1} (EXP: {userExp || 0})</span>
+          {/* 一時的に完全に非表示
           {import.meta.env.DEV && (
             <span style={{ fontWeight: 'bold' }}>🎫 {gachaTickets || 0} 枚</span>
           )}
+          */}
         </div>
         {levelInfo?.next && (
           <div style={{ width: '100%', background: '#fde68a', borderRadius: '10px', height: '12px', overflow: 'hidden', position: 'relative', marginBottom: '4px' }}>
