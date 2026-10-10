@@ -4,11 +4,47 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-10T02:18:21.907Z</updated>
+  <updated>2026-10-10T07:44:59.687Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>太陽系外の惑星から電波 初検出</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23327"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23327</id>
+    <updated>2026-10-10T07:44:55.830Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;系外惑星からの電波検出に成功&quot;,
+  &quot;point1_desc&quot;: &quot;天文学者の研究チームが、太陽系の外にある惑星から放出された電波を初めて直接検出することに成功した。宇宙研究において歴史的な前進となり、研究者たちの間で大きな注目を集めている。&quot;,
+  &quot;point2_title&quot;: &quot;知的...</summary>
+  </entry>
+  <entry>
+    <title>だんじり横転 複数下敷き1人死亡</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23326"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23326</id>
+    <updated>2026-10-10T07:44:31.167Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;だんじりが横転事故&quot;,
+  &quot;point1_desc&quot;: &quot;10日午前11時ごろ、大阪府泉佐野市長滝の交差点で「だんじり」が横転する事故が発生した。現場から「けが人がたくさん出ている」と消防に通報が入り、現場は騒然となった。&quot;,
+  &quot;point2_title&quot;: &quot;複数の参加者が下敷き&quot;,...</summary>
+  </entry>
+  <entry>
+    <title>米軍の反省期間 沖縄で疑問の声も</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23325"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23325</id>
+    <updated>2026-10-10T07:44:07.826Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;米海兵隊員の逮捕&quot;,
+  &quot;point1_desc&quot;: &quot;沖縄県で発生した強盗殺人容疑による米海兵隊員の逮捕を受け、基地周辺では緊張が高まっている。痛ましい事件の発生に地元住民からは怒りと不満の声が強まり、厳重な対応が求められている。&quot;,
+  &quot;point2_title&quot;: &quot;休止期間の終了...</summary>
+  </entry>
   <entry>
     <title>サイバー攻撃 なぜ日本が標的に</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23324"/>
@@ -572,41 +608,5 @@
   &quot;point1_desc&quot;: &quot;ピアニストの反田恭平氏が都内の首都高で法定速度を84キロ超過する時速144キロで走行したとして、道路交通法違反の罪で在宅起訴されたことが判明しました。&quot;,
   &quot;point2_title&quot;: &quot;危険な暴走運転で刑事責任を追及&quot;,
   &quot;point2_desc&quot;:...</summary>
-  </entry>
-  <entry>
-    <title>AI政策の司令塔 米大統領なぜ設置</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23277"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23277</id>
-    <updated>2026-10-06T07:44:38.545Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;point1_title&quot;: &quot;米政府にAI司令塔を新設&quot;,
-  &quot;point1_desc&quot;: &quot;トランプ米大統領は政府内のAI施策を一元管理し推進するため、官民の連携や規制緩和を主導する新たな司令塔組織と責任者の設置を表明しました。（73文字）&quot;,
-  &quot;point2_title&quot;: &quot;官民連携で開発加速へ&quot;,
-  &quot;point2_desc&quot;: &quot;企業や消費者との...</summary>
-  </entry>
-  <entry>
-    <title>大雨で3度浸水のラーメン店 再開</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23276"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23276</id>
-    <updated>2026-10-06T02:18:14.607Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;1ヶ月で3度浸水のラーメン店&quot;,
-  &quot;point1_desc&quot;: &quot;千葉県大網白里市にあるラーメン店「みたけ」が、8月の千葉豪雨以降、わずか1ヶ月余りの間に3度も浸水被害に見舞われました。厳しい状況に直面しながらも復旧作業を進め、見事に営業再開を果たしました。&quot;,
-  &quot;point2_ti...</summary>
-  </entry>
-  <entry>
-    <title>那覇強殺事件 短時間で犯行か</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23275"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23275</id>
-    <updated>2026-10-06T02:17:50.113Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;那覇のホテルで強盗殺人事件&quot;,
-  &quot;point1_desc&quot;: &quot;沖縄県那覇市若狭のホテルにおいて、地元に住む３９歳の女性が殺害され、所持品が奪われる強盗殺人事件が発生した。防犯カメラなどの捜査が進められ、事件の全容解明が急がれている。&quot;,
-  &quot;point2_title&quot;: &quot;米海兵隊員...</summary>
   </entry>
 </feed>
