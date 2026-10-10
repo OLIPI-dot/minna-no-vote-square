@@ -42,7 +42,7 @@ const BattleMiniGame = ({ userLevel, addExp, equipment, globalOnlineCount, user 
       const { data } = await supabase
         .from('timeline_posts')
         .select('content')
-        .eq('name', '🤖 コロシアム実況');
+        .in('name', ['🤖 コロシアム実況', '🤖 みんクエ実況bot']);
       
       if (data) {
         let dmg = 0;
@@ -61,7 +61,7 @@ const BattleMiniGame = ({ userLevel, addExp, equipment, globalOnlineCount, user 
     // リアルタイムで誰かが殴ったのを検知
     const channel = supabase.channel('boss_realtime')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'timeline_posts' }, (payload) => {
-        if (payload.new.name === '🤖 コロシアム実況') {
+        if (payload.new.name === '🤖 コロシアム実況' || payload.new.name === '🤖 みんクエ実況bot') {
           const match = payload.new.content.match(/で ([\d,]+) ダメージ/);
           if (match) {
             const newDmg = parseInt(match[1].replace(/,/g, ''), 10);
@@ -108,7 +108,7 @@ const BattleMiniGame = ({ userLevel, addExp, equipment, globalOnlineCount, user 
     await supabase
       .from('timeline_posts')
       .insert([{
-        name: '🤖 コロシアム実況',
+        name: '🤖 みんクエ実況bot',
         avatar: '📢',
         content: timelineMessage
       }]);
