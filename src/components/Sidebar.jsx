@@ -209,66 +209,70 @@ const Sidebar = ({
           </div>
         )}
 
-        {/* ⚔️ みんクエ タブメニュー */}
-        <div style={{ display: 'flex', gap: '4px', margin: '16px 0 12px 0', background: 'rgba(0,0,0,0.05)', padding: '4px', borderRadius: '8px' }}>
-          <button 
-            onClick={() => setMiniqueTab('patrol')}
-            style={{ flex: 1, padding: '8px 4px', borderRadius: '6px', border: 'none', background: miniqueTab === 'patrol' ? '#3b82f6' : 'transparent', color: miniqueTab === 'patrol' ? 'white' : '#64748b', fontWeight: 'bold', fontSize: '0.85rem', cursor: 'pointer', transition: 'all 0.2s' }}
-          >
-            🚓 パトロール
-          </button>
-          <button 
-            onClick={() => setMiniqueTab('boss')}
-            style={{ flex: 1, padding: '8px 4px', borderRadius: '6px', border: 'none', background: miniqueTab === 'boss' ? '#ef4444' : 'transparent', color: miniqueTab === 'boss' ? 'white' : '#64748b', fontWeight: 'bold', fontSize: '0.85rem', cursor: 'pointer', transition: 'all 0.2s' }}
-          >
-            🐉 ボス戦
-          </button>
-          <button 
-            onClick={() => setMiniqueTab('gacha')}
-            style={{ flex: 1, padding: '8px 4px', borderRadius: '6px', border: 'none', background: miniqueTab === 'gacha' ? '#f59e0b' : 'transparent', color: miniqueTab === 'gacha' ? 'white' : '#64748b', fontWeight: 'bold', fontSize: '0.85rem', cursor: 'pointer', transition: 'all 0.2s' }}
-          >
-            🎪 ガチャ・鞄
-          </button>
-        </div>
+        {/* ⚔️ みんクエ タブメニュー (一時非表示中) */}
+        {false && (
+          <>
+            <div style={{ display: 'flex', gap: '4px', margin: '16px 0 12px 0', background: 'rgba(0,0,0,0.05)', padding: '4px', borderRadius: '8px' }}>
+              <button 
+                onClick={() => setMiniqueTab('patrol')}
+                style={{ flex: 1, padding: '8px 4px', borderRadius: '6px', border: 'none', background: miniqueTab === 'patrol' ? '#3b82f6' : 'transparent', color: miniqueTab === 'patrol' ? 'white' : '#64748b', fontWeight: 'bold', fontSize: '0.85rem', cursor: 'pointer', transition: 'all 0.2s' }}
+              >
+                🚓 パトロール
+              </button>
+              <button 
+                onClick={() => setMiniqueTab('boss')}
+                style={{ flex: 1, padding: '8px 4px', borderRadius: '6px', border: 'none', background: miniqueTab === 'boss' ? '#ef4444' : 'transparent', color: miniqueTab === 'boss' ? 'white' : '#64748b', fontWeight: 'bold', fontSize: '0.85rem', cursor: 'pointer', transition: 'all 0.2s' }}
+              >
+                🐉 ボス戦
+              </button>
+              <button 
+                onClick={() => setMiniqueTab('gacha')}
+                style={{ flex: 1, padding: '8px 4px', borderRadius: '6px', border: 'none', background: miniqueTab === 'gacha' ? '#f59e0b' : 'transparent', color: miniqueTab === 'gacha' ? 'white' : '#64748b', fontWeight: 'bold', fontSize: '0.85rem', cursor: 'pointer', transition: 'all 0.2s' }}
+              >
+                🎪 ガチャ・鞄
+              </button>
+            </div>
 
-        {/* タブのコンテンツ領域 */}
-        <div style={{ minHeight: '300px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          {miniqueTab === 'patrol' && (
-            <PatrolMiniGame 
-              userLevel={levelInfo?.level || 1} 
-              userExp={userExp}
-              addExp={addExp} 
-              gachaTickets={gachaTickets}
-              addTickets={addTickets}
-              equipment={equipment}
-              setEquipment={setEquipment}
-              inventory={inventory}
-              setInventory={setInventory}
-            />
-          )}
+            {/* タブのコンテンツ領域 */}
+            <div style={{ minHeight: '300px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {miniqueTab === 'patrol' && (
+                <PatrolMiniGame 
+                  userLevel={levelInfo?.level || 1} 
+                  userExp={userExp}
+                  addExp={addExp} 
+                  gachaTickets={gachaTickets}
+                  addTickets={addTickets}
+                  equipment={equipment}
+                  setEquipment={setEquipment}
+                  inventory={inventory}
+                  setInventory={setInventory}
+                />
+              )}
 
-          {miniqueTab === 'boss' && (
-            <BattleMiniGame 
-              userLevel={levelInfo?.level || 1} 
-              addExp={addExp} 
-              equipment={equipment} 
-              globalOnlineCount={globalOnlineCount} 
-              user={user}
-            />
-          )}
+              {miniqueTab === 'boss' && (
+                <BattleMiniGame 
+                  userLevel={levelInfo?.level || 1} 
+                  addExp={addExp} 
+                  equipment={equipment} 
+                  globalOnlineCount={globalOnlineCount} 
+                  user={user}
+                />
+              )}
 
-          {miniqueTab === 'gacha' && (
-            <GachaMiniGame 
-              gachaTickets={gachaTickets} 
-              addTickets={addTickets} 
-              equipment={equipment} 
-              setEquipment={setEquipment} 
-              addExp={addExp}
-              inventory={inventory}
-              setInventory={setInventory}
-            />
-          )}
-        </div>
+              {miniqueTab === 'gacha' && (
+                <GachaMiniGame 
+                  gachaTickets={gachaTickets} 
+                  addTickets={addTickets} 
+                  equipment={equipment} 
+                  setEquipment={setEquipment} 
+                  addExp={addExp}
+                  inventory={inventory}
+                  setInventory={setInventory}
+                />
+              )}
+            </div>
+          </>
+        )}
       </div>
 
       {/* 5. 💬 X風・広場のタイムライン（つぶやき） */}
