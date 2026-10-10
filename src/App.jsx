@@ -549,8 +549,7 @@ function App() {
       if (!dailyActions.voted.includes(surveyId) && dailyActions.voted.length < 3) {
         dailyActions.voted.push(surveyId);
         localStorage.setItem('daily_actions_v2', JSON.stringify(dailyActions));
-        addExp(3);
-        addTickets(1); // 投票1回でガチャチケ1枚（1日最大3枚）
+        addExp(5); // チケットを配らない代わりにEXPを少し増量
       }
     }
   };
