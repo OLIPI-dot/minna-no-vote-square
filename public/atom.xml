@@ -4,11 +4,47 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-09T21:47:37.646Z</updated>
+  <updated>2026-10-10T02:18:21.907Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>サイバー攻撃 なぜ日本が標的に</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23324"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23324</id>
+    <updated>2026-10-10T02:18:17.820Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;1464万件の情報流出&quot;,
+  &quot;point1_desc&quot;: &quot;旅行予約サイト「スカイチケット」を運営するアドベンチャーが不正アクセスを受け、会員情報約1464万件が外部へ流出したと発表した。システムへの攻撃により大規模な個人情報漏洩が発生した模様だ。&quot;,
+  &quot;point2_title&quot;:...</summary>
+  </entry>
+  <entry>
+    <title>米がICC制裁 首相「深く懸念」</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23323"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23323</id>
+    <updated>2026-10-10T02:17:01.224Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;トランプ政権のICC制裁&quot;,
+  &quot;point1_desc&quot;: &quot;米国のトランプ政権が国際刑事裁判所（ICC）を制裁対象に指定した。これに対し国際社会から様々な反応が起きる中、加盟国である日本の対応にも大きな注目が集まっている。&quot;,
+  &quot;point2_title&quot;: &quot;高市首相の強い懸念表...</summary>
+  </entry>
+  <entry>
+    <title>露 米や世界向けの軽油供給開始へ</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23322"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23322</id>
+    <updated>2026-10-10T02:16:35.389Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;ロシアの原油供給意向&quot;,
+  &quot;point1_desc&quot;: &quot;ロシアのプーチン大統領は、米国や世界市場に向けて原油および石油製品を継続して供給する準備があることを明らかにした。自国のエネルギー資源提供が不可欠であるとアピールしている。&quot;,
+  &quot;point2_title&quot;: &quot;世界経済への支...</summary>
+  </entry>
   <entry>
     <title>個人情報巡る対策 政府が緊急要請</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23321"/>
@@ -572,42 +608,5 @@
   &quot;point1_title&quot;: &quot;那覇のホテルで強盗殺人事件&quot;,
   &quot;point1_desc&quot;: &quot;沖縄県那覇市若狭のホテルにおいて、地元に住む３９歳の女性が殺害され、所持品が奪われる強盗殺人事件が発生した。防犯カメラなどの捜査が進められ、事件の全容解明が急がれている。&quot;,
   &quot;point2_title&quot;: &quot;米海兵隊員...</summary>
-  </entry>
-  <entry>
-    <title>日本の制裁受け 露が対抗措置表明</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23274"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23274</id>
-    <updated>2026-10-06T02:16:34.786Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;ロシアが対日本対抗措置を表明&quot;,
-  &quot;point1_desc&quot;: &quot;日本政府による追加制裁の決定を受け、ロシア外務省は日本が関心を持つ分野を対象に対抗措置を実施すると発表した。これにより両国間の緊張がさらに高まることが予想される。&quot;,
-  &quot;point2_title&quot;: &quot;日本に関心のある...</summary>
-  </entry>
-  <entry>
-    <title>露のペスト研究所員死亡 米が注視</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23273"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23273</id>
-    <updated>2026-10-05T21:46:31.832Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;シベリアの施設で研究員死亡&quot;,
-  &quot;point1_desc&quot;: &quot;ロシア東部シベリアのイルクーツクにあるペスト研究機関にて、研究員1人が原因不明の状況で体調を崩し、死亡したことが明らかになりました。現地では詳細な状況や原因の調査が進められています。&quot;,
-  &quot;point2_title&quot;: ...</summary>
-  </entry>
-  <entry>
-    <title>フジパン熊本工場 生産再開を断念</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23272"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23272</id>
-    <updated>2026-10-05T21:45:56.613Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;熊本工場の再開断念&quot;,
-  &quot;point1_desc&quot;: &quot;製パン大手のフジパンは、熊本地震で被災し操業停止中だった九州フジパン熊本工場の生産再開を断念すると発表。建屋や生産設備の損傷が予想以上に激しく困難と判断された。&quot;,
-  &quot;point2_title&quot;: &quot;設備損傷が深刻な理由&quot;,
- ...</summary>
   </entry>
 </feed>
