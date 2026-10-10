@@ -355,7 +355,8 @@ function App() {
           shouldUpdate = true;
         }
         
-        // 🎁 1日1回のアクセスボーナス判定！
+        // 🎁 1日1回のアクセスボーナス判定！（一時停止中）
+        /*
         if (lastLoginDate !== todayStr && !hasProcessedLoginBonus.current) {
           hasProcessedLoginBonus.current = true;
           newTotalExp += 10;
@@ -367,6 +368,7 @@ function App() {
             alert('🎉 今日のアクセスボーナス！\n広場に遊びに来てくれてありがとう！\n＋10 EXP と 【ガチャチケット🎫 x1】 を獲得しました！🐰✨');
           }, 1000);
         }
+        */
         
         if (shouldUpdate) {
           updates.vote_exp = newTotalExp;
@@ -386,7 +388,8 @@ function App() {
         let newTotalTickets = localTickets;
         let shouldUpdate = false;
 
-        // 🎁 1日1回のアクセスボーナス判定！
+        // 🎁 1日1回のアクセスボーナス判定！（一時停止中）
+        /*
         if (localLastLogin !== todayStr && !hasProcessedLoginBonus.current) {
           hasProcessedLoginBonus.current = true;
           newTotalExp += 10;
@@ -396,6 +399,7 @@ function App() {
             alert('🎉 今日のアクセスボーナス！\n広場に遊びに来てくれてありがとう！\n＋10 EXP と 【ガチャチケット🎫 x1】 を獲得しました！🐰✨');
           }, 1000);
         }
+        */
 
         if (shouldUpdate) {
           localStorage.setItem('min_ake_exp', newTotalExp.toString());
