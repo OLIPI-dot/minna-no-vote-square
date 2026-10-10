@@ -2032,9 +2032,8 @@ function App() {
     updateRateLimit(); // 🛡️ 作成時間を記録
     await supabase.from('options').insert(validOptions.map(name => ({ name, votes: 0, survey_id: data[0].id })));
 
-    // 🎉 アンケート作成ボーナス！
-    addExp(50);
-    addTickets(1);
+    // 🎉 アンケート作成ボーナス（スパム防止のためチケは無し、EXPのみ）
+    addExp(10);
 
     // 全ての状態をリセット
     setSurveyTitle('');
