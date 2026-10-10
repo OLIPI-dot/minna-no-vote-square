@@ -4,6 +4,7 @@ import SquareTimeline from './SquareTimeline';
 import BattleMiniGame from './BattleMiniGame';
 import PatrolMiniGame from './PatrolMiniGame';
 import GachaMiniGame from './GachaMiniGame';
+import DictionaryModal from './DictionaryModal';
 import { CATEGORY_ICON_STYLE } from '../constants';
 
 const getCatColor = (cat) => {
@@ -31,12 +32,17 @@ const Sidebar = ({
   equipment,
   setEquipment,
   inventory,
-  setInventory
+  setInventory,
+  acquiredItems,
+  setAcquiredItems,
+  encounteredEnemies,
+  setEncounteredEnemies
 }) => {
   const [hn, setHn] = useState('');
   const [miniqueTab, setMiniqueTab] = useState('patrol');
   const [isEditingHn, setIsEditingHn] = useState(false);
   const [tempHn, setTempHn] = useState('');
+  const [isDictionaryOpen, setIsDictionaryOpen] = useState(false);
 
   useEffect(() => {
     const savedHn = localStorage.getItem('minake_hn');
@@ -215,21 +221,27 @@ const Sidebar = ({
             <div style={{ display: 'flex', gap: '4px', margin: '16px 0 12px 0', background: 'rgba(0,0,0,0.05)', padding: '4px', borderRadius: '8px' }}>
               <button 
                 onClick={() => setMiniqueTab('patrol')}
-                style={{ flex: 1, padding: '8px 4px', borderRadius: '6px', border: 'none', background: miniqueTab === 'patrol' ? '#3b82f6' : 'transparent', color: miniqueTab === 'patrol' ? 'white' : '#64748b', fontWeight: 'bold', fontSize: '0.85rem', cursor: 'pointer', transition: 'all 0.2s' }}
+                style={{ flex: 1, padding: '8px 2px', borderRadius: '6px', border: 'none', background: miniqueTab === 'patrol' ? '#3b82f6' : 'transparent', color: miniqueTab === 'patrol' ? 'white' : '#64748b', fontWeight: 'bold', fontSize: '0.75rem', cursor: 'pointer', transition: 'all 0.2s' }}
               >
                 🚓 パトロール
               </button>
               <button 
                 onClick={() => setMiniqueTab('boss')}
-                style={{ flex: 1, padding: '8px 4px', borderRadius: '6px', border: 'none', background: miniqueTab === 'boss' ? '#ef4444' : 'transparent', color: miniqueTab === 'boss' ? 'white' : '#64748b', fontWeight: 'bold', fontSize: '0.85rem', cursor: 'pointer', transition: 'all 0.2s' }}
+                style={{ flex: 1, padding: '8px 2px', borderRadius: '6px', border: 'none', background: miniqueTab === 'boss' ? '#ef4444' : 'transparent', color: miniqueTab === 'boss' ? 'white' : '#64748b', fontWeight: 'bold', fontSize: '0.75rem', cursor: 'pointer', transition: 'all 0.2s' }}
               >
                 🐉 ボス戦
               </button>
               <button 
                 onClick={() => setMiniqueTab('gacha')}
-                style={{ flex: 1, padding: '8px 4px', borderRadius: '6px', border: 'none', background: miniqueTab === 'gacha' ? '#f59e0b' : 'transparent', color: miniqueTab === 'gacha' ? 'white' : '#64748b', fontWeight: 'bold', fontSize: '0.85rem', cursor: 'pointer', transition: 'all 0.2s' }}
+                style={{ flex: 1, padding: '8px 2px', borderRadius: '6px', border: 'none', background: miniqueTab === 'gacha' ? '#f59e0b' : 'transparent', color: miniqueTab === 'gacha' ? 'white' : '#64748b', fontWeight: 'bold', fontSize: '0.75rem', cursor: 'pointer', transition: 'all 0.2s' }}
               >
                 🎪 ガチャ・鞄
+              </button>
+              <button 
+                onClick={() => setIsDictionaryOpen(true)}
+                style={{ flex: 1, padding: '8px 2px', borderRadius: '6px', border: 'none', background: '#8b5cf6', color: 'white', fontWeight: 'bold', fontSize: '0.75rem', cursor: 'pointer', transition: 'all 0.2s' }}
+              >
+                📖 図鑑
               </button>
             </div>
 
@@ -247,6 +259,8 @@ const Sidebar = ({
                   inventory={inventory}
                   setInventory={setInventory}
                   globalOnlineCount={globalOnlineCount}
+                  encounteredEnemies={encounteredEnemies}
+                  setEncounteredEnemies={setEncounteredEnemies}
                 />
               )}
 
@@ -269,6 +283,8 @@ const Sidebar = ({
                   addExp={addExp}
                   inventory={inventory}
                   setInventory={setInventory}
+                  acquiredItems={acquiredItems}
+                  setAcquiredItems={setAcquiredItems}
                 />
               )}
             </div>
@@ -301,6 +317,13 @@ const Sidebar = ({
 
       {/* 7. 広告 */}
       <AdSenseBox slot="sidebar_slot_placeholder" affiliateType="amazon" />
+
+      <DictionaryModal 
+        isOpen={isDictionaryOpen} 
+        onClose={() => setIsDictionaryOpen(false)} 
+        acquiredItems={acquiredItems} 
+        encounteredEnemies={encounteredEnemies} 
+      />
     </div>
   );
 };

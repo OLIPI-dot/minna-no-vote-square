@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { rollEnemy } from '../enemies';
 
-const PatrolMiniGame = ({ userLevel, userExp, addExp, equipment, setEquipment, addTickets, gachaTickets, inventory, setInventory, globalOnlineCount }) => {
+const PatrolMiniGame = ({ userLevel, userExp, addExp, equipment, setEquipment, addTickets, gachaTickets, inventory, setInventory, globalOnlineCount, encounteredEnemies = [], setEncounteredEnemies }) => {
   const [battleState, setBattleState] = useState('idle'); // idle, battling, won, lost
   const [enemy, setEnemy] = useState(null);
   const [playerHp, setPlayerHp] = useState(0);
@@ -46,6 +46,11 @@ const PatrolMiniGame = ({ userLevel, userExp, addExp, equipment, setEquipment, a
     setEnemy(newEnemy);
     setEnemyHp(newEnemy.hp);
     setPlayerHp(pMaxHp); // 修正: 追加
+    
+    // 図鑑に追加
+    if (setEncounteredEnemies && !encounteredEnemies.includes(newEnemy.id)) {
+      setEncounteredEnemies(prev => [...prev, newEnemy.id]);
+    }
     setDropItem(null);
     setHealCount(0);
     setUsedSos(false);

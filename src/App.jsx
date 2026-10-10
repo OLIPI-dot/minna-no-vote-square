@@ -294,9 +294,31 @@ function App() {
     }
   });
 
+  const [acquiredItems, setAcquiredItems] = useState(() => {
+    try {
+      const saved = localStorage.getItem('min_ake_acquired_items');
+      return Array.isArray(saved ? JSON.parse(saved) : []) ? JSON.parse(saved) : [];
+    } catch { return []; }
+  });
+
+  const [encounteredEnemies, setEncounteredEnemies] = useState(() => {
+    try {
+      const saved = localStorage.getItem('min_ake_encountered_enemies');
+      return Array.isArray(saved ? JSON.parse(saved) : []) ? JSON.parse(saved) : [];
+    } catch { return []; }
+  });
+
   useEffect(() => {
     localStorage.setItem('min_ake_equipment', JSON.stringify(equipment));
   }, [equipment]);
+
+  useEffect(() => {
+    localStorage.setItem('min_ake_acquired_items', JSON.stringify(acquiredItems));
+  }, [acquiredItems]);
+
+  useEffect(() => {
+    localStorage.setItem('min_ake_encountered_enemies', JSON.stringify(encounteredEnemies));
+  }, [encounteredEnemies]);
 
   useEffect(() => {
     localStorage.setItem('min_ake_inventory', JSON.stringify(inventory));
@@ -2885,6 +2907,10 @@ function App() {
               gachaTickets={gachaTickets}
               inventory={inventory}
               setInventory={setInventory}
+              acquiredItems={acquiredItems}
+              setAcquiredItems={setAcquiredItems}
+              encounteredEnemies={encounteredEnemies}
+              setEncounteredEnemies={setEncounteredEnemies}
             />
           </Suspense>
         </div>

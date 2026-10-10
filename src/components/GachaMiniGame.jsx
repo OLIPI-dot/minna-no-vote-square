@@ -11,7 +11,7 @@ const rarityColors = {
   LR: '#ef4444' // 真っ赤（PSO赤箱リスペクト）
 };
 
-const GachaMiniGame = ({ gachaTickets, addTickets, equipment, setEquipment, addExp, inventory = [], setInventory }) => {
+const GachaMiniGame = ({ gachaTickets, addTickets, equipment, setEquipment, addExp, inventory = [], setInventory, acquiredItems = [], setAcquiredItems }) => {
   const [gachaResult, setGachaResult] = useState(null);
   const [showInventory, setShowInventory] = useState(false);
   const [selectedEquip, setSelectedEquip] = useState(null);
@@ -50,6 +50,9 @@ const GachaMiniGame = ({ gachaTickets, addTickets, equipment, setEquipment, addE
     
     setEquipment(prev => ({ ...prev, [newItem.type]: newItem }));
     if (oldItem) setInventory(prev => [...prev, oldItem]);
+    if (setAcquiredItems && !acquiredItems.includes(newItem.id.split('_')[0])) {
+      setAcquiredItems(prev => [...prev, newItem.id.split('_')[0] || newItem.id]);
+    }
     
     setGachaResult(null);
   };
@@ -57,6 +60,9 @@ const GachaMiniGame = ({ gachaTickets, addTickets, equipment, setEquipment, addE
   const handleStoreInInventory = () => {
     const newItem = { ...gachaResult, id: Date.now() + Math.random() };
     setInventory(prev => [...prev, newItem]);
+    if (setAcquiredItems && !acquiredItems.includes(gachaResult.id)) {
+      setAcquiredItems(prev => [...prev, gachaResult.id]);
+    }
     setGachaResult(null);
   };
 
