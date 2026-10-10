@@ -253,7 +253,26 @@ export const ITEMS = [
   // --- アクセサリー ---
   { id: 'ac601', type: 'accessory', rarity: 'SR', name: 'ワクチン接種証明書', atk: 0, def: 30, hp: 100, icon: '📜', desc: 'これを見せるとどこへでも行ける無敵感。', effect: 'regen' },
   { id: 'ac602', type: 'accessory', rarity: 'UR', name: '緊急事態宣言', atk: 50, def: 50, hp: 50, icon: '🚨', desc: '敵の行動を強制的に制限する強権。', effect: 'mental_damage' },
-  { id: 'ac603', type: 'accessory', rarity: 'SR', name: 'アルコール消毒液', atk: 20, def: 20, hp: 20, icon: '🧴', desc: 'プシュッとするだけで清められた気がする。', effect: 'lifesteal' }
+  { id: 'ac603', type: 'accessory', rarity: 'SR', name: 'アルコール消毒液', atk: 20, def: 20, hp: 20, icon: '🧴', desc: 'プシュッとするだけで清められた気がする。', effect: 'lifesteal' },
+
+  // ================= 🐰 第8弾 追加アイテム（ディープネットミーム＆陰謀論編） =================
+  // --- 武器 ---
+  { id: 'w701', type: 'weapon', rarity: 'N', name: '5Gアンテナの破片', atk: 25, def: 0, hp: 0, icon: '📡', desc: '謎の電波を受信してしまい、頭が痛くなる。', effect: 'mental_damage' },
+  { id: 'w702', type: 'weapon', rarity: 'R', name: '謎の波動が出る石', atk: 40, def: 0, hp: 0, icon: '🪨', desc: '信じる者にだけ効果があるスピリチュアルな石。', effect: 'regen' },
+  { id: 'w703', type: 'weapon', rarity: 'SR', name: 'ケムトレイル散布機', atk: 80, def: 0, hp: 0, icon: '✈️', desc: '空から謎の化学物質を撒き散らし、敵を弱体化させる。', effect: 'virus' },
+  { id: 'w704', type: 'weapon', rarity: 'UR', name: 'マコモ湯の残り湯', atk: 150, def: 0, hp: 0, icon: '♨️', desc: 'すべてを浄化し、同時にすべてを汚染する伝説の湯。', effect: 'virus' },
+  
+  // --- 防具 ---
+  { id: 'a701', type: 'armor', rarity: 'N', name: 'アルミホイルの帽子', atk: 0, def: 15, hp: 10, icon: '👨‍🍳', desc: '電磁波や思考盗聴から脳を守ってくれる（気がする）。', effect: 'cringe' },
+  { id: 'a702', type: 'armor', rarity: 'R', name: 'マイナスイオン発生器', atk: 0, def: 35, hp: 20, icon: '🌬️', desc: '滝のそばにいるような清々しさでダメージを軽減。', effect: 'regen' },
+  { id: 'a703', type: 'armor', rarity: 'SR', name: '反重力シールド', atk: 0, def: 80, hp: 0, icon: '🛸', desc: '地球の裏側にいる爬虫類人から身を守る盾。', effect: 'reflect' },
+  { id: 'a704', type: 'armor', rarity: 'UR', name: '光の戦士の白装束', atk: 0, def: 250, hp: 100, icon: '👻', desc: '謎の宗教団体が着ているアレ。近寄りがたいオーラを放つ。', effect: 'cringe' },
+
+  // --- アクセサリー ---
+  { id: 'ac701', type: 'accessory', rarity: 'N', name: '高濃度水素水', atk: 5, def: 5, hp: 30, icon: '💧', desc: 'ただの水より高い。飲むとプラシーボ効果で元気になる。', effect: 'regen' },
+  { id: 'ac702', type: 'accessory', rarity: 'R', name: 'ディープステートの会員証', atk: 20, def: 20, hp: 20, icon: '👁️', desc: '世界の裏側を牛耳る組織のメンバーになれる。', effect: 'mental_damage' },
+  { id: 'ac703', type: 'accessory', rarity: 'SR', name: 'ゴムマスク', atk: 30, def: 30, hp: 50, icon: '🎭', desc: '「あの政治家はゴムマスクだ！」という陰謀論を具現化。', effect: 'dodge_up' },
+  { id: 'ac704', type: 'accessory', rarity: 'UR', name: 'アポロ月面着陸のセット', atk: 100, def: 100, hp: 200, icon: '🌕', desc: '実は月に行ってなかったというスタジオのセット。', effect: 'cringe' }
 ];
 
 export const rollGacha = () => {
