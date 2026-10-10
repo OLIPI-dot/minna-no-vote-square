@@ -234,8 +234,26 @@ export const ITEMS = [
   { id: 'ac507', type: 'accessory', rarity: 'N', name: '冷笑系のリプライ', atk: 15, def: 15, hp: -5, icon: '😏', desc: '精神を研ぎ澄ますが、友達は減る。' },
   { id: 'ac508', type: 'accessory', rarity: 'SR', name: 'パパ活の確定申告書', atk: 50, def: 80, hp: 50, icon: '📄', desc: '税務署の影に怯えながらも、確かな財力を証明する。' },
   { id: 'ac509', type: 'accessory', rarity: 'N', name: '出禁オタの出待ちリスト', atk: 20, def: 0, hp: 20, icon: '📝', desc: '異常な執念でHPが上がる。' },
-  { id: 'ac510', type: 'accessory', rarity: 'UR', name: '伝説の炎上動画', atk: 200, def: 0, hp: -100, icon: '🎬', desc: '世界中に拡散され、破滅的な攻撃力を手に入れる。' }
+  { id: 'ac510', type: 'accessory', rarity: 'UR', name: '伝説の炎上動画', atk: 200, def: 0, hp: -100, icon: '🎬', desc: '世界中に拡散され、破滅的な攻撃力を手に入れる。' },
 
+  // ================= 🐰 第7弾 追加アイテム（パンデミック＆ドン引き編） =================
+  // --- 武器 ---
+  { id: 'w601', type: 'weapon', rarity: 'SR', name: '特効薬の注射器', atk: 70, def: 0, hp: 0, icon: '💉', desc: '打たれると色んな意味でヤバい。ウイルスを感染させる。', effect: 'virus' },
+  { id: 'w602', type: 'weapon', rarity: 'UR', name: 'コウモリのスープ', atk: 150, def: 0, hp: 0, icon: '🦇', desc: 'すべての元凶。敵は謎のウイルスで死ぬ。', effect: 'virus' },
+  { id: 'w603', type: 'weapon', rarity: 'SR', name: '自称アーティストのポエム集', atk: 5, def: 0, hp: 0, icon: '📖', desc: '朗読すると、あまりの痛さに敵がドン引きして逃げる。', effect: 'cringe' },
+  { id: 'w604', type: 'weapon', rarity: 'UR', name: '中二病の黒歴史ノート', atk: 10, def: 0, hp: 0, icon: '📓', desc: '「我は漆黒の堕天使…」敵は耐えきれずに逃亡する。', effect: 'cringe' },
+  { id: 'w605', type: 'weapon', rarity: 'R', name: '買い占められたトイレットペーパー', atk: 30, def: 10, hp: 0, icon: '🧻', desc: '物理で殴る。意外と硬い。' },
+  
+  // --- 防具 ---
+  { id: 'a601', type: 'armor', rarity: 'R', name: '小さすぎる布マスク', atk: 0, def: 20, hp: 0, icon: '😷', desc: '防御力は低いが、洗えば何度でも使える。', effect: 'regen' },
+  { id: 'a602', type: 'armor', rarity: 'SR', name: '濃厚接触者のオーラ', atk: 0, def: 60, hp: 0, icon: '🌫️', desc: '近づく者すべてを病気にする危険なオーラ。', effect: 'virus' },
+  { id: 'a603', type: 'armor', rarity: 'UR', name: 'ソーシャルディスタンス・バリア', atk: 0, def: 180, hp: 50, icon: '📏', desc: '敵との間に絶対的な距離を作り出し、ダメージを反射する。', effect: 'reflect' },
+  { id: 'a604', type: 'armor', rarity: 'R', name: 'ドン引きされる私服', atk: 0, def: 10, hp: 0, icon: '👕', desc: '絶妙にダサく、敵が戦意を喪失する。', effect: 'cringe' },
+
+  // --- アクセサリー ---
+  { id: 'ac601', type: 'accessory', rarity: 'SR', name: 'ワクチン接種証明書', atk: 0, def: 30, hp: 100, icon: '📜', desc: 'これを見せるとどこへでも行ける無敵感。', effect: 'regen' },
+  { id: 'ac602', type: 'accessory', rarity: 'UR', name: '緊急事態宣言', atk: 50, def: 50, hp: 50, icon: '🚨', desc: '敵の行動を強制的に制限する強権。', effect: 'mental_damage' },
+  { id: 'ac603', type: 'accessory', rarity: 'SR', name: 'アルコール消毒液', atk: 20, def: 20, hp: 20, icon: '🧴', desc: 'プシュッとするだけで清められた気がする。', effect: 'lifesteal' }
 ];
 
 export const rollGacha = () => {

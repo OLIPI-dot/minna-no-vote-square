@@ -13,6 +13,7 @@ const PatrolMiniGame = ({ userLevel, userExp, addExp, equipment, setEquipment, a
   const [sosState, setSosState] = useState('idle'); // idle, voting, completed
   const [sosVotes, setSosVotes] = useState({ A: 0, B: 0, C: 0, D: 0 });
   const [sosTime, setSosTime] = useState(30);
+  const [enemyStatus, setEnemyStatus] = useState(null); // 'virus' など
   const timerRef = useRef(null);
   const botIntervalRef = useRef(null);
 
@@ -57,6 +58,7 @@ const PatrolMiniGame = ({ userLevel, userExp, addExp, equipment, setEquipment, a
     setSosState('idle');
     setSosVotes({ A: 0, B: 0, C: 0, D: 0 });
     setSosTime(30);
+    setEnemyStatus(null);
     if (timerRef.current) clearInterval(timerRef.current);
     if (botIntervalRef.current) clearInterval(botIntervalRef.current);
     
@@ -86,6 +88,21 @@ const PatrolMiniGame = ({ userLevel, userExp, addExp, equipment, setEquipment, a
       const healAmount = Math.floor(pMaxHp * 0.1);
       currentPlayerHp = Math.min(pMaxHp, currentPlayerHp + healAmount);
       newLogs.push(`✨ 【リジェネ】 装備の力で体力が ${healAmount} 回復した！`);
+    }
+
+    // 🦠 【ウイルス: virus】ターンの開始時に敵に継続ダメージ
+    if (enemyStatus === 'virus') {
+      const virusDmg = Math.max(5, Math.floor(enemy.hp * 0.1)); // 最大HPの10%
+      currentEnemyHp = Math.max(0, currentEnemyHp - virusDmg);
+      newLogs.push(`🦠 【感染】 敵は謎のウイルスに苦しんでいる... ${virusDmg} のダメージ！`);
+      if (currentEnemyHp === 0) {
+        newLogs.push(`🎉 ウイルスにより敵は力尽きた... 【${enemy.name}】 を撃退した！`);
+        setEnemyHp(0);
+        setPlayerHp(currentPlayerHp);
+        setBattleLog(newLogs);
+        handleWin(enemy);
+        return;
+      }
     }
 
     // 🎲 お互いの命中率とクリティカル判定
@@ -136,6 +153,27 @@ const PatrolMiniGame = ({ userLevel, userExp, addExp, equipment, setEquipment, a
       if (currentEnemyHp > 0 && hasEffect('mental_damage') && Math.random() < 0.3) {
         isEnemyStunned = true;
         newLogs.push(`💀 【精神破壊】 敵はメンタルをやられて動けない！！`);
+      }
+
+      // 🦠 【ウイルス付与: virus】
+      if (currentEnemyHp > 0 && hasEffect('virus') && enemyStatus !== 'virus') {
+        if (Math.random() < 0.4) { // 40%で感染
+          setEnemyStatus('virus');
+          newLogs.push(`💉 【感染源】 敵に謎のウイルスを感染させた！`);
+        }
+      }
+
+      // 😰 【ドン引き: cringe】
+      if (currentEnemyHp > 0 && hasEffect('cringe')) {
+        if (Math.random() < 0.15) { // 15%で逃亡
+          newLogs.push(`😰 【ドン引き】 あなたのヤバすぎる言動に、【${enemy.name}】 はドン引きして逃げ出した...`);
+          newLogs.push(`🎉 （不戦勝） 【${enemy.name}】 を撃退した！`);
+          setEnemyHp(0);
+          setPlayerHp(currentPlayerHp);
+          setBattleLog(newLogs);
+          handleWin(enemy);
+          return;
+        }
       }
     }
 
