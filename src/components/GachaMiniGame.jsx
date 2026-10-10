@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { rollGacha } from '../items';
 import confetti from 'canvas-confetti';
 
@@ -10,8 +11,9 @@ const rarityColors = {
   LR: '#ef4444' // 真っ赤（PSO赤箱リスペクト）
 };
 
-const GachaMiniGame = ({ gachaTickets, addTickets, equipment, setEquipment, addExp }) => {
+const GachaMiniGame = ({ gachaTickets, addTickets, equipment, setEquipment, addExp, inventory = [], setInventory }) => {
   const [gachaResult, setGachaResult] = useState(null);
+  const [showInventory, setShowInventory] = useState(false);
   const [selectedEquip, setSelectedEquip] = useState(null);
   const [isRolling, setIsRolling] = useState(false);
   const COST = 1; // 1回1チケット
@@ -42,20 +44,46 @@ const GachaMiniGame = ({ gachaTickets, addTickets, equipment, setEquipment, addE
     }, 1000);
   };
 
-  const equipItem = (item) => {
-    setEquipment(prev => ({
-      ...prev,
-      [item.type]: item
-    }));
+  const handleEquipFromGacha = () => {
+    const newItem = { ...gachaResult, id: Date.now() + Math.random() };
+    const oldItem = equipment[newItem.type];
+    
+    setEquipment(prev => ({ ...prev, [newItem.type]: newItem }));
+    if (oldItem) setInventory(prev => [...prev, oldItem]);
+    
     setGachaResult(null);
   };
 
-  const unequipItem = (type) => {
-    setEquipment(prev => ({
-      ...prev,
-      [type]: null
-    }));
+  const handleStoreInInventory = () => {
+    const newItem = { ...gachaResult, id: Date.now() + Math.random() };
+    setInventory(prev => [...prev, newItem]);
+    setGachaResult(null);
+  };
+
+  const equipFromInventory = (invItem) => {
+    const oldItem = equipment[invItem.type];
+    
+    setEquipment(prev => ({ ...prev, [invItem.type]: invItem }));
+    
+    setInventory(prev => {
+      const filtered = prev.filter(i => i.id !== invItem.id);
+      if (oldItem) return [...filtered, oldItem];
+      return filtered;
+    });
+  };
+
+  const handleUnequip = (type) => {
+    const oldItem = equipment[type];
+    if (oldItem) setInventory(prev => [...prev, oldItem]);
+    
+    setEquipment(prev => ({ ...prev, [type]: null }));
     setSelectedEquip(null);
+  };
+  
+  const handleSellFromInventory = (invItem) => {
+    const expBack = getRecycleExp(invItem.rarity);
+    addExp(expBack);
+    setInventory(prev => prev.filter(i => i.id !== invItem.id));
   };
 
   const renderEquipSlot = (type, label) => {
@@ -73,7 +101,7 @@ const GachaMiniGame = ({ gachaTickets, addTickets, equipment, setEquipment, addE
 
     return (
       <div 
-        onClick={() => item && setSelectedEquip(item)}
+        onClick={() => item && setSelectedEquip(selectedEquip?.type === item.type ? null : item)}
         title={tooltipText}
         style={{ flex: 1, minWidth: 0, overflow: 'hidden', background: 'white', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '6px', textAlign: 'center', cursor: item ? 'pointer' : 'default', transition: 'background 0.2s' }}
         onMouseOver={e => { if (item) e.currentTarget.style.background = '#f1f5f9'; }}
@@ -142,11 +170,14 @@ const GachaMiniGame = ({ gachaTickets, addTickets, equipment, setEquipment, addE
           <div style={{ fontSize: '0.75rem', color: '#854d0e', background: '#fef3c7', padding: '6px', borderRadius: '4px', marginBottom: '10px', fontStyle: 'italic' }}>
             「{gachaResult.desc}」
           </div>
-          <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-            <button onClick={() => equipItem(gachaResult)} style={{ padding: '6px 12px', background: '#10b981', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>
-              装備する
+          <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <button onClick={handleEquipFromGacha} style={{ padding: '6px 12px', background: '#10b981', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', flex: '1' }}>
+              すぐ装備
             </button>
-            <button onClick={handleRecycle} style={{ padding: '6px 12px', background: '#f59e0b', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>
+            <button onClick={handleStoreInInventory} style={{ padding: '6px 12px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', flex: '1' }}>
+              👜しまう
+            </button>
+            <button onClick={handleRecycle} style={{ padding: '6px 12px', background: '#f59e0b', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', width: '100%' }}>
               売却 (+{getRecycleExp(gachaResult.rarity)} EXP)
             </button>
           </div>
@@ -171,27 +202,80 @@ const GachaMiniGame = ({ gachaTickets, addTickets, equipment, setEquipment, addE
             <button onClick={() => setSelectedEquip(null)} style={{ padding: '6px 16px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>
               閉じる
             </button>
-            <button onClick={() => unequipItem(selectedEquip.type)} style={{ padding: '6px 12px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>
-              外す
+            <button onClick={() => handleUnequip(selectedEquip.type)} style={{ padding: '6px 12px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>
+              外す（鞄へ）
             </button>
           </div>
         </div>
       )}
 
-      {/* ガチャボタン */}
-      <button 
-        onClick={handleRoll}
-        disabled={gachaTickets < COST || isRolling || gachaResult}
-        style={{
-          width: '100%', padding: '10px', borderRadius: '8px', border: 'none',
-          background: gachaTickets >= COST && !isRolling ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' : '#e2e8f0',
-          color: gachaTickets >= COST && !isRolling ? 'white' : '#94a3b8',
-          fontWeight: 'bold', cursor: gachaTickets >= COST && !isRolling ? 'pointer' : 'not-allowed',
-          boxShadow: gachaTickets >= COST && !isRolling ? '0 4px 6px -1px rgba(245, 158, 11, 0.4)' : 'none'
-        }}
-      >
-        {isRolling ? 'ガチャを回しています...' : `🎫 ガチャを回す (チケット${COST}枚)`}
-      </button>
+      {/* インベントリモーダル */}
+      {showInventory && createPortal(
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100000 }}>
+          <div style={{ background: '#fff', padding: '20px', borderRadius: '12px', width: '90%', maxWidth: '500px', maxHeight: '80vh', display: 'flex', flexDirection: 'column' }}>
+            <h3 style={{ margin: '0 0 16px 0', color: '#1e293b', display: 'flex', justifyContent: 'space-between' }}>
+              <span>👜 インベントリ ({inventory.length}個)</span>
+              <button onClick={() => setShowInventory(false)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', lineHeight: 1 }}>×</button>
+            </h3>
+            
+            <div style={{ overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: '8px', paddingRight: '4px' }}>
+              {inventory.length === 0 ? (
+                <div style={{ textAlign: 'center', color: '#94a3b8', padding: '40px 0' }}>アイテムがありません</div>
+              ) : (
+                inventory.map(item => (
+                  <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', background: '#f8fafc', border: `1px solid ${rarityColors[item.rarity]}`, borderRadius: '8px' }}>
+                    <div style={{ fontSize: '2rem' }}>{item.icon}</div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontWeight: 'bold', color: rarityColors[item.rarity] }}>[{item.rarity}] {item.name}</div>
+                      <div style={{ fontSize: '0.75rem', color: '#475569' }}>
+                        ATK+{item.atk} / DEF+{item.def} / HP+{item.hp}
+                      </div>
+                      <div style={{ fontSize: '0.7rem', color: '#64748b' }}>{item.desc}</div>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                      <button onClick={() => equipFromInventory(item)} style={{ background: '#10b981', color: 'white', border: 'none', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.8rem' }}>
+                        装備
+                      </button>
+                      <button onClick={() => handleSellFromInventory(item)} style={{ background: '#f59e0b', color: 'white', border: 'none', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem' }}>
+                        売却
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {/* ガチャ＆インベントリボタン */}
+      <div style={{ display: 'flex', gap: '8px' }}>
+        <button 
+          onClick={handleRoll}
+          disabled={gachaTickets < COST || isRolling || gachaResult}
+          style={{
+            flex: 1, padding: '10px', borderRadius: '8px', border: 'none',
+            background: gachaTickets >= COST && !isRolling ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' : '#e2e8f0',
+            color: gachaTickets >= COST && !isRolling ? 'white' : '#94a3b8',
+            fontWeight: 'bold', cursor: gachaTickets >= COST && !isRolling ? 'pointer' : 'not-allowed',
+            boxShadow: gachaTickets >= COST && !isRolling ? '0 4px 6px -1px rgba(245, 158, 11, 0.4)' : 'none'
+          }}
+        >
+          {isRolling ? '...' : `🎫 回す(1枚)`}
+        </button>
+        <button 
+          onClick={() => setShowInventory(true)}
+          style={{
+            padding: '10px 16px', borderRadius: '8px', border: 'none',
+            background: '#3b82f6', color: 'white',
+            fontWeight: 'bold', cursor: 'pointer',
+            boxShadow: '0 4px 6px -1px rgba(59, 130, 246, 0.4)'
+          }}
+        >
+          👜 鞄
+        </button>
+      </div>
     </div>
   );
 };

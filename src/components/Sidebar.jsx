@@ -29,67 +29,64 @@ const Sidebar = ({
   addExp,
   addTickets,
   equipment,
-  setEquipment
+  setEquipment,
+  inventory,
+  setInventory
 }) => {
+  const [hn, setHn] = useState('');
+  const [miniqueTab, setMiniqueTab] = useState('patrol');
+  const [isEditingHn, setIsEditingHn] = useState(false);
+  const [tempHn, setTempHn] = useState('');
+
+  useEffect(() => {
+    const savedHn = localStorage.getItem('minake_hn');
+    if (savedHn) {
+      setHn(savedHn);
+      setTempHn(savedHn);
+    } else {
+      setHn('匿名広場民');
+      setTempHn('匿名広場民');
+    }
+  }, []);
+
+  const generateTripcode = (password) => {
+    let hash = 0;
+    for (let i = 0; i < password.length; i++) {
+      hash = ((hash << 5) - hash) + password.charCodeAt(i);
+      hash = hash & hash; 
+    }
+    
+    // ガチの管理者用パスワードのハッシュ値（ソースコードを見られてもパスワード本体はバレない）
+    if (hash === -1530203312) {
+      return '◆OLiPi'; // 👑 開発者特権の特別なトリップ
+    }
+    
+    const baseString = Math.abs(hash).toString(36) + 'AbCdEfGhIj';
+    return '◆' + baseString.substring(0, 8);
+  };
+
+  const saveHn = () => {
+    let rawInput = tempHn.trim() || '匿名広場民';
+    let finalHn = rawInput;
+
+    if (rawInput.includes('#')) {
+      const parts = rawInput.split('#');
+      const namePart = parts[0] || '名無し';
+      const passwordPart = parts.slice(1).join('#');
+      if (passwordPart) {
+        finalHn = `${namePart} ${generateTripcode(passwordPart)}`;
+      }
+    }
+
+    setHn(finalHn);
+    localStorage.setItem('minake_hn', finalHn);
+    setIsEditingHn(false);
+  };
 
   return (
     <div className="live-feed-sidebar" style={{ minWidth: '320px', boxSizing: 'border-box' }}>
-      {/* 🏆 ユーザー称号＆レベル */}
-      {/* 
-      <div className="sidebar-section-card" style={{ marginBottom: '24px', background: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)', border: '2px solid #fbbf24', textAlign: 'center' }}>
-        <h3 className="live-feed-title" style={{ color: '#b45309', border: 'none', padding: 0, justifyContent: 'center' }}>🐰 あなたの称号 🥕</h3>
-        <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#d97706', margin: '8px 0' }}>
-          {levelInfo?.title || 'ひよっこ広場民 🥚'}
-        </div>
-        <div style={{ fontSize: '0.85rem', color: '#92400e', marginBottom: '8px', display: 'flex', justifyContent: 'center', gap: '12px' }}>
-          <span>Lv.{levelInfo?.level || 1} (EXP: {userExp || 0})</span>
-          <span style={{ fontWeight: 'bold' }}>🎫 {gachaTickets || 0} 枚</span>
-        </div>
-        {levelInfo?.next && (
-          <div style={{ width: '100%', background: '#fde68a', borderRadius: '10px', height: '12px', overflow: 'hidden', position: 'relative', marginBottom: '4px' }}>
-            <div style={{ height: '100%', background: 'linear-gradient(90deg, #f59e0b, #d97706)', width: `${Math.min(100, Math.max(0, ((userExp || 0) / levelInfo.next) * 100))}%` }}></div>
-          </div>
-        )}
-        {levelInfo?.next ? (
-          <div style={{ fontSize: '0.75rem', color: '#b45309' }}>次の称号まであと {levelInfo.next - (userExp || 0)} EXP！</div>
-        ) : (
-          <div style={{ fontSize: '0.75rem', color: '#b45309' }}>最大レベル到達！あなたは伝説です✨</div>
-        )}
-        {!user && (
-          <div style={{ fontSize: '0.7rem', color: '#ef4444', marginTop: '8px', background: '#fee2e2', padding: '4px', borderRadius: '6px' }}>
-            ※ログインすると他の端末にも称号を引き継げます！
-          </div>
-        )}
-
-        <GachaMiniGame 
-          gachaTickets={gachaTickets} 
-          addTickets={addTickets} 
-          equipment={equipment} 
-          setEquipment={setEquipment} 
-          addExp={addExp}
-        />
-        
-        <BattleMiniGame 
-          userLevel={levelInfo?.level || 1} 
-          addExp={addExp} 
-          equipment={equipment} 
-          globalOnlineCount={globalOnlineCount} 
-          user={user}
-        />
-        
-        <PatrolMiniGame 
-          userLevel={levelInfo?.level || 1} 
-          userExp={userExp}
-          addExp={addExp} 
-          gachaTickets={gachaTickets}
-          addTickets={addTickets}
-          equipment={equipment}
-          setEquipment={setEquipment}
-        />
-      </div>
-      */}
-
-
+      
+      {/* 1. 📡 広場の状況 */}
       <div className="sidebar-section-card" style={{ marginBottom: '24px', background: 'linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%)', border: '1px solid #ddd6fe' }}>
         <h3 className="live-feed-title" style={{ color: '#7c3aed', marginBottom: '8px', fontSize: '1.1rem', borderLeft: '5px solid #7c3aed', paddingLeft: '12px' }}>📡 広場の状況</h3>
         <div style={{ fontSize: '0.9rem', color: '#4c1d95', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -98,10 +95,7 @@ const Sidebar = ({
         </div>
       </div>
 
-      {/* 💬 X風・広場のタイムライン（つぶやき） */}
-      <SquareTimeline />
-
-      {/* 🔥 人気ランキング (引き上げ) */}
+      {/* 2. 🔥 人気ランキング */}
       <div className="sidebar-section-card" style={{ marginBottom: '24px' }}>
         <h3 className="live-feed-title">🔥 人気ランキング</h3>
         <div className="live-feed-content">
@@ -136,7 +130,7 @@ const Sidebar = ({
         </div>
       </div>
 
-      {/* ⏳ もうすぐ終了！ (条件付きレンダリング) */}
+      {/* 3. ⏳ もうすぐ終了！ (条件付きレンダリング) */}
       {endingSoonSurveys.length > 0 && (
         <div className="sidebar-section-card" style={{ marginBottom: '24px', border: '2px solid #fee2e2' }}>
           <h3 className="live-feed-title" style={{ color: '#e11d48' }}>⏰ もうすぐ終了！</h3>
@@ -169,7 +163,118 @@ const Sidebar = ({
         </div>
       )}
 
-      {/* ✨ 広場の最新ニュース (最下部へ移動) */}
+      {/* 4. 🏆 ユーザー称号＆レベル (みんクエ) */}
+      <div className="sidebar-section-card" style={{ marginBottom: '24px', background: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)', border: '2px solid #fbbf24', textAlign: 'center' }}>
+        <h3 className="live-feed-title" style={{ color: '#b45309', border: 'none', padding: 0, justifyContent: 'center' }}>🐰 あなたの称号 🥕</h3>
+        {isEditingHn ? (
+          <div style={{ margin: '8px 0', display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center' }}>
+            <input 
+              type="text" 
+              value={tempHn} 
+              onChange={(e) => setTempHn(e.target.value)} 
+              placeholder="ハンドルネーム" 
+              maxLength={40} // 長いパスワードも入力できるように上限を増やす
+              style={{ padding: '6px', borderRadius: '4px', border: '1px solid #fbbf24', textAlign: 'center', width: '80%' }}
+            />
+            <button onClick={saveHn} style={{ padding: '4px 16px', background: '#f59e0b', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>決定</button>
+          </div>
+        ) : (
+          <div style={{ margin: '8px 0' }}>
+            <div style={{ fontSize: '1rem', fontWeight: 'bold', color: hn.includes('◆OLiPi') ? '#ef4444' : (levelInfo?.color || '#78350f'), textShadow: hn.includes('◆OLiPi') ? '0 0 8px rgba(239, 68, 68, 0.4)' : (levelInfo?.textShadow || 'none'), display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+              {hn.includes('◆OLiPi') ? `👑 ${hn}` : hn} 
+              <button onClick={() => setIsEditingHn(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.8rem', color: '#d97706', padding: '2px 4px', borderRadius: '4px' }}>✏️</button>
+            </div>
+            <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#d97706', marginTop: '4px' }}>
+              {levelInfo?.title || 'ひよっこ広場民 🥚'}
+            </div>
+          </div>
+        )}
+        <div style={{ fontSize: '0.85rem', color: '#92400e', marginBottom: '8px', display: 'flex', justifyContent: 'center', gap: '12px' }}>
+          <span>Lv.{levelInfo?.level || 1} (EXP: {userExp || 0})</span>
+          <span style={{ fontWeight: 'bold' }}>🎫 {gachaTickets || 0} 枚</span>
+        </div>
+        {levelInfo?.next && (
+          <div style={{ width: '100%', background: '#fde68a', borderRadius: '10px', height: '12px', overflow: 'hidden', position: 'relative', marginBottom: '4px' }}>
+            <div style={{ height: '100%', background: 'linear-gradient(90deg, #f59e0b, #d97706)', width: `${Math.min(100, Math.max(0, ((userExp || 0) / levelInfo.next) * 100))}%` }}></div>
+          </div>
+        )}
+        {levelInfo?.next ? (
+          <div style={{ fontSize: '0.75rem', color: '#b45309' }}>次の称号まであと {levelInfo.next - (userExp || 0)} EXP！</div>
+        ) : (
+          <div style={{ fontSize: '0.75rem', color: '#b45309' }}>最大レベル到達！あなたは伝説です✨</div>
+        )}
+        {!user && (
+          <div style={{ fontSize: '0.7rem', color: '#ef4444', marginTop: '8px', background: '#fee2e2', padding: '4px', borderRadius: '6px' }}>
+            ※ログインすると他の端末にも称号を引き継げます！
+          </div>
+        )}
+
+        {/* ⚔️ みんクエ タブメニュー */}
+        <div style={{ display: 'flex', gap: '4px', margin: '16px 0 12px 0', background: 'rgba(0,0,0,0.05)', padding: '4px', borderRadius: '8px' }}>
+          <button 
+            onClick={() => setMiniqueTab('patrol')}
+            style={{ flex: 1, padding: '8px 4px', borderRadius: '6px', border: 'none', background: miniqueTab === 'patrol' ? '#3b82f6' : 'transparent', color: miniqueTab === 'patrol' ? 'white' : '#64748b', fontWeight: 'bold', fontSize: '0.85rem', cursor: 'pointer', transition: 'all 0.2s' }}
+          >
+            🚓 パトロール
+          </button>
+          <button 
+            onClick={() => setMiniqueTab('boss')}
+            style={{ flex: 1, padding: '8px 4px', borderRadius: '6px', border: 'none', background: miniqueTab === 'boss' ? '#ef4444' : 'transparent', color: miniqueTab === 'boss' ? 'white' : '#64748b', fontWeight: 'bold', fontSize: '0.85rem', cursor: 'pointer', transition: 'all 0.2s' }}
+          >
+            🐉 ボス戦
+          </button>
+          <button 
+            onClick={() => setMiniqueTab('gacha')}
+            style={{ flex: 1, padding: '8px 4px', borderRadius: '6px', border: 'none', background: miniqueTab === 'gacha' ? '#f59e0b' : 'transparent', color: miniqueTab === 'gacha' ? 'white' : '#64748b', fontWeight: 'bold', fontSize: '0.85rem', cursor: 'pointer', transition: 'all 0.2s' }}
+          >
+            🎪 ガチャ・鞄
+          </button>
+        </div>
+
+        {/* タブのコンテンツ領域 */}
+        <div style={{ minHeight: '300px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          {miniqueTab === 'patrol' && (
+            <PatrolMiniGame 
+              userLevel={levelInfo?.level || 1} 
+              userExp={userExp}
+              addExp={addExp} 
+              gachaTickets={gachaTickets}
+              addTickets={addTickets}
+              equipment={equipment}
+              setEquipment={setEquipment}
+              inventory={inventory}
+              setInventory={setInventory}
+            />
+          )}
+
+          {miniqueTab === 'boss' && (
+            <BattleMiniGame 
+              userLevel={levelInfo?.level || 1} 
+              addExp={addExp} 
+              equipment={equipment} 
+              globalOnlineCount={globalOnlineCount} 
+              user={user}
+            />
+          )}
+
+          {miniqueTab === 'gacha' && (
+            <GachaMiniGame 
+              gachaTickets={gachaTickets} 
+              addTickets={addTickets} 
+              equipment={equipment} 
+              setEquipment={setEquipment} 
+              addExp={addExp}
+              inventory={inventory}
+              setInventory={setInventory}
+            />
+          )}
+        </div>
+      </div>
+
+      {/* 5. 💬 X風・広場のタイムライン（つぶやき） */}
+      <SquareTimeline />
+
+      {/* 6. ✨ 広場の最新ニュース */}
       <div className="sidebar-section-card" style={{ marginBottom: '24px' }}>
         <h3 className="live-feed-title">✨ 広場の最新ニュース</h3>
         <div className="live-feed-content">
@@ -188,6 +293,8 @@ const Sidebar = ({
           ))}
         </div>
       </div>
+
+      {/* 7. 広告 */}
       <AdSenseBox slot="sidebar_slot_placeholder" affiliateType="amazon" />
     </div>
   );

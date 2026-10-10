@@ -607,7 +607,8 @@ async function startAutoPosting() {
 
                 // 🌸 サクラ票（初期票）の生成ロジック
                 // 3〜7票をランダムに生成して選択肢に振り分けるらび！
-                const totalSeedVotes = Math.floor(Math.random() * 5) + 3; 
+                // サクラ票を縮小: 0〜2票に変更（不自然さをなくし、ユーザーが第一号になれる余地を残す）
+                const totalSeedVotes = Math.floor(Math.random() * 3); 
                 const optionVotes = [0, 0, 0, 0];
                 for (let i = 0; i < totalSeedVotes; i++) {
                     // 少し偏りを持たせるために、最初の2つの選択肢が選ばれやすくする

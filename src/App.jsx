@@ -312,9 +312,22 @@ function App() {
     }
   });
 
+  const [inventory, setInventory] = useState(() => {
+    try {
+      const saved = localStorage.getItem('min_ake_inventory');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
   useEffect(() => {
     localStorage.setItem('min_ake_equipment', JSON.stringify(equipment));
   }, [equipment]);
+
+  useEffect(() => {
+    localStorage.setItem('min_ake_inventory', JSON.stringify(inventory));
+  }, [inventory]);
 
   const hasProcessedLoginBonus = useRef(false);
 
@@ -427,20 +440,50 @@ function App() {
     }
 
     let title = 'ひよっこ広場民 🥚';
-    if (currentLevel >= 99) title = 'アンケートの神 👼✨';
-    else if (currentLevel >= 90) title = '伝説の広場民 👑';
-    else if (currentLevel >= 80) title = '英雄広場民 🦸‍♂️';
-    else if (currentLevel >= 70) title = '広場の守護者 🛡️';
-    else if (currentLevel >= 60) title = '広場の達人 🥋';
-    else if (currentLevel >= 50) title = '歴戦の勇者 ⚔️';
-    else if (currentLevel >= 40) title = '熟練の広場民 🏅';
-    else if (currentLevel >= 30) title = '一人前の広場民 🔰';
-    else if (currentLevel >= 20) title = '駆け出しの冒険者 🎒';
-    else if (currentLevel >= 10) title = '見習い広場民 🐥';
+    let color = '#78350f'; // デフォルト色
+    let textShadow = 'none';
+
+    if (currentLevel >= 99) {
+      title = 'アンケートの神 👼✨';
+      color = '#fbbf24'; // 神々しいゴールド
+      textShadow = '0 0 10px rgba(251, 191, 36, 0.8), 0 0 20px rgba(251, 191, 36, 0.4)';
+    } else if (currentLevel >= 90) {
+      title = '伝説の広場民 👑';
+      color = '#f59e0b';
+      textShadow = '0 0 8px rgba(245, 158, 11, 0.6)';
+    } else if (currentLevel >= 80) {
+      title = '英雄広場民 🦸‍♂️';
+      color = '#ef4444'; // 赤
+      textShadow = '0 0 6px rgba(239, 68, 68, 0.5)';
+    } else if (currentLevel >= 70) {
+      title = '広場の守護者 🛡️';
+      color = '#3b82f6'; // 青
+      textShadow = '0 0 6px rgba(59, 130, 246, 0.5)';
+    } else if (currentLevel >= 60) {
+      title = '広場の達人 🥋';
+      color = '#8b5cf6'; // 紫
+    } else if (currentLevel >= 50) {
+      title = '歴戦の勇者 ⚔️';
+      color = '#10b981'; // 緑
+    } else if (currentLevel >= 40) {
+      title = '熟練の広場民 🏅';
+      color = '#b45309';
+    } else if (currentLevel >= 30) {
+      title = '一人前の広場民 🔰';
+      color = '#d97706';
+    } else if (currentLevel >= 20) {
+      title = '駆け出しの冒険者 🎒';
+      color = '#92400e';
+    } else if (currentLevel >= 10) {
+      title = '見習い広場民 🐥';
+      color = '#78350f';
+    }
 
     return { 
       level: currentLevel, 
       title: title, 
+      color: color,
+      textShadow: textShadow,
       next: currentLevel >= 99 ? null : nextExpThreshold 
     };
   };
@@ -1267,7 +1310,15 @@ function App() {
             supabase.from('surveys').select('id,title,category,tags,total_votes,image_url,created_at,view_count,comment_count').eq('visibility', 'public').lt('created_at', sv.created_at).order('created_at', { ascending: false }).limit(1).maybeSingle(),
             supabase.from('surveys').select('id,title,category,tags,total_votes,image_url,created_at,view_count,comment_count').eq('visibility', 'public').gt('created_at', sv.created_at).order('created_at', { ascending: true }).limit(1).maybeSingle()
           ]);
-          if (preOpts) setOptions(preOpts);
+          if (preOpts) {
+            setOptions(preOpts);
+            const realVotes = preOpts.reduce((sum, o) => sum + (o.votes || 0), 0);
+            if (sv.total_votes !== realVotes) {
+              console.warn(`⚠️ 投票数のズレを検知: DB[${sv.total_votes}] vs 実際[${realVotes}]。自動修復します...`);
+              supabase.from('surveys').update({ total_votes: realVotes }).eq('id', sv.id).then();
+              setCurrentSurvey(prev => prev && prev.id === sv.id ? { ...prev, total_votes: realVotes } : prev);
+            }
+          }
           console.log('ADJACENT FETCHED:', pData, nData); setAdjacentSurveys({ prev: pData, next: nData });
         } catch (fetchErr) {
           console.error("❌ loadFromUrl: Fetching options/adjacent failed:", fetchErr);
@@ -1752,7 +1803,17 @@ function App() {
           }
         }
         const { data: preOpts } = await supabase.from('options').select('*').eq('survey_id', survey.id).order('id', { ascending: true });
-        if (preOpts) setOptions(preOpts);
+        if (preOpts) {
+          setOptions(preOpts);
+          const realVotes = preOpts.reduce((sum, o) => sum + (o.votes || 0), 0);
+          if (survey.total_votes !== realVotes) {
+            console.warn(`⚠️ 投票数のズレを検知: DB[${survey.total_votes}] vs 実際[${realVotes}]。自動修復します...`);
+            supabase.from('surveys').update({ total_votes: realVotes }).eq('id', survey.id).then();
+            setCurrentSurvey(prev => prev && prev.id === survey.id ? { ...prev, total_votes: realVotes } : prev);
+            setSurveys(prev => prev.map(s => s.id === survey.id ? { ...s, total_votes: realVotes } : s));
+            setPopularSurveys(prev => prev.map(s => s.id === survey.id ? { ...s, total_votes: realVotes } : s));
+          }
+        }
         setVotedOption(localStorage.getItem(`voted_survey_${survey.id}`));
         try {
           const [prevRes, nextRes] = await Promise.all([
@@ -2850,6 +2911,8 @@ function App() {
               equipment={equipment}
               setEquipment={setEquipment}
               gachaTickets={gachaTickets}
+              inventory={inventory}
+              setInventory={setInventory}
             />
           </Suspense>
         </div>
