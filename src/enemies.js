@@ -125,8 +125,10 @@ export const ENEMIES = [
   { id: 'e327', type: 'normal', name: 'ホストの痛客', hp: 350, atk: 50, def: 30, icon: '🍾', desc: '店内でのマナーが悪く、シャンパンボトルを振り回す。' },
   { id: 'el328', type: 'elite', name: '地下アイドルのTO', hp: 800, atk: 70, def: 100, icon: '👑', desc: '圧倒的な財力と古参の威厳で界隈を仕切るトップオタ。' },
   { id: 'el329', type: 'elite', name: '出禁になった厄介オタ', hp: 600, atk: 85, def: 50, icon: '🚫', desc: 'ルール無用で暴れ回る。物理的な危害を加えてくる。' },
-  { id: 'e330', type: 'normal', name: '全ロスした投資家', hp: 100, atk: 99, def: 0, icon: '📉', desc: 'レバレッジ100倍で全財産を失い、捨て身の一撃を放ってくる。' }
+  { id: 'e330', type: 'normal', name: '全ロスした投資家', hp: 100, atk: 99, def: 0, icon: '📉', desc: 'レバレッジ100倍で全財産を失い、捨て身の一撃を放ってくる。' },
 
+  // ================= 🐰 記念すべきエネミー No.100 =================
+  { id: 'r100', type: 'rare', name: '✨ 炎上芸術祭の知事', hp: 10000, atk: 100, def: 999, icon: '🏛️🔥', desc: 'リコール署名を集められてもビクともしない強靭なメンタル（防御力）の持ち主。' }
 ];
 
 export const rollEnemy = () => {
