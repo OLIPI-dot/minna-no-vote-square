@@ -315,13 +315,18 @@ export const ITEMS = [
 
 export const getReqLevel = (item) => {
   if (item.reqLevel) return item.reqLevel;
-  switch (item.rarity) {
-    case 'LR': return 80;
-    case 'UR': return 50;
-    case 'SR': return 30;
-    case 'R': return 10;
-    default: return 1;
-  }
+  
+  // アイテムのステータス（強さ）から必要レベルを算出
+  // ATKは高めに評価、HPは数値が大きくなりやすいため低めに評価
+  const power = (item.atk * 1.5) + (item.def * 1.0) + (item.hp * 0.3);
+  
+  // パワーを元にレベルを決定（10で割るくらいがちょうどいいバランス）
+  let calcLevel = Math.floor(power / 10);
+  
+  if (calcLevel < 1) calcLevel = 1;
+  if (calcLevel > 99) calcLevel = 99;
+  
+  return calcLevel;
 };
 
 export const rollGacha = () => {
