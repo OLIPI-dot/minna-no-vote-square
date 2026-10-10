@@ -174,36 +174,7 @@ const Sidebar = ({
         </div>
       )}
 
-      {/* 4. 🏆 ユーザー称号＆レベル (みんクエ) */}
-      <div className="sidebar-section-card" style={{ marginBottom: '24px', background: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)', border: '2px solid #fbbf24', textAlign: 'center' }}>
 
-        {isEditingHn ? (
-          <div style={{ margin: '8px 0', display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center' }}>
-            <input 
-              type="text" 
-              value={tempHn} 
-              onChange={(e) => setTempHn(e.target.value)} 
-              placeholder="ハンドルネーム" 
-              maxLength={40} // 長いパスワードも入力できるように上限を増やす
-              style={{ padding: '6px', borderRadius: '4px', border: '1px solid #fbbf24', textAlign: 'center', width: '80%' }}
-            />
-            <button onClick={saveHn} style={{ padding: '4px 16px', background: '#f59e0b', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>決定</button>
-          </div>
-        ) : (
-          <div style={{ fontSize: '1rem', fontWeight: 'bold', color: hn.includes('◆OLiPi') ? '#ef4444' : (levelInfo?.color || '#78350f'), textShadow: hn.includes('◆OLiPi') ? '0 0 8px rgba(239, 68, 68, 0.4)' : (levelInfo?.textShadow || 'none'), display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', margin: '8px 0' }}>
-            {hn.includes('◆OLiPi') ? `👑 ${hn}` : hn} 
-            <button onClick={() => setIsEditingHn(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.8rem', color: '#d97706', padding: '2px 4px', borderRadius: '4px' }}>✏️</button>
-          </div>
-        )}
-
-        {!user && (
-          <div style={{ fontSize: '0.7rem', color: '#ef4444', marginTop: '8px', background: '#fee2e2', padding: '4px', borderRadius: '6px' }}>
-            ※ログインすると他の端末にも称号を引き継げます！
-          </div>
-        )}
-
-        {/* ⚔️ みんクエ機能は一時的に完全削除しました */}
-      </div>
 
       {/* 5. 💬 X風・広場のタイムライン（つぶやき） */}
       <SquareTimeline />
