@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
-import { rollGacha } from '../items';
+import { rollGacha, getReqLevel } from '../items';
 import confetti from 'canvas-confetti';
 
 const rarityColors = {
@@ -11,7 +11,7 @@ const rarityColors = {
   LR: '#ef4444' // 真っ赤（PSO赤箱リスペクト）
 };
 
-const GachaMiniGame = ({ gachaTickets, addTickets, equipment, setEquipment, addExp, inventory = [], setInventory, acquiredItems = [], setAcquiredItems }) => {
+const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, setEquipment, addExp, inventory = [], setInventory, acquiredItems = [], setAcquiredItems }) => {
   const [gachaResult, setGachaResult] = useState(null);
   const [showInventory, setShowInventory] = useState(false);
   const [selectedEquip, setSelectedEquip] = useState(null);
@@ -174,14 +174,20 @@ const GachaMiniGame = ({ gachaTickets, addTickets, equipment, setEquipment, addE
             </span>
           </div>
           <div style={{ fontSize: '0.75rem', color: '#475569', margin: '6px 0' }}>
-            ATK+{gachaResult.atk} / DEF+{gachaResult.def} / HP+{gachaResult.hp}
+            ATK+{gachaResult.atk} / DEF+{gachaResult.def} / HP+{gachaResult.hp}<br/>
+            <span style={{ color: userLevel >= getReqLevel(gachaResult) ? '#059669' : '#ef4444', fontWeight: 'bold' }}>
+              必要Lv: {getReqLevel(gachaResult)}
+            </span>
           </div>
           <div style={{ fontSize: '0.75rem', color: '#854d0e', background: '#fef3c7', padding: '6px', borderRadius: '4px', marginBottom: '10px', fontStyle: 'italic' }}>
             「{gachaResult.desc}」
           </div>
           <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <button onClick={handleEquipFromGacha} style={{ padding: '6px 12px', background: '#10b981', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', flex: '1' }}>
-              すぐ装備
+            <button 
+              onClick={handleEquipFromGacha} 
+              disabled={userLevel < getReqLevel(gachaResult)}
+              style={{ padding: '6px 12px', background: userLevel >= getReqLevel(gachaResult) ? '#10b981' : '#94a3b8', color: 'white', border: 'none', borderRadius: '6px', cursor: userLevel >= getReqLevel(gachaResult) ? 'pointer' : 'not-allowed', fontWeight: 'bold', flex: '1' }}>
+              {userLevel >= getReqLevel(gachaResult) ? 'すぐ装備' : `Lv.${getReqLevel(gachaResult)}必要`}
             </button>
             <button onClick={handleStoreInInventory} style={{ padding: '6px 12px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', flex: '1' }}>
               👜しまう
@@ -202,7 +208,10 @@ const GachaMiniGame = ({ gachaTickets, addTickets, equipment, setEquipment, addE
             [{selectedEquip.rarity}] {selectedEquip.name}
           </div>
           <div style={{ fontSize: '0.75rem', color: '#475569', margin: '6px 0' }}>
-            ATK+{selectedEquip.atk} / DEF+{selectedEquip.def} / HP+{selectedEquip.hp}
+            ATK+{selectedEquip.atk} / DEF+{selectedEquip.def} / HP+{selectedEquip.hp}<br/>
+            <span style={{ color: '#059669', fontWeight: 'bold' }}>
+              必要Lv: {getReqLevel(selectedEquip)}
+            </span>
           </div>
           <div style={{ fontSize: '0.75rem', color: '#334155', background: '#e2e8f0', padding: '6px', borderRadius: '4px', marginBottom: '10px' }}>
             「{selectedEquip.desc}」
@@ -259,12 +268,18 @@ const GachaMiniGame = ({ gachaTickets, addTickets, equipment, setEquipment, addE
                           <span>ATK: {item.atk}{renderDiff(diffAtk)}</span>
                           <span>DEF: {item.def}{renderDiff(diffDef)}</span>
                           <span>HP: {item.hp}{renderDiff(diffHp)}</span>
+                          <span style={{ color: userLevel >= getReqLevel(item) ? '#059669' : '#ef4444', fontWeight: 'bold', marginLeft: 'auto' }}>
+                            必要Lv: {getReqLevel(item)}
+                          </span>
                         </div>
                         <div style={{ fontSize: '0.7rem', color: '#64748b' }}>{item.desc}</div>
                       </div>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                        <button onClick={() => equipFromInventory(item)} style={{ background: '#10b981', color: 'white', border: 'none', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.8rem' }}>
-                          装備
+                        <button 
+                          onClick={() => equipFromInventory(item)} 
+                          disabled={userLevel < getReqLevel(item)}
+                          style={{ background: userLevel >= getReqLevel(item) ? '#10b981' : '#94a3b8', color: 'white', border: 'none', padding: '4px 8px', borderRadius: '4px', cursor: userLevel >= getReqLevel(item) ? 'pointer' : 'not-allowed', fontWeight: 'bold', fontSize: '0.8rem' }}>
+                          {userLevel >= getReqLevel(item) ? '装備' : `Lv${getReqLevel(item)}`}
                         </button>
                         <button onClick={() => handleSellFromInventory(item)} style={{ background: '#f59e0b', color: 'white', border: 'none', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem' }}>
                           売却

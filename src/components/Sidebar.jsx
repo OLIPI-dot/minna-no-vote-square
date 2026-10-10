@@ -276,6 +276,7 @@ const Sidebar = ({
 
               {miniqueTab === 'gacha' && (
                 <GachaMiniGame 
+                  userLevel={levelInfo?.level || 1}
                   gachaTickets={gachaTickets} 
                   addTickets={addTickets} 
                   equipment={equipment} 

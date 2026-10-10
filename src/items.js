@@ -313,6 +313,17 @@ export const ITEMS = [
   { id: 'ac904', type: 'accessory', rarity: 'UR', name: 'Z○の影', atk: 150, def: 150, hp: 250, icon: '👤', desc: '炊き出しと並行して裏の仕事もこなす男の影。', effect: 'regen' }
 ];
 
+export const getReqLevel = (item) => {
+  if (item.reqLevel) return item.reqLevel;
+  switch (item.rarity) {
+    case 'LR': return 80;
+    case 'UR': return 50;
+    case 'SR': return 30;
+    case 'R': return 10;
+    default: return 1;
+  }
+};
+
 export const rollGacha = () => {
   const rand = Math.random() * 100;
   let targetRarity = 'N';
