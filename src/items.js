@@ -8,19 +8,19 @@ export const ITEMS = [
   
   // [R] レア
   { id: 'w10', type: 'weapon', rarity: 'R', name: 'らびのニンジンソード', atk: 15, def: 0, hp: 0, icon: '🥕', desc: 'らびたんが齧りかけの剣。ビタミン豊富。' },
-  { id: 'w11', type: 'weapon', rarity: 'R', name: 'ゲーミングマウス', atk: 18, def: 0, hp: 0, icon: '🖱️', desc: '7色に光る。クリック速度が上がり連射可能。' },
+  { id: 'w11', type: 'weapon', rarity: 'R', name: 'ゲーミングマウス', atk: 18, def: 0, hp: 0, icon: '🖱️', desc: '7色に光る。クリック速度が上がり連射可能。', effect: 'double_attack' },
   { id: 'w12', type: 'weapon', rarity: 'R', name: 'ピコピコハンマー', atk: 10, def: 0, hp: 0, icon: '🔨', desc: '殴ると可愛い音が鳴る。精神的ダメージが高い。' },
-  { id: 'w13', type: 'weapon', rarity: 'R', name: '論破の辞書', atk: 20, def: 0, hp: 0, icon: '📖', desc: '角で殴ると物理的にも痛い。' },
+  { id: 'w13', type: 'weapon', rarity: 'R', name: '論破の辞書', atk: 20, def: 0, hp: 0, icon: '📖', desc: '角で殴ると物理的にも痛い。', effect: 'mental_damage' },
   
   // [SR] スーパーレア
-  { id: 'w20', type: 'weapon', rarity: 'SR', name: '正論の槍', atk: 45, def: 0, hp: 0, icon: '🔱', desc: '相手の矛盾を突く鋭い武器。ぐうの音も出ない。' },
+  { id: 'w20', type: 'weapon', rarity: 'SR', name: '正論の槍', atk: 45, def: 0, hp: 0, icon: '🔱', desc: '相手の矛盾を突く鋭い武器。ぐうの音も出ない。', effect: 'mental_damage' },
   { id: 'w21', type: 'weapon', rarity: 'SR', name: 'バズ・バズーカ', atk: 55, def: 0, hp: 0, icon: '🚀', desc: '一撃で話題をかっさらう強力な重火器。' },
   { id: 'w22', type: 'weapon', rarity: 'SR', name: '黄金のマイク', atk: 40, def: 10, hp: 0, icon: '🎤', desc: '発言力が爆上がりし、周囲を魅了する。' },
   
   // [UR] ウルトラレア
-  { id: 'w30', type: 'weapon', rarity: 'UR', name: '伝説のクソリプハンマー', atk: 120, def: 0, hp: 0, icon: '⚒️', desc: '相手のHPと精神を完全に粉砕する最凶の武器。' },
+  { id: 'w30', type: 'weapon', rarity: 'UR', name: '伝説のクソリプハンマー', atk: 120, def: 0, hp: 0, icon: '⚒️', desc: '相手のHPと精神を完全に粉砕する最凶の武器。', effect: 'mental_damage' },
   { id: 'w31', type: 'weapon', rarity: 'UR', name: '全知全能のアンケート用紙', atk: 150, def: 0, hp: 0, icon: '📜', desc: '世界の真理を書き込める神の紙。' },
-  { id: 'w32', type: 'weapon', rarity: 'UR', name: '神剣エクスカリバー（百均）', atk: 111, def: 11, hp: 11, icon: '🗡️', desc: '百均で売っていた謎の剣。なぜかめちゃくちゃ強い。' },
+  { id: 'w32', type: 'weapon', rarity: 'UR', name: '神剣エクスカリバー（百均）', atk: 111, def: 11, hp: 11, icon: '🗡️', desc: '百均で売っていた謎の剣。なぜかめちゃくちゃ強い。', effect: 'double_attack' },
 
 
   // ================= 防具 (Armor) =================
@@ -36,11 +36,11 @@ export const ITEMS = [
   
   // [SR] スーパーレア
   { id: 'a20', type: 'armor', rarity: 'SR', name: 'もこもこウサ耳フード', atk: 0, def: 40, hp: 50, icon: '🐰', desc: '相手の攻撃をフワッと吸収する可愛い防具。' },
-  { id: 'a21', type: 'armor', rarity: 'SR', name: 'スルー・シールド', atk: 0, def: 55, hp: 0, icon: '🛡️', desc: 'どんな煽りコメントも綺麗に受け流す魔法の盾。' },
+  { id: 'a21', type: 'armor', rarity: 'SR', name: 'スルー・シールド', atk: 0, def: 55, hp: 0, icon: '🛡️', desc: 'どんな煽りコメントも綺麗に受け流す魔法の盾。', effect: 'dodge_up' },
   
   // [UR] ウルトラレア
-  { id: 'a30', type: 'armor', rarity: 'UR', name: '鋼のメンタルアーマー', atk: 0, def: 150, hp: 0, icon: '🤖', desc: 'どんな誹謗中傷もノーダメージになる無敵の鎧。' },
-  { id: 'a31', type: 'armor', rarity: 'UR', name: '絶対領域バリア', atk: 0, def: 200, hp: 100, icon: '🌌', desc: '誰も踏み込めない神聖なオーラで身を包む。' },
+  { id: 'a30', type: 'armor', rarity: 'UR', name: '鋼のメンタルアーマー', atk: 0, def: 150, hp: 0, icon: '🤖', desc: 'どんな誹謗中傷もノーダメージになる無敵の鎧。', effect: 'regen' },
+  { id: 'a31', type: 'armor', rarity: 'UR', name: '絶対領域バリア', atk: 0, def: 200, hp: 100, icon: '🌌', desc: '誰も踏み込めない神聖なオーラで身を包む。', effect: 'reflect' },
 
 
   // ================= アクセサリー (Accessory) =================
@@ -50,14 +50,14 @@ export const ITEMS = [
   
   // [R] レア
   { id: 'ac10', type: 'accessory', rarity: 'R', name: '煽り耐性のお守り', atk: 0, def: 5, hp: 30, icon: '🧿', desc: 'ストレスを軽減してくれるありがたいお守り。' },
-  { id: 'ac11', type: 'accessory', rarity: 'R', name: '魔剤エナジードリンク', atk: 10, def: 0, hp: 20, icon: '🥫', desc: '飲むと一時的に無敵になった気がする。' },
+  { id: 'ac11', type: 'accessory', rarity: 'R', name: '魔剤エナジードリンク', atk: 10, def: 0, hp: 20, icon: '🥫', desc: '飲むと一時的に無敵になった気がする。', effect: 'crit_up' },
   
   // [SR] スーパーレア
   { id: 'ac20', type: 'accessory', rarity: 'SR', name: '高みの見物のティーカップ', atk: 0, def: 10, hp: 80, icon: '☕', desc: '争いを見ながら飲む紅茶はうまい。HP大幅UP。' },
-  { id: 'ac21', type: 'accessory', rarity: 'SR', name: '黄金のニンジン', atk: 15, def: 15, hp: 50, icon: '🥕', desc: 'らびたんの大好物。持っていると運気が上がる。' },
+  { id: 'ac21', type: 'accessory', rarity: 'SR', name: '黄金のニンジン', atk: 15, def: 15, hp: 50, icon: '🥕', desc: 'らびたんの大好物。持っていると運気が上がる。', effect: 'regen' },
   
   // [UR] ウルトラレア
-  { id: 'ac30', type: 'accessory', rarity: 'UR', name: '王者のサングラス', atk: 25, def: 25, hp: 150, icon: '🕶️', desc: '圧倒的なオーラを放ち、ザコを寄せ付けない。' },
+  { id: 'ac30', type: 'accessory', rarity: 'UR', name: '王者のサングラス', atk: 25, def: 25, hp: 150, icon: '🕶️', desc: '圧倒的なオーラを放ち、ザコを寄せ付けない。', effect: 'dodge_up' },
   { id: 'ac31', type: 'accessory', rarity: 'UR', name: 'らびたんのぬいぐるみ', atk: 50, def: 50, hp: 200, icon: '🧸', desc: 'サイトのマスコット。すべてのステータスが激増する。' },
 
   // ================= 🐰 第2弾 追加アイテム (20種) =================
@@ -91,8 +91,8 @@ export const ITEMS = [
   { id: 'w203', type: 'weapon', rarity: 'R', name: '謎のAIイラスト生成機', atk: 25, def: 0, hp: 0, icon: '🤖', desc: '指が6本あるキャラを生み出して相手を混乱させる。' },
   { id: 'w204', type: 'weapon', rarity: 'R', name: '過去の黒歴史ツイート', atk: 30, def: 0, hp: 0, icon: '🐦', desc: '掘り返して投げつけると致命傷になる。' },
   { id: 'w205', type: 'weapon', rarity: 'SR', name: '赤スパ（1万円）', atk: 60, def: 0, hp: 10, icon: '🧧', desc: '圧倒的な財力で相手の目をくらませる。' },
-  { id: 'w206', type: 'weapon', rarity: 'SR', name: '論破王の唇', atk: 80, def: 0, hp: 0, icon: '👄', desc: '「それってあなたの感想ですよね？」と物理で殴る。' },
-  { id: 'w207', type: 'weapon', rarity: 'UR', name: '開示請求の通知書', atk: 400, def: 100, hp: 0, icon: '✉️', desc: '届いた瞬間、相手は顔面蒼白になり震え上がる。' },
+  { id: 'w206', type: 'weapon', rarity: 'SR', name: '論破王の唇', atk: 80, def: 0, hp: 0, icon: '👄', desc: '「それってあなたの感想ですよね？」と物理で殴る。', effect: 'mental_damage' },
+  { id: 'w207', type: 'weapon', rarity: 'UR', name: '開示請求の通知書', atk: 400, def: 100, hp: 0, icon: '✉️', desc: '届いた瞬間、相手は顔面蒼白になり震え上がる。', effect: 'mental_damage' },
   { id: 'w208', type: 'weapon', rarity: 'UR', name: '炎上系YouTuberのカメラ', atk: 250, def: 0, hp: 0, icon: '📹', desc: '迷惑行為を撮影しながら殴りかかる無敵の人専用武器。' },
   { id: 'w209', type: 'weapon', rarity: 'R', name: '誰かが落としたUSB', atk: 10, def: 0, hp: -5, icon: '💾', desc: 'PCに挿した瞬間、謎のウイルスが解き放たれる。' },
   { id: 'w210', type: 'weapon', rarity: 'SR', name: '自演用サブ垢の群れ', atk: 50, def: 0, hp: 0, icon: '👥', desc: '一斉に相手を攻撃する卑劣極まりない戦法。' },

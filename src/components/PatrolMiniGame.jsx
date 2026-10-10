@@ -75,58 +75,117 @@ const PatrolMiniGame = ({ userLevel, userExp, addExp, equipment, setEquipment, a
     let currentEnemyHp = enemyHp;
     let currentPlayerHp = playerHp;
 
-    // 🎲 お互いの命中率とクリティカル判定
-    const pMiss = Math.random() < 0.05; // 5% ミス
-    const pCrit = Math.random() < 0.10; // 10% 会心の一撃
+    const hasEffect = (eff) => {
+      return (equipment?.weapon?.effect === eff) || 
+             (equipment?.armor?.effect === eff) || 
+             (equipment?.accessory?.effect === eff);
+    };
 
-    const eMiss = Math.random() < 0.05; // 5% ミス
-    const ePainful = Math.random() < (enemy.type === 'rare' ? 0.15 : 0.05); // 敵の痛恨の一撃
+    // ✨ 【自動回復: regen】ターンの開始時に回復
+    if (hasEffect('regen')) {
+      const healAmount = Math.floor(pMaxHp * 0.1);
+      currentPlayerHp = Math.min(pMaxHp, currentPlayerHp + healAmount);
+      newLogs.push(`✨ 【リジェネ】 装備の力で体力が ${healAmount} 回復した！`);
+    }
+
+    // 🎲 お互いの命中率とクリティカル判定
+    const basePCrit = hasEffect('crit_up') ? 0.30 : 0.10; // 会心アップで30%
+    const pMiss = Math.random() < 0.05; // 5% ミス
+    const pCrit = Math.random() < basePCrit;
+
+    const baseEMiss = hasEffect('dodge_up') ? 0.30 : 0.05; // 回避アップで30%
+    const eMiss = Math.random() < baseEMiss; 
+    const ePainful = Math.random() < (enemy.type === 'rare' ? 0.15 : 0.05);
+
+    let isEnemyStunned = false;
 
     // 🗡️ プレイヤーの攻撃フェーズ
     if (pMiss) {
       newLogs.push(`💨 あなたの攻撃... しかし【${enemy.name}】に避けられた！`);
     } else {
-      let dmgToEnemy = pAtk - enemy.def;
-      const variance = 1.0 + (Math.random() * 0.4 - 0.2); // ±20%のブレ
-      dmgToEnemy = Math.floor(dmgToEnemy * variance);
-      const minDmg = Math.max(1, Math.floor(pAtk * 0.2)); // 最低でも攻撃力の20%は通る
-      if (dmgToEnemy < minDmg) dmgToEnemy = minDmg;
-      if (pCrit) dmgToEnemy = Math.floor(dmgToEnemy * 2.5); // クリティカル！
-      
+      const calcDamage = () => {
+        let dmg = pAtk - enemy.def;
+        const variance = 1.0 + (Math.random() * 0.4 - 0.2);
+        dmg = Math.floor(dmg * variance);
+        const minDmg = Math.max(1, Math.floor(pAtk * 0.2));
+        return Math.max(minDmg, dmg);
+      };
+
+      let dmgToEnemy = calcDamage();
+      if (pCrit) dmgToEnemy = Math.floor(dmgToEnemy * 2.5);
       currentEnemyHp = Math.max(0, currentEnemyHp - dmgToEnemy);
       newLogs.push(pCrit 
         ? `⚡ 会心の一撃！！！ ${dmgToEnemy} の大ダメージ！` 
         : `🗡️ あなたの攻撃！ ${dmgToEnemy} のダメージ！`);
+
+      // 🩸 【吸血: lifesteal】
+      if (currentEnemyHp > 0 && hasEffect('lifesteal')) {
+        const drain = Math.floor(dmgToEnemy * 0.3);
+        currentPlayerHp = Math.min(pMaxHp, currentPlayerHp + drain);
+        newLogs.push(`🩸 【吸血】 敵の体力を奪い ${drain} 回復した！`);
+      }
+
+      // ⚔️ 【二刀流: double_attack】
+      if (currentEnemyHp > 0 && hasEffect('double_attack')) {
+        let secondDmg = Math.floor(calcDamage() * 0.7); // 2撃目は70%の威力
+        currentEnemyHp = Math.max(0, currentEnemyHp - secondDmg);
+        newLogs.push(`⚔️ 【連撃】 怒涛の追撃！さらに ${secondDmg} のダメージ！`);
+      }
+
+      // 💀 【精神崩壊: mental_damage】
+      if (currentEnemyHp > 0 && hasEffect('mental_damage') && Math.random() < 0.3) {
+        isEnemyStunned = true;
+        newLogs.push(`💀 【精神破壊】 敵はメンタルをやられて動けない！！`);
+      }
     }
 
+    // 敵が死んだかチェック
     if (currentEnemyHp === 0) {
-      // 勝利処理
       newLogs.push(`🎉 【${enemy.name}】 を撃退した！`);
       setEnemyHp(0);
+      setPlayerHp(currentPlayerHp); // 吸血やリジェネの回復を反映
       setBattleLog(newLogs);
       handleWin(enemy);
       return;
     }
 
     // 💥 敵の反撃フェーズ
-    if (eMiss) {
+    if (isEnemyStunned) {
+      newLogs.push(`... 【${enemy.name}】 は虚空を見つめている。`);
+    } else if (eMiss) {
       newLogs.push(`💨 敵の反撃... しかしあなたはヒョイッと避けた！`);
     } else {
       let dmgToPlayer = enemy.atk - pDef;
-      const variance = 1.0 + (Math.random() * 0.4 - 0.2); // ±20%のブレ
+      const variance = 1.0 + (Math.random() * 0.4 - 0.2);
       dmgToPlayer = Math.floor(dmgToPlayer * variance);
-      const minDmg = Math.max(1, Math.floor(enemy.atk * 0.2)); // 最低でも攻撃力の20%は通る
+      const minDmg = Math.max(1, Math.floor(enemy.atk * 0.2));
       if (dmgToPlayer < minDmg) dmgToPlayer = minDmg;
-      if (ePainful) dmgToPlayer = Math.floor(dmgToPlayer * 2.5); // 痛恨の一撃！
+      if (ePainful) dmgToPlayer = Math.floor(dmgToPlayer * 2.5);
       
       currentPlayerHp = Math.max(0, currentPlayerHp - dmgToPlayer);
       newLogs.push(ePainful 
         ? `🩸 痛恨の一撃！！！ 敵の猛攻で ${dmgToPlayer} の大ダメージを受けた！` 
         : `💥 敵の反撃！ ${dmgToPlayer} のダメージを受けた！`);
+        
+      // 🪞 【ダメージ反射: reflect】
+      if (currentPlayerHp > 0 && hasEffect('reflect')) {
+        const refDmg = Math.floor(dmgToPlayer * 0.5); // 50%反射
+        currentEnemyHp = Math.max(0, currentEnemyHp - refDmg);
+        newLogs.push(`🪞 【反射】 装備がダメージを跳ね返した！ 敵に ${refDmg} のダメージ！`);
+      }
+    }
+
+    // 反射で敵が死んだかチェック
+    if (currentEnemyHp === 0) {
+      newLogs.push(`🎉 敵は自滅した... 【${enemy.name}】 を撃退した！`);
+      setEnemyHp(0);
+      setPlayerHp(currentPlayerHp);
+      setBattleLog(newLogs);
+      handleWin(enemy);
+      return;
     }
 
     if (currentPlayerHp === 0) {
-      // 敗北処理
       newLogs.push(`💀 目の前が真っ暗になった... 敵に逃げられた。`);
       setPlayerHp(0);
       setEnemyHp(currentEnemyHp);
