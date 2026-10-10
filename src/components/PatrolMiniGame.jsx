@@ -383,7 +383,7 @@ const PatrolMiniGame = ({ userLevel, userExp, addExp, equipment, setEquipment, a
             <div style={{ textAlign: 'center', fontSize: '2.5rem', marginBottom: '8px', animation: enemy.type === 'rare' ? 'pulse 2s infinite' : 'none' }}>
               {enemy.icon}
             </div>
-            <div style={{ textAlign: 'center', fontWeight: 'bold', color: enemy.type === 'rare' ? '#b45309' : '#334155', marginBottom: '8px' }}>
+            <div style={{ textAlign: 'center', fontWeight: 'bold', color: enemy.type === 'rare' ? '#ef4444' : '#334155', textShadow: enemy.type === 'rare' ? '0 0 5px rgba(239, 68, 68, 0.4)' : 'none', marginBottom: '8px' }}>
               <span style={{ fontSize: '0.8rem', color: '#64748b', marginRight: '4px' }}>Lv.{enemy.level || 1}</span>
               {enemy.name}
             </div>

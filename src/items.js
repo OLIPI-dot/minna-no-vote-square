@@ -196,7 +196,45 @@ export const ITEMS = [
   { id: 'ac407', type: 'accessory', rarity: 'SR', name: '闇金の借用書', atk: 100, def: -50, hp: 0, icon: '📜', desc: '追い詰められた人間の底力を引き出す。' },
   { id: 'ac408', type: 'accessory', rarity: 'UR', name: '情報商材のUSBメモリ', atk: 150, def: 100, hp: 50, icon: '💾', desc: '「これで月収1000万」という幻覚で超人になれる。' },
   { id: 'ac409', type: 'accessory', rarity: 'N', name: 'スパチャの領収書', atk: 0, def: 0, hp: 25, icon: '🧾', desc: '推しに貢いだ証。ただの紙切れだが心は満たされる。' },
-  { id: 'ac410', type: 'accessory', rarity: 'R', name: '推しのチェキ', atk: 25, def: 25, hp: 50, icon: '🖼️', desc: 'スマホの裏に挟んでいる。見るだけでHPが回復する。' }
+  { id: 'ac410', type: 'accessory', rarity: 'R', name: '推しのチェキ', atk: 25, def: 25, hp: 50, icon: '🖼️', desc: 'スマホの裏に挟んでいる。見るだけでHPが回復する。' },
+
+
+  // ================= 🐰 第6弾 追加アイテム（さらなる界隈の闇編：30種） =================
+  // --- 武器 ---
+  { id: 'w501', type: 'weapon', rarity: 'N', name: 'お気持ち表明の長文ノート', atk: 25, def: 0, hp: 0, icon: '📝', desc: '読むだけで精神がすり減る。相手にデバフをかける。' },
+  { id: 'w502', type: 'weapon', rarity: 'SR', name: '弁護士からの内容証明', atk: 150, def: 0, hp: 0, icon: '✉️', desc: 'これを受け取ったら最後、逃げることは許されない。' },
+  { id: 'w503', type: 'weapon', rarity: 'UR', name: 'ポリコレ棒（純金製）', atk: 200, def: 50, hp: 0, icon: '🦯', desc: 'どんな正論もねじ伏せる無敵の武器。ただし自分が叩かれるリスクも。' },
+  { id: 'w504', type: 'weapon', rarity: 'R', name: '指が6本あるAIイラスト', atk: 45, def: 0, hp: 0, icon: '🖼️', desc: '相手に「AIじゃん」と突っ込ませる隙を作る。' },
+  { id: 'w505', type: 'weapon', rarity: 'SR', name: '論破王の黄色い本', atk: 85, def: 0, hp: 0, icon: '📘', desc: '物理で殴るのが一番強い。' },
+  { id: 'w506', type: 'weapon', rarity: 'N', name: 'まとめサイトの対立煽り記事', atk: 30, def: 0, hp: -5, icon: '💻', desc: 'ヘイトを稼いで攻撃力を上げる。' },
+  { id: 'w507', type: 'weapon', rarity: 'R', name: '西麻布のシャンパン', atk: 60, def: 0, hp: 0, icon: '🍾', desc: '中身をぶちまけて相手の視界を奪う。' },
+  { id: 'w508', type: 'weapon', rarity: 'SR', name: 'メンヘラのポエム', atk: 110, def: 0, hp: -20, icon: '💔', desc: '呪いが込められており、持っているだけでHPが減る。' },
+  { id: 'w509', type: 'weapon', rarity: 'N', name: 'アフィリエイトリンク', atk: 15, def: 0, hp: 5, icon: '🔗', desc: '相手が踏むと自分のお小遣いが増える。' },
+  { id: 'w510', type: 'weapon', rarity: 'UR', name: '全財産を賭けたレバレッジ100倍ロング', atk: 500, def: -200, hp: -200, icon: '📈', desc: '一撃必殺か、即死か。運命のダイスロール。' },
+
+  // --- 防具 ---
+  { id: 'a501', type: 'armor', rarity: 'SR', name: '論破王のスマイルマスク', atk: 0, def: 120, hp: 0, icon: '😏', desc: '何を言われてもノーダメージになる無敵の表情。' },
+  { id: 'a502', type: 'armor', rarity: 'N', name: '自然派ママの手作り石鹸', atk: 0, def: 20, hp: 10, icon: '🧼', desc: '無添加だから安全。プラシーボ効果でHPが回復。' },
+  { id: 'a503', type: 'armor', rarity: 'UR', name: 'パパのブラックカード', atk: 0, def: 300, hp: 150, icon: '💳', desc: '上限なしの財力がすべての攻撃を無効化する。' },
+  { id: 'a504', type: 'armor', rarity: 'SR', name: '地下アイドルのチェキ束', atk: 0, def: 100, hp: 50, icon: '📸', desc: '推しへの愛の厚みが、物理的な防弾チョッキとなる。' },
+  { id: 'a505', type: 'armor', rarity: 'R', name: '反ワクのアルミホイル全身タイツ', atk: 0, def: 60, hp: 0, icon: '👽', desc: 'あらゆる電波や毒を弾くと言い張っている。' },
+  { id: 'a506', type: 'armor', rarity: 'N', name: 'ネカマの自撮りアイコン', atk: 0, def: 25, hp: 0, icon: '👩', desc: '相手の攻撃を躊躇させる効果がある。' },
+  { id: 'a507', type: 'armor', rarity: 'SR', name: 'プロ市民の拡声器', atk: 50, def: 80, hp: 0, icon: '📢', desc: '防具なのに攻撃力がある。大声で相手を威嚇する。' },
+  { id: 'a508', type: 'armor', rarity: 'R', name: '開示請求の盾', atk: 0, def: 75, hp: 0, icon: '⚖️', desc: '攻撃してきた相手のIPアドレスを記録する。' },
+  { id: 'a509', type: 'armor', rarity: 'N', name: '出会い系アプリのサクラ垢', atk: 0, def: 15, hp: 15, icon: '💌', desc: '無限にポイントを消費させ、相手を疲弊させる。' },
+  { id: 'a510', type: 'armor', rarity: 'UR', name: '無敵の人の精神', atk: 100, def: 250, hp: 100, icon: '🔥', desc: '失うものが何もないため、どんな攻撃も恐れない。' },
+
+  // --- アクセサリー ---
+  { id: 'ac501', type: 'accessory', rarity: 'SR', name: 'ヒモの飼育マニュアル', atk: 0, def: 50, hp: 100, icon: '🪢', desc: '何もしなくても生きられる究極の生存術。' },
+  { id: 'ac502', type: 'accessory', rarity: 'N', name: '無断転載されたバズツイート', atk: 10, def: 10, hp: 10, icon: '🔄', desc: '承認欲求が満たされ、全ステータスが少し上がる。' },
+  { id: 'ac503', type: 'accessory', rarity: 'R', name: 'メンヘラ製造機のLINE履歴', atk: 40, def: -20, hp: 30, icon: '📱', desc: '読んでるだけで沼に落ちる。' },
+  { id: 'ac504', type: 'accessory', rarity: 'UR', name: '界隈の黒幕の連絡先', atk: 150, def: 150, hp: 150, icon: '📞', desc: 'これさえあれば、どんなトラブルも裏で解決できる。' },
+  { id: 'ac505', type: 'accessory', rarity: 'SR', name: 'オーバードーズ用のお薬セット', atk: 100, def: 0, hp: -50, icon: '💊', desc: '一時的に超サイヤ人になれるが、確実に寿命が縮む。' },
+  { id: 'ac506', type: 'accessory', rarity: 'R', name: '絵師の凍結されたアカウント', atk: 30, def: 30, hp: 0, icon: '❄️', desc: '過去の栄光と怨念が宿っている。' },
+  { id: 'ac507', type: 'accessory', rarity: 'N', name: '冷笑系のリプライ', atk: 15, def: 15, hp: -5, icon: '😏', desc: '精神を研ぎ澄ますが、友達は減る。' },
+  { id: 'ac508', type: 'accessory', rarity: 'SR', name: 'パパ活の確定申告書', atk: 50, def: 80, hp: 50, icon: '📄', desc: '税務署の影に怯えながらも、確かな財力を証明する。' },
+  { id: 'ac509', type: 'accessory', rarity: 'N', name: '出禁オタの出待ちリスト', atk: 20, def: 0, hp: 20, icon: '📝', desc: '異常な執念でHPが上がる。' },
+  { id: 'ac510', type: 'accessory', rarity: 'UR', name: '伝説の炎上動画', atk: 200, def: 0, hp: -100, icon: '🎬', desc: '世界中に拡散され、破滅的な攻撃力を手に入れる。' }
 
 ];
 

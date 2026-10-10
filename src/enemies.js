@@ -92,7 +92,40 @@ export const ENEMIES = [
   { id: 'e227', type: 'normal', name: '自粛警察', hp: 250, atk: 30, def: 80, icon: '🚓', desc: '少しでもはみ出した行動をとると過剰に攻撃してくる。' },
   { id: 'e228', type: 'normal', name: 'コラボカフェ転売ヤー', hp: 220, atk: 20, def: 30, icon: '☕', desc: '特典のコースターだけを奪って去っていく。' },
   { id: 'e229', type: 'normal', name: 'スパチャで破産したおじさん', hp: 900, atk: 5, def: 5, icon: '💸', desc: 'HPは高いが中身はスッカラカン。哀愁が漂う。' },
-  { id: 'el230', type: 'elite', name: 'Vチューバーのガチ恋勢', hp: 850, atk: 90, def: 50, icon: '😍', desc: '推しのためなら命を投げ出す狂戦士。' }
+  { id: 'el230', type: 'elite', name: 'Vチューバーのガチ恋勢', hp: 850, atk: 90, def: 50, icon: '😍', desc: '推しのためなら命を投げ出す狂戦士。' },
+
+
+  // ================= 🐰 第6弾 追加エネミー (さらなるネットの深淵・界隈の闇編：30種) =================
+  { id: 'e301', type: 'normal', name: 'バチャ豚', hp: 300, atk: 25, def: 10, icon: '🐷', desc: '推しVチューバーのためなら昼夜問わず鳴き続ける。' },
+  { id: 'el302', type: 'elite', name: '絵師の過激派ファン', hp: 550, atk: 75, def: 50, icon: '🎨', desc: '解釈違いを絶対に許さず、引用RTで袋叩きにしてくる。' },
+  { id: 'e303', type: 'normal', name: 'お気持ち表明おじさん', hp: 200, atk: 15, def: 30, icon: '📝', desc: '聞かれてもないのに長文で持論を展開し、相手のHPをじわじわ削る。' },
+  { id: 'el304', type: 'elite', name: 'ポリコレ戦士', hp: 800, atk: 60, def: 120, icon: '🌈', desc: 'あらゆるエンタメを監視し、少しでもズレていると棍棒で殴ってくる。' },
+  { id: 'el305', type: 'elite', name: 'キャンセルカルチャーの権化', hp: 950, atk: 90, def: 80, icon: '❌', desc: '過去の失言を掘り起こし、社会的に抹殺しようとする恐怖の存在。' },
+  { id: 'e306', type: 'normal', name: 'AIイラスト量産アカ', hp: 150, atk: 20, def: 15, icon: '🤖', desc: '指が6本ある女の子の絵を1日100枚投稿してくる。' },
+  { id: 'el307', type: 'elite', name: '論破王もどき', hp: 600, atk: 50, def: 90, icon: '👓', desc: '「それってあなたの感想ですよね」を連呼し、会話を成立させない。' },
+  { id: 'el308', type: 'elite', name: '冷笑系コメンテーター', hp: 700, atk: 45, def: 110, icon: '😏', desc: 'すべてを斜め上から見下し、反論されるとブロックして逃げる。' },
+  { id: 'e309', type: 'normal', name: '限界アラサー女子', hp: 280, atk: 30, def: 20, icon: '🍷', desc: 'ストロングゼロを片手に深夜に病みツイートを連発する。' },
+  { id: 'e310', type: 'normal', name: 'パパ活パパ', hp: 800, atk: 5, def: 5, icon: '👨', desc: 'ただお金をむしり取られるだけの存在。倒すとボーナス資金。' },
+  { id: 'el311', type: 'elite', name: '港区女子', hp: 650, atk: 70, def: 60, icon: '🍾', desc: 'ラウンジで培った交渉術で、プレイヤーの財布にダイレクトアタック。' },
+  { id: 'r312', type: 'rare', name: '✨ 西麻布の黒幕', hp: 4500, atk: 350, def: 400, icon: '🕴️', desc: 'すべての港区女子とパパを裏で操る絶対権力者。' },
+  { id: 'el313', type: 'elite', name: '反ワク・反マスク連合軍', hp: 900, atk: 60, def: 80, icon: '🦠', desc: '謎の自然治癒力を信じており、状態異常が効かない。' },
+  { id: 'e314', type: 'normal', name: '自然派ママ', hp: 400, atk: 35, def: 40, icon: '🌿', desc: '手作り石鹸と謎のオーガニック理論で物理攻撃を防ぐ。' },
+  { id: 'e315', type: 'normal', name: '無断転載BOT', hp: 120, atk: 15, def: 10, icon: '🔄', desc: 'バズったツイートを数秒でパクって自分の手柄にする。' },
+  { id: 'e316', type: 'normal', name: 'パクツイ職人', hp: 250, atk: 40, def: 20, icon: '🐦', desc: '無断転載BOTの進化系。パクった内容で本家よりバズる。' },
+  { id: 'r317', type: 'rare', name: '✨ 裏垢特定班のリーダー', hp: 3800, atk: 400, def: 150, icon: '🕵️', desc: '瞳に映った景色から住所を特定する伝説のスナイパー。' },
+  { id: 'el318', type: 'elite', name: '開示請求のプロ', hp: 1200, atk: 10, def: 500, icon: '⚖️', desc: '超絶硬い防御力を持ち、攻撃するたびに精神ダメージを反射してくる。' },
+  { id: 'el319', type: 'elite', name: 'プロ市民', hp: 850, atk: 75, def: 90, icon: '📢', desc: '拡声器で鼓膜を破壊し、数の暴力で圧倒してくる。' },
+  { id: 'el320', type: 'elite', name: 'まとめサイト管理人', hp: 750, atk: 65, def: 70, icon: '💻', desc: '対立煽りでプレイヤーを混乱させ、同士討ちを狙う。' },
+  { id: 'e321', type: 'normal', name: 'アフィカスの亡霊', hp: 300, atk: 25, def: 50, icon: '🔗', desc: '死してなお、アフィリエイトリンクを踏ませようと付き纏う。' },
+  { id: 'e322', type: 'normal', name: '出会い厨', hp: 200, atk: 30, def: 15, icon: '💌', desc: '見境なくDMを送りつけ、ワンチャンを狙い続ける。' },
+  { id: 'e323', type: 'normal', name: 'ネカマのおっさん', hp: 400, atk: 45, def: 35, icon: '🧔‍♀️', desc: '可愛いアイコンの中身。真実を知った時の精神ダメージは計り知れない。' },
+  { id: 'el324', type: 'elite', name: 'プロのヒモ', hp: 550, atk: 80, def: 20, icon: '🪢', desc: '何もしないのに何故か許される才能を持つ。女の怨念を召喚して攻撃する。' },
+  { id: 'el325', type: 'elite', name: 'メンヘラ製造機', hp: 700, atk: 95, def: 40, icon: '💔', desc: '甘い言葉で近づき、関わった人間をすべてメンヘラに変える。' },
+  { id: 'e326', type: 'normal', name: 'オーバードーズ患者', hp: 150, atk: 60, def: 5, icon: '💊', desc: '自暴自棄の超火力で突っ込んでくるが、勝手に倒れることもある。' },
+  { id: 'e327', type: 'normal', name: 'ホストの痛客', hp: 350, atk: 50, def: 30, icon: '🍾', desc: '店内でのマナーが悪く、シャンパンボトルを振り回す。' },
+  { id: 'el328', type: 'elite', name: '地下アイドルのTO', hp: 800, atk: 70, def: 100, icon: '👑', desc: '圧倒的な財力と古参の威厳で界隈を仕切るトップオタ。' },
+  { id: 'el329', type: 'elite', name: '出禁になった厄介オタ', hp: 600, atk: 85, def: 50, icon: '🚫', desc: 'ルール無用で暴れ回る。物理的な危害を加えてくる。' },
+  { id: 'e330', type: 'normal', name: '全ロスした投資家', hp: 100, atk: 99, def: 0, icon: '📉', desc: 'レバレッジ100倍で全財産を失い、捨て身の一撃を放ってくる。' }
 
 ];
 
