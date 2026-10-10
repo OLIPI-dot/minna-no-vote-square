@@ -165,21 +165,9 @@ function App() {
   const [fakeOffset, setFakeOffset] = useState(12);
 
   useEffect(() => {
-    // 🐰 サクラの人数をもっとダイナミックに変化させる（0〜50人規模）
-    const interval = setInterval(() => {
-      setFakeOffset(prev => {
-        // -5人 から +5人 の間で一気に変動させる
-        const change = Math.floor(Math.random() * 11) - 5; 
-        let next = prev + change;
-        
-        // 0人だと寂しいので最低でも3人はいるように見せかけ、最大50人くらいにする
-        if (next < 3) next = 3;
-        if (next > 55) next = 55;
-        
-        return next;
-      });
-    }, 12000 + Math.random() * 8000); // 12秒〜20秒おき
-    return () => clearInterval(interval);
+    // 🐰 さくラビたん撤退！（サクラの増減ロジックを停止）
+    // 将来的には Supabase Presence などを活用して完全なリアルタイム人数を出したいところ。
+    setFakeOffset(0); // 嘘の人数はゼロにする
   }, []);
 
   // fakeOffsetが変わるたびにglobalOnlineCountも更新する
