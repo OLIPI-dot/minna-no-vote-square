@@ -355,9 +355,8 @@ function App() {
           shouldUpdate = true;
         }
         
-        // 🎁 1日1回のアクセスボーナス判定！（一時停止中）
-        /*
-        if (lastLoginDate !== todayStr && !hasProcessedLoginBonus.current) {
+        // 🎁 1日1回のアクセスボーナス判定！（開発環境のみ有効）
+        if (import.meta.env.DEV && lastLoginDate !== todayStr && !hasProcessedLoginBonus.current) {
           hasProcessedLoginBonus.current = true;
           newTotalExp += 10;
           newTotalTickets += 1; // ログボでガチャチケ1枚
@@ -368,7 +367,6 @@ function App() {
             alert('🎉 今日のアクセスボーナス！\n広場に遊びに来てくれてありがとう！\n＋10 EXP と 【ガチャチケット🎫 x1】 を獲得しました！🐰✨');
           }, 1000);
         }
-        */
         
         if (shouldUpdate) {
           updates.vote_exp = newTotalExp;
@@ -388,9 +386,8 @@ function App() {
         let newTotalTickets = localTickets;
         let shouldUpdate = false;
 
-        // 🎁 1日1回のアクセスボーナス判定！（一時停止中）
-        /*
-        if (localLastLogin !== todayStr && !hasProcessedLoginBonus.current) {
+        // 🎁 1日1回のアクセスボーナス判定！（開発環境のみ有効）
+        if (import.meta.env.DEV && localLastLogin !== todayStr && !hasProcessedLoginBonus.current) {
           hasProcessedLoginBonus.current = true;
           newTotalExp += 10;
           newTotalTickets += 1;
@@ -399,7 +396,6 @@ function App() {
             alert('🎉 今日のアクセスボーナス！\n広場に遊びに来てくれてありがとう！\n＋10 EXP と 【ガチャチケット🎫 x1】 を獲得しました！🐰✨');
           }, 1000);
         }
-        */
 
         if (shouldUpdate) {
           localStorage.setItem('min_ake_exp', newTotalExp.toString());
@@ -553,7 +549,14 @@ function App() {
       if (!dailyActions.voted.includes(surveyId) && dailyActions.voted.length < 3) {
         dailyActions.voted.push(surveyId);
         localStorage.setItem('daily_actions_v2', JSON.stringify(dailyActions));
-        addExp(5); // チケットを配らない代わりにEXPを少し増量
+        
+        // 開発環境のみガチャチケを配る。本番環境はEXPのみ増量。
+        if (import.meta.env.DEV) {
+          addExp(3);
+          addTickets(1);
+        } else {
+          addExp(5);
+        }
       }
     }
   };
