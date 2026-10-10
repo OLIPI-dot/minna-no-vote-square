@@ -4,11 +4,47 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-10T07:44:59.687Z</updated>
+  <updated>2026-10-10T12:52:01.242Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>都構想 ミャクミャ区案は採用せず</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23361"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23361</id>
+    <updated>2026-10-10T12:51:56.392Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;特別区名の絞り込み&quot;,
+  &quot;point1_desc&quot;: &quot;大阪都構想に伴い大阪市を廃止して設置される特別区の名称について、大阪維新の会は「維新案」を絞り込む方針を決定した。各区につき２つの案を候補に挙げて最終的なアンケート調査を実施する予定だ。&quot;,
+  &quot;point2_title&quot;: &quot;ア...</summary>
+  </entry>
+  <entry>
+    <title>対向車線にバイク入る 衝突し死亡</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23360"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23360</id>
+    <updated>2026-10-10T12:51:27.931Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;生野区で死亡事故&quot;,
+  &quot;point1_desc&quot;: &quot;大阪市生野区林寺の道路で10日午前、バイクとトラックが接触する事故が発生。バイクはその反動で対向車線へ飛び出し、走ってきた乗用車と衝突する重大な二次衝突へ発展しました。&quot;,
+  &quot;point2_title&quot;: &quot;バイク運転手が死亡&quot;,...</summary>
+  </entry>
+  <entry>
+    <title>いい迷惑 農相に地元から苦言続出</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23359"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23359</id>
+    <updated>2026-10-10T12:50:44.233Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;予算カット発言への批判&quot;,
+  &quot;point1_desc&quot;: &quot;農林水産相の簗和生氏による「予算カット」発言が波紋を広げている。発言に対する批判が高まる中、地元で開催された自民党県連のパーティーでの対応にも注目が集まることとなった。&quot;,
+  &quot;point2_title&quot;: &quot;地元パーティーを...</summary>
+  </entry>
   <entry>
     <title>太陽系外の惑星から電波 初検出</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23327"/>
@@ -572,41 +608,5 @@
   &quot;point1_desc&quot;: &quot;2009年にテキサス州の米軍基地で13人を射殺した元陸軍精神科医に対し、トランプ米大統領が死刑執行に向けた手続きを進めるよう指示を出しました。&quot;,
   &quot;point2_title&quot;: &quot;軍の死刑承認は極めて異例&quot;,
   &quot;point2_desc&quot;: &quot;米軍における軍法...</summary>
-  </entry>
-  <entry>
-    <title>シチズン 約10万人分情報漏えいか</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23280"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23280</id>
-    <updated>2026-10-06T12:51:27.267Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;point1_title&quot;: &quot;約10万人分の情報漏洩か&quot;,
-  &quot;point1_desc&quot;: &quot;シチズン時計のお問い合わせ窓口システムが不正アクセスを受け、利用者約１０万人分の氏名や連絡先といった個人情報が外部へ流出した可能性が浮上しています。&quot;,
-  &quot;point2_title&quot;: &quot;サイバー防衛の投資重要&quot;,
-  &quot;point2_desc&quot;: &quot;相次ぐサイバー...</summary>
-  </entry>
-  <entry>
-    <title>アシックス 失速から売上1兆円へ</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23279"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23279</id>
-    <updated>2026-10-06T07:45:27.912Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;point1_title&quot;: &quot;アシックス苦境からの大逆転&quot;,
-  &quot;point1_desc&quot;: &quot;2010年代に業績が低迷し赤字へ沈んだアシックスですが、海外戦略の抜本的な見直しやランニング市場の開拓によって急成長を遂げ、初の売上高1兆円規模へと迫っています。&quot;,
-  &quot;point2_title&quot;: &quot;海外地域で売上が急拡大へ&quot;,
-  &quot;point2_desc&quot;:...</summary>
-  </entry>
-  <entry>
-    <title>ピアニストの反田恭平氏 在宅起訴</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23278"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23278</id>
-    <updated>2026-10-06T07:45:03.858Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;point1_title&quot;: &quot;ピアニスト反田氏が速度超過で起訴&quot;,
-  &quot;point1_desc&quot;: &quot;ピアニストの反田恭平氏が都内の首都高で法定速度を84キロ超過する時速144キロで走行したとして、道路交通法違反の罪で在宅起訴されたことが判明しました。&quot;,
-  &quot;point2_title&quot;: &quot;危険な暴走運転で刑事責任を追及&quot;,
-  &quot;point2_desc&quot;:...</summary>
   </entry>
 </feed>
