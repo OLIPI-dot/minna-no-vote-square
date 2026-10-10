@@ -224,7 +224,7 @@ const SquareTimeline = () => {
           <div style={{ textAlign: 'center', padding: '20px', color: '#94a3b8', fontSize: '0.85rem' }}>
             まだつぶやきがないらび…🥕<br />最初の一言を残してみてね！
           </div>
-        ) : posts.map(p => (
+        ) : posts.filter(p => !p.name.includes('実況')).map(p => (
           <div key={p.id} style={{
             display: 'flex',
             gap: '10px',
