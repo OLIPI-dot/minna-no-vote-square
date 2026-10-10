@@ -272,7 +272,45 @@ export const ITEMS = [
   { id: 'ac701', type: 'accessory', rarity: 'N', name: '高濃度水素水', atk: 5, def: 5, hp: 30, icon: '💧', desc: 'ただの水より高い。飲むとプラシーボ効果で元気になる。', effect: 'regen' },
   { id: 'ac702', type: 'accessory', rarity: 'R', name: 'ディープステートの会員証', atk: 20, def: 20, hp: 20, icon: '👁️', desc: '世界の裏側を牛耳る組織のメンバーになれる。', effect: 'mental_damage' },
   { id: 'ac703', type: 'accessory', rarity: 'SR', name: 'ゴムマスク', atk: 30, def: 30, hp: 50, icon: '🎭', desc: '「あの政治家はゴムマスクだ！」という陰謀論を具現化。', effect: 'dodge_up' },
-  { id: 'ac704', type: 'accessory', rarity: 'UR', name: 'アポロ月面着陸のセット', atk: 100, def: 100, hp: 200, icon: '🌕', desc: '実は月に行ってなかったというスタジオのセット。', effect: 'cringe' }
+  { id: 'ac704', type: 'accessory', rarity: 'UR', name: 'アポロ月面着陸のセット', atk: 100, def: 100, hp: 200, icon: '🌕', desc: '実は月に行ってなかったというスタジオのセット。', effect: 'cringe' },
+
+  // ================= 🐰 第9弾 追加アイテム（インターネットの歴史・古代ネットミーム編） =================
+  // --- 武器 ---
+  { id: 'w801', type: 'weapon', rarity: 'N', name: '糸電話', atk: 10, def: 0, hp: 0, icon: '☎️', desc: '通信速度は極端に遅いが、なぜか繋がる。', effect: 'double_attack' },
+  { id: 'w802', type: 'weapon', rarity: 'R', name: 'ぬるぽハンマー', atk: 40, def: 0, hp: 0, icon: '🔨', desc: '「ガッ」と殴るための専用武器。条件反射で手が出る。', effect: 'double_attack' },
+  { id: 'w803', type: 'weapon', rarity: 'SR', name: '香ばしい掲示板のログ', atk: 75, def: 0, hp: 0, icon: '📜', desc: '数年前のレスバトル記録。読むと精神に異常をきたす。', effect: 'mental_damage' },
+  { id: 'w804', type: 'weapon', rarity: 'UR', name: '2ちゃんねるの石版', atk: 200, def: 0, hp: 0, icon: '🪨', desc: '古代のネット民が残したとされるオーパーツ。', effect: 'cringe' },
+  
+  // --- 防具 ---
+  { id: 'a801', type: 'armor', rarity: 'N', name: '藁人形', atk: 0, def: 10, hp: -10, icon: '🎎', desc: '呪いをかけるための人形だが、間違えて着てしまった。', effect: 'reflect' },
+  { id: 'a802', type: 'armor', rarity: 'R', name: '前略プロフの残骸', atk: 0, def: 25, hp: 10, icon: '📱', desc: '黒歴史が詰まったプロフ。敵がドン引きして攻撃力が下がる。', effect: 'cringe' },
+  { id: 'a803', type: 'armor', rarity: 'SR', name: 'フラッシュ倉庫の鍵', atk: 0, def: 70, hp: 30, icon: '🗝️', desc: '失われた時代の遺物。懐かしさで敵の涙を誘う。', effect: 'dodge_up' },
+  { id: 'a804', type: 'armor', rarity: 'UR', name: 'キリ番ゲッターの盾', atk: 0, def: 222, hp: 111, icon: '🛡️', desc: '10000HITを踏んだ者だけが持てる伝説の盾。', effect: 'reflect' },
+
+  // --- アクセサリー ---
+  { id: 'ac801', type: 'accessory', rarity: 'N', name: 'ダイヤルアップ接続のモデム音', atk: 5, def: 5, hp: 10, icon: '📻', desc: 'ピーーヒョロロロ...という音が不安と郷愁を誘う。', effect: 'mental_damage' },
+  { id: 'ac802', type: 'accessory', rarity: 'R', name: 'アスキーアートの辞書', atk: 15, def: 15, hp: 30, icon: '📚', desc: 'AAで感情を表現できるようになる。', effect: 'crit_up' },
+  { id: 'ac803', type: 'accessory', rarity: 'SR', name: 'VIPからの刺客証', atk: 40, def: 40, hp: 40, icon: '🎫', desc: 'これを提示すれば、大抵のことは許される（許されない）。', effect: 'dodge_up' },
+  { id: 'ac804', type: 'accessory', rarity: 'UR', name: '吉野家コピペの台本', atk: 120, def: 120, hp: 150, icon: '📖', desc: '「問い詰めたい、小一時間問い詰めたい」', effect: 'double_attack' },
+
+  // ================= 🐰 第10弾 追加アイテム（現代SNSの闇＆迷惑系編） =================
+  // --- 武器 ---
+  { id: 'w901', type: 'weapon', rarity: 'N', name: 'インプレゾンビの肉', atk: 30, def: 0, hp: 0, icon: '🧟', desc: '腐った肉。群がってくる。', effect: 'virus' },
+  { id: 'w902', type: 'weapon', rarity: 'R', name: '港区女子のパパ活アプリ', atk: 50, def: 0, hp: 0, icon: '📱', desc: '恐ろしい勢いで相手のHP（財布）を削り取る。', effect: 'lifesteal' },
+  { id: 'w903', type: 'weapon', rarity: 'SR', name: '万アカの裏垢', atk: 90, def: 0, hp: 0, icon: '👥', desc: '表の顔とは違う、ドス黒い感情をぶつける。', effect: 'mental_damage' },
+  { id: 'w904', type: 'weapon', rarity: 'UR', name: '青い認証バッジ', atk: 250, def: 0, hp: 0, icon: '✅', desc: 'お金で買える権威。殴ると非常に痛い。', effect: 'crit_up' },
+  
+  // --- 防具 ---
+  { id: 'a901', type: 'armor', rarity: 'N', name: '収益化剥奪の通知', atk: 0, def: 20, hp: -20, icon: '✉️', desc: '見るだけでHPが減るが、なぜか防御力はある。', effect: 'cringe' },
+  { id: 'a902', type: 'armor', rarity: 'R', name: '加工されすぎた自撮り', atk: 0, def: 40, hp: 10, icon: '🤳', desc: 'もはや原型を留めておらず、敵の攻撃がすり抜ける。', effect: 'dodge_up' },
+  { id: 'a903', type: 'armor', rarity: 'SR', name: '炎上系暴露系YouTuberの盾', atk: 0, def: 90, hp: 20, icon: '🛡️', desc: '他人の不幸を蜜にして身を守る不謹慎な盾。', effect: 'reflect' },
+  { id: 'a904', type: 'armor', rarity: 'UR', name: '滝沢○レソのタレコミDM', atk: 0, def: 300, hp: 100, icon: '📩', desc: 'これを持つ者には誰も手を出せない。', effect: 'mental_damage' },
+
+  // --- アクセサリー ---
+  { id: 'ac901', type: 'accessory', rarity: 'N', name: '嘘松ツイート', atk: 10, def: 10, hp: 10, icon: '🤥', desc: '「今日電車でさ〜」から始まる虚言。', effect: 'cringe' },
+  { id: 'ac902', type: 'accessory', rarity: 'R', name: 'プロフの「人生はゲーム」', atk: 20, def: 20, hp: 20, icon: '🎮', desc: 'これを書いている奴は大体ヤバい。', effect: 'cringe' },
+  { id: 'ac903', type: 'accessory', rarity: 'SR', name: 'AI生成の美女アカウント', atk: 50, def: 50, hp: 50, icon: '🤖', desc: '中身はおっさん。無数のスパムを飛ばす。', effect: 'double_attack' },
+  { id: 'ac904', type: 'accessory', rarity: 'UR', name: 'Z○の影', atk: 150, def: 150, hp: 250, icon: '👤', desc: '炊き出しと並行して裏の仕事もこなす男の影。', effect: 'regen' }
 ];
 
 export const rollGacha = () => {
