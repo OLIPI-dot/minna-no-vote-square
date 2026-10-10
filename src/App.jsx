@@ -613,76 +613,7 @@ function App() {
     return () => { channel.unsubscribe(); };
   }, []);
 
-  // 🐰 らびのトレンドアンケート自動生成魔法 (絶対重複させない版)
-  useEffect(() => {
-    const magic = async () => {
-      if (!user || localStorage.getItem('labi_magic_done_31')) return;
 
-      // 多重起動防止フラグ
-      localStorage.setItem('labi_magic_done_31', 'busy');
-
-      const trends = [
-        { title: 'うさぎのらびの挑戦！🥕 みんなの『元気が出る魔法』はどれ？🐰🌈', category: 'らび', options: ['美味しいものを食べる 🍰', '好きな音楽を聴く 🎵', '誰かに褒めてもらう 👏', '太陽の光を浴びる ☀️', 'らびとニンジンを分かち合う 🐰🥕'], tags: ['らび', '元気', '魔法'] },
-        { title: 'いま一番欲しいApple製品は？', category: 'IT・テクノロジー', options: ['iPhone', 'MacBook', 'iPad', 'Apple Watch', 'Vision Pro'] },
-        { title: '休日の過ごし方といえば？', category: '生活', options: ['家でゴロゴロ', 'ショッピング・お出かけ', '趣味・スポーツ', '勉強や自己研鑽'] },
-        { title: '次に旅行に行きたい国は？', category: '生活', options: ['ハワイ (アメリカ)', '韓国', '台湾', 'ヨーロッパ'] },
-        { title: '好きな映画のジャンルは？', category: 'エンタメ', options: ['アクション', 'SF・ファンタジー', 'ホラー・サスペンス', '恋愛・ドラマ'] },
-        { title: '定番の居酒屋メニューといえば？', category: 'グルメ', options: ['枝豆', '唐揚げ', 'だし巻き卵', 'ポテトフライ'] },
-        { title: 'もし100万円もらえたら何に使う？', category: 'トレンド', options: ['貯金・投資', '旅行・レジャー', 'ガジェット・PC', '美味しいものを食べる'] },
-        { title: '今期一番見ているアニメは？', category: 'エンタメ', options: ['話題作', '日常・コメディ', 'バトル・ファンタジー', '今期は見ていない'] },
-        { title: 'スマホのOSはどっち派？', category: 'IT・テクノロジー', options: ['iOS (iPhone)', 'Android'] },
-        { title: '好きな季節はどれ？', category: '生活', options: ['春', '夏', '秋', '冬'] },
-        { title: '朝食はパン派？ご飯派？', category: 'グルメ', options: ['パン派', 'ご飯派', 'シリアル・麺類', '食べない'] },
-        { title: '最近ハマっているゲームのジャンルは？', category: 'ゲーム', options: ['RPG', 'FPS/TPS', 'パズル・カジュアル', 'シミュレーション'] },
-        { title: '通勤・通学中は何してる？', category: '生活', options: ['音楽を聴く', 'スマホで動画・SNS', '読書', '寝る'] },
-        { title: 'ペットを飼うならどっち？', category: '生活', options: ['犬', '猫', '鳥・小動物', '飼わない'] },
-        { title: '好きなラーメンの系統は？', category: 'グルメ', options: ['家系', '二郎系', 'あっさり醤油・塩', '豚骨・味噌'] },
-        { title: 'よく使うキャッシュレス決済は？', category: '生活', options: ['PayPay', 'クレジットカード', '交通系IC (Suica等)', '現金派'] },
-        { title: 'お風呂の時間はどれくらい？', category: '生活', options: ['15分以内 (シャワーのみ等)', '15〜30分', '30分〜1時間', '1時間以上'] },
-        { title: 'タイムトラベルできるならどっち？', category: 'エンタメ', options: ['過去', '未来'] },
-        { title: '好きなスポーツ観戦は？', category: 'スポーツ', options: ['野球', 'サッカー', 'バスケットボール', '格闘技'] },
-        { title: '仕事・勉強中の飲み物といえば？', category: '生活', options: ['コーヒー', 'お茶・紅茶', 'エナジードリンク', '水・炭酸水'] },
-        { title: '好きなチョコレートの種類は？', category: 'グルメ', options: ['ミルク', 'ビター', 'ホワイト', 'ナッツ入り等'] },
-        { title: '旅行での宿選び、一番重視するのは？', category: '生活', options: ['価格の安さ', '食事の美味しさ', '温泉・お風呂', 'アクセスの良さ'] },
-        { title: '生まれ変わるなら男？女？', category: 'トレンド', options: ['男', '女', '人間以外', '生まれ変わりたくない'] },
-        { title: '好きなテレビ番組のジャンルは？', category: 'エンタメ', options: ['バラエティ', 'ドラマ', 'ニュース・報道', 'スポーツ'] },
-        { title: '一番よく使う動画配信サービスは？', category: 'エンタメ', options: ['YouTube', 'Netflix', 'Amazon Prime', 'TVer'] },
-        { title: '夏といえば何？', category: '生活', options: ['海・プール', 'お祭り・花火', 'スイカ・かき氷', 'クーラーの効いた部屋'] },
-        { title: '健康のために気をつけていることは？', category: '生活', options: ['食事', '運動', '睡眠', '特に気にしていない'] },
-        { title: '好きなおにぎりの具は？', category: 'グルメ', options: ['鮭', 'ツナマヨ', '明太子', '梅干し'] },
-        { title: '一番よく使うAI機能は？', category: 'IT・テクノロジー', options: ['文章作成・要約', '翻訳', '画像作成', 'ただの話し相手'] },
-        { title: '寝る前に必ずすることは？', category: '生活', options: ['スマホチェック', '読書', 'ストレッチ', '何もしないで即寝'] },
-        { title: '人生で一番大切なものは？', category: 'トレンド', options: ['愛・家族', 'お金', '健康', '自由・時間'] }
-      ];
-
-      try {
-        for (const t of trends) {
-          const { data: existing } = await supabase.from('surveys').select('id').eq('title', t.title).limit(1);
-          if (existing && existing.length > 0) continue;
-
-          const deadline = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
-          const { data } = await supabase.from('surveys').insert([{
-            title: t.title,
-            category: t.category,
-            deadline,
-            user_id: user.id,
-            visibility: 'public',
-            image_url: '',
-            tags: t.tags || []
-          }]).select();
-
-          if (data && data[0]) {
-            await supabase.from('options').insert(t.options.map(name => ({ name, votes: 0, survey_id: data[0].id })));
-          }
-        }
-        localStorage.setItem('labi_magic_done_31', 'true');
-      } catch (e) {
-        localStorage.removeItem('labi_magic_done_31');
-      }
-      fetchSurveys(user);
-    };
-    magic();
-  }, [user]);
 
   // 💬 詳細画面のデータ取得＆リアルタイム購読ロジック
   useEffect(() => {
@@ -2638,15 +2569,7 @@ function App() {
 
   const isCreateFormValid = Boolean(surveyTitle.trim() && surveyCategory && setupOptions.filter(o => o.trim()).length >= 2 && deadline);
 
-  if (!import.meta.env.DEV) {
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', backgroundColor: '#fdf2f8', color: '#831843', fontFamily: 'sans-serif' }}>
-        <h1 style={{ fontSize: '2rem', marginBottom: '16px' }}>🚧 現在メンテナンス中です 🚧</h1>
-        <p style={{ fontSize: '1.2rem', marginBottom: '24px' }}>ただいまスパム対策等のシステム調整を行っております。</p>
-        <p>再開まで今しばらくお待ちください🐰🥕</p>
-      </div>
-    );
-  }
+
 
   return (
     <div className="survey-main-portal">

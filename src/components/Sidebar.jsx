@@ -225,7 +225,8 @@ const Sidebar = ({
           </div>
         )}
 
-        {/* ⚔️ みんクエ タブメニュー (本番環境では非表示) */}
+        {/* ⚔️ みんクエ タブメニュー (現在すべての環境で完全に非表示) */}
+        {/*
         {import.meta.env.DEV && (
           <>
             <div style={{ display: 'flex', gap: '4px', margin: '16px 0 12px 0', background: 'rgba(0,0,0,0.05)', padding: '4px', borderRadius: '8px' }}>
@@ -255,7 +256,6 @@ const Sidebar = ({
               </button>
             </div>
 
-            {/* タブのコンテンツ領域 */}
             <div style={{ minHeight: '300px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {miniqueTab === 'patrol' && (
                 <PatrolMiniGame 
@@ -301,6 +301,7 @@ const Sidebar = ({
             </div>
           </>
         )}
+        */}
       </div>
 
       {/* 5. 💬 X風・広場のタイムライン（つぶやき） */}
