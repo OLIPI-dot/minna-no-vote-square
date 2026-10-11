@@ -95,7 +95,7 @@ const Sidebar = ({
   };
 
   return (
-    <div className="live-feed-sidebar" style={{ minWidth: '320px', boxSizing: 'border-box' }}>
+    <div className="live-feed-sidebar" style={{ minWidth: 0, width: '100%', boxSizing: 'border-box' }}>
       
       {/* 1. 📡 広場の状況 */}
       <div className="sidebar-section-card" style={{ marginBottom: '24px', background: 'linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%)', border: '1px solid #ddd6fe' }}>
@@ -176,7 +176,7 @@ const Sidebar = ({
       {import.meta.env.DEV && (
         <div className="sidebar-section-card" style={{ marginBottom: '24px', background: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)', border: '2px solid #fbbf24', textAlign: 'center' }}>
           
-          <h3 className="live-feed-title" style={{ color: '#b45309', border: 'none', padding: 0, justifyContent: 'center', marginTop: '12px' }}>🐰 あなたの称号 🥕</h3>
+          <h3 className="live-feed-title" style={{ color: '#b45309', border: 'none', padding: 0, justifyContent: 'center', marginTop: '12px' }}>🐰 みんクエ 🥕</h3>
           
           <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#d97706', margin: '4px 0 12px 0' }}>
             {levelInfo?.title || 'ひよっこ広場民 🥚'}
@@ -239,7 +239,7 @@ const Sidebar = ({
               onClick={() => setMiniqueTab('gacha')}
               style={{ flex: 1, padding: '8px 2px', borderRadius: '6px', border: 'none', background: miniqueTab === 'gacha' ? '#f59e0b' : 'transparent', color: miniqueTab === 'gacha' ? 'white' : '#64748b', fontWeight: 'bold', fontSize: '0.75rem', cursor: 'pointer', transition: 'all 0.2s' }}
             >
-              🎪 ガチャ・鞄
+              🛡️ 装備・ガチャ
             </button>
             <button 
               onClick={() => setIsDictionaryOpen(true)}
@@ -254,6 +254,7 @@ const Sidebar = ({
               <PatrolMiniGame 
                 userLevel={levelInfo?.level || 1} 
                 userExp={userExp}
+                levelInfo={levelInfo}
                 addExp={addExp} 
                 gachaTickets={gachaTickets}
                 addTickets={addTickets}

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
-import { rollGacha, getReqLevel } from '../items';
+import { rollGacha, getReqLevel, EFFECT_DESCRIPTIONS } from '../items';
 import confetti from 'canvas-confetti';
 
 const rarityColors = {
@@ -14,12 +14,21 @@ const rarityColors = {
 const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, setEquipment, addExp, inventory = [], setInventory, acquiredItems = [], setAcquiredItems }) => {
   const [gachaResult, setGachaResult] = useState(null);
   const [showInventory, setShowInventory] = useState(false);
-  const [selectedEquip, setSelectedEquip] = useState(null);
+  const [selectedSlot, setSelectedSlot] = useState(null);
   const [isRolling, setIsRolling] = useState(false);
   const COST = 1; // 1回1チケット
 
   const handleRoll = () => {
     if (gachaTickets < COST || isRolling) return;
+
+    // 前回の結果が表示されたままなら、自動で鞄にしまう
+    if (gachaResult) {
+      const prevItem = { ...gachaResult, id: `${gachaResult.id}_${Date.now()}` };
+      setInventory(prev => [...prev, prevItem]);
+      if (setAcquiredItems && !acquiredItems.includes(gachaResult.id)) {
+        setAcquiredItems(prev => [...prev, gachaResult.id]);
+      }
+    }
     
     setIsRolling(true);
     addTickets(-COST); // チケット消費
@@ -30,22 +39,24 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
       const item = rollGacha();
       setGachaResult(item);
       
-      // URかSRなら派手なエフェクト
-      if (item.rarity === 'UR' || item.rarity === 'SR') {
+      // LR, UR, SRなら派手なエフェクト
+      if (item.rarity === 'LR' || item.rarity === 'UR' || item.rarity === 'SR') {
         confetti({
-          particleCount: item.rarity === 'UR' ? 200 : 100,
+          particleCount: item.rarity === 'LR' ? 300 : item.rarity === 'UR' ? 200 : 100,
           spread: 80,
-          colors: item.rarity === 'UR' ? ['#f59e0b', '#fbbf24', '#fffbeb'] : ['#ec4899', '#fbcfe8'],
+          colors: item.rarity === 'LR' 
+            ? ['#ef4444', '#ec4899', '#8b5cf6', '#3b82f6', '#10b981', '#f59e0b'] 
+            : item.rarity === 'UR' ? ['#f59e0b', '#fbbf24', '#fffbeb'] : ['#ec4899', '#fbcfe8'],
           zIndex: 9999
         });
       }
 
       setIsRolling(false);
-    }, 1000);
+    }, 800);
   };
 
   const handleEquipFromGacha = () => {
-    const newItem = { ...gachaResult, id: Date.now() + Math.random() };
+    const newItem = { ...gachaResult, id: `${gachaResult.id}_${Date.now()}` };
     const oldItem = equipment[newItem.type];
     
     setEquipment(prev => ({ ...prev, [newItem.type]: newItem }));
@@ -58,7 +69,7 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
   };
 
   const handleStoreInInventory = () => {
-    const newItem = { ...gachaResult, id: Date.now() + Math.random() };
+    const newItem = { ...gachaResult, id: `${gachaResult.id}_${Date.now()}` };
     setInventory(prev => [...prev, newItem]);
     if (setAcquiredItems && !acquiredItems.includes(gachaResult.id)) {
       setAcquiredItems(prev => [...prev, gachaResult.id]);
@@ -83,7 +94,7 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
     if (oldItem) setInventory(prev => [...prev, oldItem]);
     
     setEquipment(prev => ({ ...prev, [type]: null }));
-    setSelectedEquip(null);
+    setSelectedSlot(null);
   };
   
   const handleSellFromInventory = (invItem) => {
@@ -102,15 +113,16 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
       if (item.atk > 0) tooltipText += `ATK: +${item.atk}\n`;
       if (item.def > 0) tooltipText += `DEF: +${item.def}\n`;
       if (item.hp > 0) tooltipText += `HP: +${item.hp}\n`;
+      if (item.effect) tooltipText += `\n✨ ${EFFECT_DESCRIPTIONS[item.effect] || '特殊効果あり'}\n`;
       tooltipText += `\n${item.desc}`;
     }
 
     return (
       <div 
-        onClick={() => item && setSelectedEquip(selectedEquip?.type === item.type ? null : item)}
+        onClick={() => setSelectedSlot(type)}
         title={tooltipText}
-        style={{ flex: 1, minWidth: 0, overflow: 'hidden', background: 'white', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '6px', textAlign: 'center', cursor: item ? 'pointer' : 'default', transition: 'background 0.2s' }}
-        onMouseOver={e => { if (item) e.currentTarget.style.background = '#f1f5f9'; }}
+        style={{ flex: 1, minWidth: 0, overflow: 'hidden', background: 'white', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '6px', textAlign: 'center', cursor: 'pointer', transition: 'background 0.2s', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}
+        onMouseOver={e => { e.currentTarget.style.background = '#f1f5f9'; }}
         onMouseOut={e => { e.currentTarget.style.background = 'white'; }}
       >
         <div style={{ fontSize: '0.65rem', color: '#64748b', marginBottom: '4px' }}>{label}</div>
@@ -160,6 +172,7 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
         {renderEquipSlot('weapon', '武器')}
         {renderEquipSlot('armor', '防具')}
         {renderEquipSlot('accessory', 'アクセ')}
+        {renderEquipSlot('partner', 'お供')}
       </div>
 
       {/* ガチャ結果モーダル風 */}
@@ -170,7 +183,7 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
           <div style={{ fontWeight: 'bold', color: rarityColors[gachaResult.rarity], display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
             <span>[{gachaResult.rarity}] {gachaResult.name}</span>
             <span style={{ fontSize: '0.7rem', background: '#e2e8f0', color: '#475569', padding: '2px 6px', borderRadius: '4px' }}>
-              {{ weapon: '🗡️ 武器', armor: '🛡️ 防具', accessory: '💍 アクセ' }[gachaResult.type] || gachaResult.type}
+              {{ weapon: '🗡️ 武器', armor: '🛡️ 防具', accessory: '💍 アクセ', partner: '👤 お供' }[gachaResult.type] || gachaResult.type}
             </span>
           </div>
           <div style={{ fontSize: '0.75rem', color: '#475569', margin: '6px 0' }}>
@@ -179,9 +192,14 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
               必要Lv: {getReqLevel(gachaResult)}
             </span>
           </div>
-          <div style={{ fontSize: '0.75rem', color: '#854d0e', background: '#fef3c7', padding: '6px', borderRadius: '4px', marginBottom: '10px', fontStyle: 'italic' }}>
+          <div style={{ fontSize: '0.75rem', color: '#854d0e', background: '#fef3c7', padding: '6px', borderRadius: '4px', marginBottom: '4px', fontStyle: 'italic' }}>
             「{gachaResult.desc}」
           </div>
+          {gachaResult.effect && (
+            <div style={{ fontSize: '0.8rem', color: '#92400e', background: '#fffbeb', border: '1px dashed #f59e0b', padding: '6px', borderRadius: '4px', marginBottom: '10px', fontWeight: 'bold' }}>
+              ✨ {EFFECT_DESCRIPTIONS[gachaResult.effect] || '特殊効果あり'}
+            </div>
+          )}
           <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <button 
               onClick={handleEquipFromGacha} 
@@ -199,32 +217,87 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
         </div>
       )}
 
-      {/* 装備詳細モーダル (タップ時) */}
-      {selectedEquip && (
-        <div style={{ background: '#f8fafc', border: `2px solid ${rarityColors[selectedEquip.rarity]}`, borderRadius: '8px', padding: '12px', textAlign: 'center', marginBottom: '12px', animation: 'fadeIn 0.2s' }}>
-          <div style={{ fontSize: '0.8rem', color: '#475569', fontWeight: 'bold' }}>装備の詳細</div>
-          <div style={{ fontSize: '2rem', margin: '8px 0' }}>{selectedEquip.icon}</div>
-          <div style={{ fontWeight: 'bold', color: rarityColors[selectedEquip.rarity] }}>
-            [{selectedEquip.rarity}] {selectedEquip.name}
+      {/* 装備変更モーダル */}
+      {selectedSlot && createPortal(
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100000, padding: '16px' }}>
+          <div style={{ background: '#fff', padding: '20px', borderRadius: '12px', width: '100%', maxWidth: '500px', maxHeight: '85vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+            <h3 style={{ margin: '0 0 16px 0', color: '#1e293b', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span>{selectedSlot === 'weapon' ? '🗡️ 武器' : selectedSlot === 'armor' ? '🛡️ 防具' : selectedSlot === 'accessory' ? '💍 アクセ' : '👤 お供'}の変更</span>
+              <button onClick={() => setSelectedSlot(null)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', lineHeight: 1 }}>×</button>
+            </h3>
+
+            {/* 現在の装備 */}
+            <div style={{ marginBottom: '16px' }}>
+              <div style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 'bold', marginBottom: '8px' }}>現在の装備</div>
+              {equipment[selectedSlot] ? (
+                <div style={{ background: '#f8fafc', border: `2px solid ${rarityColors[equipment[selectedSlot].rarity]}`, borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <div style={{ fontSize: '2.5rem' }}>{equipment[selectedSlot].icon}</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: 'bold', color: rarityColors[equipment[selectedSlot].rarity] }}>
+                      [{equipment[selectedSlot].rarity}] {equipment[selectedSlot].name}
+                    </div>
+                    <div style={{ fontSize: '0.75rem', color: '#475569', margin: '4px 0' }}>
+                      ATK+{equipment[selectedSlot].atk} / DEF+{equipment[selectedSlot].def} / HP+{equipment[selectedSlot].hp}
+                    </div>
+                  </div>
+                  <button onClick={() => handleUnequip(selectedSlot)} style={{ padding: '8px 12px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>外す</button>
+                </div>
+              ) : (
+                <div style={{ background: '#f1f5f9', border: '2px dashed #cbd5e1', borderRadius: '8px', padding: '16px', textAlign: 'center', color: '#94a3b8' }}>
+                  装備なし
+                </div>
+              )}
+            </div>
+
+            {/* カバンの中身 */}
+            <div style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 'bold', marginBottom: '8px' }}>カバンの中</div>
+            <div style={{ overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: '8px', paddingRight: '4px' }}>
+              {inventory.filter(i => i.type === selectedSlot).length === 0 ? (
+                <div style={{ textAlign: 'center', color: '#94a3b8', padding: '20px 0' }}>装備可能なアイテムがありません</div>
+              ) : (
+                inventory.filter(i => i.type === selectedSlot).map(item => {
+                  const currentEquip = equipment[selectedSlot];
+                  const diffAtk = item.atk - (currentEquip ? currentEquip.atk : 0);
+                  const diffDef = item.def - (currentEquip ? currentEquip.def : 0);
+                  const diffHp = item.hp - (currentEquip ? currentEquip.hp : 0);
+
+                  const renderDiff = (diff) => {
+                    if (diff > 0) return <span style={{ color: '#10b981', fontWeight: 'bold', marginLeft: '2px' }}>(+{diff})</span>;
+                    if (diff < 0) return <span style={{ color: '#ef4444', fontWeight: 'bold', marginLeft: '2px' }}>({diff})</span>;
+                    return <span style={{ color: '#94a3b8', marginLeft: '2px' }}>(±0)</span>;
+                  };
+
+                  return (
+                    <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', background: 'white', border: `1px solid ${rarityColors[item.rarity]}`, borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+                      <div style={{ fontSize: '1.5rem' }}>{item.icon}</div>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontWeight: 'bold', color: rarityColors[item.rarity] }}>
+                          [{item.rarity}] {item.name}
+                        </div>
+                        <div style={{ fontSize: '0.75rem', color: '#475569', display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '4px' }}>
+                          <span>ATK: {item.atk}{renderDiff(diffAtk)}</span>
+                          <span>DEF: {item.def}{renderDiff(diffDef)}</span>
+                          <span>HP: {item.hp}{renderDiff(diffHp)}</span>
+                          <span style={{ color: userLevel >= getReqLevel(item) ? '#059669' : '#ef4444', fontWeight: 'bold', marginLeft: 'auto' }}>
+                            必要Lv: {getReqLevel(item)}
+                          </span>
+                        </div>
+                        <div style={{ fontSize: '0.7rem', color: '#64748b', marginTop: '4px' }}>{item.desc}</div>
+                      </div>
+                      <button 
+                        onClick={() => { equipFromInventory(item); setSelectedSlot(null); }} 
+                        disabled={userLevel < getReqLevel(item)}
+                        style={{ background: userLevel >= getReqLevel(item) ? '#10b981' : '#94a3b8', color: 'white', border: 'none', padding: '8px 12px', borderRadius: '6px', cursor: userLevel >= getReqLevel(item) ? 'pointer' : 'not-allowed', fontWeight: 'bold' }}>
+                        {userLevel >= getReqLevel(item) ? '装備' : `Lv${getReqLevel(item)}`}
+                      </button>
+                    </div>
+                  );
+                })
+              )}
+            </div>
           </div>
-          <div style={{ fontSize: '0.75rem', color: '#475569', margin: '6px 0' }}>
-            ATK+{selectedEquip.atk} / DEF+{selectedEquip.def} / HP+{selectedEquip.hp}<br/>
-            <span style={{ color: '#059669', fontWeight: 'bold' }}>
-              必要Lv: {getReqLevel(selectedEquip)}
-            </span>
-          </div>
-          <div style={{ fontSize: '0.75rem', color: '#334155', background: '#e2e8f0', padding: '6px', borderRadius: '4px', marginBottom: '10px' }}>
-            「{selectedEquip.desc}」
-          </div>
-          <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-            <button onClick={() => setSelectedEquip(null)} style={{ padding: '6px 16px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>
-              閉じる
-            </button>
-            <button onClick={() => handleUnequip(selectedEquip.type)} style={{ padding: '6px 12px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>
-              外す（鞄へ）
-            </button>
-          </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* インベントリモーダル */}
@@ -252,7 +325,7 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
                     return <span style={{ color: '#94a3b8', marginLeft: '2px' }}>(±0)</span>;
                   };
 
-                  const typeLabels = { weapon: '🗡️ 武器', armor: '🛡️ 防具', accessory: '💍 アクセ' };
+                  const typeLabels = { weapon: '🗡️ 武器', armor: '🛡️ 防具', accessory: '💍 アクセ', partner: '👤 お供' };
 
                   return (
                     <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', background: '#f8fafc', border: `1px solid ${rarityColors[item.rarity]}`, borderRadius: '8px' }}>
@@ -299,7 +372,7 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
       <div style={{ display: 'flex', gap: '8px' }}>
         <button 
           onClick={handleRoll}
-          disabled={gachaTickets < COST || isRolling || gachaResult}
+          disabled={gachaTickets < COST || isRolling}
           style={{
             flex: 1, padding: '10px', borderRadius: '8px', border: 'none',
             background: gachaTickets >= COST && !isRolling ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' : '#e2e8f0',

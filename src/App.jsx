@@ -279,9 +279,9 @@ function App() {
   const [equipment, setEquipment] = useState(() => {
     try {
       const saved = localStorage.getItem('min_ake_equipment');
-      return saved ? JSON.parse(saved) : { weapon: null, armor: null, accessory: null };
+      return saved ? { partner: null, ...JSON.parse(saved) } : { weapon: null, armor: null, accessory: null, partner: null };
     } catch {
-      return { weapon: null, armor: null, accessory: null };
+      return { weapon: null, armor: null, accessory: null, partner: null };
     }
   });
 
@@ -319,6 +319,42 @@ function App() {
   useEffect(() => {
     localStorage.setItem('min_ake_encountered_enemies', JSON.stringify(encounteredEnemies));
   }, [encounteredEnemies]);
+
+  // 起動時にインベントリと装備のアイテムを図鑑に自動登録する
+  useEffect(() => {
+    setAcquiredItems(prev => {
+      const currentIds = new Set(Array.isArray(prev) ? prev : []);
+      let isAdded = false;
+
+      // 装備品の登録
+      if (equipment && typeof equipment === 'object') {
+        Object.values(equipment).forEach(item => {
+          if (item && item.id) {
+            const baseId = typeof item.id === 'string' ? item.id.split('_')[0] : item.id;
+            if (!currentIds.has(baseId)) {
+              currentIds.add(baseId);
+              isAdded = true;
+            }
+          }
+        });
+      }
+
+      // インベントリの登録
+      if (Array.isArray(inventory)) {
+        inventory.forEach(item => {
+          if (item && item.id) {
+            const baseId = typeof item.id === 'string' ? item.id.split('_')[0] : item.id;
+            if (!currentIds.has(baseId)) {
+              currentIds.add(baseId);
+              isAdded = true;
+            }
+          }
+        });
+      }
+
+      return isAdded ? Array.from(currentIds) : prev;
+    });
+  }, [equipment, inventory]);
 
   useEffect(() => {
     localStorage.setItem('min_ake_inventory', JSON.stringify(inventory));
@@ -2842,7 +2878,7 @@ function App() {
             )}
           </div>
 
-          <Suspense fallback={<div className="live-feed-sidebar" style={{ minWidth: '320px', background: 'rgba(255,255,255,0.5)', borderRadius: '24px', height: '100vh' }}></div>}>
+          <Suspense fallback={<div className="live-feed-sidebar" style={{ minWidth: 0, width: '100%', background: 'rgba(255,255,255,0.5)', borderRadius: '24px', height: '100vh' }}></div>}>
             <Sidebar
               liveSurveys={liveSurveys}
               popularSurveys={popularSurveys}
