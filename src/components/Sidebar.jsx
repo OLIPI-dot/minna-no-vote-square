@@ -172,9 +172,10 @@ const Sidebar = ({
             )}
           </div>
         </div>
-      )}      {/* 4. 🏆 ユーザー称号＆レベル (みんクエ - 開発環境限定) */}
-      {import.meta.env.DEV && (
-        <div className="sidebar-section-card" style={{ marginBottom: '24px', background: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)', border: '2px solid #fbbf24', textAlign: 'center' }}>
+      )}
+
+      {/* 4. 🏆 ユーザー称号＆レベル (みんクエ) */}
+      <div className="sidebar-section-card" style={{ marginBottom: '24px', background: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)', border: '2px solid #fbbf24', textAlign: 'center' }}>
           
           <h3 className="live-feed-title" style={{ color: '#b45309', border: 'none', padding: 0, justifyContent: 'center', marginTop: '12px' }}>🐰 みんクエ 🥕</h3>
           
@@ -294,7 +295,6 @@ const Sidebar = ({
             )}
           </div>
         </div>
-      )}
       {/* 5. 💬 X風・広場のタイムライン（つぶやき） */}
       <SquareTimeline />
 
