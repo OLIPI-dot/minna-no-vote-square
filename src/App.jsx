@@ -496,6 +496,7 @@ function App() {
   };
 
   const addExp = async (amount) => {
+    if (!import.meta.env.DEV) return; // 本番環境ではEXPを無効化
     showRewardPopup(`✨ + ${amount} EXP !!`, '#10b981');
     setUserExp(prev => {
       const newExp = prev + amount;
@@ -509,6 +510,7 @@ function App() {
   };
 
   const addTickets = async (amount) => {
+    if (!import.meta.env.DEV) return; // 本番環境ではチケットを無効化
     if (amount > 0) showRewardPopup(`🎫 + ${amount} チケット !!`, '#f59e0b');
     setGachaTickets(prev => {
       const newTickets = prev + amount;
