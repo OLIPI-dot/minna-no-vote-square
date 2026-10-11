@@ -4,11 +4,47 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-10T21:48:20.845Z</updated>
+  <updated>2026-10-11T02:18:02.493Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>Cロナウド 暫定的に代表出場停止</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23367"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23367</id>
+    <updated>2026-10-11T02:17:59.148Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;C・ロナウドが処分対象に&quot;,
+  &quot;point1_desc&quot;: &quot;ポルトガルサッカー連盟は、代表チームを途中で離脱したFWクリスティアーノ・ロナウドに対し懲戒手続きを開始した。これに伴い、暫定的な出場停止処分が科される事態となっている。&quot;,
+  &quot;point2_title&quot;: &quot;代表途中離脱...</summary>
+  </entry>
+  <entry>
+    <title>離婚は予測できる?4つの行動注意</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23366"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23366</id>
+    <updated>2026-10-11T02:17:32.562Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;話題&quot;,
+  &quot;point1_title&quot;: &quot;リアルな子育て議論&quot;,
+  &quot;point1_desc&quot;: &quot;育児に奮闘中のアナウンサーや記者が、実生活に基づいた子育てのリアルな疑問を深掘りする企画「ぼちぼち子育て」。現場の生の声を届けることで、読者の共感や悩み解決のヒントを目指している。&quot;,
+  &quot;point2_title&quot;: &quot;産後の夫婦関...</summary>
+  </entry>
+  <entry>
+    <title>免許画像流出 再交付の申請相次ぐ</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23365"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23365</id>
+    <updated>2026-10-11T02:16:48.597Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;タイムズカー情報流出&quot;,
+  &quot;point1_desc&quot;: &quot;カーシェア大手のタイムズカーが外部からのサイバー攻撃を受け、会員の運転免許証画像などが大量に流出したことが判明した。被害の規模が大きく、多くの利用者に影響が広がっている。&quot;,
+  &quot;point2_title&quot;: &quot;免許証の再交付申...</summary>
+  </entry>
   <entry>
     <title>卓球・佐藤瞳が快進撃 決勝に進出</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23364"/>
@@ -572,41 +608,5 @@
   &quot;point1_desc&quot;: &quot;厚労省の調査で8月の実質賃金が前年比1.5％増となり、物価の上昇を上回る給与改善が8か月連続で継続していることが明らかになりました。&quot;,
   &quot;point2_title&quot;: &quot;賃上げ傾向の定着に期待&quot;,
   &quot;point2_desc&quot;: &quot;長引く物価高の中で労働者の手取り...</summary>
-  </entry>
-  <entry>
-    <title>ビール大手4社カルテル疑い 調査</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23286"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23286</id>
-    <updated>2026-10-07T02:16:33.207Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;point1_title&quot;: &quot;ビール大手４社に強制調査&quot;,
-  &quot;point1_desc&quot;: &quot;公正取引委員会は、ビールの卸売価格を事前調整していた独占禁止法違反の疑いで、大手メーカー4社に対する立ち入り調査に踏み切りました。&quot;,
-  &quot;point2_title&quot;: &quot;刑事告発も視野に全容解明へ&quot;,
-  &quot;point2_desc&quot;: &quot;今回のカルテル疑惑について、...</summary>
-  </entry>
-  <entry>
-    <title>台風で高波 西湘バイパス通行止め</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23285"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23285</id>
-    <updated>2026-10-06T21:46:21.784Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;point1_title&quot;: &quot;台風27号で高波警戒&quot;,
-  &quot;point1_desc&quot;: &quot;大型で強い台風27号が日本の東を北上しており、沿岸部ではうねりを伴った高波への厳重な警戒が呼びかけられています。&quot;,
-  &quot;point2_title&quot;: &quot;西湘バイパス通行止め&quot;,
-  &quot;point2_desc&quot;: &quot;台風の影響による高波の被害を防ぐため、神奈川県の西湘バイ...</summary>
-  </entry>
-  <entry>
-    <title>首相 米に日朝首脳会談の仲介要請</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23284"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23284</id>
-    <updated>2026-10-06T21:45:56.490Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;point1_title&quot;: &quot;米朝会談時に仲介を要請&quot;,
-  &quot;point1_desc&quot;: &quot;高市首相がトランプ米大統領に対し、米朝首脳会談が実現した際には金正恩総書記へ日朝首脳会談に応じるよう働きかける仲介役を依頼していたことが判明しました。&quot;,
-  &quot;point2_title&quot;: &quot;対話の糸口掴む狙いか&quot;,
-  &quot;point2_desc&quot;: &quot;米国との強力なパ...</summary>
   </entry>
 </feed>
