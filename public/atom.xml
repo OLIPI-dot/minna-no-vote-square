@@ -4,11 +4,47 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-11T02:18:02.493Z</updated>
+  <updated>2026-10-11T07:45:22.444Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>玄関先にクマ 襲われ頭などに重傷</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23370"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23370</id>
+    <updated>2026-10-11T07:45:19.110Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;豊田市でクマ襲撃事件発生&quot;,
+  &quot;point1_desc&quot;: &quot;愛知県豊田市小原北町の民家で、玄関先にいた59歳の男性会社員がクマ1頭に襲われる被害が発生した。男性は頭などに重傷を負っており、地域住民や警察が警戒を強めている。&quot;,
+  &quot;point2_title&quot;: &quot;早朝の玄関先で突如襲...</summary>
+  </entry>
+  <entry>
+    <title>「18歳の壁」で就職に不安 ケア児</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23369"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23369</id>
+    <updated>2026-10-11T07:44:53.756Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;学校生活での配慮&quot;,
+  &quot;point1_desc&quot;: &quot;体調面での不安を抱える障がいのある児童生徒に対し、登校後まず保健室で体調チェックを行うといった個別支援が実施されている。登校日の制限があった状態から声を上げ続け、毎日通学できる環境を獲得した。&quot;,
+  &quot;point2_title&quot;: ...</summary>
+  </entry>
+  <entry>
+    <title>消費減税方針は全くぶれず 片山氏</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23368"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23368</id>
+    <updated>2026-10-11T07:44:15.012Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;食料品の消費減税&quot;,
+  &quot;point1_desc&quot;: &quot;片山さつき財務大臣は単独取材に対し、食料品の消費減税に関する政府の方針は「全くぶれていない」と主張した。国民の生活支援に向けた減税議論を継続して進めていく姿勢を強調している。&quot;,
+  &quot;point2_title&quot;: &quot;財源は９兆円の税...</summary>
+  </entry>
   <entry>
     <title>Cロナウド 暫定的に代表出場停止</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23367"/>
@@ -572,41 +608,5 @@
   &quot;point1_desc&quot;: &quot;奈良市の川岸で母娘の遺体が見つかった事件で、警察は死体遺棄罪で起訴されていた交際相手の男を、母親らに対する殺人の疑いで新たに逮捕して捜査を進めています。&quot;,
   &quot;point2_title&quot;: &quot;遺棄罪で起訴後に容疑拡大&quot;,
   &quot;point2_desc&quot;: &quot;男は...</summary>
-  </entry>
-  <entry>
-    <title>ガザ戦闘から3年 死者は7万4000人</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23289"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23289</id>
-    <updated>2026-10-07T07:44:12.629Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;point1_title&quot;: &quot;戦闘開始から3年が経過&quot;,
-  &quot;point1_desc&quot;: &quot;イスラエルとハマスによる軍事衝突が始まってから丸3年が経ちましたが、停戦への道のりは遠く、依然として収束の目途が立たない異常事態が続いています。&quot;,
-  &quot;point2_title&quot;: &quot;ガザ半数以上を軍が支配&quot;,
-  &quot;point2_desc&quot;: &quot;和平交渉の進展が滞留...</summary>
-  </entry>
-  <entry>
-    <title>国交省否定の簗氏圧力 市長は疑念</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23288"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23288</id>
-    <updated>2026-10-07T02:17:33.542Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;point1_title&quot;: &quot;国交省が予算削減圧力を否定&quot;,
-  &quot;point1_desc&quot;: &quot;簗農相が地元自治体の道路予算を削ったと発言した問題で、国交省は調査の結果、簗氏側からの削減への働きかけはなかったと説明しました。&quot;,
-  &quot;point2_title&quot;: &quot;根拠示せず自治体は不信感&quot;,
-  &quot;point2_desc&quot;: &quot;調査結果において働きかけを否定...</summary>
-  </entry>
-  <entry>
-    <title>実質賃金10年ぶり8カ月連続プラス</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23287"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23287</id>
-    <updated>2026-10-07T02:16:56.900Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;point1_title&quot;: &quot;実質賃金が8か月連続増&quot;,
-  &quot;point1_desc&quot;: &quot;厚労省の調査で8月の実質賃金が前年比1.5％増となり、物価の上昇を上回る給与改善が8か月連続で継続していることが明らかになりました。&quot;,
-  &quot;point2_title&quot;: &quot;賃上げ傾向の定着に期待&quot;,
-  &quot;point2_desc&quot;: &quot;長引く物価高の中で労働者の手取り...</summary>
   </entry>
 </feed>
