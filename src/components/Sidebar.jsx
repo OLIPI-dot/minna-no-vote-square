@@ -230,12 +230,15 @@ const Sidebar = ({
             >
               🚓 パトロール
             </button>
+            {/* 🐉 ボス戦 (本実装完了まで一時非表示) */}
+            {/*
             <button 
               onClick={() => setMiniqueTab('boss')}
               style={{ flex: 1, padding: '8px 2px', borderRadius: '6px', border: 'none', background: miniqueTab === 'boss' ? '#ef4444' : 'transparent', color: miniqueTab === 'boss' ? 'white' : '#64748b', fontWeight: 'bold', fontSize: '0.75rem', cursor: 'pointer', transition: 'all 0.2s' }}
             >
               🐉 ボス戦
             </button>
+            */}
             <button 
               onClick={() => setMiniqueTab('gacha')}
               style={{ flex: 1, padding: '8px 2px', borderRadius: '6px', border: 'none', background: miniqueTab === 'gacha' ? '#f59e0b' : 'transparent', color: miniqueTab === 'gacha' ? 'white' : '#64748b', fontWeight: 'bold', fontSize: '0.75rem', cursor: 'pointer', transition: 'all 0.2s' }}
@@ -269,6 +272,8 @@ const Sidebar = ({
               />
             )}
 
+            {/* 🐉 ボス戦 (本実装完了まで一時非表示) */}
+            {/*
             {miniqueTab === 'boss' && (
               <BattleMiniGame 
                 userLevel={levelInfo?.level || 1} 
@@ -278,6 +283,7 @@ const Sidebar = ({
                 user={user}
               />
             )}
+            */}
 
             {miniqueTab === 'gacha' && (
               <GachaMiniGame 
