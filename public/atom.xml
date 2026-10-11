@@ -4,11 +4,47 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-11T12:52:41.011Z</updated>
+  <updated>2026-10-11T21:46:37.626Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>ネパールで再び土石流 5人不明</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23376"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23376</id>
+    <updated>2026-10-11T21:46:33.338Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;ネパール中部で大規模土石流&quot;,
+  &quot;point1_desc&quot;: &quot;ネパール中部のゴルカ郡において11日、大規模な土石流が発生した。現地当局の発表によると、この災害によって現在5人の行方が分からなくなっており、地域社会に大きな打撃を与えている。&quot;,
+  &quot;point2_title&quot;: &quot;軍に...</summary>
+  </entry>
+  <entry>
+    <title>定数削減 自民幹事長の腹案に波紋</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23375"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23375</id>
+    <updated>2026-10-11T21:46:07.822Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;衆院定数削減の焦点&quot;,
+  &quot;point1_desc&quot;: &quot;今国会の大きな焦点となっている衆議院議員の定数削減において、削減幅を巡る議論が活発化している。これまでの議論では衆院定数の約1割にあたる45議席の削減が中心的なテーマであった。&quot;,
+  &quot;point2_title&quot;: &quot;議論の新たな...</summary>
+  </entry>
+  <entry>
+    <title>エネルギー停戦発表 ウは「初耳」</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23374"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23374</id>
+    <updated>2026-10-11T21:45:29.371Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;トランプ氏の停戦発表&quot;,
+  &quot;point1_desc&quot;: &quot;トランプ米大統領による突然の停戦発表に対し、ウクライナのゼレンスキー大統領は事前の相談がなく初耳だったと明かした。一方的な発表に対して困惑を示しつつも、今後の対応について言及した。&quot;,
+  &quot;point2_title&quot;: &quot;エネル...</summary>
+  </entry>
   <entry>
     <title>個人M&amp;Aで多額損失「恋は盲目」</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23373"/>
@@ -572,41 +608,5 @@
   &quot;point1_desc&quot;: &quot;ノーベル化学賞に東京理科大の硤合憲三氏と仏パリ南大のカガン氏が選ばれた。物質の左右非対称性を生み出す化学合成分野での先駆的な功績が高く評価された。（76文字）&quot;,
   &quot;point2_title&quot;: &quot;不斉合成研究の進展に貢献&quot;,
   &quot;point2_desc&quot;: &quot;...</summary>
-  </entry>
-  <entry>
-    <title>千葉県で震度4 津波の心配なし</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23295"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23295</id>
-    <updated>2026-10-07T21:45:48.729Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;point1_title&quot;: &quot;千葉県北東部で震度4&quot;,
-  &quot;point1_desc&quot;: &quot;8日午前4時過ぎに千葉県北東部を震源とするマグニチュード4.8の地震が発生し、県内各地で最大震度4の揺れが観測されました。&quot;,
-  &quot;point2_title&quot;: &quot;津波被害の心配はなし&quot;,
-  &quot;point2_desc&quot;: &quot;気象庁の発表によると今回の地震による津波の心配...</summary>
-  </entry>
-  <entry>
-    <title>育休でパタハラ 男性が会社側提訴</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23294"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23294</id>
-    <updated>2026-10-07T12:52:12.057Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;point1_title&quot;: &quot;育休取得巡りパタハラ提訴&quot;,
-  &quot;point1_desc&quot;: &quot;男性社員が育児休業を取得しようとした際に社長らから不利益な嫌がらせを受けたとして、会社と社長を相手取り損害賠償を求めて提訴しました。&quot;,
-  &quot;point2_title&quot;: &quot;問われる企業の男性育休対応&quot;,
-  &quot;point2_desc&quot;: &quot;男性の育休取得が社会的に推...</summary>
-  </entry>
-  <entry>
-    <title>損保J 顧客情報6万件が漏えいか</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23293"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23293</id>
-    <updated>2026-10-07T12:51:45.948Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;point1_title&quot;: &quot;顧客情報6万件が漏洩の恐れ&quot;,
-  &quot;point1_desc&quot;: &quot;損害保険ジャパンの法人向けドラレコサービスで外部委託先が不正アクセスを受け、氏名や電話番号など約6万件の情報が流出した可能性がある。（71文字）&quot;,
-  &quot;point2_title&quot;: &quot;委託先への不正アクセスが原因&quot;,
-  &quot;point2_desc&quot;: &quot;通信機能付...</summary>
   </entry>
 </feed>
