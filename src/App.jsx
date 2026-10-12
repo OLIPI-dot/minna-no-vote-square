@@ -493,17 +493,28 @@ function App() {
   }, []);
 
   const getLevelInfo = (exp) => {
-    // 📊 王道RPGのレベル計算（Lv.99まで）
+    // 📊 王道RPGのレベル計算（Lv.255まで拡張！）
     let currentLevel = 1;
     let expNeededForNext = 30; // Lv1 -> Lv2 に必要なEXP
     let currentExpThreshold = 0;
     let nextExpThreshold = 30;
 
     // 現在のEXPが次の閾値を超えている限りレベルアップ！
-    while (exp >= nextExpThreshold && currentLevel < 99) {
+    while (exp >= nextExpThreshold && currentLevel < 255) {
       currentLevel++;
       currentExpThreshold = nextExpThreshold;
-      expNeededForNext = currentLevel * 20 + 10; // どんどん必要EXPが増える
+      // 序盤（Lv1〜30）はサクサク、中盤以降じっくり育つ重厚なRPGカーブ
+      if (currentLevel <= 30) {
+        expNeededForNext = currentLevel * 20 + 10;
+      } else if (currentLevel <= 60) {
+        expNeededForNext = currentLevel * 40 + 50;
+      } else if (currentLevel <= 100) {
+        expNeededForNext = currentLevel * 80 + 100;
+      } else if (currentLevel <= 200) {
+        expNeededForNext = currentLevel * 150 + 200;
+      } else {
+        expNeededForNext = currentLevel * 300 + 500;
+      }
       nextExpThreshold += expNeededForNext;
     }
 
@@ -511,14 +522,36 @@ function App() {
     let color = '#78350f'; // デフォルト色
     let textShadow = 'none';
 
-    if (currentLevel >= 99) {
-      title = 'アンケートの神 👼✨';
+    if (currentLevel >= 255) {
+      title = '全知全能のアンケート創世神 🌌👑✨';
       color = '#fbbf24'; // 神々しいゴールド
+      textShadow = '0 0 12px rgba(251, 191, 36, 0.9), 0 0 24px rgba(245, 158, 11, 0.6)';
+    } else if (currentLevel >= 230) {
+      title = '真・アンケートの絶対神 👼⚡';
+      color = '#fbbf24';
       textShadow = '0 0 10px rgba(251, 191, 36, 0.8), 0 0 20px rgba(251, 191, 36, 0.4)';
+    } else if (currentLevel >= 200) {
+      title = '広場の覇王 👑🔥';
+      color = '#ef4444';
+      textShadow = '0 0 8px rgba(239, 68, 68, 0.6)';
+    } else if (currentLevel >= 170) {
+      title = '天変地異の観測者 🌌';
+      color = '#8b5cf6';
+      textShadow = '0 0 8px rgba(139, 92, 246, 0.5)';
+    } else if (currentLevel >= 140) {
+      title = '深淵を征する者 🕳️⚔️';
+      color = '#6366f1';
+      textShadow = '0 0 6px rgba(99, 102, 241, 0.5)';
+    } else if (currentLevel >= 120) {
+      title = '百戦錬磨の調査兵 🎖️';
+      color = '#0ea5e9';
+    } else if (currentLevel >= 100) {
+      title = 'アンケートの神 👼✨';
+      color = '#f59e0b';
+      textShadow = '0 0 8px rgba(245, 158, 11, 0.6)';
     } else if (currentLevel >= 90) {
       title = '伝説の広場民 👑';
       color = '#f59e0b';
-      textShadow = '0 0 8px rgba(245, 158, 11, 0.6)';
     } else if (currentLevel >= 80) {
       title = '英雄広場民 🦸‍♂️';
       color = '#ef4444'; // 赤
@@ -552,7 +585,7 @@ function App() {
       title: title, 
       color: color,
       textShadow: textShadow,
-      next: currentLevel >= 99 ? null : nextExpThreshold 
+      next: currentLevel >= 255 ? null : nextExpThreshold 
     };
   };
 
