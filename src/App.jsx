@@ -315,21 +315,21 @@ function App() {
     if (user && isAuthLoaded.current) {
       supabase.auth.updateUser({ data: { custom_equipment: equipment } });
     }
-  }, [equipment, user]);
+  }, [equipment, user?.id]);
 
   useEffect(() => {
     localStorage.setItem('min_ake_acquired_items', JSON.stringify(acquiredItems));
     if (user && isAuthLoaded.current) {
       supabase.auth.updateUser({ data: { custom_acquired_items: acquiredItems } });
     }
-  }, [acquiredItems, user]);
+  }, [acquiredItems, user?.id]);
 
   useEffect(() => {
     localStorage.setItem('min_ake_encountered_enemies', JSON.stringify(encounteredEnemies));
     if (user && isAuthLoaded.current) {
       supabase.auth.updateUser({ data: { custom_encountered_enemies: encounteredEnemies } });
     }
-  }, [encounteredEnemies, user]);
+  }, [encounteredEnemies, user?.id]);
 
   // 起動時にインベントリと装備のアイテムを図鑑に自動登録する
   useEffect(() => {
@@ -372,7 +372,7 @@ function App() {
     if (user && isAuthLoaded.current) {
       supabase.auth.updateUser({ data: { custom_inventory: inventory } });
     }
-  }, [inventory, user]);
+  }, [inventory, user?.id]);
 
   const hasProcessedLoginBonus = useRef(false);
 
@@ -402,8 +402,13 @@ function App() {
         let shouldUpdate = false;
         
         if (dbExp > 0) {
-          // 🛡️ 既存アカウント: クラウドのセーブデータが絶対の正本
-          // ゲスト周回によるEXP・チケットの不正増殖・無限パトロールを防ぐため、クラウドデータを優先しゲストデータは破棄
+          // 既存アカウント: クラウドのセーブデータが基本の正本
+          // バトル勝利直後の未同期チケットがあれば救済
+          if (localTickets > dbTickets) {
+            newTotalTickets = localTickets;
+            updates.gacha_tickets = localTickets;
+            shouldUpdate = true;
+          }
           localStorage.removeItem('min_ake_exp');
           localStorage.removeItem('min_ake_tickets');
         } else if (localExp > 0 || localTickets > 0) {
@@ -443,9 +448,19 @@ function App() {
           updates.custom_equipment = localEquip;
           shouldUpdate = true;
         } else if (hasDbEquip) {
-          // クラウドに装備があれば優先反映！
-          setEquipment(dbEquipment);
-          localStorage.setItem('min_ake_equipment', JSON.stringify(dbEquipment));
+          // ⚠️ 片方の端末でセットした装備（お供など）が、もう片方のnullで消えないように合成！
+          const mergedEquip = {
+            weapon: dbEquipment.weapon || localEquip?.weapon || null,
+            armor: dbEquipment.armor || localEquip?.armor || null,
+            accessory: dbEquipment.accessory || localEquip?.accessory || null,
+            partner: dbEquipment.partner || localEquip?.partner || null
+          };
+          setEquipment(mergedEquip);
+          localStorage.setItem('min_ake_equipment', JSON.stringify(mergedEquip));
+          if (JSON.stringify(mergedEquip) !== JSON.stringify(dbEquipment)) {
+            updates.custom_equipment = mergedEquip;
+            shouldUpdate = true;
+          }
         }
 
         // 🎒 インベントリのクラウド同期
@@ -458,9 +473,19 @@ function App() {
           updates.custom_inventory = localInv;
           shouldUpdate = true;
         } else if (hasDbInv) {
-          // 既存アカウント: クラウドのインベントリを正本として適用
-          setInventory(dbInventory);
-          localStorage.setItem('min_ake_inventory', JSON.stringify(dbInventory));
+          // 端末間で入手したアイテムが消えないよう合成
+          const mergedInv = [...dbInventory];
+          if (hasLocalInv) {
+            localInv.forEach(it => {
+              if (it && it.id && !mergedInv.some(m => m.id === it.id)) mergedInv.push(it);
+            });
+          }
+          setInventory(mergedInv);
+          localStorage.setItem('min_ake_inventory', JSON.stringify(mergedInv));
+          if (mergedInv.length > dbInventory.length) {
+            updates.custom_inventory = mergedInv;
+            shouldUpdate = true;
+          }
         }
 
         // 📖 図鑑（アイテム）のクラウド同期
@@ -557,9 +582,12 @@ function App() {
       console.error('Error parsing auth redirect error:', e);
     }
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.user) {
-        handleAuthExp(session.user);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      // ⚠️ USER_UPDATEDなどの内部更新でhandleAuthExpを呼ぶと、
+      // 自身のupdateUser完了通知でローカルの最新Stateが巻き戻ってしまうため、
+      // SIGNED_IN（ログイン時）やSIGNED_OUT（ログアウト時）のみ実行する！
+      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
+        handleAuthExp(session?.user ?? null);
       }
     });
 
@@ -760,11 +788,8 @@ function App() {
     }
     
     if (actionType === 'view') {
-      if (!dailyActions.viewed.includes(surveyId) && dailyActions.viewed.length < 10) {
-        dailyActions.viewed.push(surveyId);
-        localStorage.setItem('daily_actions_v2', JSON.stringify(dailyActions));
-        addExp(1);
-      }
+      // 記事を開くだけのEXP付与は廃止（みんクエを遊ばない人の邪魔になるため）
+      return;
     } else if (actionType === 'vote') {
       if (!dailyActions.voted.includes(surveyId) && dailyActions.voted.length < 3) {
         dailyActions.voted.push(surveyId);
@@ -2089,7 +2114,7 @@ function App() {
     return () => {
       supabase.removeChannel(ch);
     };
-  }, [user, currentPage, filterCategory, debouncedSearchQuery, activeTab, sortMode, popularMode, filterTag]);
+  }, [user?.id, currentPage, filterCategory, debouncedSearchQuery, activeTab, sortMode, popularMode, filterTag]);
 
 
   // 📡 サイドバー用の派生データ（※以前はここで計算していたが、グローバル取得に移行したためお役御免らび！）
@@ -2739,6 +2764,7 @@ function App() {
   }, [surveys, filterTag, sortMode, watchedIds, user, isAdmin, debouncedSearchQuery]);
 
   // 💎 鮮度重視 ＆ ランダム性のある「あなたへのおすすめ」 🐰✨
+  const recommendSeed = useRef(Math.floor(Math.random() * 1e9)).current;
   const recommendedSurveys = useMemo(() => {
     const now = new Date();
     // 💡 タブ切り替えでsurveysが空になった時でもおすすめを表示するため、人気の話題と新着をマージして重複排除するらび！
@@ -2763,9 +2789,17 @@ function App() {
         return { ...s, _finalScore: baseScore + freshnessBonus };
       })
       .sort((a, b) => b._finalScore - a._finalScore)
-      .slice(0, 36) // 優秀な候補を36件選んで...
-      .sort(() => Math.random() - 0.5) // シャッフルするらび！🔀
-      .slice(0, 24); // その中から24件を表示
+      .slice(0, 24) // 優秀な候補を選んで...
+      // 🔀 ページ表示中は並びが変わらないよう、セッション固定の擬似乱数でシャッフルするらび！
+      .map(s => {
+        const idStr = String(s.id);
+        let h = 0;
+        for (let i = 0; i < idStr.length; i++) h = (h * 31 + idStr.charCodeAt(i)) >>> 0;
+        return { s, k: ((h ^ recommendSeed) >>> 0) % 100000 };
+      })
+      .sort((a, b) => a.k - b.k)
+      .map(x => x.s)
+      .slice(0, 12); // 軽量化のため12件を表示
   }, [surveys, popularSurveys, liveSurveys]);
 
   // 🔥 関連アンケート（同じカテゴリ or 類似タグ）

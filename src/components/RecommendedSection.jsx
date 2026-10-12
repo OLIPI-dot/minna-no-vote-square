@@ -84,6 +84,8 @@ const RecommendedSection = ({ surveys, navigateTo, layout = 'scroll' }) => {
                     alt="" 
                     style={{ width: '100%', height: '100%', objectFit: 'cover', backgroundColor: '#f9fafb', position: 'relative', zIndex: 2 }} 
                     referrerPolicy="no-referrer"
+                    loading="lazy"
+                    decoding="async"
                     onError={(e) => {
                       e.currentTarget.style.display = 'none';
                       setBrokenImages(prev => new Set([...prev, s.id]));
