@@ -952,11 +952,11 @@ const PatrolMiniGame = ({
 
   return (
     <div style={{ marginTop: '12px', background: '#f8fafc', borderRadius: '12px', border: '2px solid #cbd5e1', padding: '12px 14px', color: '#334155' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-        <h4 style={{ margin: 0, fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: '900' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '4px', marginBottom: '8px' }}>
+        <h4 style={{ margin: 0, fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: '900', whiteSpace: 'nowrap' }}>
           🚓 広場パトロール
         </h4>
-        <span style={{ fontSize: '0.72rem', background: '#3b82f6', color: 'white', padding: '2px 8px', borderRadius: '12px', fontWeight: 'bold' }}>
+        <span style={{ fontSize: '0.72rem', background: '#3b82f6', color: 'white', padding: '2px 8px', borderRadius: '12px', fontWeight: 'bold', whiteSpace: 'nowrap' }}>
           通常戦闘
         </span>
       </div>
@@ -1028,8 +1028,8 @@ const PatrolMiniGame = ({
             boxShadow: enemy.isEnraged ? '0 0 10px rgba(239, 68, 68, 0.15)' : 'none'
           }}>
             {/* 敵情報行 */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '2px 4px', marginBottom: '4px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '4px 6px', minWidth: 0, flex: '1 1 auto' }}>
                 <span style={{ fontSize: '1.2rem', lineHeight: 1, animation: (enemy.isEnraged || enemy.type === 'rare') ? 'pulse 1.5s infinite' : 'none' }}>{enemy.icon}</span>
                 <span style={{ 
                   fontSize: '0.65rem', padding: '1px 6px', borderRadius: '4px', fontWeight: 'bold',
@@ -1042,14 +1042,14 @@ const PatrolMiniGame = ({
                   {enemy.isEnraged ? '💢 激怒種' : enemy.type === 'rare' ? 'RARE' : enemy.type === 'elite' ? 'ELITE' : 'NORMAL'}
                 </span>
                 <span style={{ 
-                  fontWeight: '900', fontSize: '0.85rem', 
+                  fontWeight: '900', fontSize: '0.85rem', minWidth: 0, overflowWrap: 'anywhere', wordBreak: 'keep-all',
                   color: enemy.isEnraged ? '#b91c1c' : enemy.type === 'rare' ? '#b45309' : enemy.type === 'elite' ? '#1d4ed8' : '#1e293b',
                   textShadow: enemy.isEnraged ? '0 0 4px rgba(239, 68, 68, 0.25)' : 'none'
                 }}>
                   {enemy.name}
                 </span>
               </div>
-              <div style={{ fontSize: '0.72rem', flexShrink: 0, marginLeft: '4px' }}>
+              <div style={{ fontSize: '0.72rem', flexShrink: 0, whiteSpace: 'nowrap' }}>
                 {enemy.isEnraged ? (
                   <span style={{ color: '#dc2626', fontWeight: '900', background: '#fee2e2', padding: '1px 5px', borderRadius: '4px', fontSize: '0.68rem', border: '1px solid #fecaca' }}>
                     Lv.変異⚡

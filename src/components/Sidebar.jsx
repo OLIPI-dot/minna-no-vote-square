@@ -281,28 +281,19 @@ const Sidebar = ({
           <div style={{ display: 'flex', gap: '4px', margin: '16px 0 12px 0', background: 'rgba(0,0,0,0.05)', padding: '4px', borderRadius: '8px' }}>
             <button 
               onClick={() => setMiniqueTab('patrol')}
-              style={{ flex: 1, padding: '8px 2px', borderRadius: '6px', border: 'none', background: miniqueTab === 'patrol' ? '#3b82f6' : 'transparent', color: miniqueTab === 'patrol' ? 'white' : '#64748b', fontWeight: 'bold', fontSize: '0.75rem', cursor: 'pointer', transition: 'all 0.2s' }}
+              style={{ flex: 1, padding: '8px 2px', borderRadius: '6px', border: 'none', background: miniqueTab === 'patrol' ? '#3b82f6' : 'transparent', color: miniqueTab === 'patrol' ? 'white' : '#64748b', fontWeight: 'bold', fontSize: '0.75rem', cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap' }}
             >
               🚓 パトロール
             </button>
-            {/* 🐉 ボス戦 (本実装完了まで一時非表示) */}
-            {/*
-            <button 
-              onClick={() => setMiniqueTab('boss')}
-              style={{ flex: 1, padding: '8px 2px', borderRadius: '6px', border: 'none', background: miniqueTab === 'boss' ? '#ef4444' : 'transparent', color: miniqueTab === 'boss' ? 'white' : '#64748b', fontWeight: 'bold', fontSize: '0.75rem', cursor: 'pointer', transition: 'all 0.2s' }}
-            >
-              🐉 ボス戦
-            </button>
-            */}
             <button 
               onClick={() => setMiniqueTab('gacha')}
-              style={{ flex: 1, padding: '8px 2px', borderRadius: '6px', border: 'none', background: miniqueTab === 'gacha' ? '#f59e0b' : 'transparent', color: miniqueTab === 'gacha' ? 'white' : '#64748b', fontWeight: 'bold', fontSize: '0.75rem', cursor: 'pointer', transition: 'all 0.2s' }}
+              style={{ flex: 1, padding: '8px 2px', borderRadius: '6px', border: 'none', background: miniqueTab === 'gacha' ? '#f59e0b' : 'transparent', color: miniqueTab === 'gacha' ? 'white' : '#64748b', fontWeight: 'bold', fontSize: '0.75rem', cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap' }}
             >
               🛡️ 装備・ガチャ
             </button>
             <button 
               onClick={() => setIsDictionaryOpen(true)}
-              style={{ flex: 1, padding: '8px 2px', borderRadius: '6px', border: 'none', background: '#8b5cf6', color: 'white', fontWeight: 'bold', fontSize: '0.75rem', cursor: 'pointer', transition: 'all 0.2s' }}
+              style={{ flex: 1, padding: '8px 2px', borderRadius: '6px', border: 'none', background: '#8b5cf6', color: 'white', fontWeight: 'bold', fontSize: '0.75rem', cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap' }}
             >
               📖 図鑑
             </button>
