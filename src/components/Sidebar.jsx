@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { supabase } from '../supabaseClient';
 import AdSenseBox from './AdSenseBox';
 import SquareTimeline from './SquareTimeline';
 import BattleMiniGame from './BattleMiniGame';
