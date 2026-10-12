@@ -463,6 +463,13 @@ function App() {
     supabase.auth.getSession().then(({ data: { session }, error }) => {
       if (error) console.error('getSession error:', error);
       handleAuthExp(session?.user ?? null);
+
+      // 🔄 サーバーから最新のユーザー情報（他端末で変更された名前やEXPなど）を即座に取得して反映！
+      if (session?.user) {
+        supabase.auth.getUser().then(({ data: { user: latestUser } }) => {
+          if (latestUser) handleAuthExp(latestUser);
+        });
+      }
     }).catch(err => {
       console.error('getSession catch:', err);
     });
