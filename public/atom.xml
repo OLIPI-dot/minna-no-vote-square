@@ -4,11 +4,48 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-12T07:45:35.846Z</updated>
+  <updated>2026-10-12T12:53:11.505Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>だんじり死傷事故 伝統か安全か</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23385"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23385</id>
+    <updated>2026-10-12T12:53:06.975Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;だんじり横転事故&quot;,
+  &quot;point1_desc&quot;: &quot;大阪府内の2か所で秋祭りのだんじりが相次いで横転する事故が発生した。三連休の初日という賑わいの中で歓声が悲鳴へと変わり、だんじり祭りの現場は一時騒然とした雰囲気に包まれた。&quot;,
+  &quot;point2_title&quot;: &quot;2人死亡16人負傷...</summary>
+  </entry>
+  <entry>
+    <title>車と衝突し11歳重傷 ひき逃げか</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23384"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23384</id>
+    <updated>2026-10-12T12:52:30.225Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;小学生が車と衝突&quot;,
+  &quot;point1_desc&quot;: &quot;岩手県大船渡市にて11日、自転車で移動していた小学生の男の子が乗用車と衝突する事故が発生しました。男の子は大けがを負っており、病院へ搬送されて治療を受けています。&quot;,
+  &quot;point2_title&quot;: &quot;車が現場から逃走&quot;,
+  &quot;...</summary>
+  </entry>
+  <entry>
+    <title>共産党 野党共闘路線を転換方針</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23383"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23383</id>
+    <updated>2026-10-12T12:51:29.752Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;共産党が野党共闘を転換&quot;,
+  &quot;point1_desc&quot;: &quot;共産党は第10回中央委員会総会を開催し、田村智子委員長が来年1月の党大会決議案を報告した。その中で、これまで推進してきた国政選挙における野党共闘路線を大きく転換する方針が正式に表明された。&quot;,
+  &quot;point2_title&quot;:...</summary>
+  </entry>
   <entry>
     <title>北発射 韓国ミサイルへの抗議か</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23382"/>
@@ -573,41 +610,5 @@
   &quot;point1_desc&quot;: &quot;イルクーツク州のペスト対策研究所に勤務する職員が肺炎で死亡した事態を受け、世界保健機関（WHO）はロシア側に対してより詳しい情報の共有を求めています。&quot;,
   &quot;point2_title&quot;: &quot;感染症研究所での死を警戒&quot;,
   &quot;point2_desc&quot;: &quot;ペストなど...</summary>
-  </entry>
-  <entry>
-    <title>参院農水委の開催に応じず 立憲</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23304"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23304</id>
-    <updated>2026-10-08T12:50:59.982Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;point1_title&quot;: &quot;簗農水相の発言巡り対立&quot;,
-  &quot;point1_desc&quot;: &quot;簗農林水産大臣による予算削減に関する発言を受けて野党側が反発を強めており、与野党間での国会運営を巡る緊張が急速に高まっています。&quot;,
-  &quot;point2_title&quot;: &quot;立民が審議拒否を通告&quot;,
-  &quot;point2_desc&quot;: &quot;立憲民主党は大臣の辞任や十分な説明責任...</summary>
-  </entry>
-  <entry>
-    <title>愛知・大村知事、タイ代表の食事不満に「来てほしくなかった」と発言</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23303"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23303</id>
-    <updated>2026-10-08T07:46:21.169Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;point1_title&quot;: &quot;知事の不適切発言に批判&quot;,
-  &quot;point1_desc&quot;: &quot;タイ代表が食事の少なさをSNSで指摘した件に対し、大村知事が来てほしくなかった等と反論したことで、開催都市トップとしての姿勢に疑問の声が上がっています。&quot;,
-  &quot;point2_title&quot;: &quot;大会運営と食事環境に課題&quot;,
-  &quot;point2_desc&quot;: &quot;国際大会を...</summary>
-  </entry>
-  <entry>
-    <title>トランプ大統領、イラン攻撃の準備命令を検討か</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23302"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23302</id>
-    <updated>2026-10-08T07:44:56.527Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;point1_title&quot;: &quot;米軍がイラン作戦準備か&quot;,
-  &quot;point1_desc&quot;: &quot;米報道によると、米国防総省が中東を管轄する中央軍に対し、イランでの大規模戦闘作戦を再開するための準備を指示したことが明らかになりました。&quot;,
-  &quot;point2_title&quot;: &quot;中東情勢の緊迫化に懸念&quot;,
-  &quot;point2_desc&quot;: &quot;トランプ大統領の動向を含め軍...</summary>
   </entry>
 </feed>
