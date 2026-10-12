@@ -197,6 +197,47 @@ const Sidebar = ({
       <div className="sidebar-section-card" style={{ marginBottom: '24px', background: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)', border: '2px solid #fbbf24', textAlign: 'center' }}>
           
           <h3 className="live-feed-title" style={{ color: '#b45309', border: 'none', padding: 0, justifyContent: 'center', marginTop: '12px' }}>🐰 みんクエ 🥕</h3>
+
+          {/* ☁️ ログイン・同期状態の明示バッジ */}
+          {user ? (
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#dcfce7', border: '1px solid #86efac', color: '#166534', fontSize: '0.72rem', fontWeight: 'bold', padding: '3px 10px', borderRadius: '12px', margin: '4px 0 8px 0' }}>
+              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#22c55e', display: 'inline-block' }}></span>
+              ☁️ クラウド同期中（全端末で共有）
+            </div>
+          ) : (
+            <div style={{ margin: '4px 0 10px 0' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#fee2e2', border: '1px solid #fca5a5', color: '#991b1b', fontSize: '0.72rem', fontWeight: 'bold', padding: '3px 10px', borderRadius: '12px' }}>
+                <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#ef4444', display: 'inline-block' }}></span>
+                📱 ゲスト保存中（この端末のみ）
+              </div>
+              <div style={{ marginTop: '6px' }}>
+                <button 
+                  onClick={async () => {
+                    try {
+                      const redirectUrl = window.location.origin.includes('localhost')
+                        ? window.location.origin
+                        : 'https://www.minna-no-vote-square.com';
+                      await supabase.auth.signInWithOAuth({
+                        provider: 'google',
+                        options: { redirectTo: redirectUrl }
+                      });
+                    } catch (e) {
+                      console.error(e);
+                    }
+                  }}
+                  style={{ 
+                    background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)', 
+                    color: 'white', border: 'none', borderRadius: '6px', 
+                    padding: '6px 14px', fontSize: '0.75rem', fontWeight: 'bold', 
+                    cursor: 'pointer', boxShadow: '0 2px 6px rgba(239, 68, 68, 0.3)',
+                    display: 'inline-flex', alignItems: 'center', gap: '6px'
+                  }}
+                >
+                  <span>☁️</span> Googleログインして同期する
+                </button>
+              </div>
+            </div>
+          )}
           
           <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#d97706', margin: '4px 0 12px 0' }}>
             {levelInfo?.title || 'ひよっこ広場民 🥚'}
@@ -234,34 +275,6 @@ const Sidebar = ({
             <div style={{ fontSize: '0.75rem', color: '#b45309' }}>次の称号まであと {levelInfo.next - (userExp || 0)} EXP！</div>
           ) : (
             <div style={{ fontSize: '0.75rem', color: '#b45309' }}>最大レベル到達！あなたは伝説です✨</div>
-          )}
-          {!user && (
-            <div style={{ fontSize: '0.72rem', color: '#b91c1c', marginTop: '8px', background: '#fee2e2', padding: '6px 8px', borderRadius: '8px', textAlign: 'center' }}>
-              <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>※ 現在は未ログイン（この端末のみ保存）</div>
-              <button 
-                onClick={async () => {
-                  try {
-                    const redirectUrl = window.location.origin.includes('localhost')
-                      ? window.location.origin
-                      : 'https://www.minna-no-vote-square.com';
-                    await supabase.auth.signInWithOAuth({
-                      provider: 'google',
-                      options: { redirectTo: redirectUrl }
-                    });
-                  } catch (e) {
-                    console.error(e);
-                  }
-                }}
-                style={{ 
-                  background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)', 
-                  color: 'white', border: 'none', borderRadius: '6px', 
-                  padding: '5px 12px', fontSize: '0.72rem', fontWeight: 'bold', 
-                  cursor: 'pointer', boxShadow: '0 2px 4px rgba(239, 68, 68, 0.3)' 
-                }}
-              >
-                Googleログインしてデータを引き継ぐ ☁️
-              </button>
-            </div>
           )}
 
           {/* ⚔️ みんクエ タブメニュー */}
