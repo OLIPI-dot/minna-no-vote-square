@@ -972,29 +972,43 @@ const PatrolMiniGame = ({ userLevel, userExp, levelInfo, addExp, equipment, setE
         <div style={{ animation: 'fadeIn 0.2s' }}>
           {/* コンパクト戦闘ステータス */}
           <div style={{ 
-            background: enemy.type === 'rare' ? '#fffbeb' : enemy.type === 'elite' ? '#f8fafc' : 'white', 
-            border: `1.5px solid ${enemy.type === 'rare' ? '#f59e0b' : enemy.type === 'elite' ? '#3b82f6' : '#e2e8f0'}`, 
+            background: enemy.isEnraged ? '#fff1f2' : enemy.type === 'rare' ? '#fffbeb' : enemy.type === 'elite' ? '#f8fafc' : 'white', 
+            border: `1.5px solid ${enemy.isEnraged ? '#f87171' : enemy.type === 'rare' ? '#f59e0b' : enemy.type === 'elite' ? '#3b82f6' : '#e2e8f0'}`, 
             borderRadius: '8px', 
             padding: '8px 10px', 
-            marginBottom: '8px' 
+            marginBottom: '8px',
+            boxShadow: enemy.isEnraged ? '0 0 10px rgba(239, 68, 68, 0.15)' : 'none'
           }}>
             {/* 敵情報行 */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: 0 }}>
-                <span style={{ fontSize: '1.2rem', lineHeight: 1, animation: enemy.type === 'rare' ? 'pulse 2s infinite' : 'none' }}>{enemy.icon}</span>
+                <span style={{ fontSize: '1.2rem', lineHeight: 1, animation: (enemy.isEnraged || enemy.type === 'rare') ? 'pulse 1.5s infinite' : 'none' }}>{enemy.icon}</span>
                 <span style={{ 
-                  fontSize: '0.65rem', padding: '1px 5px', borderRadius: '4px', fontWeight: 'bold',
-                  background: enemy.type === 'rare' ? '#f59e0b' : enemy.type === 'elite' ? '#3b82f6' : '#94a3b8',
-                  color: 'white', flexShrink: 0
+                  fontSize: '0.65rem', padding: '1px 6px', borderRadius: '4px', fontWeight: 'bold',
+                  background: enemy.isEnraged 
+                    ? 'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)' 
+                    : enemy.type === 'rare' ? '#f59e0b' : enemy.type === 'elite' ? '#3b82f6' : '#94a3b8',
+                  color: 'white', flexShrink: 0,
+                  boxShadow: enemy.isEnraged ? '0 0 6px rgba(239, 68, 68, 0.4)' : 'none'
                 }}>
-                  {enemy.type === 'rare' ? 'RARE' : enemy.type === 'elite' ? 'ELITE' : 'NORMAL'}
+                  {enemy.isEnraged ? '💢 激怒種' : enemy.type === 'rare' ? 'RARE' : enemy.type === 'elite' ? 'ELITE' : 'NORMAL'}
                 </span>
-                <span style={{ fontWeight: 'bold', fontSize: '0.85rem', color: enemy.type === 'rare' ? '#ef4444' : '#1e293b' }}>
+                <span style={{ 
+                  fontWeight: '900', fontSize: '0.85rem', 
+                  color: enemy.isEnraged ? '#b91c1c' : enemy.type === 'rare' ? '#b45309' : enemy.type === 'elite' ? '#1d4ed8' : '#1e293b',
+                  textShadow: enemy.isEnraged ? '0 0 4px rgba(239, 68, 68, 0.25)' : 'none'
+                }}>
                   {enemy.name}
                 </span>
               </div>
-              <div style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 'bold', flexShrink: 0, marginLeft: '4px' }}>
-                Lv.{enemy.level || 1}
+              <div style={{ fontSize: '0.72rem', flexShrink: 0, marginLeft: '4px' }}>
+                {enemy.isEnraged ? (
+                  <span style={{ color: '#dc2626', fontWeight: '900', background: '#fee2e2', padding: '1px 5px', borderRadius: '4px', fontSize: '0.68rem', border: '1px solid #fecaca' }}>
+                    Lv.変異⚡
+                  </span>
+                ) : (
+                  <span style={{ color: '#64748b', fontWeight: 'bold' }}>Lv.{enemy.level || 1}</span>
+                )}
               </div>
             </div>
 
