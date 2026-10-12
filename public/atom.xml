@@ -4,11 +4,48 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-12T02:19:12.370Z</updated>
+  <updated>2026-10-12T07:45:35.846Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>北発射 韓国ミサイルへの抗議か</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23382"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23382</id>
+    <updated>2026-10-12T07:45:31.500Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;北朝鮮がミサイルを発射&quot;,
+  &quot;point1_desc&quot;: &quot;防衛省は北朝鮮が午前9時台に2回、弾道ミサイルの可能性があるものを発射したと発表。いずれも日本の排他的経済水域（EEZ）の外側に落下したと推定されている。&quot;,
+  &quot;point2_title&quot;: &quot;韓国軍の分析と発射背景&quot;,
+ ...</summary>
+  </entry>
+  <entry>
+    <title>欧州首脳ら ウクライナへ連帯表明</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23381"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23381</id>
+    <updated>2026-10-12T07:44:43.022Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;トランプ氏の露接近&quot;,
+  &quot;point1_desc&quot;: &quot;トランプ米大統領がロシア侵攻を巡り再びロシア寄りの姿勢を鮮明にしている。米露が接近してウクライナ情勢への対応を主導することに対する警戒感が各国で急速に高まりを見せている。&quot;,
+  &quot;point2_title&quot;: &quot;欧州首脳の連帯表明...</summary>
+  </entry>
+  <entry>
+    <title>公明・岡本氏 自民含め連携目指す</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23380"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23380</id>
+    <updated>2026-10-12T07:44:17.556Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;結集軸を目指す考え&quot;,
+  &quot;point1_desc&quot;: &quot;公明党の岡本三成氏がインタビューに応じ、政界再編における結集軸を目指す方針を明らかにした。与野党を問わず政策本位で連携を進め、新たな政治の枠組み作りを牽引したい考えだ。&quot;,
+  &quot;point2_title&quot;: &quot;政策本位の連携推進&quot;...</summary>
+  </entry>
   <entry>
     <title>中野窃盗 被告は国際的窃盗団か</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23379"/>
@@ -572,41 +609,5 @@
   &quot;point1_desc&quot;: &quot;米報道によると、米国防総省が中東を管轄する中央軍に対し、イランでの大規模戦闘作戦を再開するための準備を指示したことが明らかになりました。&quot;,
   &quot;point2_title&quot;: &quot;中東情勢の緊迫化に懸念&quot;,
   &quot;point2_desc&quot;: &quot;トランプ大統領の動向を含め軍...</summary>
-  </entry>
-  <entry>
-    <title>ビール大手4社、カルテル疑惑で強制調査</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23301"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23301</id>
-    <updated>2026-10-08T07:44:31.482Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;point1_title&quot;: &quot;ビール大手４社に強制調査&quot;,
-  &quot;point1_desc&quot;: &quot;卸売業者向けの販売価格を不正に調整していたカルテルの疑いが浮上し、公正取引委員会が大手ビールメーカー各社への立ち入り検査に踏み切りました。&quot;,
-  &quot;point2_title&quot;: &quot;刑事告発も視野に解明へ&quot;,
-  &quot;point2_desc&quot;: &quot;独占禁止法違反の疑いによ...</summary>
-  </entry>
-  <entry>
-    <title>別府ひき逃げの八田與一容疑者、情報提供1万3千件突破</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23300"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23300</id>
-    <updated>2026-10-08T02:17:34.792Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;point1_title&quot;: &quot;情報提供が約1万4千件に&quot;,
-  &quot;point1_desc&quot;: &quot;2022年に別府市で起きたひき逃げ殺傷事件の八田與一容疑者に対し、9月末時点で寄せられた目撃などの情報提供が累計1万3978件に達しました。&quot;,
-  &quot;point2_title&quot;: &quot;容疑者は重要指名手配中&quot;,
-  &quot;point2_desc&quot;: &quot;警察庁の重要指名手配に...</summary>
-  </entry>
-  <entry>
-    <title>琵琶湖で心肺停止の中1男子、病院で呼吸が回復</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23299"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23299</id>
-    <updated>2026-10-08T02:17:10.471Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;point1_title&quot;: &quot;琵琶湖転落の中学生が回復&quot;,
-  &quot;point1_desc&quot;: &quot;滋賀県長浜市の琵琶湖で水難事故が発生し、心肺停止状態で救急搬送された中学1年の男子生徒が、搬送先の病院で自発呼吸を取り戻したことが判明しました。&quot;,
-  &quot;point2_title&quot;: &quot;港付近での転落事故&quot;,
-  &quot;point2_desc&quot;: &quot;事故現場は長浜市内の港...</summary>
   </entry>
 </feed>
