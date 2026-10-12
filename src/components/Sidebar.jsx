@@ -324,6 +324,7 @@ const Sidebar = ({
                 globalOnlineCount={globalOnlineCount}
                 encounteredEnemies={encounteredEnemies}
                 setEncounteredEnemies={setEncounteredEnemies}
+                user={user}
               />
             )}
 

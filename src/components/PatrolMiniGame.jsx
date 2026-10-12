@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { supabase } from '../supabaseClient';
 import { rollEnemy } from '../enemies';
 import { ITEMS } from '../items';
 
@@ -81,7 +82,22 @@ const getEffectMsg = (effectType, item) => {
   return list[Math.floor(Math.random() * list.length)].replace('{item}', `【${item.name}】`);
 };
 
-const PatrolMiniGame = ({ userLevel, userExp, levelInfo, addExp, equipment, setEquipment, addTickets, gachaTickets, inventory, setInventory, globalOnlineCount, encounteredEnemies = [], setEncounteredEnemies }) => {
+const PatrolMiniGame = ({ 
+  userLevel, 
+  userExp, 
+  levelInfo, 
+  addExp, 
+  equipment, 
+  setEquipment, 
+  addTickets, 
+  gachaTickets, 
+  inventory, 
+  setInventory, 
+  globalOnlineCount, 
+  encounteredEnemies = [], 
+  setEncounteredEnemies,
+  user
+}) => {
   const [battleState, setBattleState] = useState('idle'); // idle, battling, won, lost
   const [enemy, setEnemy] = useState(null);
   const [playerHp, setPlayerHp] = useState(0);
@@ -100,16 +116,32 @@ const PatrolMiniGame = ({ userLevel, userExp, levelInfo, addExp, equipment, setE
   const botIntervalRef = useRef(null);
   const winProcessedRef = useRef(false);
 
-  // 1日のパトロール回数制限 (最大10回)
+  // 1日のパトロール回数制限 (最大10回 - クラウドおよびローカルで同期)
   const getTodayPatrols = () => {
     const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
-    let data;
-    try { data = JSON.parse(localStorage.getItem('daily_patrols_v2') || '{}'); } catch { data = {}; }
-    if (data.date !== todayStr) return { date: todayStr, count: 0 };
-    return data;
+    let localCount = 0;
+    try {
+      const data = JSON.parse(localStorage.getItem('daily_patrols_v2') || '{}');
+      if (data.date === todayStr) localCount = data.count || 0;
+    } catch { localCount = 0; }
+
+    let cloudCount = 0;
+    if (user?.user_metadata?.daily_patrol_date === todayStr) {
+      cloudCount = user.user_metadata?.daily_patrol_count || 0;
+    }
+
+    const count = Math.max(localCount, cloudCount);
+    return { date: todayStr, count };
   };
-  const [patrolsToday, setPatrolsToday] = useState(getTodayPatrols().count);
+  const [patrolsToday, setPatrolsToday] = useState(() => getTodayPatrols().count);
   const MAX_PATROLS = 10; // 1日10回まで
+
+  // ユーザーのログイン状態が変化した時にも最新回数を反映
+  useEffect(() => {
+    const current = getTodayPatrols();
+    setPatrolsToday(current.count);
+    localStorage.setItem('daily_patrols_v2', JSON.stringify(current));
+  }, [user]);
 
   // プレイヤーステータス計算
   const pMaxHp = (userLevel * 10 + 100) + (equipment?.accessory?.hp || 0) + (equipment?.partner?.hp || 0);
@@ -117,13 +149,26 @@ const PatrolMiniGame = ({ userLevel, userExp, levelInfo, addExp, equipment, setE
   const pDef = (userLevel * 2) + (equipment?.armor?.def || 0) + (equipment?.partner?.def || 0);
 
   const startPatrol = (hardMode = false) => {
-    if (patrolsToday >= MAX_PATROLS) return;
+    const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
+    const currentData = getTodayPatrols();
+    if (currentData.count >= MAX_PATROLS) {
+      setPatrolsToday(currentData.count);
+      return;
+    }
     
     // 回数消費
-    const currentData = getTodayPatrols();
-    currentData.count += 1;
-    localStorage.setItem('daily_patrols_v2', JSON.stringify(currentData));
-    setPatrolsToday(currentData.count);
+    const newCount = currentData.count + 1;
+    localStorage.setItem('daily_patrols_v2', JSON.stringify({ date: todayStr, count: newCount }));
+    setPatrolsToday(newCount);
+
+    if (user) {
+      supabase.auth.updateUser({
+        data: {
+          daily_patrol_date: todayStr,
+          daily_patrol_count: newCount
+        }
+      });
+    }
 
     // 敵の抽選
     const newEnemy = rollEnemy(userLevel || 1);

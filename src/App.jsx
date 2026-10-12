@@ -401,13 +401,36 @@ function App() {
         const updates = {};
         let shouldUpdate = false;
         
-        if (localExp > 0 || localTickets > 0) {
-          newTotalExp += localExp;
-          newTotalTickets += localTickets;
+        if (dbExp > 0) {
+          // 🛡️ 既存アカウント: クラウドのセーブデータが絶対の正本
+          // ゲスト周回によるEXP・チケットの不正増殖・無限パトロールを防ぐため、クラウドデータを優先しゲストデータは破棄
+          localStorage.removeItem('min_ake_exp');
+          localStorage.removeItem('min_ake_tickets');
+        } else if (localExp > 0 || localTickets > 0) {
+          // 🐣 初回アカウント連携（クラウドが未プレイでローカルにゲストデータがある場合のみ引き継ぎ）
+          newTotalExp = localExp;
+          newTotalTickets = localTickets;
           localStorage.removeItem('min_ake_exp');
           localStorage.removeItem('min_ake_tickets');
           shouldUpdate = true;
         }
+
+        // 🛡️ パトロール回数のアカウント同期（無限周回・ゲスト周回対策）
+        const dbPatrolDate = currentUser.user_metadata?.daily_patrol_date || '';
+        const dbPatrolCount = dbPatrolDate === todayStr ? (currentUser.user_metadata?.daily_patrol_count || 0) : 0;
+        
+        let localPatrolData = {};
+        try { localPatrolData = JSON.parse(localStorage.getItem('daily_patrols_v2') || '{}'); } catch(e){}
+        const localPatrolCount = localPatrolData.date === todayStr ? (localPatrolData.count || 0) : 0;
+        
+        // クラウドとローカルで大きい方を採用（不正な巻き戻しを完全に防止）
+        const syncedPatrolCount = Math.max(dbPatrolCount, localPatrolCount);
+        if (syncedPatrolCount > dbPatrolCount || dbPatrolDate !== todayStr) {
+          updates.daily_patrol_date = todayStr;
+          updates.daily_patrol_count = syncedPatrolCount;
+          shouldUpdate = true;
+        }
+        localStorage.setItem('daily_patrols_v2', JSON.stringify({ date: todayStr, count: syncedPatrolCount }));
 
         // 🛡️ 装備のクラウド同期
         let localEquip = null;
@@ -435,16 +458,9 @@ function App() {
           updates.custom_inventory = localInv;
           shouldUpdate = true;
         } else if (hasDbInv) {
-          const mergedInv = [...dbInventory];
-          if (hasLocalInv) {
-            localInv.forEach(it => {
-              if (it && it.id && !mergedInv.some(m => m.id === it.id)) mergedInv.push(it);
-            });
-          }
-          updates.custom_inventory = mergedInv;
-          setInventory(mergedInv);
-          localStorage.setItem('min_ake_inventory', JSON.stringify(mergedInv));
-          shouldUpdate = true;
+          // 既存アカウント: クラウドのインベントリを正本として適用
+          setInventory(dbInventory);
+          localStorage.setItem('min_ake_inventory', JSON.stringify(dbInventory));
         }
 
         // 📖 図鑑（アイテム）のクラウド同期
