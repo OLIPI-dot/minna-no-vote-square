@@ -619,6 +619,11 @@ const PatrolMiniGame = ({ userLevel, userExp, levelInfo, addExp, equipment, setE
 
   const handleHeal = () => {
     if (battleState !== 'battling') return;
+
+    if (playerHp >= pMaxHp) {
+      setBattleLog(prev => [...prev, `💡 HPはすでに満タンです！`]);
+      return;
+    }
     
     if (healCount > 0) {
       if (gachaTickets < 1) return;
@@ -627,36 +632,14 @@ const PatrolMiniGame = ({ userLevel, userExp, levelInfo, addExp, equipment, setE
     
     setHealCount(prev => prev + 1);
     
-    const healAmount = Math.floor(pMaxHp * 0.3);
+    const healAmount = Math.max(20, Math.floor(pMaxHp * 0.4)); // 40%しっかり回復！
     const newHp = Math.min(pMaxHp, playerHp + healAmount);
     
     let newLogs = [...battleLog, healCount === 0 
-      ? `💊 応急手当！ ${healAmount} 回復した！（無料）` 
-      : `🎫 ガチャチケを1枚消費して強引に回復！ ${healAmount} 回復！`];
+      ? `💊 応急手当！ HPが ${healAmount} 回復した！（即時発動・ターン消費なし✨）` 
+      : `🎫 チケット消費！ HPが ${healAmount} 回復した！（即時発動✨）`];
     
-    // 敵は容赦なく殴ってくる
-    let dmgToPlayer = enemy.atk - pDef;
-    const variance = 1.0 + (Math.random() * 0.4 - 0.2);
-    dmgToPlayer = Math.floor(dmgToPlayer * variance);
-    const minDmg = Math.max(1, Math.floor(enemy.atk * 0.2));
-    if (dmgToPlayer < minDmg) dmgToPlayer = minDmg;
-    const ePainful = Math.random() < (enemy.type === 'rare' ? 0.15 : 0.05);
-    if (ePainful) dmgToPlayer = Math.floor(dmgToPlayer * 2.5);
-
-    const finalHp = Math.max(0, newHp - dmgToPlayer);
-    newLogs.push(ePainful 
-      ? `🩸 痛恨の一撃！！！ 敵の猛攻で ${dmgToPlayer} の大ダメージを受けた！` 
-      : `💥 敵の反撃！ ${dmgToPlayer} のダメージを受けた！`);
-
-    if (finalHp === 0) {
-      newLogs.push(`💀 目の前が真っ暗になった... 敵に逃げられた。`);
-      setPlayerHp(0);
-      setBattleLog(newLogs);
-      setBattleState('lost');
-      return;
-    }
-
-    setPlayerHp(finalHp);
+    setPlayerHp(newHp);
     setBattleLog(newLogs);
   };
 
@@ -1039,7 +1022,7 @@ const PatrolMiniGame = ({ userLevel, userExp, levelInfo, addExp, equipment, setE
                     cursor: (healCount > 0 && gachaTickets < 1) ? 'not-allowed' : 'pointer', 
                     fontSize: '0.75rem', boxShadow: (healCount > 0 && gachaTickets < 1) ? 'none' : '0 2px 4px rgba(16, 185, 129, 0.3)' 
                   }}
-                  title="1回目は無料、2回目以降はガチャチケ1枚消費"
+                  title="ターン消費なしで即時回復！(1回目は無料、2回目以降はチケ1枚)"
                 >
                   💊 回復 ({healCount === 0 ? '無料' : 'チケ1枚'})
                 </button>
