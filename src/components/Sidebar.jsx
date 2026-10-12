@@ -45,10 +45,23 @@ const Sidebar = ({
   const [isDictionaryOpen, setIsDictionaryOpen] = useState(false);
 
   useEffect(() => {
+    // ☁️ 1. まずSupabaseに保存されたカスタムネームがあるか確認
+    const dbCustomHn = user?.user_metadata?.custom_hn;
     const savedHn = localStorage.getItem('minake_hn');
-    if (savedHn) {
+
+    if (dbCustomHn) {
+      // クラウドに名前があれば最優先で採用！
+      setHn(dbCustomHn);
+      setTempHn(dbCustomHn);
+      localStorage.setItem('minake_hn', dbCustomHn);
+    } else if (savedHn && savedHn !== '匿名広場民') {
+      // ローカルに設定済みの名前がある場合（PCなど）
       setHn(savedHn);
       setTempHn(savedHn);
+      // ログイン中ならクラウド（Supabase）に初回自動バックアップ！
+      if (user) {
+        supabase.auth.updateUser({ data: { custom_hn: savedHn } });
+      }
     } else if (user && user.user_metadata && (user.user_metadata.full_name || user.user_metadata.name)) {
       const authName = user.user_metadata.full_name || user.user_metadata.name;
       setHn(authName);
@@ -92,6 +105,11 @@ const Sidebar = ({
     setHn(finalHn);
     localStorage.setItem('minake_hn', finalHn);
     setIsEditingHn(false);
+
+    // ☁️ ログイン中ならクラウド（Supabase）にも即座に保存！
+    if (user) {
+      supabase.auth.updateUser({ data: { custom_hn: finalHn } });
+    }
   };
 
   return (
