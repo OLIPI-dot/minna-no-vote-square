@@ -308,17 +308,28 @@ function App() {
     } catch { return []; }
   });
 
+  const isAuthLoaded = useRef(false);
+
   useEffect(() => {
     localStorage.setItem('min_ake_equipment', JSON.stringify(equipment));
-  }, [equipment]);
+    if (user && isAuthLoaded.current) {
+      supabase.auth.updateUser({ data: { custom_equipment: equipment } });
+    }
+  }, [equipment, user]);
 
   useEffect(() => {
     localStorage.setItem('min_ake_acquired_items', JSON.stringify(acquiredItems));
-  }, [acquiredItems]);
+    if (user && isAuthLoaded.current) {
+      supabase.auth.updateUser({ data: { custom_acquired_items: acquiredItems } });
+    }
+  }, [acquiredItems, user]);
 
   useEffect(() => {
     localStorage.setItem('min_ake_encountered_enemies', JSON.stringify(encounteredEnemies));
-  }, [encounteredEnemies]);
+    if (user && isAuthLoaded.current) {
+      supabase.auth.updateUser({ data: { custom_encountered_enemies: encounteredEnemies } });
+    }
+  }, [encounteredEnemies, user]);
 
   // 起動時にインベントリと装備のアイテムを図鑑に自動登録する
   useEffect(() => {
@@ -358,7 +369,10 @@ function App() {
 
   useEffect(() => {
     localStorage.setItem('min_ake_inventory', JSON.stringify(inventory));
-  }, [inventory]);
+    if (user && isAuthLoaded.current) {
+      supabase.auth.updateUser({ data: { custom_inventory: inventory } });
+    }
+  }, [inventory, user]);
 
   const hasProcessedLoginBonus = useRef(false);
 
@@ -374,12 +388,16 @@ function App() {
         const dbExp = currentUser.user_metadata?.vote_exp || 0;
         const dbTickets = currentUser.user_metadata?.gacha_tickets || 0;
         const lastLoginDate = currentUser.user_metadata?.last_login_date || '';
+        const dbEquipment = currentUser.user_metadata?.custom_equipment;
+        const dbInventory = currentUser.user_metadata?.custom_inventory;
+        const dbAcquiredItems = currentUser.user_metadata?.custom_acquired_items;
+        const dbEncounteredEnemies = currentUser.user_metadata?.custom_encountered_enemies;
         
         // JSTでの今日の日付を取得
         const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
         
-        let newTotalExp = dbExp;
-        let newTotalTickets = dbTickets;
+        let newTotalExp = Math.max(dbExp, 0);
+        let newTotalTickets = Math.max(dbTickets, 0);
         const updates = {};
         let shouldUpdate = false;
         
@@ -390,6 +408,68 @@ function App() {
           localStorage.removeItem('min_ake_tickets');
           shouldUpdate = true;
         }
+
+        // 🛡️ 装備のクラウド同期
+        let localEquip = null;
+        try { localEquip = JSON.parse(localStorage.getItem('min_ake_equipment') || '{}'); } catch(e){}
+        const hasLocalEquip = localEquip && (localEquip.weapon || localEquip.armor || localEquip.accessory || localEquip.partner);
+        const hasDbEquip = dbEquipment && (dbEquipment.weapon || dbEquipment.armor || dbEquipment.accessory || dbEquipment.partner);
+
+        if (hasLocalEquip && !hasDbEquip) {
+          // PC等でローカルに装備があるがクラウドがまだ空の場合、クラウドへ初バックアップ！
+          updates.custom_equipment = localEquip;
+          shouldUpdate = true;
+        } else if (hasDbEquip) {
+          // クラウドに装備があれば優先反映！
+          setEquipment(dbEquipment);
+          localStorage.setItem('min_ake_equipment', JSON.stringify(dbEquipment));
+        }
+
+        // 🎒 インベントリのクラウド同期
+        let localInv = [];
+        try { localInv = JSON.parse(localStorage.getItem('min_ake_inventory') || '[]'); } catch(e){}
+        const hasLocalInv = Array.isArray(localInv) && localInv.length > 0;
+        const hasDbInv = Array.isArray(dbInventory) && dbInventory.length > 0;
+
+        if (hasLocalInv && !hasDbInv) {
+          updates.custom_inventory = localInv;
+          shouldUpdate = true;
+        } else if (hasDbInv) {
+          const mergedInv = [...dbInventory];
+          if (hasLocalInv) {
+            localInv.forEach(it => {
+              if (it && it.id && !mergedInv.some(m => m.id === it.id)) mergedInv.push(it);
+            });
+          }
+          updates.custom_inventory = mergedInv;
+          setInventory(mergedInv);
+          localStorage.setItem('min_ake_inventory', JSON.stringify(mergedInv));
+          shouldUpdate = true;
+        }
+
+        // 📖 図鑑（アイテム）のクラウド同期
+        if (Array.isArray(dbAcquiredItems) && dbAcquiredItems.length > 0) {
+          setAcquiredItems(prev => {
+            const union = Array.from(new Set([...prev, ...dbAcquiredItems]));
+            localStorage.setItem('min_ake_acquired_items', JSON.stringify(union));
+            return union;
+          });
+        } else if (acquiredItems.length > 0) {
+          updates.custom_acquired_items = acquiredItems;
+          shouldUpdate = true;
+        }
+
+        // 📖 図鑑（モンスター）のクラウド同期
+        if (Array.isArray(dbEncounteredEnemies) && dbEncounteredEnemies.length > 0) {
+          setEncounteredEnemies(prev => {
+            const union = Array.from(new Set([...prev, ...dbEncounteredEnemies]));
+            localStorage.setItem('min_ake_encountered_enemies', JSON.stringify(union));
+            return union;
+          });
+        } else if (encounteredEnemies.length > 0) {
+          updates.custom_encountered_enemies = encounteredEnemies;
+          shouldUpdate = true;
+        }
         
         // 🎁 1日1回のアクセスボーナス判定！
         if (lastLoginDate !== todayStr && !hasProcessedLoginBonus.current) {
@@ -398,7 +478,6 @@ function App() {
           newTotalTickets += 1; // ログボでガチャチケ1枚
           updates.last_login_date = todayStr;
           shouldUpdate = true;
-          // 少し遅らせてアラートを出す（画面描画後）
           setTimeout(() => {
             alert('🎉 今日のアクセスボーナス！\n広場に遊びに来てくれてありがとう！\n＋10 EXP と 【ガチャチケット🎫 x1】 を獲得しました！🐰✨');
           }, 1000);
@@ -410,10 +489,12 @@ function App() {
           supabase.auth.updateUser({ data: updates }).then(() => {
             setUserExp(newTotalExp);
             setGachaTickets(newTotalTickets);
+            isAuthLoaded.current = true;
           });
         } else {
           setUserExp(dbExp);
           setGachaTickets(dbTickets);
+          isAuthLoaded.current = true;
         }
       } else {
         // ▼ ゲスト（未ログイン）ユーザーのボーナス処理 ▼

@@ -236,8 +236,31 @@ const Sidebar = ({
             <div style={{ fontSize: '0.75rem', color: '#b45309' }}>最大レベル到達！あなたは伝説です✨</div>
           )}
           {!user && (
-            <div style={{ fontSize: '0.7rem', color: '#ef4444', marginTop: '8px', background: '#fee2e2', padding: '4px', borderRadius: '6px' }}>
-              ※ログインすると他の端末にも称号を引き継げます！
+            <div style={{ fontSize: '0.72rem', color: '#b91c1c', marginTop: '8px', background: '#fee2e2', padding: '6px 8px', borderRadius: '8px', textAlign: 'center' }}>
+              <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>※ 現在は未ログイン（この端末のみ保存）</div>
+              <button 
+                onClick={async () => {
+                  try {
+                    const redirectUrl = window.location.origin.includes('localhost')
+                      ? window.location.origin
+                      : 'https://www.minna-no-vote-square.com';
+                    await supabase.auth.signInWithOAuth({
+                      provider: 'google',
+                      options: { redirectTo: redirectUrl }
+                    });
+                  } catch (e) {
+                    console.error(e);
+                  }
+                }}
+                style={{ 
+                  background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)', 
+                  color: 'white', border: 'none', borderRadius: '6px', 
+                  padding: '5px 12px', fontSize: '0.72rem', fontWeight: 'bold', 
+                  cursor: 'pointer', boxShadow: '0 2px 4px rgba(239, 68, 68, 0.3)' 
+                }}
+              >
+                Googleログインしてデータを引き継ぐ ☁️
+              </button>
             </div>
           )}
 
