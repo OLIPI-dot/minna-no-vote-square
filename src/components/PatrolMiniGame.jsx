@@ -771,8 +771,15 @@ const PatrolMiniGame = ({ userLevel, userExp, levelInfo, addExp, equipment, setE
     winProcessedRef.current = true;
     setBattleState('won');
     
-    // 敵のステータスからEXPを算出（大盤振る舞い）
-    let earnedExp = Math.floor(defeatedEnemy.hp / 5 + defeatedEnemy.atk + defeatedEnemy.def);
+    // 敵のステータスからEXPを算出
+    let baseDef = defeatedEnemy.def;
+    let bonusExp = 0;
+    // メタル系（迷子のらびたん、はぐれらびたん等）は超高防御(9999)を計算から除外してボーナスEXPを付与
+    if (defeatedEnemy.def >= 9000) {
+      baseDef = 10;
+      bonusExp = defeatedEnemy.id === 'el4_2' ? 250 : 100;
+    }
+    let earnedExp = Math.floor(defeatedEnemy.hp / 5 + defeatedEnemy.atk + baseDef) + bonusExp;
     
     // 激怒個体だった場合はさらに倍
     if (defeatedEnemy.isEnraged) earnedExp *= 2;

@@ -391,8 +391,8 @@ function App() {
           shouldUpdate = true;
         }
         
-        // 🎁 1日1回のアクセスボーナス判定！（開発環境のみ有効）
-        if (import.meta.env.DEV && lastLoginDate !== todayStr && !hasProcessedLoginBonus.current) {
+        // 🎁 1日1回のアクセスボーナス判定！
+        if (lastLoginDate !== todayStr && !hasProcessedLoginBonus.current) {
           hasProcessedLoginBonus.current = true;
           newTotalExp += 10;
           newTotalTickets += 1; // ログボでガチャチケ1枚
@@ -422,8 +422,8 @@ function App() {
         let newTotalTickets = localTickets;
         let shouldUpdate = false;
 
-        // 🎁 1日1回のアクセスボーナス判定！（開発環境のみ有効）
-        if (import.meta.env.DEV && localLastLogin !== todayStr && !hasProcessedLoginBonus.current) {
+        // 🎁 1日1回のアクセスボーナス判定！
+        if (localLastLogin !== todayStr && !hasProcessedLoginBonus.current) {
           hasProcessedLoginBonus.current = true;
           newTotalExp += 10;
           newTotalTickets += 1;
@@ -558,7 +558,6 @@ function App() {
   };
 
   const addExp = async (amount) => {
-    if (!import.meta.env.DEV) return; // 本番環境ではEXPを無効化
     showRewardPopup(`✨ + ${amount} EXP !!`, '#10b981');
     setUserExp(prev => {
       const newExp = prev + amount;
@@ -572,7 +571,6 @@ function App() {
   };
 
   const addTickets = async (amount) => {
-    if (!import.meta.env.DEV) return; // 本番環境ではチケットを無効化
     if (amount > 0) showRewardPopup(`🎫 + ${amount} チケット !!`, '#f59e0b');
     setGachaTickets(prev => {
       const newTickets = prev + amount;
@@ -614,13 +612,9 @@ function App() {
         dailyActions.voted.push(surveyId);
         localStorage.setItem('daily_actions_v2', JSON.stringify(dailyActions));
         
-        // 開発環境のみガチャチケを配る。本番環境はEXPのみ増量。
-        if (import.meta.env.DEV) {
-          addExp(3);
-          addTickets(1);
-        } else {
-          addExp(5);
-        }
+        // 投票ボーナス：EXPとガチャチケを付与
+        addExp(3);
+        addTickets(1);
       }
     }
   };
