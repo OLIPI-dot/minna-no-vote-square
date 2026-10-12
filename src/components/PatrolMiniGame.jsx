@@ -30,9 +30,9 @@ const RANDOM_EFFECT_MSGS = {
     "敵は{item}を見て深いトラウマを思い出し、行動不能になった！"
   ],
   cringe: [
-    "{item}のあまりの痛さに、敵はドン引きして逃げ出した...",
-    "敵は{item}を見て「あっ、こいつ関わっちゃダメな奴だ」と察して逃亡した！",
-    "{item}が放つ異常な空気に耐えきれず、敵はそっと去っていった..."
+    "{item}のあまりの痛さに、敵はドン引きして動けなくなった...",
+    "敵は{item}を見て「あっ、関わっちゃダメな奴だ」と察して固まっている！",
+    "{item}が放つ異常な空気に耐えきれず、敵は言葉を失っている..."
   ],
   reflect: [
     "{item}の謎の力で、敵の攻撃を見事に跳ね返した！",
@@ -497,18 +497,11 @@ const PatrolMiniGame = ({
         }
       }
 
-      // 😰 【ドン引き: cringe】
+      // 😰 【ドン引き: cringe】 5%の確率で敵がドン引きして1ターン行動不能（スタン）
       const cringeItem = getEffectSource('cringe');
-      if (currentEnemyHp > 0 && cringeItem) {
-        if (Math.random() < 0.15) { // 15%で逃亡
-          newLogs.push(`😰 【痛客】 ${getEffectMsg('cringe', cringeItem)}`);
-          newLogs.push(`🎉 （不戦勝） 【${enemy.name}】 を撃退した！`);
-          setEnemyHp(0);
-          setPlayerHp(currentPlayerHp);
-          setBattleLog(newLogs);
-          handleWin(enemy);
-          return;
-        }
+      if (currentEnemyHp > 0 && cringeItem && Math.random() < 0.05) {
+        isEnemyStunned = true;
+        newLogs.push(`😰 【ドン引き】 ${getEffectMsg('cringe', cringeItem)}`);
       }
       } // elseの閉じを追加
     }
