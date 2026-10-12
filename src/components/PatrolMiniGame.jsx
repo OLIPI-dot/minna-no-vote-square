@@ -777,7 +777,7 @@ const PatrolMiniGame = ({ userLevel, userExp, levelInfo, addExp, equipment, setE
     // メタル系（迷子のらびたん、はぐれらびたん等）は超高防御(9999)を計算から除外してボーナスEXPを付与
     if (defeatedEnemy.def >= 9000) {
       baseDef = 10;
-      bonusExp = defeatedEnemy.id === 'el4_2' ? 250 : 100;
+      bonusExp = defeatedEnemy.id === 'el4_2' ? 1500 : 500;
     }
     let earnedExp = Math.floor(defeatedEnemy.hp / 5 + defeatedEnemy.atk + baseDef) + bonusExp;
     
@@ -796,7 +796,11 @@ const PatrolMiniGame = ({ userLevel, userExp, levelInfo, addExp, equipment, setE
     }
     setBattleLog(prev => [...prev, ...logs]);
 
-    if (defeatedEnemy.type === 'rare') {
+    if (defeatedEnemy.id === 'el4_2') {
+      addTickets(isHardMode ? 5 : 3); // はぐれらびたんは特大ガチャチケ3〜5枚！
+    } else if (defeatedEnemy.id === 'el4') {
+      addTickets(isHardMode ? 3 : 1); // 迷子のらびたんはガチャチケ1〜3枚！
+    } else if (defeatedEnemy.type === 'rare') {
       addTickets(isHardMode ? 10 : 3); // 深層レアなら10枚！
     } else if (defeatedEnemy.type === 'elite') {
       addTickets(isHardMode ? 3 : 1); // 深層エリートなら3枚
