@@ -788,7 +788,13 @@ const PatrolMiniGame = ({ userLevel, userExp, levelInfo, addExp, equipment, setE
     
     setLastEarnedExp(earnedExp);
     addExp(earnedExp);
-    setBattleLog(prev => [...prev, `✨ ${earnedExp} EXP を獲得した！`]);
+    
+    let logs = [`✨ ${earnedExp} EXP を獲得した！`];
+    if (levelInfo?.next && (userExp + earnedExp) >= levelInfo.next) {
+      logs.push(`🎊 ✨ LEVEL UP！！ Lv.${userLevel} → Lv.${userLevel + 1} に上がった！`);
+      logs.push(`💪 最大HP +10 / 攻撃力 +5 / 防御力 +2 UP！`);
+    }
+    setBattleLog(prev => [...prev, ...logs]);
 
     if (defeatedEnemy.type === 'rare') {
       addTickets(isHardMode ? 10 : 3); // 深層レアなら10枚！

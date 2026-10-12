@@ -571,7 +571,18 @@ function App() {
   const addExp = async (amount) => {
     showRewardPopup(`✨ + ${amount} EXP !!`, '#10b981');
     setUserExp(prev => {
+      const oldLevel = getLevelInfo(prev).level;
       const newExp = prev + amount;
+      const newLevel = getLevelInfo(newExp).level;
+      if (newLevel > oldLevel) {
+        const diff = newLevel - oldLevel;
+        setTimeout(() => {
+          showRewardPopup(`🎉 LEVEL UP! Lv.${oldLevel} → Lv.${newLevel}`, '#f59e0b');
+        }, 500);
+        setTimeout(() => {
+          showRewardPopup(`💪 HP+${diff * 10} / ATK+${diff * 5} / DEF+${diff * 2} UP!`, '#3b82f6');
+        }, 1000);
+      }
       if (user) {
         supabase.auth.updateUser({ data: { vote_exp: newExp } });
       } else {
