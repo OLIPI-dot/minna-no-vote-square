@@ -155,6 +155,28 @@ const SurveyListView = ({
     return list;
   }, [surveys, debouncedSearchQuery, filterTag, activeTab, sortMode, popularMode]);
 
+  const handleGoogleLogin = async () => {
+    try {
+      const redirectUrl = window.location.origin.includes('localhost')
+        ? window.location.origin
+        : 'https://www.minna-no-vote-square.com';
+
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: redirectUrl,
+        }
+      });
+      if (error) {
+        console.error('Google login error:', error);
+        alert('ログイン開始エラーが発生しました:\n' + error.message);
+      }
+    } catch (err) {
+      console.error('Google login exception:', err);
+      alert('エラーが発生しました:\n' + (err.message || String(err)));
+    }
+  };
+
   return (
     <>
       {/* 🔐 認証ヘッダー */}
@@ -182,8 +204,9 @@ const SurveyListView = ({
           </div>
         ) : (
           <button
+            type="button"
             className="google-login-btn"
-            onClick={() => supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin } })}
+            onClick={handleGoogleLogin}
           >
             <div className="google-icon-wrapper">
               <svg viewBox="0 0 24 24">
@@ -203,7 +226,7 @@ const SurveyListView = ({
         onClick={() => user ? setView('create') : alert("🌟 広場をもっと楽しもう！\n\nアンケートを作るには、ログインが必要だよ。上の「Googleでログイン」から、らびと一緒に始めよう！🐰🥕")}
       >＋ 新しいアンケートを作る</button>
 
-      {!user && <SiteConceptSection totalVotes={totalVotes} onLogin={() => supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin } })} />}
+      {!user && <SiteConceptSection totalVotes={totalVotes} onLogin={handleGoogleLogin} />}
 
       {/* 🔍 検索 */}
       <div className="search-container">

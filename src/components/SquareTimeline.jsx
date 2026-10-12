@@ -36,6 +36,7 @@ const SquareTimeline = () => {
       const { data, error } = await supabase
         .from('timeline_posts')
         .select('*')
+        .not('name', 'ilike', '%実況%')
         .order('created_at', { ascending: false })
         .limit(30);
 
@@ -54,6 +55,8 @@ const SquareTimeline = () => {
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'timeline_posts' },
         (payload) => {
+          // 🛡️ ゲーム実況・ボスのログはチャットタイムラインに混ぜない
+          if (payload.new?.name && payload.new.name.includes('実況')) return;
           setPosts(prev => [payload.new, ...prev.slice(0, 29)]);
         }
       )

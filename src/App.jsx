@@ -444,8 +444,27 @@ function App() {
       }
     };
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    // 🛡️ URLに含まれるOAuthエラー（GoogleやSupabaseからの失敗通知）を検知して通知
+    try {
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const searchParams = new URLSearchParams(window.location.search);
+      const errorDesc = hashParams.get('error_description') || searchParams.get('error_description') || hashParams.get('error');
+      if (errorDesc) {
+        console.error('🚨 Auth Error from redirect URL:', errorDesc);
+        alert('⚠️ ログインに失敗しました:\n' + decodeURIComponent(errorDesc.replace(/\+/g, ' ')));
+        // URLのハッシュエラーを綺麗にする
+        const cleanUrl = window.location.pathname + window.location.search;
+        window.history.replaceState({}, document.title, cleanUrl);
+      }
+    } catch (e) {
+      console.error('Error parsing auth redirect error:', e);
+    }
+
+    supabase.auth.getSession().then(({ data: { session }, error }) => {
+      if (error) console.error('getSession error:', error);
       handleAuthExp(session?.user ?? null);
+    }).catch(err => {
+      console.error('getSession catch:', err);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
