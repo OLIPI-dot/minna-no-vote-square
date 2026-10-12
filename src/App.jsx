@@ -615,7 +615,7 @@ function App() {
       nextExpThreshold += expNeededForNext;
     }
 
-    let title = 'ひよっこ広場民 🥚';
+    let title = 'ひよっこ広場民 🔰';
     let color = '#78350f'; // デフォルト色
     let textShadow = 'none';
 
@@ -667,7 +667,7 @@ function App() {
       title = '熟練の広場民 🏅';
       color = '#b45309';
     } else if (currentLevel >= 30) {
-      title = '一人前の広場民 🔰';
+      title = '一人前の広場民 🌟';
       color = '#d97706';
     } else if (currentLevel >= 20) {
       title = '駆け出しの冒険者 🎒';

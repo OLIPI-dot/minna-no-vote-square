@@ -272,7 +272,7 @@ const Sidebar = ({
             </div>
           )}
           {levelInfo?.next ? (
-            <div style={{ fontSize: '0.75rem', color: '#b45309' }}>次の称号まであと {levelInfo.next - (userExp || 0)} EXP！</div>
+            <div style={{ fontSize: '0.75rem', color: '#b45309' }}>次のレベルまであと {levelInfo.next - (userExp || 0)} EXP！</div>
           ) : (
             <div style={{ fontSize: '0.75rem', color: '#b45309' }}>最大レベル到達！あなたは伝説です✨</div>
           )}
