@@ -474,11 +474,22 @@ function App() {
       console.error('getSession catch:', err);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      handleAuthExp(session?.user ?? null);
-    });
-    
-    return () => subscription.unsubscribe();
+    // 🔄 タブ復帰時（スマホ画面を開いた時やタブを切り替えた時）に最新データを自動同期！
+    const handleVisibilityOrFocus = () => {
+      if (document.visibilityState === 'visible') {
+        supabase.auth.getUser().then(({ data: { user: latestUser } }) => {
+          if (latestUser) handleAuthExp(latestUser);
+        });
+      }
+    };
+    window.addEventListener('focus', handleVisibilityOrFocus);
+    document.addEventListener('visibilitychange', handleVisibilityOrFocus);
+
+    return () => {
+      subscription.unsubscribe();
+      window.removeEventListener('focus', handleVisibilityOrFocus);
+      document.removeEventListener('visibilitychange', handleVisibilityOrFocus);
+    };
   }, []);
 
   const getLevelInfo = (exp) => {
