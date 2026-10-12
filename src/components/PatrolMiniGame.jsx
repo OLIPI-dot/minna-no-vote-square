@@ -100,16 +100,16 @@ const PatrolMiniGame = ({ userLevel, userExp, levelInfo, addExp, equipment, setE
   const botIntervalRef = useRef(null);
   const winProcessedRef = useRef(false);
 
-  // 1日のパトロール回数制限 (最大5回)
+  // 1日のパトロール回数制限 (最大10回)
   const getTodayPatrols = () => {
     const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
     let data;
-    try { data = JSON.parse(localStorage.getItem('daily_patrols') || '{}'); } catch { data = {}; }
+    try { data = JSON.parse(localStorage.getItem('daily_patrols_v2') || '{}'); } catch { data = {}; }
     if (data.date !== todayStr) return { date: todayStr, count: 0 };
     return data;
   };
   const [patrolsToday, setPatrolsToday] = useState(getTodayPatrols().count);
-  const MAX_PATROLS = 9999; // テスト用に一時的に無制限
+  const MAX_PATROLS = 10; // 1日10回まで
 
   // プレイヤーステータス計算
   const pMaxHp = (userLevel * 10 + 100) + (equipment?.accessory?.hp || 0) + (equipment?.partner?.hp || 0);
@@ -122,7 +122,7 @@ const PatrolMiniGame = ({ userLevel, userExp, levelInfo, addExp, equipment, setE
     // 回数消費
     const currentData = getTodayPatrols();
     currentData.count += 1;
-    localStorage.setItem('daily_patrols', JSON.stringify(currentData));
+    localStorage.setItem('daily_patrols_v2', JSON.stringify(currentData));
     setPatrolsToday(currentData.count);
 
     // 敵の抽選
@@ -915,9 +915,22 @@ const PatrolMiniGame = ({ userLevel, userExp, levelInfo, addExp, equipment, setE
 
       {battleState === 'idle' && (
         <>
-          <div style={{ fontSize: '0.78rem', color: '#64748b', marginBottom: '8px' }}>
-            広場を見回りして、迷惑なユーザーを撃退しよう！<br/>
-            稀にレアな荒らしが出現するかも...？
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+            <span style={{ fontSize: '0.78rem', color: '#64748b' }}>
+              広場を見回りして、迷惑なユーザーを撃退しよう！
+            </span>
+            <span style={{ 
+              fontSize: '0.72rem', 
+              fontWeight: 'bold', 
+              color: patrolsToday >= MAX_PATROLS ? '#ef4444' : '#2563eb', 
+              background: patrolsToday >= MAX_PATROLS ? '#fef2f2' : '#eff6ff', 
+              border: `1px solid ${patrolsToday >= MAX_PATROLS ? '#fecaca' : '#bfdbfe'}`,
+              padding: '2px 8px', 
+              borderRadius: '10px',
+              whiteSpace: 'nowrap'
+            }}>
+              本日残り {Math.max(0, MAX_PATROLS - patrolsToday)}/{MAX_PATROLS}回
+            </span>
           </div>
           <div style={{ display: 'flex', gap: '8px' }}>
             <button 
@@ -931,7 +944,7 @@ const PatrolMiniGame = ({ userLevel, userExp, levelInfo, addExp, equipment, setE
                 boxShadow: patrolsToday >= MAX_PATROLS ? 'none' : '0 4px 6px -1px rgba(59, 130, 246, 0.4)'
               }}
             >
-              {patrolsToday >= MAX_PATROLS ? '✅ パトロール終了' : `出発する (通常)`}
+              {patrolsToday >= MAX_PATROLS ? '✅ 本日終了' : `出発する (通常)`}
             </button>
             <button 
               onClick={() => startPatrol(true)}
@@ -944,9 +957,14 @@ const PatrolMiniGame = ({ userLevel, userExp, levelInfo, addExp, equipment, setE
                 boxShadow: patrolsToday >= MAX_PATROLS ? 'none' : '0 4px 6px -1px rgba(239, 68, 68, 0.4)'
               }}
             >
-              {patrolsToday >= MAX_PATROLS ? '✅ パトロール終了' : `深層へ (ハード)`}
+              {patrolsToday >= MAX_PATROLS ? '✅ 本日終了' : `深層へ (ハード)`}
             </button>
           </div>
+          {patrolsToday >= MAX_PATROLS && (
+            <div style={{ marginTop: '8px', fontSize: '0.73rem', color: '#64748b', textAlign: 'center', background: '#f1f5f9', padding: '6px', borderRadius: '6px' }}>
+              ☕ 本日のパトロールはお疲れ様でした！日付が変わるとまた出撃できます🐰
+            </div>
+          )}
         </>
       )}
 
