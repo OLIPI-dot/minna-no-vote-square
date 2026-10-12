@@ -557,6 +557,12 @@ function App() {
       console.error('Error parsing auth redirect error:', e);
     }
 
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        handleAuthExp(session.user);
+      }
+    });
+
     supabase.auth.getSession().then(({ data: { session }, error }) => {
       if (error) console.error('getSession error:', error);
       handleAuthExp(session?.user ?? null);
