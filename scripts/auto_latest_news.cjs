@@ -135,9 +135,10 @@ function stripHtml(str) {
 
 // 🤖 AI自動要約・タグ生成用の標準プロンプト定義（JSONフォーマット＆十分なmax_tokens）
 const AI_SUMMARY_OPTIONS = {
-    max_tokens: 2048, // 文章が途中で途切れないよう十分に確保
-    thinkingConfig: { thinkingLevel: 'low' }
+    max_tokens: 4096, // 文章が途中で途切れないよう十分に確保（上限であり、使った分だけ課金）
+    thinkingConfig: { thinkingLevel: 'low' } // 思考トークンを抑えてコスト削減（要約品質は計測で同等を確認済み）
 };
+let useThinkingConfig = true; // APIが設定を拒否した場合は自動で外す
 
 const AI_SUMMARY_PROMPT = (articleContent) => `
 以下のフォーマットのJSON形式のみを出力してください。余計な解説文やマークダウンの枠組みは不要です。
@@ -221,8 +222,11 @@ async function generateAISummary(articleContent) {
                 generationConfig: {
                     maxOutputTokens: AI_SUMMARY_OPTIONS.max_tokens,
                     responseMimeType: "application/json",
+                    ...(useThinkingConfig ? { thinkingConfig: AI_SUMMARY_OPTIONS.thinkingConfig } : {})
                 }
             });
+            const u = result.response.usageMetadata;
+            if (u) log(`📊 トークン使用量: 入力${u.promptTokenCount} / 思考${u.thoughtsTokenCount || 0} / 出力${u.candidatesTokenCount} / 合計${u.totalTokenCount}`);
             const responseText = result.response.text().trim();
             const jsonMatch = responseText.match(/```json\s*([\s\S]*?)\s*```/) || responseText.match(/(\{[\s\S]*\})/);
             const jsonString = jsonMatch ? jsonMatch[1].trim() : responseText;
@@ -252,6 +256,11 @@ async function generateAISummary(articleContent) {
         } catch (e) {
             lastError = e.message;
             log(`⚠️ AI要約エラー (試行 ${attempt}/3): ${e.message}`);
+            // 思考設定そのものが拒否された場合は、設定を外して次の試行へ
+            if (useThinkingConfig && /thinking/i.test(e.message || '')) {
+                useThinkingConfig = false;
+                log('ℹ️ thinkingConfigを無効化して再試行します。');
+            }
         }
     }
     
