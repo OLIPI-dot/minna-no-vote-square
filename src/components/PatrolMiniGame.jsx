@@ -110,6 +110,7 @@ const PatrolMiniGame = ({
   const [sosState, setSosState] = useState('idle'); // idle, voting, completed
   const [sosVotes, setSosVotes] = useState({ A: 0, B: 0, C: 0, D: 0 });
   const [sosTime, setSosTime] = useState(30);
+  const [awakenBuff, setAwakenBuff] = useState(false); // 覚醒バフ: 次の攻撃の威力10倍
   const [enemyStatus, setEnemyStatus] = useState(null); // 'virus' など
   const [isHardMode, setIsHardMode] = useState(false);
   const timerRef = useRef(null);
@@ -197,6 +198,7 @@ const PatrolMiniGame = ({
     setSosState('idle');
     setSosVotes({ A: 0, B: 0, C: 0, D: 0 });
     setSosTime(30);
+    setAwakenBuff(false);
     setEnemyStatus(null);
     if (timerRef.current) clearInterval(timerRef.current);
     if (botIntervalRef.current) clearInterval(botIntervalRef.current);
@@ -398,6 +400,13 @@ const PatrolMiniGame = ({
       }
       
       if (pCrit) dmgToEnemy = Math.floor(dmgToEnemy * 2.5);
+
+      // 📈 【覚醒バフ】 救援アンケートで獲得したバフ。次に命中する攻撃の威力が10倍になる
+      if (awakenBuff) {
+        dmgToEnemy = dmgToEnemy * 10;
+        setAwakenBuff(false);
+        newLogs.push(`📈 【覚醒バフ発動】 みんなの力が剣に宿る！威力10倍の一撃！`);
+      }
 
       // 📝 【現実改変: rewrite_reality】 攻撃時15%で敵のHPを強制半減
       const rewriteItem = getEffectSource('rewrite_reality');
@@ -751,14 +760,13 @@ const PatrolMiniGame = ({
       currentEnemyHp = Math.max(1, Math.floor(currentEnemyHp - (enemy.hp * 0.8)));
       if (currentEnemyHp === 0) isWin = true;
     } else if (winner === 'C') {
-      // レアドロップ確定バフ・HP半減
-      effectMsg = `🎁 ✨ アイテム発見率MAX！(※敵のHPを半減！)`;
+      // HP半減
+      effectMsg = `🎁 ✨ みんなの加護！敵のHPを半減した！`;
       currentEnemyHp = Math.floor(currentEnemyHp / 2);
     } else if (winner === 'D') {
-      // 覚醒大ダメージ
-      effectMsg = `📈 ✨ 覚醒バフ！次の攻撃の威力が10倍になる！（※大ダメージ）`;
-      currentEnemyHp = Math.max(0, currentEnemyHp - pAtk * 10);
-      if (currentEnemyHp === 0) isWin = true;
+      // 覚醒バフ（次の攻撃が10倍）
+      effectMsg = `📈 ✨ 覚醒バフ！次の攻撃の威力が10倍になる！`;
+      setAwakenBuff(true);
     }
     
     setEnemyHp(currentEnemyHp);
@@ -771,6 +779,9 @@ const PatrolMiniGame = ({
     
     if (isWin) {
       handleWin(enemy);
+    } else if (winner === 'D') {
+      // 覚醒バフは「力をためる」ターン。敵はこのターン動けない
+      setBattleLog(prevLogs => [...prevLogs, `⏳ 力がみなぎっている…！敵は圧倒されて動けない。次の攻撃を放て！`]);
     } else {
       // 敵の反撃
       let dmgToPlayer = enemy.atk - pDef;
@@ -1097,7 +1108,7 @@ const PatrolMiniGame = ({
                     fontSize: '0.85rem', boxShadow: '0 2px 4px rgba(239, 68, 68, 0.3)' 
                   }}
                 >
-                  🗡️ 攻撃する！
+                  {awakenBuff ? '📈 攻撃する！（威力10倍）' : '🗡️ 攻撃する！'}
                 </button>
                 <button 
                   onClick={handleHeal}
@@ -1140,7 +1151,7 @@ const PatrolMiniGame = ({
                     <div key={key} style={{ background: 'white', border: '1px solid #d1d5db', borderRadius: '5px', padding: '4px 6px', position: 'relative', overflow: 'hidden' }}>
                       <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: `${percent}%`, background: '#fef08a', zIndex: 1, transition: 'width 0.3s' }}></div>
                       <div style={{ position: 'relative', zIndex: 2, display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', fontWeight: 'bold' }}>
-                        <span>パネル {key}</span>
+                        <span>パネル {key}<span style={{ fontSize: '0.62rem', fontWeight: 'normal', color: '#92400e', marginLeft: '4px' }}>{{ A: 'アルテマ', B: '鉄槌', C: '加護', D: '覚醒バフ' }[key]}</span></span>
                         <span>{sosVotes[key]}票</span>
                       </div>
                     </div>
