@@ -7,6 +7,8 @@ const DictionaryModal = ({ isOpen, onClose, acquiredItems = [], encounteredEnemi
   const [selectedItem, setSelectedItem] = useState(null); // 選択中のアイテムID
   const [selectedEnemy, setSelectedEnemy] = useState(null); // 選択中のエネミーID
   const [sortOrder, setSortOrder] = useState('default'); // 'default' | 'rarityDesc' | 'rarityAsc'
+  const [typeFilter, setTypeFilter] = useState('all'); // 'all' | 'weapon' | 'armor' | 'accessory' | 'partner'
+  const [ownedOnly, setOwnedOnly] = useState(false); // 入手済み(エネミーは遭遇済み)のみ表示
 
   if (!isOpen) return null;
 
@@ -15,6 +17,19 @@ const DictionaryModal = ({ isOpen, onClose, acquiredItems = [], encounteredEnemi
   
   const totalEnemies = ENEMIES.length;
   const collectedEnemies = ENEMIES.filter(e => encounteredEnemies.includes(e.id)).length;
+
+  // 種類フィルター用の定義（各種類の収集数もチップに表示）
+  const TYPE_FILTERS = [
+    { key: 'all', label: 'すべて' },
+    { key: 'weapon', label: '🗡️ 武器' },
+    { key: 'armor', label: '🛡️ 防具' },
+    { key: 'accessory', label: '💍 アクセ' },
+    { key: 'partner', label: '👤 お供' },
+  ];
+  const typeCounts = (key) => {
+    const pool = key === 'all' ? ITEMS : ITEMS.filter(i => i.type === key);
+    return `${pool.filter(i => acquiredItems.includes(i.id)).length}/${pool.length}`;
+  };
 
   const getRarityColor = (rarity) => {
     const colors = { N: '#94a3b8', R: '#3b82f6', SR: '#eab308', UR: '#ec4899', LR: '#ef4444' };
@@ -29,7 +44,10 @@ const DictionaryModal = ({ isOpen, onClose, acquiredItems = [], encounteredEnemi
   // 左側ペインのリストレンダリング
   const renderList = () => {
     if (tab === 'items') {
-      let displayItems = [...ITEMS];
+      let displayItems = ITEMS.filter(i =>
+        (typeFilter === 'all' || i.type === typeFilter) &&
+        (!ownedOnly || acquiredItems.includes(i.id))
+      );
       const rarityOrder = { LR: 5, UR: 4, SR: 3, R: 2, N: 1 };
       
       if (sortOrder === 'default') {
@@ -42,6 +60,14 @@ const DictionaryModal = ({ isOpen, onClose, acquiredItems = [], encounteredEnemi
         displayItems.sort((a, b) => getReqLevel(a) - getReqLevel(b));
       } else if (sortOrder === 'reqLevelDesc') {
         displayItems.sort((a, b) => getReqLevel(b) - getReqLevel(a));
+      }
+
+      if (displayItems.length === 0) {
+        return (
+          <div style={{ padding: '32px 16px', textAlign: 'center', color: '#94a3b8', fontSize: '0.85rem', lineHeight: 1.6 }}>
+            該当するアイテムがありません。<br />絞り込みを変えてみてね🐰
+          </div>
+        );
       }
 
       return displayItems.map(item => {
@@ -80,8 +106,15 @@ const DictionaryModal = ({ isOpen, onClose, acquiredItems = [], encounteredEnemi
         );
       });
     } else {
-      let displayEnemies = [...ENEMIES];
+      let displayEnemies = ENEMIES.filter(e => !ownedOnly || encounteredEnemies.includes(e.id));
       displayEnemies.sort((a, b) => (a.dexNo || 0) - (b.dexNo || 0));
+      if (displayEnemies.length === 0) {
+        return (
+          <div style={{ padding: '32px 16px', textAlign: 'center', color: '#94a3b8', fontSize: '0.85rem', lineHeight: 1.6 }}>
+            まだ遭遇したエネミーがいません。<br />パトロールに出かけよう🐰
+          </div>
+        );
+      }
       return displayEnemies.map(enemy => {
         const isEncountered = encounteredEnemies.includes(enemy.id);
         const isSelected = selectedEnemy === enemy.id;
@@ -233,23 +266,47 @@ const DictionaryModal = ({ isOpen, onClose, acquiredItems = [], encounteredEnemi
         <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
           {/* 左ペイン: リスト */}
           <div style={{ width: '40%', borderRight: '1px solid #e2e8f0', background: 'white', display: 'flex', flexDirection: 'column' }}>
-            {/* ソートUI */}
-            {tab === 'items' && (
-              <div style={{ padding: '8px', borderBottom: '1px solid #e2e8f0', background: '#f8fafc', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 'bold' }}>並び順:</span>
-                <select 
-                  value={sortOrder} 
-                  onChange={(e) => setSortOrder(e.target.value)}
-                  style={{ flex: 1, padding: '4px', borderRadius: '4px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: 'white' }}
-                >
-                  <option value="default">図鑑番号順</option>
-                  <option value="rarityDesc">レアリティ順 (高い順)</option>
-                  <option value="rarityAsc">レアリティ順 (低い順)</option>
-                  <option value="reqLevelAsc">必要Lv順 (低い順)</option>
-                  <option value="reqLevelDesc">必要Lv順 (高い順)</option>
-                </select>
-              </div>
-            )}
+            {/* 絞り込みUI（種類チップ＋入手済みトグル＋並び順） */}
+            <div style={{ padding: '8px', borderBottom: '1px solid #e2e8f0', background: '#f8fafc', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {tab === 'items' && (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+                  {TYPE_FILTERS.map(t => (
+                    <button
+                      key={t.key}
+                      onClick={() => setTypeFilter(t.key)}
+                      style={{
+                        padding: '4px 8px', borderRadius: '14px', fontSize: '0.72rem', fontWeight: 'bold', cursor: 'pointer', whiteSpace: 'nowrap',
+                        border: typeFilter === t.key ? '1px solid #3b82f6' : '1px solid #cbd5e1',
+                        background: typeFilter === t.key ? '#3b82f6' : 'white',
+                        color: typeFilter === t.key ? 'white' : '#475569'
+                      }}
+                    >
+                      {t.label} <span style={{ fontWeight: 'normal', opacity: 0.85 }}>{typeCounts(t.key)}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+              <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', fontWeight: 'bold', color: '#475569', cursor: 'pointer' }}>
+                <input type="checkbox" checked={ownedOnly} onChange={(e) => setOwnedOnly(e.target.checked)} style={{ cursor: 'pointer' }} />
+                {tab === 'items' ? '入手済みだけ表示' : '遭遇済みだけ表示'}
+              </label>
+              {tab === 'items' && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 'bold' }}>並び順:</span>
+                  <select 
+                    value={sortOrder} 
+                    onChange={(e) => setSortOrder(e.target.value)}
+                    style={{ flex: 1, padding: '4px', borderRadius: '4px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: 'white' }}
+                  >
+                    <option value="default">図鑑番号順</option>
+                    <option value="rarityDesc">レアリティ順 (高い順)</option>
+                    <option value="rarityAsc">レアリティ順 (低い順)</option>
+                    <option value="reqLevelAsc">必要Lv順 (低い順)</option>
+                    <option value="reqLevelDesc">必要Lv順 (高い順)</option>
+                  </select>
+                </div>
+              )}
+            </div>
             <div style={{ flex: 1, overflowY: 'auto' }}>
               {renderList()}
             </div>
