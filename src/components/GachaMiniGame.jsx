@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
-import { rollGacha, getReqLevel, EFFECT_DESCRIPTIONS } from '../items';
+import { rollGacha, getReqLevel, EFFECT_DESCRIPTIONS, ITEMS } from '../items';
 import confetti from 'canvas-confetti';
 
 const rarityColors = {
@@ -9,6 +9,13 @@ const rarityColors = {
   SR: '#ec4899',
   UR: '#f59e0b',
   LR: '#ef4444' // 真っ赤（PSO赤箱リスペクト）
+};
+
+// 保存データに effect が無い古いアイテムでも、図鑑データ(基本ID)から能力を補う
+const getEffectKey = (item) => {
+  if (item?.effect) return item.effect;
+  const baseId = typeof item?.id === 'string' ? item.id.split('_')[0] : item?.id;
+  return ITEMS.find(i => i.id === baseId)?.effect || null;
 };
 
 const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, setEquipment, addExp, inventory = [], setInventory, acquiredItems = [], setAcquiredItems }) => {
@@ -283,6 +290,11 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
                           </span>
                         </div>
                         <div style={{ fontSize: '0.7rem', color: '#64748b', marginTop: '4px' }}>{item.desc}</div>
+                        {getEffectKey(item) && (
+                          <div style={{ fontSize: '0.7rem', color: '#92400e', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '4px', padding: '3px 6px', marginTop: '4px', fontWeight: 'bold', lineHeight: 1.4 }}>
+                            ✨ {EFFECT_DESCRIPTIONS[getEffectKey(item)] || '特殊効果あり'}
+                          </div>
+                        )}
                       </div>
                       <button 
                         onClick={() => { equipFromInventory(item); setSelectedSlot(null); }} 
@@ -346,6 +358,11 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
                           </span>
                         </div>
                         <div style={{ fontSize: '0.7rem', color: '#64748b' }}>{item.desc}</div>
+                        {getEffectKey(item) && (
+                          <div style={{ fontSize: '0.7rem', color: '#92400e', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '4px', padding: '3px 6px', marginTop: '4px', fontWeight: 'bold', lineHeight: 1.4 }}>
+                            ✨ {EFFECT_DESCRIPTIONS[getEffectKey(item)] || '特殊効果あり'}
+                          </div>
+                        )}
                       </div>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                         <button 
