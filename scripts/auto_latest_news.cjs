@@ -178,7 +178,7 @@ const AI_SUMMARY_PROMPT = (articleContent) => `
 ・tags の最優先ルール：記事タイトルに含まれる「作品名」「製品名」「企業名」「人物名」は【必ず最優先で1〜2個目にタグとして抽出】してください。
 ・tags に「ニュース」「まとめ」「注目」「話題」などの抽象的で無意味なワードは出力禁止です。記事から直接、固有名詞を中心に3〜4個抽出してください。
 ・survey_options は必ず4つの文字列の配列として出力してください。
-・途中で文章が切れないよう、必ず完全なJSON形式で最後まで出力してください。
+・要約（desc）や感想の文末に、「（89文字）」のような文字数の表記は【絶対に付けないでください】。文字数は内部の目安であり、出力には含めません。
 ・途中で文章が切れないよう、必ず完全なJSON形式で最後まで出力してください。
 
 【記事テキスト】
@@ -246,6 +246,12 @@ async function generateAISummary(articleContent) {
                     Array.isArray(parsed.netizen_comments)
                 ) {
                     log(`✨ AI要約＆タグ生成成功！(試行 ${attempt}回目)`);
+                    // 🧹 万一AIが文末に「（89文字）」を付けてしまっても、保存前に除去する
+                    const stripCount = (v) => typeof v === 'string' ? v.replace(/\s*[（(]\s*\d+\s*(?:文字|字)\s*[）)]/g, '').trim() : v;
+                    Object.keys(parsed).forEach(k => {
+                        if (Array.isArray(parsed[k])) parsed[k] = parsed[k].map(stripCount);
+                        else parsed[k] = stripCount(parsed[k]);
+                    });
                     return parsed;
                 } else {
                     throw new Error("必須フィールド（point2_descやrabi_commentなど）が欠落しています");

@@ -60,6 +60,16 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
     const rawSummary = summaryTagMatch[1].trim();
     try {
       const parsed = JSON.parse(rawSummary);
+      // 🧹 AIが文末に付けてしまう「（89文字）」のような文字数表記を除去
+      if (parsed && typeof parsed === 'object') {
+        const stripCount = (v) => typeof v === 'string'
+          ? v.replace(/\s*[（(]\s*\d+\s*(?:文字|字)\s*[）)]/g, '').trim()
+          : v;
+        Object.keys(parsed).forEach(k => {
+          if (Array.isArray(parsed[k])) parsed[k] = parsed[k].map(stripCount);
+          else parsed[k] = stripCount(parsed[k]);
+        });
+      }
       if (parsed && (parsed.point1_desc || parsed.point1_title)) {
         // 🛡️ 重複バグ防止: point1_descの先頭がpoint1_titleと同じ場合は削除
         if (parsed.point1_title && parsed.point1_desc && parsed.point1_desc.startsWith(parsed.point1_title)) {
