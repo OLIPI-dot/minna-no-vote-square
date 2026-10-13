@@ -4,11 +4,47 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-12T21:46:23.748Z</updated>
+  <updated>2026-10-13T02:17:09.040Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>5年前から閉鎖 東大「赤門」は今</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23391"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23391</id>
+    <updated>2026-10-13T02:17:06.422Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;話題&quot;,
+  &quot;point1_title&quot;: &quot;東大の赤門が閉鎖中&quot;,
+  &quot;point1_desc&quot;: &quot;東京大学の象徴である赤門は、耐震上の問題が見つかったため5年前から閉鎖されています。現在は安全確保のため門全体が覆いに包まれており、通過することはもちろん姿を見ることもできません。&quot;,
+  &quot;point2_title&quot;: &quot;耐震性の問題...</summary>
+  </entry>
+  <entry>
+    <title>熟年離婚 修復経ず別れるケース増</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23390"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23390</id>
+    <updated>2026-10-13T02:16:47.684Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;話題&quot;,
+  &quot;point1_title&quot;: &quot;熟年離婚の割合が過去最高&quot;,
+  &quot;point1_desc&quot;: &quot;現代の日本では3組に1組が離婚する時代と言われているが、その中でも熟年離婚の割合が過去最高を記録している。修復のステップを経ずに離婚へと至るケースが急増している状況だ。（89文字）&quot;,
+  &quot;point2_title&quot;: &quot;切り出...</summary>
+  </entry>
+  <entry>
+    <title>英基地事件はイラン関与 共同声明</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23389"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23389</id>
+    <updated>2026-10-13T02:16:28.489Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;英空軍基地近くで逮捕&quot;,
+  &quot;point1_desc&quot;: &quot;米軍も利用する英空軍基地の周辺において、テロ行為を画策した疑いで男7人が逮捕された。治安当局は早期摘発により重大な被害を防ぐことに成功したが、緊張が続いている。（86文字）&quot;,
+  &quot;point2_title&quot;: &quot;イランの関与を...</summary>
+  </entry>
   <entry>
     <title>ICC制裁 赤根智子所長がコメント</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23388"/>
@@ -574,41 +610,5 @@
   &quot;point1_title&quot;: &quot;ハーランドがクラブに言及&quot;,
   &quot;point1_desc&quot;: &quot;マンチェスター・シティに所属するノルウェー代表FWアーリング・ハーランドが、クラブが直面しているプレミアリーグの財務規定違反疑惑について自身の見解を語り、周囲の注目を集めている。&quot;,
   &quot;point2_title&quot;: &quot;疑惑...</summary>
-  </entry>
-  <entry>
-    <title>ブックオフ 約643万件情報流出か</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23310"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23310</id>
-    <updated>2026-10-09T02:18:28.548Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;大規模な個人情報流出&quot;,
-  &quot;point1_desc&quot;: &quot;ブックオフグループホールディングスは、子会社の会員管理システムが第三者から不正アクセスを受けたと発表。会員情報が最大で約643万件も外部へ流出した可能性があることが明らかになった。&quot;,
-  &quot;point2_title&quot;: &quot;不正ア...</summary>
-  </entry>
-  <entry>
-    <title>プルデンシャル 不正巡り64人解雇</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23309"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23309</id>
-    <updated>2026-10-08T21:46:33.511Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;調査報告書の公表&quot;,
-  &quot;point1_desc&quot;: &quot;プルデンシャル生命保険は、営業社員らが顧客から金銭を騙し取っていた問題について、外部弁護士らによる特別調査委員会の報告書を公表した。会社側は管理態勢の不備を認め、関係者が謝罪した。&quot;,
-  &quot;point2_title&quot;: &quot;金銭詐取問...</summary>
-  </entry>
-  <entry>
-    <title>関東-九州は秋晴れ多い 1カ月予報</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23308"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23308</id>
-    <updated>2026-10-08T21:45:57.387Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;来週後半も広範囲で秋晴れ&quot;,
-  &quot;point1_desc&quot;: &quot;関東から九州、沖縄にかけては来週後半にかけて穏やかな秋晴れが続く見込みです。行楽日和となる地域が多い一方で、空気が乾燥するため火の取り扱いや水分補給には引き続き注意が必要です。&quot;,
-  &quot;point2_title&quot;: &quot;全国的...</summary>
   </entry>
 </feed>
