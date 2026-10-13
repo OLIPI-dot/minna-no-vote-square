@@ -4,11 +4,49 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-13T07:44:40.179Z</updated>
+  <updated>2026-10-13T12:51:30.575Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>バイクではねて逃走疑い 17歳逮捕</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23397"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23397</id>
+    <updated>2026-10-13T12:51:27.697Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;信号無視のバイク事故&quot;,
+  &quot;point1_desc&quot;: &quot;京都府内でバイク走行中に信号を無視し、横断歩道を自転車で渡っていた女性をはねて重傷を負わせたとして、アルバイトの男が危険運転致傷とひき逃げの疑いで逮捕された。&quot;,
+  &quot;point2_title&quot;: &quot;被害女性は重傷を負う&quot;,
+ ...</summary>
+  </entry>
+  <entry>
+    <title>簗氏答弁受け 選管「あり得ない」</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23396"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23396</id>
+    <updated>2026-10-13T12:51:09.220Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;農水相の国会答弁&quot;,
+  &quot;point1_desc&quot;: &quot;簗和生農林水産相は10月13日午前の国会答弁において、自身の支援者を送迎するためのバス借り上げについて説明を行った。しかし、その説明内容を巡って波紋が広がっている。&quot;,
+  &quot;point2_title&quot;: &quot;地元選管が否定&quot;,
+  &quot;...</summary>
+  </entry>
+  <entry>
+    <title>不正アクセス 自治体の配信が停止</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23395"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23395</id>
+    <updated>2026-10-13T12:50:49.677Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;防災サービスに不正アクセス&quot;,
+  &quot;point1_desc&quot;: &quot;自治体向けに防災情報を配信するアルカディアが第三者による不正アクセスを受けた。内部システムへの侵入を許し、セキュリティ上の重大な不具合が発生した状況である。&quot;,
+  &quot;point2_title&quot;: &quot;メールアドレス大量漏えい...</summary>
+  </entry>
   <entry>
     <title>JR東など7社 磁気乗車券を廃止へ</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23394"/>
@@ -574,41 +612,5 @@
   &quot;point1_title&quot;: &quot;ホルムズ海峡の支配力&quot;,
   &quot;point1_desc&quot;: &quot;ルビオ米国務長官は、イランが主要な石油輸送ルートであるホルムズ海峡での主導権を完全に失ったと明言した。米国の強い圧力がイランの地域的影響力を弱めていると主張している。（91文字）&quot;,
   &quot;point2_title&quot;: &quot;イラン経...</summary>
-  </entry>
-  <entry>
-    <title>簗氏「国交省にやらせる」 24年に</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23316"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23316</id>
-    <updated>2026-10-09T12:50:44.791Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;簗農相の不適切発言&quot;,
-  &quot;point1_desc&quot;: &quot;簗和生農林水産相が地元後援会の会合で、国土交通省に予算の箇所付けをやらせると発言していたことが音声により判明した。政治的影響力を利用した予算配分を示唆する発言として物議を醸している。&quot;,
-  &quot;point2_title&quot;: &quot;地元後...</summary>
-  </entry>
-  <entry>
-    <title>元防衛庁長官 斉藤斗志二さん死去</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23315"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23315</id>
-    <updated>2026-10-09T07:45:02.371Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;斉藤斗志二元長官が81歳で死去&quot;,
-  &quot;point1_desc&quot;: &quot;元防衛庁長官で衆議院議員を7期務めた斉藤斗志二氏が81歳で死去したことが判明した。静岡県富士市出身で、政界や地元経済界に多大な影響を与えた人物の訃報に悲しみの声が上がっている。&quot;,
-  &quot;point2_title&quot;: &quot;...</summary>
-  </entry>
-  <entry>
-    <title>JR東 個人情報のべ206万件漏洩か</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23314"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23314</id>
-    <updated>2026-10-09T07:44:38.011Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;約206万件の情報流出の恐れ&quot;,
-  &quot;point1_desc&quot;: &quot;JR東日本は、「えきねっと」と「大人の休日倶楽部」の会員のべ約206万件の個人情報が漏洩した可能性があると発表した。メールアドレスなどが対象となっており、今後の影響が懸念されている。&quot;,
-  &quot;point2_title&quot;:...</summary>
   </entry>
 </feed>
