@@ -110,7 +110,7 @@ const PatrolMiniGame = ({
   const [sosState, setSosState] = useState('idle'); // idle, voting, completed
   const [sosVotes, setSosVotes] = useState({ A: 0, B: 0, C: 0, D: 0 });
   const [sosTime, setSosTime] = useState(30);
-  const [awakenBuff, setAwakenBuff] = useState(false); // 覚醒バフ: 次の攻撃の威力10倍
+  const [awakenBuff, setAwakenBuff] = useState(false); // 覚醒バフ: 次の攻撃の威力3倍
   const [enemyStatus, setEnemyStatus] = useState(null); // 'virus' など
   const [isHardMode, setIsHardMode] = useState(false);
   const timerRef = useRef(null);
@@ -401,11 +401,11 @@ const PatrolMiniGame = ({
       
       if (pCrit) dmgToEnemy = Math.floor(dmgToEnemy * 2.5);
 
-      // 📈 【覚醒バフ】 救援アンケートで獲得したバフ。次に命中する攻撃の威力が10倍になる
+      // 📈 【覚醒バフ】 救援アンケートで獲得したバフ。次に命中する攻撃の威力が3倍になる
       if (awakenBuff) {
-        dmgToEnemy = dmgToEnemy * 10;
+        dmgToEnemy = dmgToEnemy * 3;
         setAwakenBuff(false);
-        newLogs.push(`📈 【覚醒バフ発動】 みんなの力が剣に宿る！威力10倍の一撃！`);
+        newLogs.push(`📈 【覚醒バフ発動】 みんなの力が剣に宿る！威力3倍の一撃！`);
       }
 
       // 📝 【現実改変: rewrite_reality】 攻撃時15%で敵のHPを強制半減
@@ -749,23 +749,27 @@ const PatrolMiniGame = ({
     let isWin = false;
     let effectMsg = '';
 
+    // ⚖️ バランス調整: 「パネルをめくれば勝てる」を防ぐため、効果は最大HPの30〜50%ダメージ程度に抑える
+    const panelDamage = (ratio) => Math.max(0, currentEnemyHp - Math.floor(enemy.hp * ratio));
+
     if (winner === 'A') {
-      // 究極魔法アルテマ（大当たり）
-      effectMsg = `💥 ✨ 究極魔法アルテマ！！！ 敵を一撃で粉砕した！`;
-      currentEnemyHp = 0;
-      isWin = true;
+      // 究極魔法アルテマ（最大HPの50%）
+      effectMsg = `💥 ✨ 究極魔法アルテマ！ 敵のHPを大きく（50%）削り取った！`;
+      currentEnemyHp = panelDamage(0.5);
+      if (currentEnemyHp === 0) isWin = true;
     } else if (winner === 'B') {
-      // 割合ダメージ
-      effectMsg = `🔨 ✨ みんなの鉄槌！敵のHPを80%削り取った！`;
-      currentEnemyHp = Math.max(1, Math.floor(currentEnemyHp - (enemy.hp * 0.8)));
+      // みんなの鉄槌（最大HPの35%）
+      effectMsg = `🔨 ✨ みんなの鉄槌！敵のHPを35%削り取った！`;
+      currentEnemyHp = panelDamage(0.35);
       if (currentEnemyHp === 0) isWin = true;
     } else if (winner === 'C') {
-      // HP半減
-      effectMsg = `🎁 ✨ みんなの加護！敵のHPを半減した！`;
-      currentEnemyHp = Math.floor(currentEnemyHp / 2);
+      // みんなの加護（最大HPの30%）
+      effectMsg = `🎁 ✨ みんなの加護！敵のHPを30%削った！`;
+      currentEnemyHp = panelDamage(0.3);
+      if (currentEnemyHp === 0) isWin = true;
     } else if (winner === 'D') {
-      // 覚醒バフ（次の攻撃が10倍）
-      effectMsg = `📈 ✨ 覚醒バフ！次の攻撃の威力が10倍になる！`;
+      // 覚醒バフ（次の攻撃が3倍）
+      effectMsg = `📈 ✨ 覚醒バフ！次の攻撃の威力が3倍になる！`;
       setAwakenBuff(true);
     }
     
@@ -1108,7 +1112,7 @@ const PatrolMiniGame = ({
                     fontSize: '0.85rem', boxShadow: '0 2px 4px rgba(239, 68, 68, 0.3)' 
                   }}
                 >
-                  {awakenBuff ? '📈 攻撃する！（威力10倍）' : '🗡️ 攻撃する！'}
+                  {awakenBuff ? '📈 攻撃する！（威力3倍）' : '🗡️ 攻撃する！'}
                 </button>
                 <button 
                   onClick={handleHeal}
