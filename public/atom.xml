@@ -4,11 +4,47 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-13T02:17:09.040Z</updated>
+  <updated>2026-10-13T07:44:40.179Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>JR東など7社 磁気乗車券を廃止へ</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23394"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23394</id>
+    <updated>2026-10-13T07:44:33.149Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;磁気切符からQRへ切り替え&quot;,
+  &quot;point1_desc&quot;: &quot;JR東日本や大手私鉄など鉄道7社は、従来の磁気乗車券を廃止し、QRコードを活用した新たな乗車券システムへ移行する。導入は2027年春を予定しており、利用者の利便性向上を図る。&quot;,
+  &quot;point2_title&quot;: &quot;主要鉄...</summary>
+  </entry>
+  <entry>
+    <title>こども園でゼリー詰まらせ4歳死亡</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23393"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23393</id>
+    <updated>2026-10-13T07:44:14.355Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;こども園で誤飲事故&quot;,
+  &quot;point1_desc&quot;: &quot;奈良県香芝市の認定こども園にて、4歳の男の子が凍らせたゼリーを誤ってのどに詰まらせる事故が発生しました。男児は心肺停止の状態で病院へと搬送されましたが、その後死亡が確認されました。&quot;,
+  &quot;point2_title&quot;: &quot;凍らせた...</summary>
+  </entry>
+  <entry>
+    <title>中国車の輸出なぜ激増 欧州が対応</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23392"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23392</id>
+    <updated>2026-10-13T07:43:55.113Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;中国の9月新車販売が減少&quot;,
+  &quot;point1_desc&quot;: &quot;2026年9月の中国における新車販売台数は前年同期比で8.4%減少した。特に国内販売は26%減と大きく落ち込んでおり、国内市場の需要減退が鮮明になっている。&quot;,
+  &quot;point2_title&quot;: &quot;自動車輸出が大幅に増加&quot;,...</summary>
+  </entry>
   <entry>
     <title>5年前から閉鎖 東大「赤門」は今</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23391"/>
@@ -574,41 +610,5 @@
   &quot;point1_title&quot;: &quot;約206万件の情報流出の恐れ&quot;,
   &quot;point1_desc&quot;: &quot;JR東日本は、「えきねっと」と「大人の休日倶楽部」の会員のべ約206万件の個人情報が漏洩した可能性があると発表した。メールアドレスなどが対象となっており、今後の影響が懸念されている。&quot;,
   &quot;point2_title&quot;:...</summary>
-  </entry>
-  <entry>
-    <title>参院野党 農相の問責決議案検討へ</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23313"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23313</id>
-    <updated>2026-10-09T07:44:00.609Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;簗農水相の発言問題&quot;,
-  &quot;point1_desc&quot;: &quot;簗農林水産大臣が過去に道路予算を大幅にカットしたとする旨の発言を行ったことが波紋を広げている。この発言を受けて野党側は閣僚としての資質や発言の撤回・責任を強く問題視する構えを見せている。&quot;,
-  &quot;point2_title&quot;: &quot;野...</summary>
-  </entry>
-  <entry>
-    <title>紅白司会にVIVANTの「兄弟」</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23312"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23312</id>
-    <updated>2026-10-09T02:19:19.831Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;芸能&quot;,
-  &quot;point1_title&quot;: &quot;第77回紅白の司会発表&quot;,
-  &quot;point1_desc&quot;: &quot;NHKは大みそかに放送される第77回NHK紅白歌合戦の司会者を発表した。今年は女優の芦田愛菜、俳優の堺雅人、タレントの二宮和也、そして鈴木奈穂子アナウンサーの4名が担当することが決定した。&quot;,
-  &quot;point2_title&quot;: &quot;...</summary>
-  </entry>
-  <entry>
-    <title>ハーランド ファンに団結呼びかけ</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23311"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23311</id>
-    <updated>2026-10-09T02:18:54.235Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;ハーランドがクラブに言及&quot;,
-  &quot;point1_desc&quot;: &quot;マンチェスター・シティに所属するノルウェー代表FWアーリング・ハーランドが、クラブが直面しているプレミアリーグの財務規定違反疑惑について自身の見解を語り、周囲の注目を集めている。&quot;,
-  &quot;point2_title&quot;: &quot;疑惑...</summary>
   </entry>
 </feed>
