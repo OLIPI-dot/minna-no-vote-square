@@ -4,11 +4,48 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-14T02:17:09.712Z</updated>
+  <updated>2026-10-14T07:44:37.311Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>積み荷はニワトリ3000羽 崩れ散乱</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23406"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23406</id>
+    <updated>2026-10-14T07:44:34.637Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;国道でトラック荷崩れ&quot;,
+  &quot;point1_desc&quot;: &quot;宮城県大崎市の国道4号でトラックが荷崩れを起こす事故が発生した。これにより積み荷として運ばれていた多数のニワトリが路上に散乱し、現場周辺では一時混乱が生じた。&quot;,
+  &quot;point2_title&quot;: &quot;積み荷のニワトリ散乱&quot;,
+ ...</summary>
+  </entry>
+  <entry>
+    <title>露で記者拘束 道新「詳細確認中」</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23405"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23405</id>
+    <updated>2026-10-14T07:44:15.846Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;道新記者がスパイ容疑拘束&quot;,
+  &quot;point1_desc&quot;: &quot;ロシアの国営メディアは、ロシア当局が北海道新聞の記者をスパイ容疑で拘束したと報じた。拘束された記者に対して日本側は現在も直接接触できておらず、詳しい状況の確認が急がれている。&quot;,
+  &quot;point2_title&quot;: &quot;日本政府...</summary>
+  </entry>
+  <entry>
+    <title>ワールドとTSI 経営統合で合意</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23404"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23404</id>
+    <updated>2026-10-14T07:43:56.825Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;大手アパレル2社が経営統合&quot;,
+  &quot;point1_desc&quot;: &quot;ワールドとTSIホールディングスが、共同株式移転による経営統合に合意した。2027年3月に持株会社インフィニティ・ユナイテッドを設立し、両社はその完全子会社となる計画だ。&quot;,
+  &quot;point2_title&quot;: &quot;統合会社が...</summary>
+  </entry>
   <entry>
     <title>動物避けようとして車転落か 死亡</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23403"/>
@@ -579,41 +616,5 @@
   &quot;point1_title&quot;: &quot;だんじりが横転事故&quot;,
   &quot;point1_desc&quot;: &quot;10日午前11時ごろ、大阪府泉佐野市長滝の交差点で「だんじり」が横転する事故が発生した。現場から「けが人がたくさん出ている」と消防に通報が入り、現場は騒然となった。&quot;,
   &quot;point2_title&quot;: &quot;複数の参加者が下敷き&quot;,...</summary>
-  </entry>
-  <entry>
-    <title>米軍の反省期間 沖縄で疑問の声も</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23325"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23325</id>
-    <updated>2026-10-10T07:44:07.826Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;米海兵隊員の逮捕&quot;,
-  &quot;point1_desc&quot;: &quot;沖縄県で発生した強盗殺人容疑による米海兵隊員の逮捕を受け、基地周辺では緊張が高まっている。痛ましい事件の発生に地元住民からは怒りと不満の声が強まり、厳重な対応が求められている。&quot;,
-  &quot;point2_title&quot;: &quot;休止期間の終了...</summary>
-  </entry>
-  <entry>
-    <title>サイバー攻撃 なぜ日本が標的に</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23324"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23324</id>
-    <updated>2026-10-10T02:18:17.820Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;1464万件の情報流出&quot;,
-  &quot;point1_desc&quot;: &quot;旅行予約サイト「スカイチケット」を運営するアドベンチャーが不正アクセスを受け、会員情報約1464万件が外部へ流出したと発表した。システムへの攻撃により大規模な個人情報漏洩が発生した模様だ。&quot;,
-  &quot;point2_title&quot;:...</summary>
-  </entry>
-  <entry>
-    <title>米がICC制裁 首相「深く懸念」</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23323"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23323</id>
-    <updated>2026-10-10T02:17:01.224Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;トランプ政権のICC制裁&quot;,
-  &quot;point1_desc&quot;: &quot;米国のトランプ政権が国際刑事裁判所（ICC）を制裁対象に指定した。これに対し国際社会から様々な反応が起きる中、加盟国である日本の対応にも大きな注目が集まっている。&quot;,
-  &quot;point2_title&quot;: &quot;高市首相の強い懸念表...</summary>
   </entry>
 </feed>
