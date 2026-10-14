@@ -4,11 +4,47 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-14T07:44:37.311Z</updated>
+  <updated>2026-10-14T12:51:24.328Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>警察官がひき逃げ疑い 書類送検</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23409"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23409</id>
+    <updated>2026-10-14T12:51:21.911Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;警察官がひき逃げ疑い&quot;,
+  &quot;point1_desc&quot;: &quot;新潟県警の30代女性巡査長が、自転車に乗っていた高校生に車で接触して軽傷を負わせたにもかかわらず、救護せず立ち去ったとして道路交通法違反などの疑いで書類送検されていたことが判明した。&quot;,
+  &quot;point2_title&quot;: &quot;事故...</summary>
+  </entry>
+  <entry>
+    <title>農相「これ以上迷惑かけられず」</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23408"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23408</id>
+    <updated>2026-10-14T12:51:03.658Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;簗農相が辞任を表明&quot;,
+  &quot;point1_desc&quot;: &quot;簗和生農林水産相は14日、首相官邸で記者団に対し自ら辞任を決断したことを明かした。理由について国会審議や農林水産行政へのこれ以上の影響や迷惑を避けるためだと説明している。&quot;,
+  &quot;point2_title&quot;: &quot;行政への影響を考慮...</summary>
+  </entry>
+  <entry>
+    <title>名前を変える大学が増加 背景は</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23407"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23407</id>
+    <updated>2026-10-14T12:50:44.969Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;話題&quot;,
+  &quot;point1_title&quot;: &quot;27年度に校名変更が急増&quot;,
+  &quot;point1_desc&quot;: &quot;2027年度に大学の校名変更を予定している学校が10校以上にのぼることが判明した。このペースは2000年度以降で最多となる見込みであり、全国の大学で再編の動きが急速に強まっている。&quot;,
+  &quot;point2_title&quot;: &quot;ブラン...</summary>
+  </entry>
   <entry>
     <title>積み荷はニワトリ3000羽 崩れ散乱</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23406"/>
@@ -580,41 +616,5 @@
   &quot;point1_title&quot;: &quot;生野区で死亡事故&quot;,
   &quot;point1_desc&quot;: &quot;大阪市生野区林寺の道路で10日午前、バイクとトラックが接触する事故が発生。バイクはその反動で対向車線へ飛び出し、走ってきた乗用車と衝突する重大な二次衝突へ発展しました。&quot;,
   &quot;point2_title&quot;: &quot;バイク運転手が死亡&quot;,...</summary>
-  </entry>
-  <entry>
-    <title>いい迷惑 農相に地元から苦言続出</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23359"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23359</id>
-    <updated>2026-10-10T12:50:44.233Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;予算カット発言への批判&quot;,
-  &quot;point1_desc&quot;: &quot;農林水産相の簗和生氏による「予算カット」発言が波紋を広げている。発言に対する批判が高まる中、地元で開催された自民党県連のパーティーでの対応にも注目が集まることとなった。&quot;,
-  &quot;point2_title&quot;: &quot;地元パーティーを...</summary>
-  </entry>
-  <entry>
-    <title>太陽系外の惑星から電波 初検出</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23327"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23327</id>
-    <updated>2026-10-10T07:44:55.830Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;系外惑星からの電波検出に成功&quot;,
-  &quot;point1_desc&quot;: &quot;天文学者の研究チームが、太陽系の外にある惑星から放出された電波を初めて直接検出することに成功した。宇宙研究において歴史的な前進となり、研究者たちの間で大きな注目を集めている。&quot;,
-  &quot;point2_title&quot;: &quot;知的...</summary>
-  </entry>
-  <entry>
-    <title>だんじり横転 複数下敷き1人死亡</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23326"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23326</id>
-    <updated>2026-10-10T07:44:31.167Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;だんじりが横転事故&quot;,
-  &quot;point1_desc&quot;: &quot;10日午前11時ごろ、大阪府泉佐野市長滝の交差点で「だんじり」が横転する事故が発生した。現場から「けが人がたくさん出ている」と消防に通報が入り、現場は騒然となった。&quot;,
-  &quot;point2_title&quot;: &quot;複数の参加者が下敷き&quot;,...</summary>
   </entry>
 </feed>
