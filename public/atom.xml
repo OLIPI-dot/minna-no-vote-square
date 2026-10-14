@@ -4,11 +4,49 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-13T21:46:06.464Z</updated>
+  <updated>2026-10-14T02:17:09.712Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>動物避けようとして車転落か 死亡</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23403"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23403</id>
+    <updated>2026-10-14T02:17:07.143Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;佐賀の市道で車が転落&quot;,
+  &quot;point1_desc&quot;: &quot;佐賀県神埼市の市道にて乗用車が道路沿いのクリークに転落する事故が発生した。車に乗っていた夫婦のうち妻の死亡が確認され、警察が事故の詳しい状況を調べている。&quot;,
+  &quot;point2_title&quot;: &quot;乗用車に乗っていた夫婦&quot;,
+  ...</summary>
+  </entry>
+  <entry>
+    <title>施設で入所者死亡 別の入所者逮捕</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23402"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23402</id>
+    <updated>2026-10-14T02:16:48.075Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;施設内で殺人未遂容疑&quot;,
+  &quot;point1_desc&quot;: &quot;福岡県福津市にあるグループホームで、入所者の男性の首を絞めて殺害しようとしたとして、同じ施設に入所する67歳の男が警察に逮捕される事件が発生しました。&quot;,
+  &quot;point2_title&quot;: &quot;被害男性の死亡を確認&quot;,
+  &quot;po...</summary>
+  </entry>
+  <entry>
+    <title>裁判所 夜間業務「性別問わず」に</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23401"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23401</id>
+    <updated>2026-10-14T02:16:28.437Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;夜間業務の性別制限撤廃&quot;,
+  &quot;point1_desc&quot;: &quot;最高裁は、東京と大阪の裁判所で行われている夜間業務において、これまで男性職員のみとしていた運用を見直し、性別を問わず割り当てる方針を固めた。性別による役割分担の解消を目指す。&quot;,
+  &quot;point2_title&quot;: &quot;全国の夜間...</summary>
+  </entry>
   <entry>
     <title>日本のGDP 来年世界6位の見込み</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23400"/>
@@ -577,41 +615,5 @@
   &quot;point1_title&quot;: &quot;トランプ政権のICC制裁&quot;,
   &quot;point1_desc&quot;: &quot;米国のトランプ政権が国際刑事裁判所（ICC）を制裁対象に指定した。これに対し国際社会から様々な反応が起きる中、加盟国である日本の対応にも大きな注目が集まっている。&quot;,
   &quot;point2_title&quot;: &quot;高市首相の強い懸念表...</summary>
-  </entry>
-  <entry>
-    <title>露 米や世界向けの軽油供給開始へ</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23322"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23322</id>
-    <updated>2026-10-10T02:16:35.389Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;ロシアの原油供給意向&quot;,
-  &quot;point1_desc&quot;: &quot;ロシアのプーチン大統領は、米国や世界市場に向けて原油および石油製品を継続して供給する準備があることを明らかにした。自国のエネルギー資源提供が不可欠であるとアピールしている。&quot;,
-  &quot;point2_title&quot;: &quot;世界経済への支...</summary>
-  </entry>
-  <entry>
-    <title>個人情報巡る対策 政府が緊急要請</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23321"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23321</id>
-    <updated>2026-10-09T21:47:34.036Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;JR東日本等で情報流出の恐れ&quot;,
-  &quot;point1_desc&quot;: &quot;JR東日本とブックオフHDは、外部からの不正アクセスを受けたことを発表した。それぞれの企業で約600万件規模という非常に大規模な個人情報が流出した可能性があるとしている。&quot;,
-  &quot;point2_title&quot;: &quot;被害拡大...</summary>
-  </entry>
-  <entry>
-    <title>ビール4社担当者 価格協議認める</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23320"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23320</id>
-    <updated>2026-10-09T21:46:17.839Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;カルテル協議認める&quot;,
-  &quot;point1_desc&quot;: &quot;ビール大手4社の担当者が、公正取引委員会の聴取に対し価格に関する事前協議を行った事実を認める説明をしたことが発覚。業界全体に及ぶ大規模な価格カルテル疑惑が重大な局面を迎えている。&quot;,
-  &quot;point2_title&quot;: &quot;公取委の立...</summary>
   </entry>
 </feed>
