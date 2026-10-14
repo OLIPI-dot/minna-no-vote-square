@@ -185,12 +185,6 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minna-no-vote-square.com/s/23207</loc>
-    <lastmod>2026-09-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://minna-no-vote-square.com/s/23209</loc>
     <lastmod>2026-09-30</lastmod>
     <changefreq>weekly</changefreq>
@@ -251,18 +245,6 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minna-no-vote-square.com/s/23205</loc>
-    <lastmod>2026-09-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minna-no-vote-square.com/s/23202</loc>
-    <lastmod>2026-09-29</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://minna-no-vote-square.com/s/23286</loc>
     <lastmod>2026-10-07</lastmod>
     <changefreq>weekly</changefreq>
@@ -289,12 +271,6 @@
   <url>
     <loc>https://minna-no-vote-square.com/s/23385</loc>
     <lastmod>2026-10-12</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minna-no-vote-square.com/s/23203</loc>
-    <lastmod>2026-09-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -377,13 +353,13 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minna-no-vote-square.com/s/23389</loc>
+    <loc>https://minna-no-vote-square.com/s/23391</loc>
     <lastmod>2026-10-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minna-no-vote-square.com/s/23391</loc>
+    <loc>https://minna-no-vote-square.com/s/23389</loc>
     <lastmod>2026-10-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -397,12 +373,6 @@
   <url>
     <loc>https://minna-no-vote-square.com/s/23392</loc>
     <lastmod>2026-10-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minna-no-vote-square.com/s/23204</loc>
-    <lastmod>2026-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -703,12 +673,6 @@
   <url>
     <loc>https://minna-no-vote-square.com/s/23408</loc>
     <lastmod>2026-10-14</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minna-no-vote-square.com/s/23206</loc>
-    <lastmod>2026-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
