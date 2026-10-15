@@ -11,11 +11,23 @@ const rarityColors = {
   LR: '#ef4444' // 真っ赤（PSO赤箱リスペクト）
 };
 
-// 保存データに effect が無い古いアイテムでも、図鑑データ(基本ID)から能力を補う
-const getEffectKey = (item) => {
-  if (item?.effect) return item.effect;
+// 保存データに desc や effect が無い古いアイテムでも、マスターデータ(IDまたは名前)から確実に補完する
+const getItemDetails = (item) => {
+  if (!item) return { desc: '', effect: null };
   const baseId = typeof item?.id === 'string' ? item.id.split('_')[0] : item?.id;
-  return ITEMS.find(i => i.id === baseId)?.effect || null;
+  const master = ITEMS.find(i => (baseId && i.id === baseId) || (i.name && i.name === item.name));
+  return {
+    desc: item.desc || master?.desc || '',
+    effect: item.effect || master?.effect || null
+  };
+};
+
+const getEffectKey = (item) => {
+  return getItemDetails(item).effect;
+};
+
+const getItemDesc = (item) => {
+  return getItemDetails(item).desc;
 };
 
 const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, setEquipment, addExp, inventory = [], setInventory, acquiredItems = [], setAcquiredItems }) => {
@@ -238,16 +250,26 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
               <div style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 'bold', marginBottom: '8px' }}>現在の装備</div>
               {equipment[selectedSlot] ? (
                 <div style={{ background: '#f8fafc', border: `2px solid ${rarityColors[equipment[selectedSlot].rarity]}`, borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <div style={{ fontSize: '2.5rem' }}>{equipment[selectedSlot].icon}</div>
-                  <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: '2.5rem', flexShrink: 0 }}>{equipment[selectedSlot].icon}</div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontWeight: 'bold', color: rarityColors[equipment[selectedSlot].rarity] }}>
                       [{equipment[selectedSlot].rarity}] {equipment[selectedSlot].name}
                     </div>
                     <div style={{ fontSize: '0.75rem', color: '#475569', margin: '4px 0' }}>
                       ATK+{equipment[selectedSlot].atk} / DEF+{equipment[selectedSlot].def} / HP+{equipment[selectedSlot].hp}
                     </div>
+                    {getItemDesc(equipment[selectedSlot]) && (
+                      <div style={{ fontSize: '0.7rem', color: '#64748b', marginTop: '2px' }}>
+                        {getItemDesc(equipment[selectedSlot])}
+                      </div>
+                    )}
+                    {getEffectKey(equipment[selectedSlot]) && (
+                      <div style={{ fontSize: '0.7rem', color: '#92400e', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '4px', padding: '3px 6px', marginTop: '4px', fontWeight: 'bold', lineHeight: 1.4 }}>
+                        ✨ {EFFECT_DESCRIPTIONS[getEffectKey(equipment[selectedSlot])] || '特殊効果あり'}
+                      </div>
+                    )}
                   </div>
-                  <button onClick={() => handleUnequip(selectedSlot)} style={{ padding: '8px 12px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>外す</button>
+                  <button onClick={() => handleUnequip(selectedSlot)} style={{ padding: '8px 12px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', flexShrink: 0 }}>外す</button>
                 </div>
               ) : (
                 <div style={{ background: '#f1f5f9', border: '2px dashed #cbd5e1', borderRadius: '8px', padding: '16px', textAlign: 'center', color: '#94a3b8' }}>

@@ -518,8 +518,8 @@ async function startAutoPosting() {
 
     let count = 0;
     let attemptCount = 0;
-    const POST_LIMIT = 3; // 1回3件まで厳選！ (1日4回実行で合計最大12本/日) 🥕
-    const MAX_ATTEMPTS = 15; // APIコストと無限ループ防止のため、候補検索（アクセス試行）は最大15回まで
+    const POST_LIMIT = 5; // 1回5件へ増量！ (1日4回実行で合計最大20本/日) 🥕
+    const MAX_ATTEMPTS = 25; // 5件確実に確保できるよう試行回数上限を25回に拡張
     
     // 🎲 カテゴリの偏りを防ぐための記録用（1回の実行の中でカテゴリをバラバラにする）
     const postedCategories = new Set();
