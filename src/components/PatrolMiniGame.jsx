@@ -176,9 +176,12 @@ const PatrolMiniGame = ({
     
     if (hardMode) {
       newEnemy.name = `【深層】${newEnemy.name}`;
-      newEnemy.hp *= 10;
-      newEnemy.atk *= 10;
-      newEnemy.def *= 10;
+      newEnemy.level = Math.round((newEnemy.level || userLevel) * 1.3 + 5);
+      newEnemy.hp = Math.round(newEnemy.hp * 2.5);
+      newEnemy.atk = Math.round(newEnemy.atk * 1.35);
+      if (newEnemy.def < 9000) {
+        newEnemy.def = Math.round(newEnemy.def * 1.15);
+      }
     }
     
     setIsHardMode(hardMode);
