@@ -891,20 +891,22 @@ const PatrolMiniGame = ({
     winProcessedRef.current = true;
     setBattleState('won');
     
-    // 敵のステータスからEXPを算出
+    // 敵のステータスからEXPを算出（じっくり成長する本格RPGバランス）
     let baseDef = defeatedEnemy.def;
     let bonusExp = 0;
     // メタル系（迷子のらびたん、はぐれらびたん等）は超高防御(9999)を計算から除外してボーナスEXPを付与
     if (defeatedEnemy.def >= 9000) {
       baseDef = 10;
-      bonusExp = defeatedEnemy.id === 'el4_2' ? 1500 : 500;
+      bonusExp = defeatedEnemy.id === 'el4_2' ? 1200 : 400;
     }
-    let earnedExp = Math.floor(defeatedEnemy.hp / 5 + defeatedEnemy.atk + baseDef) + bonusExp;
+    // ノーマル敵で50〜80 EXP、エリートで120〜160 EXP、レアで250〜350 EXP程度
+    let baseExp = Math.floor(defeatedEnemy.hp / 18 + defeatedEnemy.atk * 0.25 + baseDef * 0.2);
+    let earnedExp = Math.max(10, baseExp) + bonusExp;
     
-    // 激怒個体だった場合はさらに倍
-    if (defeatedEnemy.isEnraged) earnedExp *= 2;
-    // ハードモードならさらに倍
-    if (isHardMode) earnedExp *= 2;
+    // 激怒個体だった場合は1.5倍
+    if (defeatedEnemy.isEnraged) earnedExp = Math.round(earnedExp * 1.5);
+    // ハードモードなら1.5倍
+    if (isHardMode) earnedExp = Math.round(earnedExp * 1.5);
     
     setLastEarnedExp(earnedExp);
     addExp(earnedExp);

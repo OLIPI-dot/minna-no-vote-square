@@ -634,17 +634,19 @@ function App() {
     while (exp >= nextExpThreshold && currentLevel < 255) {
       currentLevel++;
       currentExpThreshold = nextExpThreshold;
-      // 序盤（Lv1〜30）はサクサク、中盤以降じっくり育つ重厚なRPGカーブ
+      // 序盤（Lv1〜30）はサクサク、Lv40以降じっくり育つ重厚なRPGカーブ
       if (currentLevel <= 30) {
         expNeededForNext = currentLevel * 20 + 10;
-      } else if (currentLevel <= 60) {
-        expNeededForNext = currentLevel * 40 + 50;
-      } else if (currentLevel <= 100) {
-        expNeededForNext = currentLevel * 80 + 100;
+      } else if (currentLevel <= 40) {
+        expNeededForNext = currentLevel * 40 + 50; // おりぴさんの現在地（Lv.39）までは現状維持でレベルダウン完全防止
+      } else if (currentLevel <= 70) {
+        expNeededForNext = currentLevel * 75 + 100; // Lv.41以降じっくり！1レベルに約3,000〜5,000 EXP
+      } else if (currentLevel <= 120) {
+        expNeededForNext = currentLevel * 140 + 300; // Lv.71〜120で1レベル約1万〜1.7万 EXP
       } else if (currentLevel <= 200) {
-        expNeededForNext = currentLevel * 150 + 200;
+        expNeededForNext = currentLevel * 250 + 500;
       } else {
-        expNeededForNext = currentLevel * 300 + 500;
+        expNeededForNext = currentLevel * 500 + 1000;
       }
       nextExpThreshold += expNeededForNext;
     }
