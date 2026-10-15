@@ -6,6 +6,7 @@ import BattleMiniGame from './BattleMiniGame';
 import PatrolMiniGame from './PatrolMiniGame';
 import GachaMiniGame from './GachaMiniGame';
 import DictionaryModal from './DictionaryModal';
+import StatusModal from './StatusModal';
 import { CATEGORY_ICON_STYLE } from '../constants';
 
 const getCatColor = (cat) => {
@@ -44,6 +45,7 @@ const Sidebar = ({
   const [isEditingHn, setIsEditingHn] = useState(false);
   const [tempHn, setTempHn] = useState('');
   const [isDictionaryOpen, setIsDictionaryOpen] = useState(false);
+  const [isStatusOpen, setIsStatusOpen] = useState(false);
 
   useEffect(() => {
     // ☁️ 1. まずSupabaseに保存されたカスタムネームがあるか確認
@@ -262,9 +264,29 @@ const Sidebar = ({
             </div>
           )}
 
-          <div style={{ fontSize: '0.85rem', color: '#92400e', marginBottom: '8px', display: 'flex', justifyContent: 'center', gap: '12px' }}>
+          <div style={{ fontSize: '0.85rem', color: '#92400e', marginBottom: '8px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
             <span>Lv.{levelInfo?.level || 1} (EXP: {userExp || 0})</span>
             <span style={{ fontWeight: 'bold' }}>🎫 {gachaTickets || 0} 枚</span>
+            <button 
+              onClick={() => setIsStatusOpen(true)}
+              style={{
+                background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                color: 'white',
+                border: 'none',
+                borderRadius: '12px',
+                padding: '2px 9px',
+                fontSize: '0.72rem',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                boxShadow: '0 1px 3px rgba(37,99,235,0.3)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '3px'
+              }}
+            >
+              <span>📊</span>
+              <span>ステータス</span>
+            </button>
           </div>
           {levelInfo?.next && (
             <div style={{ width: '100%', background: '#fde68a', borderRadius: '10px', height: '12px', overflow: 'hidden', position: 'relative', marginBottom: '4px' }}>
@@ -379,6 +401,16 @@ const Sidebar = ({
         onClose={() => setIsDictionaryOpen(false)} 
         acquiredItems={acquiredItems} 
         encounteredEnemies={encounteredEnemies} 
+      />
+
+      <StatusModal
+        isOpen={isStatusOpen}
+        onClose={() => setIsStatusOpen(false)}
+        userLevel={levelInfo?.level || 1}
+        userExp={userExp || 0}
+        levelInfo={levelInfo}
+        hn={hn}
+        equipment={equipment}
       />
     </div>
   );
