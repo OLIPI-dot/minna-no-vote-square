@@ -242,6 +242,11 @@ const StatusModal = ({ isOpen, onClose, userLevel = 1, userExp = 0, levelInfo, h
                             {item.def > 0 && `DEF+${item.def} `}
                             {item.hp > 0 && `HP+${item.hp}`}
                           </div>
+                          {getItemDetails(item).desc && (
+                            <div style={{ fontSize: '0.67rem', color: '#64748b', marginTop: '2px', lineHeight: 1.3 }}>
+                              {getItemDetails(item).desc}
+                            </div>
+                          )}
                         </div>
                       </>
                     ) : (

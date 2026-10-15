@@ -135,7 +135,7 @@ const PatrolMiniGame = ({
     return { date: todayStr, count };
   };
   const [patrolsToday, setPatrolsToday] = useState(() => getTodayPatrols().count);
-  const MAX_PATROLS = 10; // 1日10回まで
+  const MAX_PATROLS = 20; // 1日20回まで（たっぷり冒険！）
 
   // ユーザーのログイン状態が変化した時にも最新回数を反映
   useEffect(() => {
@@ -409,11 +409,21 @@ const PatrolMiniGame = ({
           newLogs.push(`💻 【解析】 ${getEffectMsg(getEffectSource('partner_hack') ? 'partner_hack' : 'partner_expose', hackItem)} (敵の防御力が0になった！)`);
         }
 
+        // 🐰 メタル系（DEF 9000以上）は通常1〜2ダメージ！
+        if (actualEnemyDef >= 9000) {
+          return Math.random() < 0.3 ? 2 : 1;
+        }
+
+        // 通常モンスターで攻撃力が防御力に負けている場合（カチカチに弾かれて1〜3ダメ！）
+        if (pAtk <= actualEnemyDef) {
+          return Math.floor(Math.random() * 3) + 1;
+        }
+
+        // 通常計算（攻撃力 - 防御力 ± 乱数20%）
         let dmg = pAtk - actualEnemyDef;
         const variance = 1.0 + (Math.random() * 0.4 - 0.2);
         dmg = Math.floor(dmg * variance);
-        const minDmg = Math.max(1, Math.floor(pAtk * 0.2));
-        return Math.max(minDmg, dmg);
+        return Math.max(1, dmg);
       };
 
       let dmgToEnemy = calcDamage();
@@ -429,7 +439,14 @@ const PatrolMiniGame = ({
         dmgToEnemy = Math.floor(dmgToEnemy * 3.0); // 3倍
       }
       
-      if (pCrit) dmgToEnemy = Math.floor(dmgToEnemy * 2.5);
+      if (pCrit) {
+        // ⚡ 会心の一撃！メタル系なら一撃必殺の大ダメージ、通常敵も防御貫通の大打撃！
+        if (enemy.def >= 9000) {
+          dmgToEnemy = Math.max(50, Math.floor(pAtk * 2.5));
+        } else {
+          dmgToEnemy = Math.max(Math.floor(pAtk * 2.0), Math.floor(dmgToEnemy * 2.5));
+        }
+      }
 
       // 📈 【覚醒バフ】 救援アンケートで獲得したバフ。次に命中する攻撃の威力が3倍になる
       if (awakenBuff) {
