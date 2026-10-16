@@ -396,7 +396,18 @@ const PatrolMiniGame = ({
       newLogs.push(`🤓 ${getEffectMsg('partner_cheer', cheerItem)}`);
     }
     
-    const pCrit = Math.random() < Math.min(0.70, basePCrit);
+    // 🤞 【領域展開: domain_expansion】 必中＆確定会心の結界（R:8%, SR:15%, UR:25%）
+    const domainItem = getEffectSource('domain_expansion');
+    const domainChance = getEffectRarityTotal('domain_expansion', { R: 0.08, SR: 0.15, UR: 0.25 }, 0.12, 0.40);
+    let isDomainActive = false;
+    if (domainItem && Math.random() < domainChance) {
+      isDomainActive = true;
+      pMiss = false; // 術式必中
+      newLogs.push(`🤞 ${getStackLabel('domain_expansion', '領域展開')} 「領域展開――！」 周囲に不可避の結界が構築された！`);
+      newLogs.push(`✨ （術式必中効果） あなたの攻撃は必中かつ確定会心の一撃となる！`);
+    }
+
+    const pCrit = isDomainActive || (Math.random() < Math.min(0.70, basePCrit));
 
     const dodgeBonus = getEffectRarityTotal('dodge_up', { N: 0.05, R: 0.10, SR: 0.20, UR: 0.25 }, 0.10, 0.50);
     const gigaBonus = getEffectRarityTotal('giga_death', { N: 0.05, R: 0.10, SR: 0.20, UR: 0.25 }, 0.10, 0.40);
@@ -750,6 +761,25 @@ const PatrolMiniGame = ({
         if (hiresItem && Math.random() < 0.35) {
           newLogs.push(`🎧 【ハイレゾ】 ${getEffectMsg('hires', hiresItem)}`);
           dmgToPlayer = 0;
+        }
+
+        // 👀 【手刀見切り: sharp_eye】 「おれでなきゃ見逃しちゃうね」 カウンター反撃（N:5%, R:10%, SR:20%, UR:25%）
+        const sharpEyeItem = getEffectSource('sharp_eye');
+        const sharpEyeChance = getEffectRarityTotal('sharp_eye', { N: 0.05, R: 0.10, SR: 0.20, UR: 0.25 }, 0.10, 0.40);
+        if (dmgToPlayer > 0 && sharpEyeItem && Math.random() < sharpEyeChance) {
+          const counterDmg = Math.max(15, Math.floor(pAtk * 1.5));
+          currentEnemyHp = Math.max(0, currentEnemyHp - counterDmg);
+          newLogs.push(`👀 ${getStackLabel('sharp_eye', '手刀見切り')} 「ふっ…おれでなきゃ見逃しちゃうね」`);
+          newLogs.push(`💥 敵の攻撃を冷静に見切り、ノーモーションの手刀で ${counterDmg} のカウンターダメージ！`);
+          dmgToPlayer = 0;
+          if (currentEnemyHp === 0) {
+            newLogs.push(`🎉 敵は見切りの速さに絶望して倒れた... 【${enemy.name}】 を撃退した！`);
+            setEnemyHp(0);
+            setPlayerHp(currentPlayerHp);
+            setBattleLog(newLogs);
+            handleWin(enemy);
+            return;
+          }
         }
 
         // 👵 【お母さん乱入: mom_block】 痛恨の一撃時、50%の確率で発動

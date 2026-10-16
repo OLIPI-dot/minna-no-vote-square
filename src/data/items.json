@@ -300,8 +300,8 @@
     "def": 200,
     "hp": 100,
     "icon": "🌌",
-    "desc": "誰も踏み込めない神聖なオーラで身を包む。",
-    "effect": "reflect"
+    "desc": "誰も踏み込めない絶対の結界を展開する。必中かつ確定会心の一撃を放つ。",
+    "effect": "domain_expansion"
   },
   {
     "id": "ac1",
@@ -8643,7 +8643,8 @@
     "def": 15,
     "hp": 50,
     "icon": "🤝",
-    "desc": "黒コートに眼帯の出で立ち。「我が右腕の封印が…！」と叫びながらバフをかける。"
+    "desc": "「おれでなきゃ見逃しちゃうね」と呟きながら敵の手刀を見切る黒歴史の相棒。",
+    "effect": "sharp_eye"
   },
   {
     "id": "p15007",
@@ -12892,5 +12893,47 @@
     "icon": "😱",
     "effect": "gobaku",
     "desc": "「これ誰に送ってんの？」と言われた瞬間の凍りつく空気。敵味方にランダムなハプニング。"
+  },
+  {
+    "id": "ar_expert_coat",
+    "dexNo": 1013,
+    "type": "armor",
+    "rarity": "R",
+    "level": 16,
+    "name": "手刀を見逃さなかった男のコート",
+    "atk": 12,
+    "def": 35,
+    "hp": 60,
+    "icon": "🧥",
+    "effect": "sharp_eye",
+    "desc": "「おれでなきゃ見逃しちゃうね」と呟くためのトレンチコート。敵の攻撃を見切って手刀カウンター。"
+  },
+  {
+    "id": "ac_domain_seal",
+    "dexNo": 1014,
+    "type": "accessory",
+    "rarity": "SR",
+    "level": 28,
+    "name": "特級呪物の印を結ぶ指",
+    "atk": 25,
+    "def": 20,
+    "hp": 50,
+    "icon": "🤞",
+    "effect": "domain_expansion",
+    "desc": "指を交差させ「領域展開」を繰り出す。結界内ではすべての攻撃が必中確定会心となる。"
+  },
+  {
+    "id": "w_tegatana_knife",
+    "dexNo": 1015,
+    "type": "weapon",
+    "rarity": "SR",
+    "level": 26,
+    "name": "目にも留まらぬ手刀",
+    "atk": 65,
+    "def": 15,
+    "hp": 40,
+    "icon": "✋",
+    "effect": "sharp_eye",
+    "desc": "真空を裂くノーモーションの手刀。並の使い手なら見逃してしまうほどの超神速。"
   }
 ]

@@ -555,7 +555,17 @@ const DungeonMiniGame = ({
     const cursedItem = getEffectSource('cursed_power');
     if (cursedItem) basePCrit = 0.50;
 
-    const isCrit = Math.random() < Math.min(0.70, basePCrit);
+    // 🤞 【領域展開: domain_expansion】 必中＆確定会心の結界（R:8%, SR:15%, UR:25%）
+    const domainItem = getEffectSource('domain_expansion');
+    const domainChance = getEffectRarityTotal('domain_expansion', { R: 0.08, SR: 0.15, UR: 0.25 }, 0.12, 0.40);
+    let isDomainActive = false;
+    if (domainItem && Math.random() < domainChance) {
+      isDomainActive = true;
+      newLogs.push(`🤞 ${getStackLabel('domain_expansion', '領域展開')} 「領域展開――！」 周囲に不可避の結界が構築された！`);
+      newLogs.push(`✨ （術式必中効果） あなたの攻撃は必中かつ確定会心の一撃となる！`);
+    }
+
+    const isCrit = isDomainActive || (Math.random() < Math.min(0.70, basePCrit));
 
     // 攻撃計算
     let baseDmg = Math.max(5, pAtk - Math.floor(effectiveEnemyDef * 0.6));
@@ -741,6 +751,25 @@ const DungeonMiniGame = ({
         if (isDodged) {
           dmgToPlayer = 0;
         } else {
+          // 👀 【手刀見切り: sharp_eye】 「おれでなきゃ見逃しちゃうね」 カウンター反撃（N:5%, R:10%, SR:20%, UR:25%）
+          const sharpEyeItem = getEffectSource('sharp_eye');
+          const sharpEyeChance = getEffectRarityTotal('sharp_eye', { N: 0.05, R: 0.10, SR: 0.20, UR: 0.25 }, 0.10, 0.40);
+          if (sharpEyeItem && Math.random() < sharpEyeChance) {
+            const counterDmg = Math.max(15, Math.floor(pAtk * 1.5));
+            currentEnemyHp = Math.max(0, currentEnemyHp - counterDmg);
+            newLogs.push(`👀 ${getStackLabel('sharp_eye', '手刀見切り')} 「ふっ…おれでなきゃ見逃しちゃうね」`);
+            newLogs.push(`💥 敵の攻撃を冷静に見切り、ノーモーションの手刀で ${counterDmg} のカウンターダメージ！`);
+            dmgToPlayer = 0;
+            if (currentEnemyHp === 0) {
+              newLogs.push(`🎉 敵は見切りの速さに絶望して倒れた... 【${enemy.name}】 を撃退した！`);
+              setEnemyHp(0);
+              setPlayerHp(currentPlayerHp);
+              setBattleLog(newLogs);
+              handleBattleVictory(newLogs, currentPlayerHp);
+              return;
+            }
+          }
+
           // 👵 【オカンの盾: mom_block】 痛恨時50%で敵即死
           const momItem = getEffectSource('mom_block');
           if (momItem && Math.random() < 0.15) {
