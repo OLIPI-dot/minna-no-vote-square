@@ -1,6 +1,6 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
-import { ITEMS, EFFECT_DESCRIPTIONS } from '../items';
+import { ITEMS, EFFECT_DESCRIPTIONS, getItemEffectDescription } from '../items';
 
 const rarityColors = {
   N: '#94a3b8',
@@ -54,7 +54,7 @@ const StatusModal = ({ isOpen, onClose, userLevel = 1, userExp = 0, levelInfo, h
         if (!effectMap[effect]) {
           effectMap[effect] = {
             effectKey: effect,
-            effectDesc: EFFECT_DESCRIPTIONS[effect],
+            effectDesc: getItemEffectDescription(item) || EFFECT_DESCRIPTIONS[effect],
             sources: []
           };
         }

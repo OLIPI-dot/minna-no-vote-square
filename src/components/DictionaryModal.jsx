@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ITEMS, EFFECT_DESCRIPTIONS, getReqLevel } from '../items';
+import { ITEMS, EFFECT_DESCRIPTIONS, getReqLevel, getItemEffectDescription } from '../items';
 import { ENEMIES } from '../enemies';
 
 const DictionaryModal = ({ isOpen, onClose, acquiredItems = [], encounteredEnemies = [] }) => {
@@ -185,7 +185,7 @@ const DictionaryModal = ({ isOpen, onClose, acquiredItems = [], encounteredEnemi
             <div style={{ width: '100%', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '8px', padding: '16px' }}>
               <div style={{ fontSize: '0.8rem', color: '#d97706', fontWeight: 'bold', marginBottom: '4px' }}>✨ 特殊能力</div>
               <div style={{ fontSize: '0.85rem', color: '#92400e', fontWeight: 'bold', marginBottom: '4px' }}>
-                {EFFECT_DESCRIPTIONS[item.effect] || '【謎の力】効果は未知数だ'}
+                {getItemEffectDescription(item) || '【特殊効果あり】'}
               </div>
               {item.effectMsg && (
                 <div style={{ fontSize: '0.75rem', color: '#b45309', fontStyle: 'italic' }}>

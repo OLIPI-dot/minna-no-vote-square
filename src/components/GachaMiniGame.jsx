@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
-import { rollGacha, getReqLevel, EFFECT_DESCRIPTIONS, ITEMS, syncItemWithMaster } from '../items';
+import { rollGacha, getReqLevel, EFFECT_DESCRIPTIONS, ITEMS, syncItemWithMaster, getItemEffectDescription } from '../items';
 import confetti from 'canvas-confetti';
 
 const rarityColors = {
@@ -132,7 +132,7 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
       if (item.atk > 0) tooltipText += `ATK: +${item.atk}\n`;
       if (item.def > 0) tooltipText += `DEF: +${item.def}\n`;
       if (item.hp > 0) tooltipText += `HP: +${item.hp}\n`;
-      if (item.effect) tooltipText += `\n✨ ${EFFECT_DESCRIPTIONS[item.effect] || '特殊効果あり'}\n`;
+      if (item.effect) tooltipText += `\n✨ ${getItemEffectDescription(item)}\n`;
       tooltipText += `\n${item.desc}`;
     }
 
@@ -216,7 +216,7 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
           </div>
           {gachaResult.effect && (
             <div style={{ fontSize: '0.8rem', color: '#92400e', background: '#fffbeb', border: '1px dashed #f59e0b', padding: '6px', borderRadius: '4px', marginBottom: '10px', fontWeight: 'bold' }}>
-              ✨ {EFFECT_DESCRIPTIONS[gachaResult.effect] || '特殊効果あり'}
+              ✨ {getItemEffectDescription(gachaResult)}
             </div>
           )}
           <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', flexWrap: 'wrap' }}>
@@ -265,7 +265,7 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
                     )}
                     {getEffectKey(equipment[selectedSlot]) && (
                       <div style={{ fontSize: '0.7rem', color: '#92400e', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '4px', padding: '3px 6px', marginTop: '4px', fontWeight: 'bold', lineHeight: 1.4 }}>
-                        ✨ {EFFECT_DESCRIPTIONS[getEffectKey(equipment[selectedSlot])] || '特殊効果あり'}
+                        ✨ {getItemEffectDescription(equipment[selectedSlot])}
                       </div>
                     )}
                   </div>
@@ -315,7 +315,7 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
                         <div style={{ fontSize: '0.7rem', color: '#64748b', marginTop: '4px' }}>{item.desc}</div>
                         {getEffectKey(item) && (
                           <div style={{ fontSize: '0.7rem', color: '#92400e', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '4px', padding: '3px 6px', marginTop: '4px', fontWeight: 'bold', lineHeight: 1.4 }}>
-                            ✨ {EFFECT_DESCRIPTIONS[getEffectKey(item)] || '特殊効果あり'}
+                            ✨ {getItemEffectDescription(item)}
                           </div>
                         )}
                       </div>
@@ -384,7 +384,7 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
                         <div style={{ fontSize: '0.7rem', color: '#64748b' }}>{item.desc}</div>
                         {getEffectKey(item) && (
                           <div style={{ fontSize: '0.7rem', color: '#92400e', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '4px', padding: '3px 6px', marginTop: '4px', fontWeight: 'bold', lineHeight: 1.4 }}>
-                            ✨ {EFFECT_DESCRIPTIONS[getEffectKey(item)] || '特殊効果あり'}
+                            ✨ {getItemEffectDescription(item)}
                           </div>
                         )}
                       </div>

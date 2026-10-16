@@ -49,3 +49,100 @@ export const syncItemWithMaster = (item) => {
     type: master.type || item.type,
   };
 };
+
+// 💡 アイテムのレアリティに応じた固有の能力説明テキストを生成する
+export const getItemEffectDescription = (itemOrEffect, customRarity) => {
+  if (!itemOrEffect) return '';
+
+  let eff = '';
+  let rarity = 'N';
+
+  if (typeof itemOrEffect === 'object') {
+    eff = itemOrEffect.effect || (itemOrEffect.id && ITEMS.find(i => i.id === itemOrEffect.id)?.effect);
+    rarity = itemOrEffect.rarity || customRarity || 'N';
+  } else {
+    eff = itemOrEffect;
+    rarity = customRarity || 'N';
+  }
+
+  if (!eff) return '';
+
+  switch (eff) {
+    case 'regen': {
+      const pct = { N: 3, R: 5, SR: 10, UR: 15 }[rarity] || 5;
+      return `【自動回復】ターン開始時にHPを${pct}%回復`;
+    }
+    case 'virus': {
+      const pct = { N: 3, R: 5, SR: 10, UR: 15 }[rarity] || 5;
+      const rate = { N: 10, R: 15, SR: 25, UR: 35 }[rarity] || 15;
+      return `【ウイルス】攻撃時${rate}%で感染、毎ターンHP${pct}%ダメージ`;
+    }
+    case 'burn': {
+      const pct = { N: 5, R: 8, SR: 15, UR: 20 }[rarity] || 8;
+      const rate = { N: 10, R: 15, SR: 25, UR: 35 }[rarity] || 15;
+      return `【大炎上】攻撃時${rate}%で点火、毎ターンHP${pct}%ダメージ`;
+    }
+    case 'stealth': {
+      const pct = { N: 5, R: 10, SR: 20, UR: 25 }[rarity] || 10;
+      return `【ステルス】敵の攻撃を${pct}%の確率で回避`;
+    }
+    case 'dodge_up': {
+      const pct = { N: 5, R: 10, SR: 20, UR: 25 }[rarity] || 10;
+      return `【回避UP】敵の攻撃を${pct}%の確率で回避`;
+    }
+    case 'crit_up': {
+      const pct = { N: 5, R: 10, SR: 20, UR: 25 }[rarity] || 10;
+      return `【会心UP】クリティカル率が+${pct}%上昇`;
+    }
+    case 'kusorep': {
+      const pct = { N: 5, R: 10, SR: 20, UR: 30 }[rarity] || 10;
+      return `【クソリプ】被弾時${pct}%の確率でダメージを1にする`;
+    }
+    case 'lock_account': {
+      const pct = { N: 5, R: 10, SR: 15, UR: 20 }[rarity] || 10;
+      return `【鍵垢】受けるダメージを常に${pct}%カット`;
+    }
+    case 'meshitero': {
+      const pct = { N: 5, R: 10, SR: 20, UR: 25 }[rarity] || 10;
+      return `【飯テロ】攻撃時${pct}%の確率で敵を行動不能にする`;
+    }
+    case 'kidoku_ignore': {
+      const pct = { N: 5, R: 10, SR: 20, UR: 25 }[rarity] || 10;
+      return `【既読スルー】敵攻撃時${pct}%の確率で完全無視＆敵自傷`;
+    }
+    case 'giga_death': {
+      const pct = { N: 5, R: 10, SR: 20, UR: 25 }[rarity] || 10;
+      return `【通信制限】敵をギガ死状態にして回避率が+${pct}%上昇`;
+    }
+    case 'sharp_eye': {
+      const pct = { N: 5, R: 10, SR: 20, UR: 25 }[rarity] || 10;
+      return `【手刀見切り】敵攻撃時${pct}%で無力化しカウンター反撃`;
+    }
+    case 'domain_expansion': {
+      const pct = { N: 5, R: 8, SR: 15, UR: 25 }[rarity] || 15;
+      return `【領域展開】ターン開始時${pct}%で必中＆確定会心`;
+    }
+    case 'double_attack': {
+      const rate = { N: 10, R: 15, SR: 30, UR: 40 }[rarity] || 20;
+      return `【2回攻撃】${rate}%の確率で連続攻撃`;
+    }
+    case 'lifesteal': {
+      const rate = { N: 10, R: 15, SR: 25, UR: 35 }[rarity] || 25;
+      return `【吸収】${rate}%の確率で与えたダメージをHP回復`;
+    }
+    case 'mental_damage': {
+      const rate = { N: 5, R: 8, SR: 15, UR: 20 }[rarity] || 10;
+      return `【精神攻撃】${rate}%の確率で敵をスタンさせる`;
+    }
+    case 'cringe': {
+      const rate = { N: 3, R: 5, SR: 10, UR: 15 }[rarity] || 5;
+      return `【ドン引き】${rate}%の確率で敵を行動不能にする`;
+    }
+    case 'ban': {
+      const rate = { N: 1, R: 2, SR: 5, UR: 8 }[rarity] || 5;
+      return `【BAN】攻撃時${rate}%の確率で敵を即死させる`;
+    }
+    default:
+      return EFFECT_DESCRIPTIONS[eff] || '【特殊効果あり】';
+  }
+};
