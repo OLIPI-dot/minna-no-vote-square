@@ -28,3 +28,23 @@ export const rollGacha = () => {
   const pool = ITEMS.filter(item => item.rarity === targetRarity);
   return pool[Math.floor(Math.random() * pool.length)];
 };
+
+// ユーザーの所持アイテムを最新のマスターデータ（atk, def, hp等）で自動同期・補正する
+export const syncItemWithMaster = (item) => {
+  if (!item || !item.id) return item;
+  const master = ITEMS.find(i => i.id === item.id || (i.name && i.name === item.name));
+  if (!master) return item;
+  return {
+    ...item,
+    atk: master.atk,
+    def: master.def,
+    hp: master.hp,
+    name: master.name,
+    desc: master.desc,
+    effect: master.effect,
+    effectMsg: master.effectMsg,
+    icon: master.icon || item.icon,
+    rarity: master.rarity || item.rarity,
+    type: master.type || item.type,
+  };
+};

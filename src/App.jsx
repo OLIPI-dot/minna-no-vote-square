@@ -27,6 +27,7 @@ import {
   SUBMISSION_COOLDOWN_MS,
   SCORE_VOTE_WEIGHT
 } from './constants';
+import { syncItemWithMaster } from './items';
 import './App.css';
 
 
@@ -279,7 +280,14 @@ function App() {
   const [equipment, setEquipment] = useState(() => {
     try {
       const saved = localStorage.getItem('min_ake_equipment');
-      return saved ? { partner: null, ...JSON.parse(saved) } : { weapon: null, armor: null, accessory: null, partner: null };
+      if (!saved) return { weapon: null, armor: null, accessory: null, partner: null };
+      const parsed = JSON.parse(saved);
+      return {
+        weapon: parsed.weapon ? syncItemWithMaster(parsed.weapon) : null,
+        armor: parsed.armor ? syncItemWithMaster(parsed.armor) : null,
+        accessory: parsed.accessory ? syncItemWithMaster(parsed.accessory) : null,
+        partner: parsed.partner ? syncItemWithMaster(parsed.partner) : null,
+      };
     } catch {
       return { weapon: null, armor: null, accessory: null, partner: null };
     }
@@ -288,7 +296,9 @@ function App() {
   const [inventory, setInventory] = useState(() => {
     try {
       const saved = localStorage.getItem('min_ake_inventory');
-      return saved ? JSON.parse(saved) : [];
+      if (!saved) return [];
+      const parsed = JSON.parse(saved);
+      return Array.isArray(parsed) ? parsed.map(syncItemWithMaster) : [];
     } catch {
       return [];
     }
@@ -450,10 +460,10 @@ function App() {
         } else if (hasDbEquip) {
           // ⚠️ 片方の端末でセットした装備（お供など）が、もう片方のnullで消えないように合成！
           const mergedEquip = {
-            weapon: dbEquipment.weapon || localEquip?.weapon || null,
-            armor: dbEquipment.armor || localEquip?.armor || null,
-            accessory: dbEquipment.accessory || localEquip?.accessory || null,
-            partner: dbEquipment.partner || localEquip?.partner || null
+            weapon: syncItemWithMaster(dbEquipment.weapon || localEquip?.weapon || null),
+            armor: syncItemWithMaster(dbEquipment.armor || localEquip?.armor || null),
+            accessory: syncItemWithMaster(dbEquipment.accessory || localEquip?.accessory || null),
+            partner: syncItemWithMaster(dbEquipment.partner || localEquip?.partner || null)
           };
           setEquipment(mergedEquip);
           localStorage.setItem('min_ake_equipment', JSON.stringify(mergedEquip));
@@ -480,8 +490,9 @@ function App() {
               if (it && it.id && !mergedInv.some(m => m.id === it.id)) mergedInv.push(it);
             });
           }
-          setInventory(mergedInv);
-          localStorage.setItem('min_ake_inventory', JSON.stringify(mergedInv));
+          const syncedInv = mergedInv.map(syncItemWithMaster);
+          setInventory(syncedInv);
+          localStorage.setItem('min_ake_inventory', JSON.stringify(syncedInv));
           if (mergedInv.length > dbInventory.length) {
             updates.custom_inventory = mergedInv;
             shouldUpdate = true;

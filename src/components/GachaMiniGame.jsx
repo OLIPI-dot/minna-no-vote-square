@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
-import { rollGacha, getReqLevel, EFFECT_DESCRIPTIONS, ITEMS } from '../items';
+import { rollGacha, getReqLevel, EFFECT_DESCRIPTIONS, ITEMS, syncItemWithMaster } from '../items';
 import confetti from 'canvas-confetti';
 
 const rarityColors = {
@@ -284,8 +284,9 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
               {inventory.filter(i => i.type === selectedSlot).length === 0 ? (
                 <div style={{ textAlign: 'center', color: '#94a3b8', padding: '20px 0' }}>装備可能なアイテムがありません</div>
               ) : (
-                inventory.filter(i => i.type === selectedSlot).map(item => {
-                  const currentEquip = equipment[selectedSlot];
+                inventory.filter(i => i.type === selectedSlot).map(rawItem => {
+                  const item = syncItemWithMaster(rawItem);
+                  const currentEquip = syncItemWithMaster(equipment[selectedSlot]);
                   const diffAtk = item.atk - (currentEquip ? currentEquip.atk : 0);
                   const diffDef = item.def - (currentEquip ? currentEquip.def : 0);
                   const diffHp = item.hp - (currentEquip ? currentEquip.hp : 0);
@@ -347,8 +348,9 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
               {inventory.length === 0 ? (
                 <div style={{ textAlign: 'center', color: '#94a3b8', padding: '40px 0' }}>アイテムがありません</div>
               ) : (
-                inventory.map(item => {
-                  const currentEquip = equipment[item.type];
+                inventory.map(rawItem => {
+                  const item = syncItemWithMaster(rawItem);
+                  const currentEquip = syncItemWithMaster(equipment[item.type]);
                   const diffAtk = item.atk - (currentEquip ? currentEquip.atk : 0);
                   const diffDef = item.def - (currentEquip ? currentEquip.def : 0);
                   const diffHp = item.hp - (currentEquip ? currentEquip.hp : 0);
