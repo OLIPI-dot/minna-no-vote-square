@@ -1006,6 +1006,26 @@ const PatrolMiniGame = ({
         setBattleLog(prev => [...prev, `💨 しかし何もドロップしなかった...`]);
       }
     }
+
+    // 🗝️ 地下の鍵ドロップ判定（約15%の確率で、本日の地下パトロール挑戦権+1！）
+    if (Math.random() < 0.15) {
+      try {
+        const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
+        const dungeonData = JSON.parse(localStorage.getItem('daily_dungeon_attempts_v1') || '{}');
+        const currentRemaining = dungeonData.date === todayStr ? (typeof dungeonData.remaining === 'number' ? dungeonData.remaining : 3) : 3;
+        const newRemaining = currentRemaining + 1;
+        localStorage.setItem('daily_dungeon_attempts_v1', JSON.stringify({
+          date: todayStr,
+          remaining: newRemaining
+        }));
+        setBattleLog(prev => [
+          ...prev, 
+          `🗝️ 【地下の鍵】を発見！本日の「地下パトロール」挑戦回数が +1 回増えた！（本日残り ${newRemaining} 回）`
+        ]);
+      } catch (e) {
+        console.error(e);
+      }
+    }
   };
 
   const rollGachaSpecific = (rarity) => {

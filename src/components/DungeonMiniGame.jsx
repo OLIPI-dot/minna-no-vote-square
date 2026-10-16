@@ -107,6 +107,45 @@ const DungeonMiniGame = ({
     }
   };
 
+  // 🗝️ 地下パトロール挑戦回数管理（1日基本3回 ＋ 地上パトロールで鍵ドロップ）
+  const getTodayStr = () => new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
+  const BASE_DAILY_ATTEMPTS = 3;
+
+  const getDungeonAttempts = () => {
+    const todayStr = getTodayStr();
+    try {
+      const data = JSON.parse(localStorage.getItem('daily_dungeon_attempts_v1') || '{}');
+      if (data.date === todayStr) {
+        return typeof data.remaining === 'number' ? data.remaining : BASE_DAILY_ATTEMPTS;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    return BASE_DAILY_ATTEMPTS;
+  };
+
+  const [remainingAttempts, setRemainingAttempts] = useState(() => getDungeonAttempts());
+
+  // ロビーに戻った時やタブ切り替え時に最新の残り回数を同期
+  useEffect(() => {
+    if (dungeonState === 'lobby') {
+      setRemainingAttempts(getDungeonAttempts());
+    }
+  }, [dungeonState]);
+
+  const saveRemainingAttempts = (newRemaining) => {
+    const todayStr = getTodayStr();
+    setRemainingAttempts(newRemaining);
+    try {
+      localStorage.setItem('daily_dungeon_attempts_v1', JSON.stringify({
+        date: todayStr,
+        remaining: newRemaining
+      }));
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   // 階層に応じた敵の抽選（10階ごと専用ネームド大ボス、通常階は限定敵＋通常プール）
   const generateDungeonEnemy = (currentFloor, forceBoss = false) => {
     const isBossFloor = currentFloor % 10 === 0;
@@ -175,6 +214,8 @@ const DungeonMiniGame = ({
 
   // ダンジョン入場（B1Fからスタート）
   const enterDungeon = () => {
+    if (remainingAttempts <= 0) return;
+    saveRemainingAttempts(remainingAttempts - 1);
     setFloor(1);
     setCollectedExp(0);
     setCollectedTickets(0);
@@ -276,7 +317,6 @@ const DungeonMiniGame = ({
         const pool = ITEMS.filter(i => rarityFilter.includes(i.rarity));
         const dropped = pool[Math.floor(Math.random() * pool.length)] || ITEMS[0];
         setCollectedItems(prev => [...prev, dropped]);
-        if (setInventory) setInventory(prev => [...prev, dropped]);
         setDungeonLog(prev => [
           `🎁 【宝箱発見！】 箱を開けると 【${dropped.name} (${dropped.rarity})】 が入っていた！`,
           ...prev
@@ -284,7 +324,6 @@ const DungeonMiniGame = ({
       } else if (itemRoll < 0.75) {
         // ガチャチケ獲得
         setCollectedTickets(prev => prev + 1);
-        addTickets(1);
         setDungeonLog(prev => [
           `🎫 【ガチャチケ発見！】 古びた壺の中からガチャチケットを1枚見つけた！`,
           ...prev
@@ -343,6 +382,16 @@ const DungeonMiniGame = ({
 
   // 🚪 地上へ帰還する（戦利品確定）
   const handleEscape = () => {
+    // 🎒 探索リュックの戦利品をプレイヤーデータに正式加算
+    if (collectedExp > 0 && addExp) {
+      addExp(collectedExp);
+    }
+    if (collectedTickets > 0 && addTickets) {
+      addTickets(collectedTickets);
+    }
+    if (collectedItems.length > 0 && setInventory) {
+      setInventory(prev => [...prev, ...collectedItems]);
+    }
     setDungeonState('escaped');
     updateBestFloor(floor);
   };
@@ -506,7 +555,6 @@ const DungeonMiniGame = ({
     const baseExp = enemy.type === 'rare' ? 220 : enemy.type === 'elite' ? 110 : 50;
     const earnedExp = baseExp + (floor * 10);
     setCollectedExp(prev => prev + earnedExp);
-    addExp(earnedExp);
 
     logs.push(`🎉 【${enemy.name}】 を撃破した！ (EXP +${earnedExp})`);
 
@@ -514,7 +562,6 @@ const DungeonMiniGame = ({
     if (isBossFloor) {
       setHasStairs(true);
       setCollectedTickets(prev => prev + 2);
-      addTickets(2);
       logs.push(`🏆 【大ボス撃破！】 ガチャチケットを 2 枚獲得！`);
       logs.push(`🪜 最深部に下り階段が出現した！`);
       setDungeonLog(prev => [
@@ -525,14 +572,12 @@ const DungeonMiniGame = ({
       // 🐰 地下らびたん六大進化の保護＆撃破ボーナス！
       if (enemy.id === 'd_lost_rabbit') {
         setCollectedTickets(prev => prev + 1);
-        addTickets(1);
         logs.push(`🐰💧 「地上へ帰れるの？！ありがとうー！！」とお礼にガチャチケットを置いていった！`);
         setDungeonLog(prev => [`🐰💧 迷子のらびたんを地上へ救出した！（チケット+1）`, ...prev]);
       } else if (enemy.id === 'd_gem_rabbit') {
         const gemItem = ITEMS.find(i => i.id === 'ac_rabi_gem');
         if (gemItem) {
           setCollectedItems(prev => [...prev, gemItem]);
-          if (setInventory) setInventory(prev => [...prev, gemItem]);
         }
         logs.push(`🐰💎 「わー！見つかっちゃった！」と宝石を抱えて逃げていった！`);
         logs.push(`🎁 落とし物の 【らびたんの掘り出した宝石 (SR)】 を手に入れた！`);
@@ -541,7 +586,6 @@ const DungeonMiniGame = ({
         const protein = ITEMS.find(i => i.id === 'ar_protein_drink');
         if (protein) {
           setCollectedItems(prev => [...prev, protein]);
-          if (setInventory) setInventory(prev => [...prev, protein]);
         }
         logs.push(`🐰💪 「ナイスバルク…！いい筋トレになったぜ…！」と爽やかに去っていった！`);
         logs.push(`🎁 ムキムキらびたんから 【にんじん味の特濃プロテイン (SR)】 を譲り受けた！`);
@@ -550,7 +594,6 @@ const DungeonMiniGame = ({
         const blanket = ITEMS.find(i => i.id === 'ar_kotatsu_blanket');
         if (blanket) {
           setCollectedItems(prev => [...prev, blanket]);
-          if (setInventory) setInventory(prev => [...prev, blanket]);
         }
         logs.push(`🐰🛋️ 「たまには人と話すのも悪くないねぇ…これあげるよ」`);
         logs.push(`🎁 定住らびたんから 【地下ぐらしのぬくぬく毛布 (SR)】 をもらった！`);
@@ -559,7 +602,6 @@ const DungeonMiniGame = ({
         const darkCarrot = ITEMS.find(i => i.id === 'w_dark_carrot');
         if (darkCarrot) {
           setCollectedItems(prev => [...prev, darkCarrot]);
-          if (setInventory) setInventory(prev => [...prev, darkCarrot]);
         }
         logs.push(`🐰👿 「浄化される…！温かい光を…ありがとう…！」と元の白い姿に戻って光の中へ消えていった！`);
         logs.push(`🎁 闇が結晶化した 【漆黒の呪われしにんじん (UR)】 を手に入れた！`);
@@ -568,7 +610,6 @@ const DungeonMiniGame = ({
         const crown = ITEMS.find(i => i.id === 'ac_ancient_crown');
         if (crown) {
           setCollectedItems(prev => [...prev, crown]);
-          if (setInventory) setInventory(prev => [...prev, crown]);
         }
         logs.push(`🐰👑 「見事だ、地上の旅人よ。この大地の加護をそなたに託そう…」`);
         logs.push(`🏆 神話の秘宝 【地底王の古代参冠 (LR)】 を授かった！！`);
@@ -578,7 +619,6 @@ const DungeonMiniGame = ({
         const specialItem = ITEMS.find(i => i.id === enemy.specialDropId);
         if (specialItem) {
           setCollectedItems(prev => [...prev, specialItem]);
-          if (setInventory) setInventory(prev => [...prev, specialItem]);
           logs.push(`🎁✨ 奇跡の激レアドロップ！！`);
           logs.push(`🎧 【${enemy.name}】 は首から下げていた 【${specialItem.name} (${specialItem.rarity})】 を落としていった！！`);
         }
@@ -591,7 +631,6 @@ const DungeonMiniGame = ({
         const pool = ITEMS.filter(i => rarityFilter.includes(i.rarity));
         const dropped = pool[Math.floor(Math.random() * pool.length)] || ITEMS[0];
         setCollectedItems(prev => [...prev, dropped]);
-        if (setInventory) setInventory(prev => [...prev, dropped]);
         logs.push(`🎁 敵が 【${dropped.name} (${dropped.rarity})】 を落とした！`);
       }
       setDungeonLog(prev => [
@@ -661,30 +700,68 @@ const DungeonMiniGame = ({
             <div style={{ fontWeight: 'bold', fontSize: '1.05rem', color: '#f1f5f9', marginBottom: '4px' }}>
               広場の地下を巡回する「地下パトロール」
             </div>
+            {/* 本日の残り挑戦回数バッジ */}
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '4px 12px',
+              borderRadius: '20px',
+              fontSize: '0.8rem',
+              fontWeight: 'bold',
+              background: remainingAttempts > 0 ? 'rgba(99, 102, 241, 0.2)' : 'rgba(239, 68, 68, 0.2)',
+              border: remainingAttempts > 0 ? '1px solid #6366f1' : '1px solid #ef4444',
+              color: remainingAttempts > 0 ? '#a5b4fc' : '#fca5a5',
+              margin: '6px 0 10px 0'
+            }}>
+              🗝️ 本日の挑戦権: <strong>残り {remainingAttempts} 回</strong>
+            </div>
+
             <div style={{ fontSize: '0.8rem', color: '#94a3b8', lineHeight: 1.6, maxWidth: '280px', margin: '0 auto' }}>
               部屋を探索して**下り階段 🪜**を見つけよう！<br />
               宝箱や泉を探すか、さらに深く潜るかはあなた次第。<br />
               <strong style={{ color: '#f87171' }}>10フロアごとには巨大なBOSSが待ち構える！</strong>
             </div>
+
+            <div style={{
+              marginTop: '10px',
+              padding: '6px 10px',
+              background: 'rgba(245, 158, 11, 0.1)',
+              border: '1px solid rgba(245, 158, 11, 0.3)',
+              borderRadius: '6px',
+              fontSize: '0.72rem',
+              color: '#fcd34d',
+              lineHeight: 1.4,
+              maxWidth: '280px',
+              margin: '10px auto 0 auto'
+            }}>
+              ⚠️ <strong>スリル満点の脱出ルール</strong><br />
+              地下で力尽きると今回の戦利品を落としてしまいます！危なくなったら「🚪 地上へ帰還」して安全に持ち帰ろう！
+            </div>
           </div>
 
           <button
             onClick={enterDungeon}
+            disabled={remainingAttempts <= 0}
             style={{
               width: '100%',
               maxWidth: '260px',
               padding: '12px',
               borderRadius: '8px',
               border: 'none',
-              background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
-              color: 'white',
+              background: remainingAttempts > 0 
+                ? 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)' 
+                : '#334155',
+              color: remainingAttempts > 0 ? 'white' : '#94a3b8',
               fontWeight: 'bold',
-              fontSize: '0.95rem',
-              cursor: 'pointer',
-              boxShadow: '0 4px 12px rgba(79, 70, 229, 0.4)'
+              fontSize: '0.92rem',
+              cursor: remainingAttempts > 0 ? 'pointer' : 'not-allowed',
+              boxShadow: remainingAttempts > 0 ? '0 4px 12px rgba(79, 70, 229, 0.4)' : 'none'
             }}
           >
-            🔦 地下パトロールへ出発（B1F〜）
+            {remainingAttempts > 0 
+              ? '🔦 地下パトロールへ出発（B1F〜）' 
+              : '🗝️ 本日の挑戦権終了（地上パトロールで鍵を探そう！）'}
           </button>
         </div>
       )}
@@ -712,6 +789,24 @@ const DungeonMiniGame = ({
                 {hasStairs ? '🪜 発見済み！' : '❓ 未発見'}
               </div>
             </div>
+          </div>
+
+          {/* 🎒 探索リュック（生還時に確定する戦利品） */}
+          <div style={{
+            background: 'rgba(79, 70, 229, 0.15)',
+            border: '1px solid rgba(129, 140, 248, 0.3)',
+            borderRadius: '6px',
+            padding: '6px 10px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            fontSize: '0.75rem',
+            color: '#c7d2fe'
+          }}>
+            <span>🎒 持ち帰り待機中の戦利品:</span>
+            <span style={{ fontWeight: 'bold', color: '#fcd34d' }}>
+              EXP +{collectedExp} / 🎫 {collectedTickets}枚 / 🎁 {collectedItems.length}個
+            </span>
           </div>
 
           {/* プレイヤーHPゲージ */}
@@ -826,7 +921,7 @@ const DungeonMiniGame = ({
                   cursor: 'pointer'
                 }}
               >
-                🚪 地上へ帰還する
+                🚪 地上へ帰還（戦利品確定）
               </button>
             </div>
           </div>
@@ -836,6 +931,23 @@ const DungeonMiniGame = ({
       {/* 3. 戦闘中画面 */}
       {dungeonState === 'battling' && enemy && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          {/* 🎒 持ち帰り待機中の戦利品バナー */}
+          <div style={{
+            background: 'rgba(79, 70, 229, 0.15)',
+            border: '1px solid rgba(129, 140, 248, 0.3)',
+            borderRadius: '6px',
+            padding: '5px 10px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            fontSize: '0.72rem',
+            color: '#c7d2fe'
+          }}>
+            <span>🎒 持ち帰り待機中:</span>
+            <span style={{ fontWeight: 'bold', color: '#fcd34d' }}>
+              EXP +{collectedExp} / 🎫 {collectedTickets}枚 / 🎁 {collectedItems.length}個
+            </span>
+          </div>
           {/* ボス警告バナー（10階ごと） */}
           {floor % 10 === 0 && (
             <div style={{
@@ -968,6 +1080,9 @@ const DungeonMiniGame = ({
             <div style={{ fontSize: '0.85rem', color: '#94a3b8', marginTop: '4px' }}>
               到達階層: <strong style={{ color: '#f8fafc' }}>B{floor}F</strong>
             </div>
+            <div style={{ fontSize: '0.78rem', color: '#34d399', marginTop: '3px' }}>
+              すべての戦利品を安全に持ち帰ることに成功しました！✨
+            </div>
           </div>
 
           <div style={{
@@ -1009,9 +1124,12 @@ const DungeonMiniGame = ({
           <div style={{ fontSize: '2.5rem' }}>💀</div>
           <div>
             <div style={{ fontWeight: 'bold', fontSize: '1.05rem', color: '#f87171' }}>力尽きてしまった...</div>
-            <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginTop: '4px' }}>
+            <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginTop: '4px', lineHeight: 1.6 }}>
               B{floor}F で力尽き、地上に担ぎ込まれました。<br />
-              （手に入れた経験値やアイテムは無事手元に残っています）
+              <span style={{ color: '#fca5a5' }}>
+                今回の探索で集めた戦利品（EXP +{collectedExp}、チケット {collectedTickets}枚、アイテム {collectedItems.length}個）はすべて落としてしまいました…
+              </span><br />
+              <span style={{ fontSize: '0.72rem', color: '#64748b' }}>（※もともと持っている自分の装備やレベルは無事です）</span>
             </div>
           </div>
 
