@@ -681,10 +681,10 @@ const DungeonMiniGame = ({
             dmgToPlayer = 0;
             newLogs.push(`👑 ${getStackLabel('privilege', '特権')} ${getEffectMsg('privilege', privilegeItem)} (ダメージを完全無効化！)`);
           } else {
-            // 🔒 【鍵垢: lock_account】 常にダメージ25%カット
+            // 🔒 【鍵垢: lock_account】 常にダメージ10%カット
             if (lockItem) {
-              dmgToPlayer = Math.max(1, Math.floor(dmgToPlayer * 0.75));
-              newLogs.push(`🔒 【鍵垢】 ${getEffectMsg('lock_account', lockItem)} (ダメージ25%軽減)`);
+              dmgToPlayer = Math.max(1, Math.floor(dmgToPlayer * 0.90));
+              newLogs.push(`🔒 【鍵垢】 ${getEffectMsg('lock_account', lockItem)} (ダメージ10%軽減)`);
             } else if (lawItem && Math.random() < 0.50) {
               dmgToPlayer = Math.max(1, Math.floor(dmgToPlayer * 0.50));
               newLogs.push(`👨‍⚖️ 【異議あり】 ${getEffectMsg('partner_law', lawItem)} (ダメージ半減)`);

@@ -703,8 +703,8 @@ const PatrolMiniGame = ({
           if (ePainful) dmgToPlayer = Math.floor(dmgToPlayer * 2.5);
           
           if (lockItem) {
-            dmgToPlayer = Math.floor(dmgToPlayer * 0.75); // 25%カット
-            newLogs.push(`🔒 【鍵垢】 ${getEffectMsg('lock_account', lockItem)} (ダメージ25%軽減)`);
+            dmgToPlayer = Math.floor(dmgToPlayer * 0.90); // 10%カット
+            newLogs.push(`🔒 【鍵垢】 ${getEffectMsg('lock_account', lockItem)} (ダメージ10%軽減)`);
           } else if (lawItem && Math.random() < 0.5) {
             dmgToPlayer = Math.floor(dmgToPlayer * 0.5); // 50%カット
             newLogs.push(`👨‍⚖️ 【異議あり】 ${getEffectMsg('partner_law', lawItem)} (ダメージ半減)`);
