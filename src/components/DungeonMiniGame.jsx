@@ -39,6 +39,23 @@ const RANDOM_EFFECT_MSGS = {
   kusorep: [
     "{item}の強烈なクソリプが敵の攻撃軌道を狂わせた！",
     "あまりに的外れな{item}のせいで、敵の攻撃の威力が霧散した！"
+  ],
+  lock_account: [
+    "{item}の強固な非公開設定により、攻撃の大部分をシャットアウトした！",
+    "フォロワー限定公開の結界が発動！{item}がダメージを大幅に遮断した！"
+  ],
+  privilege: [
+    "{item}の圧倒的権力により、あらゆる危害が免除された！",
+    "上級国民のバリア！{item}の特権が攻撃を無力化した！"
+  ],
+  mom_block: [
+    "「ご飯よー！」{item}のせいで家庭の空気が流れ、敵は恥ずかしさで戦意喪失した！"
+  ],
+  hires: [
+    "{item}の超ハイレゾ音質により、敵の攻撃の風切り音を完全察知して回避した！"
+  ],
+  buyout: [
+    "{item}の潤沢な資金力により、敵を買収することに成功した！"
   ]
 };
 
@@ -261,19 +278,31 @@ const DungeonMiniGame = ({
     }
   };
 
-  // 🔍 部屋を探索する（トルネコ風ランダムイベント）
+  const MAX_FLOOR_SEARCHES = 4; // 1フロア最大4回まで探索可能（乱獲防止）
+
+  // 🔍 部屋を探索する（ランダムイベント）
   const handleSearchRoom = () => {
-    if (dungeonState !== 'exploring') return;
+    if (dungeonState !== 'exploring' || floorSearches >= MAX_FLOOR_SEARCHES) return;
 
     const newSearchCount = floorSearches + 1;
     setFloorSearches(newSearchCount);
 
+    // 4回目（最終探索）でも階段が見つかっていない場合は確定で階段を発見する安心セーフティ！
+    if (!hasStairs && newSearchCount >= MAX_FLOOR_SEARCHES) {
+      setHasStairs(true);
+      setDungeonLog(prev => [
+        `🪜 【下り階段を発見！】 部屋の最深部に下層へ続く階段を見つけた！このフロアの探索は完了だ！`,
+        ...prev
+      ]);
+      return;
+    }
+
     // 探索回数が増えるほど階段が見つかりやすくなる補正
-    const stairsBonus = newSearchCount * 0.15;
+    const stairsBonus = newSearchCount * 0.20;
     const rand = Math.random();
 
     // 1. 階段発見判定（まだ見つかっていない場合）
-    if (!hasStairs && rand < (0.25 + stairsBonus)) {
+    if (!hasStairs && rand < (0.30 + stairsBonus)) {
       setHasStairs(true);
       setDungeonLog(prev => [
         `🪜 【下り階段を発見！】 部屋の隅に下層へ続く階段を見つけた！いつでもB${floor + 1}Fへ降りられるぞ！`,
@@ -394,7 +423,7 @@ const DungeonMiniGame = ({
     updateBestFloor(floor);
   };
 
-  // ⚔️ バトル攻撃処理
+  // ⚔️ バトル攻撃処理（地上パトロールと同一の全特殊効果を完全対応！）
   const handleAttack = () => {
     if (dungeonState !== 'battling' || !enemy) return;
 
@@ -426,7 +455,19 @@ const DungeonMiniGame = ({
       return count > 1 ? `【${label}×${count}】` : `【${label}】`;
     };
 
-    // 自動回復 (regen)
+    // 💼 【買収: buyout】ターン開始時10%で即勝利
+    const buyoutItem = getEffectSource('buyout');
+    if (buyoutItem && Math.random() < getEffectChance('buyout', 0.10, 0.30)) {
+      newLogs.push(`💼 ${getStackLabel('buyout', '買収')} ${getEffectMsg('buyout', buyoutItem)}`);
+      newLogs.push(`🎉 （買収完了） 【${enemy.name}】 は大金を手にして帰っていった...`);
+      setEnemyHp(0);
+      setPlayerHp(currentPlayerHp);
+      setBattleLog(newLogs);
+      handleBattleVictory(newLogs, currentPlayerHp);
+      return;
+    }
+
+    // ✨ 【自動回復: regen】
     const regenItem = getEffectSource('regen');
     if (regenItem) {
       const healPct = Math.min(0.30, 0.10 * getEffectCount('regen'));
@@ -435,19 +476,98 @@ const DungeonMiniGame = ({
       newLogs.push(`✨ ${getStackLabel('regen', '回復')} ${getEffectMsg('regen', regenItem)} (HP +${healAmount})`);
     }
 
+    // 🐈 【捨て猫: partner_heal】少量の回復
+    const partnerHeal = getEffectSource('partner_heal');
+    if (partnerHeal) {
+      const healAmount = 20;
+      currentPlayerHp = Math.min(pMaxHp, currentPlayerHp + healAmount);
+      newLogs.push(`🐈 【癒やし】 ${getEffectMsg('partner_heal', partnerHeal)} (HP +${healAmount})`);
+    }
+
+    // 👳 【石油王: partner_sponsor】ランダムで回復か攻撃
+    const sponsorItem = getEffectSource('partner_sponsor');
+    if (sponsorItem && Math.random() < 0.25) {
+      if (Math.random() < 0.5) {
+        const healAmount = Math.floor(pMaxHp * 0.5);
+        currentPlayerHp = Math.min(pMaxHp, currentPlayerHp + healAmount);
+        newLogs.push(`💴 【資金援助】 ${getEffectMsg('partner_sponsor', sponsorItem)} (HPが大回復した！)`);
+      } else {
+        const dmg = Math.floor(enemy.hp * 0.25);
+        currentEnemyHp = Math.max(0, currentEnemyHp - dmg);
+        newLogs.push(`💴 【物理援助】 ${getEffectMsg('partner_sponsor', sponsorItem)} (札束の暴力で ${dmg} のダメージ！)`);
+      }
+    }
+
+    // 💻 【ハック/特定: partner_hack / partner_expose】 30%で敵の防御力を0にして攻撃
+    const hackItem = getEffectSource('partner_hack') || getEffectSource('partner_expose');
+    let effectiveEnemyDef = enemy.def;
+    if (hackItem && Math.random() < 0.30) {
+      effectiveEnemyDef = 0;
+      newLogs.push(`💻 【解析】 ${getEffectMsg(getEffectSource('partner_hack') ? 'partner_hack' : 'partner_expose', hackItem)} (敵の防御力が0になった！)`);
+    }
+
+    // 会心率計算
+    const critCount = getEffectCount('crit_up');
+    let basePCrit = critCount > 0 ? Math.min(0.60, 0.15 + (0.20 * critCount)) : 0.15;
+    const cheerItem = getEffectSource('partner_cheer');
+    if (cheerItem) basePCrit += 0.20;
+    const cursedItem = getEffectSource('cursed_power');
+    if (cursedItem) basePCrit = 0.50;
+
+    const isCrit = Math.random() < basePCrit;
+
     // 攻撃計算
-    const isCrit = Math.random() < (0.15 + (getEffectSource('crit_up') ? 0.20 : 0));
-    let baseDmg = Math.max(5, pAtk - Math.floor(enemy.def * 0.6));
+    let baseDmg = Math.max(5, pAtk - Math.floor(effectiveEnemyDef * 0.6));
     const variance = 1.0 + (Math.random() * 0.3 - 0.15);
     let dmgToEnemy = Math.floor(baseDmg * variance * (isCrit ? 1.8 : 1.0));
-    if (dmgToEnemy < 1) dmgToEnemy = 1;
 
+    // 諸刃の剣・残業
+    const doubleEdgedItem = getEffectSource('double_edged');
+    if (doubleEdgedItem) {
+      dmgToEnemy *= 2;
+      const recoil = Math.max(1, Math.floor(pMaxHp * 0.15));
+      currentPlayerHp = Math.max(0, currentPlayerHp - recoil);
+      newLogs.push(`💥 【諸刃の剣】 ダメージ2倍！ しかし反動で自身も ${recoil} のダメージ！`);
+    }
+    const overworkItem = getEffectSource('overwork');
+    if (overworkItem) {
+      dmgToEnemy *= 3;
+      const recoil = Math.max(1, Math.floor(pMaxHp * 0.25));
+      currentPlayerHp = Math.max(0, currentPlayerHp - recoil);
+      newLogs.push(`💼 【残業】 限界突破のダメージ3倍！ しかし反動で自身も ${recoil} のダメージ！`);
+    }
+
+    // 🌀 【現実改変: rewrite_reality】 15%で敵HP半減
+    const rewriteItem = getEffectSource('rewrite_reality');
+    if (rewriteItem && Math.random() < 0.15) {
+      const halfHpDmg = Math.floor(currentEnemyHp * 0.5);
+      dmgToEnemy += halfHpDmg;
+      newLogs.push(`🌀 【現実改変】 ${getEffectMsg('rewrite_reality', rewriteItem)} (HPを半分消滅させた！)`);
+    }
+
+    // 💴 【札束ビンタ: money_slap】
+    const moneySlapItem = getEffectSource('money_slap');
+    if (moneySlapItem) {
+      const extraDmg = Math.floor(Math.random() * 80) + 20;
+      dmgToEnemy += extraDmg;
+      newLogs.push(`💸 【札束ビンタ】 ${getEffectMsg('money_slap', moneySlapItem)} (+${extraDmg} ダメージ！)`);
+    }
+
+    if (dmgToEnemy < 1) dmgToEnemy = 1;
     currentEnemyHp = Math.max(0, currentEnemyHp - dmgToEnemy);
+
     newLogs.push(isCrit 
       ? `💥 会心の一撃！！！ あなたの猛攻で ${dmgToEnemy} の大ダメージ！` 
       : `⚔️ あなたの攻撃！ 敵に ${dmgToEnemy} のダメージ！`);
 
-    // 吸血 (lifesteal)
+    // 🚫 【BAN / ブロック: ban / block】 5%で敵を即死
+    const banItem = getEffectSource('ban') || getEffectSource('block');
+    if (currentEnemyHp > 0 && banItem && Math.random() < 0.05) {
+      currentEnemyHp = 0;
+      newLogs.push(`🚫 【BAN】 ${getEffectMsg(getEffectSource('ban') ? 'ban' : 'block', banItem)} (敵のアカウントを完全凍結した！)`);
+    }
+
+    // 🩸 【吸血: lifesteal】
     const lifestealItem = getEffectSource('lifesteal');
     if (currentEnemyHp > 0 && lifestealItem && Math.random() < getEffectChance('lifesteal', 0.30, 0.60)) {
       const drain = Math.max(1, Math.floor(dmgToEnemy * 0.35));
@@ -455,12 +575,20 @@ const DungeonMiniGame = ({
       newLogs.push(`🩸 ${getStackLabel('lifesteal', '吸収')} HPを ${drain} 吸収した！`);
     }
 
-    // 連撃 (double_attack)
+    // ⚔️ 【連撃: double_attack】
     const doubleItem = getEffectSource('double_attack');
     if (currentEnemyHp > 0 && doubleItem && Math.random() < getEffectChance('double_attack', 0.30, 0.60)) {
       const secondDmg = Math.max(1, Math.floor(dmgToEnemy * 0.75));
       currentEnemyHp = Math.max(0, currentEnemyHp - secondDmg);
       newLogs.push(`⚔️ ${getStackLabel('double_attack', '連撃')} 追撃で ${secondDmg} のダメージ！`);
+    }
+
+    // 💥 【拡散爆発: viral_hit】
+    const viralItem = getEffectSource('viral_hit');
+    if (currentEnemyHp > 0 && viralItem && Math.random() < 0.20) {
+      const burstDmg = Math.max(1, Math.floor(dmgToEnemy * 0.5));
+      currentEnemyHp = Math.max(0, currentEnemyHp - burstDmg);
+      newLogs.push(`🚀 【拡散爆発】 ${getEffectMsg('viral_hit', viralItem)} (+${burstDmg} ダメージ！)`);
     }
 
     // 敵撃破チェック
@@ -469,51 +597,122 @@ const DungeonMiniGame = ({
       return;
     }
 
-    // 敵の反撃ターン（固有技判定）
-    const enemySkills = enemy.skills || [];
-    const usedSkill = (enemySkills.length > 0 && Math.random() < 0.30)
-      ? enemySkills[Math.floor(Math.random() * enemySkills.length)]
-      : null;
-
-    if (usedSkill) {
-      newLogs.push(`⚡ 【${enemy.name}】 の 『${usedSkill.name}』！`);
-      if (usedSkill.msg) newLogs.push(`💬 ${usedSkill.msg}`);
+    // スタン判定 (mental_damage / cringe)
+    let isEnemyStunned = false;
+    const mentalItem = getEffectSource('mental_damage');
+    if (mentalItem && Math.random() < 0.15) {
+      isEnemyStunned = true;
+      newLogs.push(`🧠 【精神攻撃】 ${getEffectMsg('mental_damage', mentalItem)} (敵はショックで行動不能！)`);
+    }
+    const cringeItem = getEffectSource('cringe');
+    if (!isEnemyStunned && cringeItem && Math.random() < 0.10) {
+      isEnemyStunned = true;
+      newLogs.push(`😬 【ドン引き】 ${getEffectMsg('cringe', cringeItem)} (敵はドン引きして動けない！)`);
     }
 
-    if (usedSkill?.type === 'idle') {
-      newLogs.push(`...しかし 何も起こらなかった！`);
-    } else if (usedSkill?.type === 'heal') {
-      const healAmt = Math.max(10, Math.floor(enemy.hp * (usedSkill.rate || 0.25)));
-      currentEnemyHp = Math.min(enemy.hp, currentEnemyHp + healAmt);
-      newLogs.push(`✨ 【${enemy.name}】 のHPが ${healAmt} 回復した！`);
+    // 敵の反撃ターン
+    if (isEnemyStunned) {
+      newLogs.push(`💤 【${enemy.name}】 は動けない！`);
     } else {
-      const skillMult = usedSkill?.multiplier || 1.0;
-      let dmgToPlayer = Math.max(1, Math.floor((enemy.atk - pDef) * (1.0 + (Math.random() * 0.4 - 0.2)) * skillMult));
-      const minDmg = Math.max(1, Math.floor(enemy.atk * 0.2 * skillMult));
-      if (dmgToPlayer < minDmg) dmgToPlayer = minDmg;
+      const enemySkills = enemy.skills || [];
+      const usedSkill = (enemySkills.length > 0 && Math.random() < 0.30)
+        ? enemySkills[Math.floor(Math.random() * enemySkills.length)]
+        : null;
 
-      // 🎧 ハイレゾ完全回避 (hires) 35%で完全回避
-      const hiresItem = getEffectSource('hires');
-      let isDodged = false;
-      if (hiresItem && Math.random() < 0.35) {
-        isDodged = true;
-        newLogs.push(`🎧 【ハイレゾ】 ${getEffectMsg('hires', hiresItem)}`);
+      if (usedSkill) {
+        newLogs.push(`⚡ 【${enemy.name}】 の 『${usedSkill.name}』！`);
+        if (usedSkill.msg) newLogs.push(`💬 ${usedSkill.msg}`);
       }
 
-      if (isDodged) {
-        // 完全回避
+      if (usedSkill?.type === 'idle') {
+        newLogs.push(`...しかし 何も起こらなかった！`);
+      } else if (usedSkill?.type === 'heal') {
+        const healAmt = Math.max(10, Math.floor(enemy.hp * (usedSkill.rate || 0.25)));
+        currentEnemyHp = Math.min(enemy.hp, currentEnemyHp + healAmt);
+        newLogs.push(`✨ 【${enemy.name}】 のHPが ${healAmt} 回復した！`);
       } else {
-        // クソリプ防御
-        const kusorepItem = getEffectSource('kusorep');
-        if (kusorepItem && Math.random() < getEffectChance('kusorep', 0.20, 0.50)) {
-          dmgToPlayer = 1;
-          newLogs.push(`📜 【クソリプ】 クソリプのせいで 1 のダメージしか受けなかった！`);
+        const skillMult = usedSkill?.multiplier || 1.0;
+        let dmgToPlayer = Math.max(1, Math.floor((enemy.atk - pDef) * (1.0 + (Math.random() * 0.4 - 0.2)) * skillMult));
+        const minDmg = Math.max(1, Math.floor(enemy.atk * 0.2 * skillMult));
+        if (dmgToPlayer < minDmg) dmgToPlayer = minDmg;
+
+        // 回避判定 (stealth: 20%, dodge_up: 30%, hires: 35%)
+        const stealthItem = getEffectSource('stealth');
+        const dodgeItem = getEffectSource('dodge_up');
+        const hiresItem = getEffectSource('hires');
+        let isDodged = false;
+
+        if (stealthItem && Math.random() < 0.20) {
+          isDodged = true;
+          newLogs.push(`🥷 【ステルス】 匿名性の陰に隠れて攻撃を回避した！`);
+        } else if (dodgeItem && Math.random() < 0.30) {
+          isDodged = true;
+          newLogs.push(`💨 【回避】 華麗なステップで敵の攻撃をかわした！`);
+        } else if (hiresItem && Math.random() < 0.35) {
+          isDodged = true;
+          newLogs.push(`🎧 【ハイレゾ】 ${getEffectMsg('hires', hiresItem)}`);
         }
 
-        currentPlayerHp = Math.max(0, currentPlayerHp - dmgToPlayer);
-        newLogs.push(usedSkill 
-          ? `💥 『${usedSkill.name}』 が直撃！ ${dmgToPlayer} のダメージを受けた！`
-          : `💥 敵の反撃！ ${dmgToPlayer} のダメージを受けた！`);
+        if (isDodged) {
+          dmgToPlayer = 0;
+        } else {
+          // 👵 【オカンの盾: mom_block】 痛恨時50%で敵即死
+          const momItem = getEffectSource('mom_block');
+          if (momItem && Math.random() < 0.15) {
+            newLogs.push(`👵 【オカン乱入】 ${getEffectMsg('mom_block', momItem)}`);
+            newLogs.push(`💀 敵は恥ずかしさのあまり顔を真っ赤にして逃げ出した！！`);
+            setEnemyHp(0);
+            setPlayerHp(currentPlayerHp);
+            setBattleLog(newLogs);
+            handleBattleVictory(newLogs, currentPlayerHp);
+            return;
+          }
+
+          // 📜 【クソリプ防御: kusorep】 被弾時20%でダメージ1
+          const kusorepItem = getEffectSource('kusorep');
+          const privilegeItem = getEffectSource('privilege');
+          const lockItem = getEffectSource('lock_account');
+          const lawItem = getEffectSource('partner_law');
+
+          if (kusorepItem && Math.random() < getEffectChance('kusorep', 0.20, 0.50)) {
+            dmgToPlayer = 1;
+            newLogs.push(`📜 ${getStackLabel('kusorep', 'クソリプ')} ${getEffectMsg('kusorep', kusorepItem)} (ダメージが1になった！)`);
+          } else if (privilegeItem && Math.random() < getEffectChance('privilege', 0.25, 0.50)) {
+            dmgToPlayer = 0;
+            newLogs.push(`👑 ${getStackLabel('privilege', '特権')} ${getEffectMsg('privilege', privilegeItem)} (ダメージを完全無効化！)`);
+          } else {
+            // 🔒 【鍵垢: lock_account】 常にダメージ25%カット
+            if (lockItem) {
+              dmgToPlayer = Math.max(1, Math.floor(dmgToPlayer * 0.75));
+              newLogs.push(`🔒 【鍵垢】 ${getEffectMsg('lock_account', lockItem)} (ダメージ25%軽減)`);
+            } else if (lawItem && Math.random() < 0.50) {
+              dmgToPlayer = Math.max(1, Math.floor(dmgToPlayer * 0.50));
+              newLogs.push(`👨‍⚖️ 【異議あり】 ${getEffectMsg('partner_law', lawItem)} (ダメージ半減)`);
+            }
+
+            currentPlayerHp = Math.max(0, currentPlayerHp - dmgToPlayer);
+            newLogs.push(usedSkill 
+              ? `💥 『${usedSkill.name}』 が直撃！ ${dmgToPlayer} のダメージを受けた！`
+              : `💥 敵の反撃！ ${dmgToPlayer} のダメージを受けた！`);
+
+            // ドレイン技
+            if (usedSkill?.type === 'drain' && dmgToPlayer > 0) {
+              const drainAmt = Math.min(dmgToPlayer, enemy.hp - currentEnemyHp);
+              if (drainAmt > 0) {
+                currentEnemyHp += drainAmt;
+                newLogs.push(`🩸 【${enemy.name}】 は活力を吸い取って ${drainAmt} 回復した！`);
+              }
+            }
+          }
+
+          // 🪞 【反射: reflect】
+          const reflectItem = getEffectSource('reflect');
+          if (currentPlayerHp > 0 && reflectItem && Math.random() < getEffectChance('reflect', 0.30, 0.60)) {
+            const refDmg = Math.floor(dmgToPlayer * 1.5);
+            currentEnemyHp = Math.max(0, currentEnemyHp - refDmg);
+            newLogs.push(`🪞 ${getStackLabel('reflect', '反射')} ${getEffectMsg('reflect', reflectItem)} 敵に ${refDmg} の大ダメージ！`);
+          }
+        }
       }
     }
 
@@ -856,20 +1055,25 @@ const DungeonMiniGame = ({
             {/* 部屋を探索する */}
             <button
               onClick={handleSearchRoom}
+              disabled={floorSearches >= MAX_FLOOR_SEARCHES}
               style={{
                 width: '100%',
                 padding: '12px',
                 borderRadius: '8px',
                 border: 'none',
-                background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
-                color: 'white',
+                background: floorSearches >= MAX_FLOOR_SEARCHES
+                  ? '#334155'
+                  : 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
+                color: floorSearches >= MAX_FLOOR_SEARCHES ? '#94a3b8' : 'white',
                 fontWeight: 'bold',
                 fontSize: '0.9rem',
-                cursor: 'pointer',
-                boxShadow: '0 4px 12px rgba(2, 132, 199, 0.3)'
+                cursor: floorSearches >= MAX_FLOOR_SEARCHES ? 'not-allowed' : 'pointer',
+                boxShadow: floorSearches >= MAX_FLOOR_SEARCHES ? 'none' : '0 4px 12px rgba(2, 132, 199, 0.3)'
               }}
             >
-              🔍 部屋を探索する（敵・宝箱・階段を探す）
+              {floorSearches >= MAX_FLOOR_SEARCHES
+                ? '💨 この階の探索は完了！（下り階段を降りよう）'
+                : `🔍 部屋を探索する（残り ${MAX_FLOOR_SEARCHES - floorSearches} 回）`}
             </button>
 
             {/* 下り階段を降りる (階段発見時のみ活性化) */}

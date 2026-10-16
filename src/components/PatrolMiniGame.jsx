@@ -356,7 +356,7 @@ const PatrolMiniGame = ({
     const dodgeCount = getEffectCount('dodge_up');
     let baseEMiss = dodgeCount > 0 ? Math.min(0.60, 0.05 + (0.25 * dodgeCount)) : 0.05; // 重複で+25%、最大60%
     const stealthItem = getEffectSource('stealth');
-    if (stealthItem) baseEMiss = 0.60; // 完全なる匿名性で60%回避
+    if (stealthItem) baseEMiss = 0.20; // 匿名性で20%回避
     if (cursedItem) baseEMiss = 0; // 呪われていると回避不可
     
     const eMiss = Math.random() < baseEMiss; 
@@ -704,8 +704,8 @@ const PatrolMiniGame = ({
           if (ePainful) dmgToPlayer = Math.floor(dmgToPlayer * 2.5);
           
           if (lockItem) {
-            dmgToPlayer = Math.floor(dmgToPlayer * 0.25); // 75%カット
-            newLogs.push(`🔒 【鍵垢】 ${getEffectMsg('lock_account', lockItem)}`);
+            dmgToPlayer = Math.floor(dmgToPlayer * 0.75); // 25%カット
+            newLogs.push(`🔒 【鍵垢】 ${getEffectMsg('lock_account', lockItem)} (ダメージ25%軽減)`);
           } else if (lawItem && Math.random() < 0.5) {
             dmgToPlayer = Math.floor(dmgToPlayer * 0.5); // 50%カット
             newLogs.push(`👨‍⚖️ 【異議あり】 ${getEffectMsg('partner_law', lawItem)} (ダメージ半減)`);
