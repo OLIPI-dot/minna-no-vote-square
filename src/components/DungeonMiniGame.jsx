@@ -627,10 +627,10 @@ const DungeonMiniGame = ({
       {/* ダンジョンヘッダー */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '8px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ fontSize: '1.4rem' }}>{floor % 10 === 0 ? '👑' : '🏰'}</span>
+          <span style={{ fontSize: '1.4rem' }}>{floor % 10 === 0 ? '👑' : '🔦'}</span>
           <div>
             <div style={{ fontWeight: 'bold', fontSize: '0.95rem', color: floor % 10 === 0 ? '#fca5a5' : '#c7d2fe' }}>
-              {floor % 10 === 0 ? '地下迷宮・ボスフロア' : '地下迷宮'}
+              {floor % 10 === 0 ? '地下パトロール・BOSS階層' : '地下パトロール'}
             </div>
             <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
               最高記録: <strong style={{ color: '#fbbf24' }}>B{bestFloor}F</strong>
@@ -651,19 +651,19 @@ const DungeonMiniGame = ({
         )}
       </div>
 
-      {/* 1. ロビー画面（ダンジョン入口） */}
+      {/* 1. ロビー画面（地下パトロール入口） */}
       {dungeonState === 'lobby' && (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '16px 8px', gap: '14px' }}>
           <div style={{ fontSize: '3rem', filter: 'drop-shadow(0 0 12px rgba(129, 140, 248, 0.5))' }}>
-            🚪🗝️
+            🔦🚪
           </div>
           <div>
             <div style={{ fontWeight: 'bold', fontSize: '1.05rem', color: '#f1f5f9', marginBottom: '4px' }}>
-              広場の地下に広がる不思議の迷宮
+              広場の地下を巡回する「地下パトロール」
             </div>
             <div style={{ fontSize: '0.8rem', color: '#94a3b8', lineHeight: 1.6, maxWidth: '280px', margin: '0 auto' }}>
               部屋を探索して**下り階段 🪜**を見つけよう！<br />
-              宝箱や泉を探すか、すぐに降りるかはあなた次第。<br />
+              宝箱や泉を探すか、さらに深く潜るかはあなた次第。<br />
               <strong style={{ color: '#f87171' }}>10フロアごとには巨大なBOSSが待ち構える！</strong>
             </div>
           </div>
@@ -684,7 +684,7 @@ const DungeonMiniGame = ({
               boxShadow: '0 4px 12px rgba(79, 70, 229, 0.4)'
             }}
           >
-            ⚔️ 地下迷宮へ潜る（B1F〜）
+            🔦 地下パトロールへ出発（B1F〜）
           </button>
         </div>
       )}

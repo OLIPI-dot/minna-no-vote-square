@@ -310,9 +310,9 @@ const Sidebar = ({
             </button>
             <button 
               onClick={() => setMiniqueTab('dungeon')}
-              style={{ flex: 1, padding: '8px 1px', borderRadius: '6px', border: 'none', background: miniqueTab === 'dungeon' ? '#4f46e5' : 'transparent', color: miniqueTab === 'dungeon' ? 'white' : '#64748b', fontWeight: 'bold', fontSize: '0.72rem', cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap' }}
+              style={{ flex: 1, padding: '8px 1px', borderRadius: '6px', border: 'none', background: miniqueTab === 'dungeon' ? '#4f46e5' : 'transparent', color: miniqueTab === 'dungeon' ? 'white' : '#64748b', fontWeight: 'bold', fontSize: '0.70rem', cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap' }}
             >
-              🏰 迷宮
+              🔦 地下パトロール
             </button>
             <button 
               onClick={() => setMiniqueTab('gacha')}
