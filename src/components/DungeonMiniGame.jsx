@@ -1210,12 +1210,18 @@ const DungeonMiniGame = ({
             </span>
           </div>
 
-          {/* プレイヤーHPゲージ */}
+          {/* プレイヤーHP & 戦闘力表示 */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem' }}>
-            <span style={{ color: '#94a3b8' }}>あなたのHP:</span>
-            <span style={{ fontWeight: 'bold', color: playerHp < pMaxHp * 0.3 ? '#f87171' : '#34d399' }}>
-              {playerHp} / {pMaxHp}
-            </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ color: '#94a3b8' }}>あなたのHP:</span>
+              <span style={{ fontWeight: 'bold', color: playerHp < pMaxHp * 0.3 ? '#f87171' : '#34d399' }}>
+                {playerHp} / {pMaxHp}
+              </span>
+            </div>
+            <div style={{ fontSize: '0.72rem', color: '#cbd5e1', display: 'flex', gap: '8px' }}>
+              <span>⚔️ <strong style={{ color: '#fed7aa' }}>{pAtk}</strong></span>
+              <span>🛡️ <strong style={{ color: '#bfdbfe' }}>{pDef}</strong></span>
+            </div>
           </div>
           <div style={{ width: '100%', height: '8px', background: 'rgba(0,0,0,0.4)', borderRadius: '4px', overflow: 'hidden' }}>
             <div style={{
@@ -1402,12 +1408,18 @@ const DungeonMiniGame = ({
             </div>
           </div>
 
-          {/* プレイヤーHPゲージ */}
+          {/* プレイヤーHP & 戦闘力表示 */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem' }}>
-            <span style={{ color: '#94a3b8' }}>あなたのHP:</span>
-            <span style={{ fontWeight: 'bold', color: playerHp < pMaxHp * 0.3 ? '#f87171' : '#34d399' }}>
-              {playerHp} / {pMaxHp}
-            </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ color: '#94a3b8' }}>あなたのHP:</span>
+              <span style={{ fontWeight: 'bold', color: playerHp < pMaxHp * 0.3 ? '#f87171' : '#34d399' }}>
+                {playerHp} / {pMaxHp}
+              </span>
+            </div>
+            <div style={{ fontSize: '0.72rem', color: '#cbd5e1', display: 'flex', gap: '8px' }}>
+              <span>⚔️ <strong style={{ color: '#fed7aa' }}>{pAtk}</strong></span>
+              <span>🛡️ <strong style={{ color: '#bfdbfe' }}>{pDef}</strong></span>
+            </div>
           </div>
           <div style={{ width: '100%', height: '8px', background: 'rgba(0,0,0,0.4)', borderRadius: '4px', overflow: 'hidden' }}>
             <div style={{

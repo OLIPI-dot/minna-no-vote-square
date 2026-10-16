@@ -8,10 +8,10 @@ export const ENEMIES = enemiesData;
 export const scaleEnemy = (rawEnemy, userLevel = 1) => {
   const isMetal = rawEnemy.def >= 9000;
   
-  // 敵レベル決定（プレイヤーLvの±15%前後の揺らぎ）
-  const variance = 0.85 + Math.random() * 0.30;
+  // 敵レベル決定（プレイヤーLvの±10%前後の自然な揺らぎ）
+  const variance = 0.90 + Math.random() * 0.20;
   let enemyLevel = Math.max(1, Math.round(userLevel * variance));
-  if (rawEnemy.type === 'rare') enemyLevel = Math.round(enemyLevel * 1.08);
+  if (rawEnemy.type === 'rare') enemyLevel = Math.round(enemyLevel * 1.05);
 
   const enemy = { ...rawEnemy, level: enemyLevel };
 
@@ -20,34 +20,46 @@ export const scaleEnemy = (rawEnemy, userLevel = 1) => {
     return enemy;
   }
 
-  // レベルに応じたターゲットステータス（成長指標）
-  let targetHp, targetAtk, targetDef;
+  // レベルに応じたターゲットステータス（プレイヤーのLv成長に合わせた適正バランス）
+  let targetHp, targetAtk, targetDef, maxHpCap, maxAtkCap;
   if (rawEnemy.type === 'rare') {
-    targetHp = 800 + enemyLevel * 30;
-    targetAtk = 70 + enemyLevel * 4.8;
-    targetDef = 35 + enemyLevel * 2.0;
+    // レアボス: 5〜6ターンで撃破可能、被ダメは耐えられるレベル（手ごたえ十分！）
+    targetHp = 500 + enemyLevel * 25;
+    targetAtk = 35 + enemyLevel * 2.2;
+    targetDef = 20 + enemyLevel * 1.3;
+    maxHpCap = 800 + enemyLevel * 30;
+    maxAtkCap = 50 + enemyLevel * 2.6;
   } else if (rawEnemy.type === 'elite') {
-    targetHp = 300 + enemyLevel * 18;
-    targetAtk = 40 + enemyLevel * 4.2;
-    targetDef = 20 + enemyLevel * 1.8;
+    // エリート: 3ターン前後で撃破可能
+    targetHp = 220 + enemyLevel * 15;
+    targetAtk = 25 + enemyLevel * 1.8;
+    targetDef = 12 + enemyLevel * 1.0;
+    maxHpCap = 350 + enemyLevel * 20;
+    maxAtkCap = 35 + enemyLevel * 2.2;
   } else {
-    // normal
-    targetHp = 80 + enemyLevel * 12;
-    targetAtk = 20 + enemyLevel * 3.6;
-    targetDef = 5 + enemyLevel * 1.5;
+    // 通常敵: 1〜2ターンで爽快に撃破！
+    targetHp = 60 + enemyLevel * 7;
+    targetAtk = 15 + enemyLevel * 1.4;
+    targetDef = 5 + enemyLevel * 0.7;
+    maxHpCap = 100 + enemyLevel * 10;
+    maxAtkCap = 25 + enemyLevel * 1.8;
   }
 
-  // ベースステータスとターゲット値の大きい方を採用し、個体値を反映
+  // 元データの個体差（±20%以内のマイルドな個性）を反映
   const baseHpNorm = rawEnemy.type === 'normal' ? 80 : rawEnemy.type === 'elite' ? 300 : 800;
   const baseAtkNorm = rawEnemy.type === 'normal' ? 25 : rawEnemy.type === 'elite' ? 50 : 100;
   const baseDefNorm = rawEnemy.type === 'normal' ? 10 : rawEnemy.type === 'elite' ? 25 : 50;
 
-  enemy.hp = Math.round(Math.max(rawEnemy.hp, targetHp * (rawEnemy.hp / baseHpNorm || 1)));
-  enemy.atk = Math.round(Math.max(rawEnemy.atk, targetAtk * (rawEnemy.atk / baseAtkNorm || 1)));
-  enemy.def = Math.round(Math.max(rawEnemy.def, targetDef * (rawEnemy.def / baseDefNorm || 1)));
+  const hpRatio = Math.max(0.80, Math.min(1.20, (rawEnemy.hp || baseHpNorm) / baseHpNorm));
+  const atkRatio = Math.max(0.80, Math.min(1.20, (rawEnemy.atk || baseAtkNorm) / baseAtkNorm));
+  const defRatio = Math.max(0.80, Math.min(1.20, (rawEnemy.def || baseDefNorm) / baseDefNorm));
 
-  // レアボスのDEFがプレイヤー通常攻撃力を超えてカチカチになりすぎないよう安全上限
-  const maxSafeDef = Math.round((userLevel * 5 + 10) * 0.85);
+  enemy.hp = Math.round(Math.min(maxHpCap, targetHp * hpRatio));
+  enemy.atk = Math.round(Math.min(maxAtkCap, targetAtk * atkRatio));
+  enemy.def = Math.round(targetDef * defRatio);
+
+  // プレイヤー通常攻撃力を超えてカチカチになりすぎないよう安全上限
+  const maxSafeDef = Math.round((userLevel * 5 + 10) * 0.70);
   if (enemy.def < 9000 && enemy.def > maxSafeDef) {
     enemy.def = maxSafeDef;
   }
@@ -58,19 +70,27 @@ export const scaleEnemy = (rawEnemy, userLevel = 1) => {
 export const rollEnemy = (userLevel = 1) => {
   const rand = Math.random();
 
-  // 🐰 メタルらびたん枠（約4%の確率：適度なレア感！）
-  // 1日20回パトロールで数日に1回遭遇するワクワクバランス
-  if (rand < 0.04) {
-    const isHagure = Math.random() < 0.25; // らびたん枠の25%（全体の1%）は超レア「はぐれらびたん」
+  // 🐰 メタルらびたん枠（約3%：出会えたら超ラッキー！）
+  if (rand < 0.03) {
+    const isHagure = Math.random() < 0.25; // 25%ではぐれらびたん
     const rabbitId = isHagure ? 'el4_2' : 'el4';
     const rabbit = ENEMIES.find(e => e.id === rabbitId);
     if (rabbit) return scaleEnemy(rabbit, userLevel);
   }
 
+  // 敵タイプの抽選:
+  // 通常敵: 80% (サクサク狩れる爽快感！)
+  // エリート: 16% (ほどよい中ボス！)
+  // レアボス: 4% (ここぞという強敵！)
+  const typeRand = Math.random();
   let type = 'normal';
-  if (rand < 0.05) type = 'rare';        // 5%
-  else if (rand < 0.35) type = 'elite';  // 30%
-  // 残り65%は normal
+  if (typeRand < 0.04) {
+    type = 'rare';       // 4%
+  } else if (typeRand < 0.20) {
+    type = 'elite';      // 16%
+  } else {
+    type = 'normal';     // 80%
+  }
 
   // らびたん系（el4, el4_2）は専用枠にしたので通常プールからは除外
   const pool = ENEMIES.filter(e => e.type === type && e.id !== 'el4' && e.id !== 'el4_2');
@@ -79,13 +99,12 @@ export const rollEnemy = (userLevel = 1) => {
   // プレイヤーLvに合わせてスケーリング
   let enemy = scaleEnemy(selected, userLevel);
 
-  // 10%の確率で「激怒した（突然変異）」個体になる（らびたん系、黄金系、らび -sin -以外）
-  if (Math.random() < 0.10 && !enemy.name.includes('らびたん') && !enemy.name.includes('黄金') && !enemy.name.includes('✨') && !enemy.name.includes('らび -sin -')) {
-    const multi = 1.8 + Math.random() * 0.7; // 1.8〜2.5倍の強化
+  // 5%の確率で「激怒した（突然変異）」個体になる（以前の10%から半減、強化倍率も適正化）
+  if (Math.random() < 0.05 && !enemy.name.includes('らびたん') && !enemy.name.includes('黄金') && !enemy.name.includes('✨') && !enemy.name.includes('らび -sin -')) {
+    const multi = 1.3 + Math.random() * 0.2; // 1.3〜1.5倍の程よい強化
     enemy.name = `激怒した ${enemy.name}`;
     enemy.hp = Math.round(enemy.hp * multi);
-    enemy.atk = Math.round(enemy.atk * (1.2 + Math.random() * 0.3));
-    enemy.def = Math.round(enemy.def * (1.2 + Math.random() * 0.2));
+    enemy.atk = Math.round(enemy.atk * 1.15);
     enemy.isEnraged = true;
   }
 
