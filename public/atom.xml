@@ -4,11 +4,72 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-15T21:46:40.378Z</updated>
+  <updated>2026-10-16T02:17:52.177Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>ソニー 93万円のウォークマン発表</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23433"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23433</id>
+    <updated>2026-10-16T02:17:47.616Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;話題&quot;,
+  &quot;point1_title&quot;: &quot;高級ウォークマン新機種発表&quot;,
+  &quot;point1_desc&quot;: &quot;ソニーグループが高級デジタル音楽プレーヤーの新型3機種を発表した。価格帯は約30万円から約93万円となっており、ウォークマンのブランドを冠した最新のハイエンドハードウェアとして展開される。&quot;,
+  &quot;point2_title&quot;:...</summary>
+  </entry>
+  <entry>
+    <title>看護師撮影の動画流出 なぜX拡散</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23432"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23432</id>
+    <updated>2026-10-16T02:17:28.931Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;看護師が無断で患者撮影&quot;,
+  &quot;point1_desc&quot;: &quot;千葉西総合病院の女性看護師らが、夜勤中にベッドへ横たわる入院患者や院内の様子を無断で動画撮影していたことが判明。動画はSNSなどを通じて不適切に共有されていたとされる。&quot;,
+  &quot;point2_title&quot;: &quot;不適切な言葉を添...</summary>
+  </entry>
+  <entry>
+    <title>2児殺害 母「状況覚えていない」</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23431"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23431</id>
+    <updated>2026-10-16T02:17:09.803Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;事件の背景と背景原因&quot;,
+  &quot;point1_desc&quot;: &quot;水戸市内のアパートで3年前に自身の子ども2人を刺殺したとして殺人罪に問われている母親の被告人質問が行われ、精神的に病んでいった原因が職場への不満であったことが語られた。&quot;,
+  &quot;point2_title&quot;: &quot;被告人質問での証言...</summary>
+  </entry>
+  <entry>
+    <title>有罪か無罪か 王将射殺きょう判決</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23430"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23430</id>
+    <updated>2026-10-16T02:16:49.673Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;王将社長射殺事件の裁判&quot;,
+  &quot;point1_desc&quot;: &quot;2013年に発生した「餃子の王将」社長射殺事件で、殺人と銃刀法違反の罪に問われた工藤会系幹部の田中幸雄被告に対する裁判員裁判の公判手続きが、京都地裁で進められています。&quot;,
+  &quot;point2_title&quot;: &quot;工藤会系幹部の関...</summary>
+  </entry>
+  <entry>
+    <title>フーシ イエメンの大統領宮殿攻撃</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23429"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23429</id>
+    <updated>2026-10-16T02:16:29.611Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;フーシ派がアデン攻撃&quot;,
+  &quot;point1_desc&quot;: &quot;イエメンの親イラン武装組織フーシ派は15日、南部アデンにある大統領宮殿施設を狙ってミサイルを発射した。政権側の拠点に対する直接的な攻撃であり緊張が高まっている。&quot;,
+  &quot;point2_title&quot;: &quot;攻撃の標的と影響&quot;,
+  ...</summary>
+  </entry>
   <entry>
     <title>コミックシーモア 一時停止を発表</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23428"/>
@@ -555,66 +616,5 @@
   &quot;point1_desc&quot;: &quot;岩手県大船渡市にて11日、自転車で移動していた小学生の男の子が乗用車と衝突する事故が発生しました。男の子は大けがを負っており、病院へ搬送されて治療を受けています。&quot;,
   &quot;point2_title&quot;: &quot;車が現場から逃走&quot;,
   &quot;...</summary>
-  </entry>
-  <entry>
-    <title>共産党 野党共闘路線を転換方針</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23383"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23383</id>
-    <updated>2026-10-12T12:51:29.752Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;共産党が野党共闘を転換&quot;,
-  &quot;point1_desc&quot;: &quot;共産党は第10回中央委員会総会を開催し、田村智子委員長が来年1月の党大会決議案を報告した。その中で、これまで推進してきた国政選挙における野党共闘路線を大きく転換する方針が正式に表明された。&quot;,
-  &quot;point2_title&quot;:...</summary>
-  </entry>
-  <entry>
-    <title>北発射 韓国ミサイルへの抗議か</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23382"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23382</id>
-    <updated>2026-10-12T07:45:31.500Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;北朝鮮がミサイルを発射&quot;,
-  &quot;point1_desc&quot;: &quot;防衛省は北朝鮮が午前9時台に2回、弾道ミサイルの可能性があるものを発射したと発表。いずれも日本の排他的経済水域（EEZ）の外側に落下したと推定されている。&quot;,
-  &quot;point2_title&quot;: &quot;韓国軍の分析と発射背景&quot;,
- ...</summary>
-  </entry>
-  <entry>
-    <title>欧州首脳ら ウクライナへ連帯表明</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23381"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23381</id>
-    <updated>2026-10-12T07:44:43.022Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;トランプ氏の露接近&quot;,
-  &quot;point1_desc&quot;: &quot;トランプ米大統領がロシア侵攻を巡り再びロシア寄りの姿勢を鮮明にしている。米露が接近してウクライナ情勢への対応を主導することに対する警戒感が各国で急速に高まりを見せている。&quot;,
-  &quot;point2_title&quot;: &quot;欧州首脳の連帯表明...</summary>
-  </entry>
-  <entry>
-    <title>公明・岡本氏 自民含め連携目指す</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23380"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23380</id>
-    <updated>2026-10-12T07:44:17.556Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;結集軸を目指す考え&quot;,
-  &quot;point1_desc&quot;: &quot;公明党の岡本三成氏がインタビューに応じ、政界再編における結集軸を目指す方針を明らかにした。与野党を問わず政策本位で連携を進め、新たな政治の枠組み作りを牽引したい考えだ。&quot;,
-  &quot;point2_title&quot;: &quot;政策本位の連携推進&quot;...</summary>
-  </entry>
-  <entry>
-    <title>中野窃盗 被告は国際的窃盗団か</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23379"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23379</id>
-    <updated>2026-10-12T02:19:07.749Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;中野の高級時計店窃盗事件&quot;,
-  &quot;point1_desc&quot;: &quot;今年8月に東京・中野区の高級腕時計店で発生した窃盗事件において、犯行に関与したとして逮捕・起訴されたチリ国籍の男2人についての新たな情報が捜査関係者への取材で判明した。（88文字）&quot;,
-  &quot;point2_title&quot;: &quot;国...</summary>
   </entry>
 </feed>
