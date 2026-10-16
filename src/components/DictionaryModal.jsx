@@ -220,6 +220,19 @@ const DictionaryModal = ({ isOpen, onClose, acquiredItems = [], encounteredEnemi
               {enemy.desc}
             </div>
           </div>
+          
+          {enemy.skills && enemy.skills.length > 0 && (
+            <div style={{ width: '100%', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '8px', padding: '16px', marginBottom: '16px' }}>
+              <div style={{ fontSize: '0.8rem', color: '#dc2626', fontWeight: 'bold', marginBottom: '6px' }}>⚡ 固有スキル</div>
+              {enemy.skills.map((s, idx) => (
+                <div key={idx} style={{ marginBottom: idx < enemy.skills.length - 1 ? '8px' : 0 }}>
+                  <div style={{ fontSize: '0.85rem', color: '#991b1b', fontWeight: 'bold' }}>『{s.name}』</div>
+                  <div style={{ fontSize: '0.75rem', color: '#7f1d1d' }}>{s.desc || s.msg}</div>
+                </div>
+              ))}
+            </div>
+          )}
+
           <div style={{ fontSize: '0.7rem', color: '#94a3b8' }}>※遭遇時のレベルによってステータスは変動します。</div>
         </div>
       );

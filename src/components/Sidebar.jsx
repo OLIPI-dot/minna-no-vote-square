@@ -4,6 +4,7 @@ import AdSenseBox from './AdSenseBox';
 import SquareTimeline from './SquareTimeline';
 import BattleMiniGame from './BattleMiniGame';
 import PatrolMiniGame from './PatrolMiniGame';
+import DungeonMiniGame from './DungeonMiniGame';
 import GachaMiniGame from './GachaMiniGame';
 import DictionaryModal from './DictionaryModal';
 import StatusModal from './StatusModal';
@@ -300,22 +301,28 @@ const Sidebar = ({
           )}
 
           {/* ⚔️ みんクエ タブメニュー */}
-          <div style={{ display: 'flex', gap: '4px', margin: '16px 0 12px 0', background: 'rgba(0,0,0,0.05)', padding: '4px', borderRadius: '8px' }}>
+          <div style={{ display: 'flex', gap: '3px', margin: '16px 0 12px 0', background: 'rgba(0,0,0,0.05)', padding: '4px', borderRadius: '8px' }}>
             <button 
               onClick={() => setMiniqueTab('patrol')}
-              style={{ flex: 1, padding: '8px 2px', borderRadius: '6px', border: 'none', background: miniqueTab === 'patrol' ? '#3b82f6' : 'transparent', color: miniqueTab === 'patrol' ? 'white' : '#64748b', fontWeight: 'bold', fontSize: '0.75rem', cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap' }}
+              style={{ flex: 1, padding: '8px 1px', borderRadius: '6px', border: 'none', background: miniqueTab === 'patrol' ? '#3b82f6' : 'transparent', color: miniqueTab === 'patrol' ? 'white' : '#64748b', fontWeight: 'bold', fontSize: '0.72rem', cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap' }}
             >
               🚓 パトロール
             </button>
             <button 
-              onClick={() => setMiniqueTab('gacha')}
-              style={{ flex: 1, padding: '8px 2px', borderRadius: '6px', border: 'none', background: miniqueTab === 'gacha' ? '#f59e0b' : 'transparent', color: miniqueTab === 'gacha' ? 'white' : '#64748b', fontWeight: 'bold', fontSize: '0.75rem', cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap' }}
+              onClick={() => setMiniqueTab('dungeon')}
+              style={{ flex: 1, padding: '8px 1px', borderRadius: '6px', border: 'none', background: miniqueTab === 'dungeon' ? '#4f46e5' : 'transparent', color: miniqueTab === 'dungeon' ? 'white' : '#64748b', fontWeight: 'bold', fontSize: '0.72rem', cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap' }}
             >
-              🛡️ 装備・ガチャ
+              🏰 迷宮
+            </button>
+            <button 
+              onClick={() => setMiniqueTab('gacha')}
+              style={{ flex: 1, padding: '8px 1px', borderRadius: '6px', border: 'none', background: miniqueTab === 'gacha' ? '#f59e0b' : 'transparent', color: miniqueTab === 'gacha' ? 'white' : '#64748b', fontWeight: 'bold', fontSize: '0.72rem', cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap' }}
+            >
+              🛡️ 装備
             </button>
             <button 
               onClick={() => setIsDictionaryOpen(true)}
-              style={{ flex: 1, padding: '8px 2px', borderRadius: '6px', border: 'none', background: '#8b5cf6', color: 'white', fontWeight: 'bold', fontSize: '0.75rem', cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap' }}
+              style={{ flex: 1, padding: '8px 1px', borderRadius: '6px', border: 'none', background: '#8b5cf6', color: 'white', fontWeight: 'bold', fontSize: '0.72rem', cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap' }}
             >
               📖 図鑑
             </button>
@@ -335,6 +342,24 @@ const Sidebar = ({
                 inventory={inventory}
                 setInventory={setInventory}
                 globalOnlineCount={globalOnlineCount}
+                encounteredEnemies={encounteredEnemies}
+                setEncounteredEnemies={setEncounteredEnemies}
+                user={user}
+              />
+            )}
+
+            {miniqueTab === 'dungeon' && (
+              <DungeonMiniGame 
+                userLevel={levelInfo?.level || 1} 
+                userExp={userExp}
+                levelInfo={levelInfo}
+                addExp={addExp} 
+                gachaTickets={gachaTickets}
+                addTickets={addTickets}
+                equipment={equipment}
+                setEquipment={setEquipment}
+                inventory={inventory}
+                setInventory={setInventory}
                 encounteredEnemies={encounteredEnemies}
                 setEncounteredEnemies={setEncounteredEnemies}
                 user={user}

@@ -637,65 +637,109 @@ const PatrolMiniGame = ({
     } else if (eMiss) {
       newLogs.push(`💨 敵の反撃... しかしあなたはヒョイッと避けた！`);
     } else {
-      let dmgToPlayer = enemy.atk - pDef;
-      const variance = 1.0 + (Math.random() * 0.4 - 0.2);
-      dmgToPlayer = Math.floor(dmgToPlayer * variance);
-      const minDmg = Math.max(1, Math.floor(enemy.atk * 0.2));
-      if (dmgToPlayer < minDmg) dmgToPlayer = minDmg;
-      
-      // 👵 【お母さん乱入: mom_block】 痛恨の一撃時、50%の確率で発動
-      const momItem = getEffectSource('mom_block');
-      if (ePainful && momItem && Math.random() < 0.5) {
-        newLogs.push(`🩸 痛恨の一撃が来る......！！！！`);
-        newLogs.push(`👵 【オカン乱入】 ${getEffectMsg('mom_block', momItem)}`);
-        newLogs.push(`💀 敵は恥ずかしさのあまり顔を真っ赤にして即死した！！`);
-        setEnemyHp(0);
-        setPlayerHp(currentPlayerHp);
-        setBattleLog(newLogs);
-        handleWin(enemy);
-        return;
+      // ⚡ 敵の固有スキル判定（所持していれば約30%の確率で発動）
+      const enemySkills = enemy.skills || [];
+      const usedSkill = (enemySkills.length > 0 && Math.random() < 0.30)
+        ? enemySkills[Math.floor(Math.random() * enemySkills.length)]
+        : null;
+
+      if (usedSkill) {
+        newLogs.push(`⚡ 【${enemy.name}】 の 『${usedSkill.name}』！`);
+        if (usedSkill.msg) {
+          newLogs.push(`💬 ${usedSkill.msg}`);
+        }
       }
-      
-      // 📜 【クソリプ防御: kusorep】 被弾時20%で発動し、ダメージを1にする（重複で+15%、最大50%）
-      const kusorepItem = getEffectSource('kusorep');
-      const kusorepChance = getEffectChance('kusorep', 0.20, 0.50);
-      const privilegeItem = getEffectSource('privilege');
-      const privilegeChance = getEffectChance('privilege', 0.25, 0.50);
-      const lockItem = getEffectSource('lock_account');
-      const lawItem = getEffectSource('partner_law');
-      
-      if (kusorepItem && Math.random() < kusorepChance) {
-        dmgToPlayer = 1;
-        newLogs.push(`📜 ${getStackLabel('kusorep', 'クソリプ')} ${getEffectMsg('kusorep', kusorepItem)}`);
-        newLogs.push(`💥 敵の攻撃！ しかし クソリプのせいで 1 のダメージしか受けなかった！`);
-      } else if (privilegeItem && Math.random() < privilegeChance) {
-        dmgToPlayer = 0;
-        newLogs.push(`👑 ${getStackLabel('privilege', '特権')} ${getEffectMsg('privilege', privilegeItem)}`);
-        newLogs.push(`💥 敵の攻撃！ しかし ダメージは完全に無効化された！`);
+
+      if (usedSkill?.type === 'idle') {
+        newLogs.push(`...しかし 何も起こらなかった！`);
+      } else if (usedSkill?.type === 'heal') {
+        const healAmt = Math.max(10, Math.floor(enemy.hp * (usedSkill.rate || 0.25)));
+        currentEnemyHp = Math.min(enemy.hp, currentEnemyHp + healAmt);
+        newLogs.push(`✨ 【${enemy.name}】 のHPが ${healAmt} 回復した！`);
       } else {
-        if (ePainful) dmgToPlayer = Math.floor(dmgToPlayer * 2.5);
+        const skillMult = usedSkill?.multiplier || 1.0;
+        let dmgToPlayer = enemy.atk - pDef;
+        const variance = 1.0 + (Math.random() * 0.4 - 0.2);
+        dmgToPlayer = Math.floor(dmgToPlayer * variance * skillMult);
+        const minDmg = Math.max(1, Math.floor(enemy.atk * 0.2 * skillMult));
+        if (dmgToPlayer < minDmg) dmgToPlayer = minDmg;
         
-        if (lockItem) {
-          dmgToPlayer = Math.floor(dmgToPlayer * 0.25); // 75%カット
-          newLogs.push(`🔒 【鍵垢】 ${getEffectMsg('lock_account', lockItem)}`);
-        } else if (lawItem && Math.random() < 0.5) {
-          dmgToPlayer = Math.floor(dmgToPlayer * 0.5); // 50%カット
-          newLogs.push(`👨‍⚖️ 【異議あり】 ${getEffectMsg('partner_law', lawItem)} (ダメージ半減)`);
+        // 🎧 【ハイレゾ完全回避: hires】 35%で敵の攻撃を完全察知・回避
+        const hiresItem = getEffectSource('hires');
+        if (hiresItem && Math.random() < 0.35) {
+          newLogs.push(`🎧 【ハイレゾ】 ${getEffectMsg('hires', hiresItem)}`);
+          dmgToPlayer = 0;
+        }
+
+        // 👵 【お母さん乱入: mom_block】 痛恨の一撃時、50%の確率で発動
+        const momItem = getEffectSource('mom_block');
+        if (ePainful && momItem && Math.random() < 0.5) {
+          newLogs.push(`🩸 痛恨の一撃が来る......！！！！`);
+          newLogs.push(`👵 【オカン乱入】 ${getEffectMsg('mom_block', momItem)}`);
+          newLogs.push(`💀 敵は恥ずかしさのあまり顔を真っ赤にして即死した！！`);
+          setEnemyHp(0);
+          setPlayerHp(currentPlayerHp);
+          setBattleLog(newLogs);
+          handleWin(enemy);
+          return;
         }
         
-        currentPlayerHp = Math.max(0, currentPlayerHp - dmgToPlayer);
-        newLogs.push(ePainful 
-          ? `🩸 痛恨の一撃！！！ 敵の猛攻で ${dmgToPlayer} の大ダメージを受けた！` 
-          : `💥 敵の反撃！ ${dmgToPlayer} のダメージを受けた！`);
-      }
+        // 📜 【クソリプ防御: kusorep】 被弾時20%で発動し、ダメージを1にする（重複で+15%、最大50%）
+        const kusorepItem = getEffectSource('kusorep');
+        const kusorepChance = getEffectChance('kusorep', 0.20, 0.50);
+        const privilegeItem = getEffectSource('privilege');
+        const privilegeChance = getEffectChance('privilege', 0.25, 0.50);
+        const lockItem = getEffectSource('lock_account');
+        const lawItem = getEffectSource('partner_law');
         
-      // 🪞 【ダメージ反射: reflect】 30%で発動（重複で+15%、最大60%）
-      const reflectItem = getEffectSource('reflect');
-      const reflectChance = getEffectChance('reflect', 0.30, 0.60);
-      if (currentPlayerHp > 0 && reflectItem && Math.random() < reflectChance) {
-        const refDmg = Math.floor(dmgToPlayer * 1.5);
-        currentEnemyHp = Math.max(0, currentEnemyHp - refDmg);
-        newLogs.push(`🪞 ${getStackLabel('reflect', '反射')} ${getEffectMsg('reflect', reflectItem)} 敵に ${refDmg} の大ダメージ！`);
+        if (kusorepItem && Math.random() < kusorepChance) {
+          dmgToPlayer = 1;
+          newLogs.push(`📜 ${getStackLabel('kusorep', 'クソリプ')} ${getEffectMsg('kusorep', kusorepItem)}`);
+          newLogs.push(`💥 敵の攻撃！ しかし クソリプのせいで 1 のダメージしか受けなかった！`);
+        } else if (privilegeItem && Math.random() < privilegeChance) {
+          dmgToPlayer = 0;
+          newLogs.push(`👑 ${getStackLabel('privilege', '特権')} ${getEffectMsg('privilege', privilegeItem)}`);
+          newLogs.push(`💥 敵の攻撃！ しかし ダメージは完全に無効化された！`);
+        } else {
+          if (ePainful) dmgToPlayer = Math.floor(dmgToPlayer * 2.5);
+          
+          if (lockItem) {
+            dmgToPlayer = Math.floor(dmgToPlayer * 0.25); // 75%カット
+            newLogs.push(`🔒 【鍵垢】 ${getEffectMsg('lock_account', lockItem)}`);
+          } else if (lawItem && Math.random() < 0.5) {
+            dmgToPlayer = Math.floor(dmgToPlayer * 0.5); // 50%カット
+            newLogs.push(`👨‍⚖️ 【異議あり】 ${getEffectMsg('partner_law', lawItem)} (ダメージ半減)`);
+          }
+          
+          currentPlayerHp = Math.max(0, currentPlayerHp - dmgToPlayer);
+          if (usedSkill) {
+            newLogs.push(ePainful 
+              ? `🩸 痛恨のスキル撃！！ 『${usedSkill.name}』 の猛撃で ${dmgToPlayer} の大ダメージを受けた！` 
+              : `💥 『${usedSkill.name}』 が直撃！ ${dmgToPlayer} のダメージを受けた！`);
+          } else {
+            newLogs.push(ePainful 
+              ? `🩸 痛恨の一撃！！！ 敵の猛攻で ${dmgToPlayer} の大ダメージを受けた！` 
+              : `💥 敵の反撃！ ${dmgToPlayer} のダメージを受けた！`);
+          }
+
+          // 🩸 ドレイン技の場合の吸収回復
+          if (usedSkill?.type === 'drain' && dmgToPlayer > 0) {
+            const drainAmt = Math.min(dmgToPlayer, enemy.hp - currentEnemyHp);
+            if (drainAmt > 0) {
+              currentEnemyHp += drainAmt;
+              newLogs.push(`🩸 【${enemy.name}】 は活力を吸い取って ${drainAmt} 回復した！`);
+            }
+          }
+        }
+          
+        // 🪞 【ダメージ反射: reflect】 30%で発動（重複で+15%、最大60%）
+        const reflectItem = getEffectSource('reflect');
+        const reflectChance = getEffectChance('reflect', 0.30, 0.60);
+        if (currentPlayerHp > 0 && reflectItem && Math.random() < reflectChance) {
+          const refDmg = Math.floor(dmgToPlayer * 1.5);
+          currentEnemyHp = Math.max(0, currentEnemyHp - refDmg);
+          newLogs.push(`🪞 ${getStackLabel('reflect', '反射')} ${getEffectMsg('reflect', reflectItem)} 敵に ${refDmg} の大ダメージ！`);
+        }
       }
     }
 
