@@ -39,6 +39,7 @@ export const syncItemWithMaster = (item) => {
     atk: master.atk,
     def: master.def,
     hp: master.hp,
+    reqLevel: master.reqLevel || item.reqLevel || undefined,
     name: master.name,
     desc: master.desc,
     effect: master.effect,
