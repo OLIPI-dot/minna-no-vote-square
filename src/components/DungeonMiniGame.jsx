@@ -57,6 +57,36 @@ const RANDOM_EFFECT_MSGS = {
   ],
   buyout: [
     "{item}の潤沢な資金力により、敵を買収することに成功した！"
+  ],
+  partner_cheer: [
+    "{item}が熱烈に応援している！ (会心率+20%)",
+    "{item}の熱いエールが背中を押す！ (会心率+20%)",
+    "{item}が全力で声援を送っている！ (会心率+20%)"
+  ],
+  partner_heal: [
+    "{item}が優しく癒やしてくれた！",
+    "{item}の看病で元気が湧いてきた！"
+  ],
+  partner_sponsor: [
+    "{item}が手厚いサポートをしてくれた！"
+  ],
+  partner_kusorep: [
+    "{item}が絶妙なクソリプで敵の注意を引いた！"
+  ],
+  partner_stare: [
+    "{item}がじっと見守っている..."
+  ],
+  partner_hack: [
+    "{item}が敵の弱点をハッキングした！"
+  ],
+  partner_expose: [
+    "{item}が敵の過去ログを暴露した！"
+  ],
+  partner_law: [
+    "{item}が規約を持ち出して異議を唱えた！"
+  ],
+  partner_debate: [
+    "{item}が圧倒的な正論で敵を論破した！"
   ]
 };
 
@@ -583,7 +613,10 @@ const DungeonMiniGame = ({
     const critBonus = getEffectRarityTotal('crit_up', { N: 0.05, R: 0.10, SR: 0.20, UR: 0.25 }, 0.10, 0.50);
     let basePCrit = 0.10 + critBonus;
     const cheerItem = getEffectSource('partner_cheer');
-    if (cheerItem) basePCrit += 0.20;
+    if (cheerItem) {
+      basePCrit += 0.20;
+      newLogs.push(`📣 【応援】 ${getEffectMsg('partner_cheer', cheerItem)}`);
+    }
     const cursedItem = getEffectSource('cursed_power');
     if (cursedItem) basePCrit = 0.50;
 

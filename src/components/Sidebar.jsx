@@ -316,9 +316,9 @@ const Sidebar = ({
             </button>
             <button 
               onClick={() => setMiniqueTab('gacha')}
-              style={{ flex: 1, padding: '8px 1px', borderRadius: '6px', border: 'none', background: miniqueTab === 'gacha' ? '#f59e0b' : 'transparent', color: miniqueTab === 'gacha' ? 'white' : '#64748b', fontWeight: 'bold', fontSize: '0.72rem', cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap' }}
+              style={{ flex: 1.1, padding: '8px 1px', borderRadius: '6px', border: 'none', background: miniqueTab === 'gacha' ? '#f59e0b' : 'transparent', color: miniqueTab === 'gacha' ? 'white' : '#64748b', fontWeight: 'bold', fontSize: '0.70rem', cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap' }}
             >
-              🛡️ 装備
+              🛡️ 装備・ガチャ
             </button>
             <button 
               onClick={() => setIsDictionaryOpen(true)}

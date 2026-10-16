@@ -72,6 +72,36 @@ const RANDOM_EFFECT_MSGS = {
   mom_block: [
     "{item}の力で、敵の背後に『オカン』が召喚された！",
     "「あんた！いつまで起きてんの！」オカンの怒号が響き渡った！"
+  ],
+  partner_cheer: [
+    "{item}が熱烈に応援している！ (会心率+20%)",
+    "{item}の熱いエールが背中を押す！ (会心率+20%)",
+    "{item}が全力で声援を送っている！ (会心率+20%)"
+  ],
+  partner_heal: [
+    "{item}が優しく癒やしてくれた！",
+    "{item}の看病で元気が湧いてきた！"
+  ],
+  partner_sponsor: [
+    "{item}が手厚いサポートをしてくれた！"
+  ],
+  partner_kusorep: [
+    "{item}が絶妙なクソリプで敵の注意を引いた！"
+  ],
+  partner_stare: [
+    "{item}がじっと見守っている..."
+  ],
+  partner_hack: [
+    "{item}が敵の弱点をハッキングした！"
+  ],
+  partner_expose: [
+    "{item}が敵の過去ログを暴露した！"
+  ],
+  partner_law: [
+    "{item}が規約を持ち出して異議を唱えた！"
+  ],
+  partner_debate: [
+    "{item}が圧倒的な正論で敵を論破した！"
   ]
 };
 
@@ -389,11 +419,11 @@ const PatrolMiniGame = ({
       pMiss = false;    // ミスしない
     }
 
-    // 🤓 【限界オタク: partner_cheer】会心率アップ
+    // 📣 【お供の応援: partner_cheer】会心率アップ
     const cheerItem = getEffectSource('partner_cheer');
     if (cheerItem) {
       basePCrit += 0.20;
-      newLogs.push(`🤓 ${getEffectMsg('partner_cheer', cheerItem)}`);
+      newLogs.push(`📣 【応援】 ${getEffectMsg('partner_cheer', cheerItem)}`);
     }
     
     // 🤞 【領域展開: domain_expansion】 必中＆確定会心の結界（R:8%, SR:15%, UR:25%）

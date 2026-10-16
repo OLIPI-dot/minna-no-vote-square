@@ -1,6 +1,6 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
-import { ITEMS, EFFECT_DESCRIPTIONS, getItemEffectDescription } from '../items';
+import { ITEMS, EFFECT_DESCRIPTIONS, getItemEffectDescription, getCombinedEffectDescription } from '../items';
 
 const rarityColors = {
   N: '#94a3b8',
@@ -63,7 +63,8 @@ const StatusModal = ({ isOpen, onClose, userLevel = 1, userExp = 0, levelInfo, h
           slotName: slotLabels[slot].name,
           slotIcon: slotLabels[slot].icon,
           itemName: item.name,
-          rarity: item.rarity
+          rarity: item.rarity,
+          item
         });
       }
     }
@@ -293,9 +294,21 @@ const StatusModal = ({ isOpen, onClose, userLevel = 1, userExp = 0, levelInfo, h
                         </span>
                       )}
                     </div>
-                    <div style={{ color: '#92400e', fontWeight: 'bold', marginTop: '2px' }}>
-                      ✨ {eff.effectDesc}
-                    </div>
+                    {(() => {
+                      const combined = getCombinedEffectDescription(eff.effectKey, eff.sources);
+                      return (
+                        <div style={{ marginTop: '3px' }}>
+                          <div style={{ color: '#92400e', fontWeight: 'bold' }}>
+                            ✨ {combined.title || eff.effectDesc}
+                          </div>
+                          {combined.detail && (
+                            <div style={{ color: '#b45309', fontSize: '0.7rem', marginTop: '2px', fontWeight: 'bold' }}>
+                              ↳ {combined.detail}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })()}
                   </div>
                 ))}
               </div>

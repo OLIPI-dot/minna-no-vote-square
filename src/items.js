@@ -146,3 +146,60 @@ export const getItemEffectDescription = (itemOrEffect, customRarity) => {
       return EFFECT_DESCRIPTIONS[eff] || '【特殊効果あり】';
   }
 };
+
+const EFFECT_RATES = {
+  mental_damage: { N: 5, R: 8, SR: 15, UR: 20, maxCap: 40, unit: '%の確率で敵をスタンさせる', label: '精神攻撃' },
+  cringe: { N: 3, R: 5, SR: 10, UR: 15, maxCap: 25, unit: '%の確率で敵を行動不能にする', label: 'ドン引き' },
+  stealth: { N: 5, R: 10, SR: 20, UR: 25, maxCap: 60, unit: '%の確率で回避', label: 'ステルス' },
+  dodge_up: { N: 5, R: 10, SR: 20, UR: 25, maxCap: 60, unit: '%の確率で回避', label: '回避UP' },
+  crit_up: { N: 5, R: 10, SR: 20, UR: 25, maxCap: 50, unit: '%上昇', label: '会心UP' },
+  regen: { N: 3, R: 5, SR: 10, UR: 15, maxCap: 30, unit: '%回復', label: '自動回復' },
+  kusorep: { N: 5, R: 10, SR: 20, UR: 30, maxCap: 50, unit: '%の確率でダメージを1にする', label: 'クソリプ' },
+  lock_account: { N: 5, R: 10, SR: 15, UR: 20, maxCap: 30, unit: '%カット', label: '鍵垢' },
+  meshitero: { N: 5, R: 10, SR: 20, UR: 25, maxCap: 40, unit: '%の確率で敵を行動不能にする', label: '飯テロ' },
+  kidoku_ignore: { N: 5, R: 10, SR: 20, UR: 25, maxCap: 40, unit: '%の確率で完全無視＆敵自傷', label: '既読スルー' },
+  giga_death: { N: 5, R: 10, SR: 20, UR: 25, maxCap: 40, unit: '%の確率で回避', label: '通信制限' },
+  sharp_eye: { N: 5, R: 10, SR: 20, UR: 25, maxCap: 40, unit: '%で無力化しカウンター反撃', label: '手刀見切り' },
+  domain_expansion: { N: 5, R: 8, SR: 15, UR: 25, maxCap: 40, unit: '%で必中＆確定会心', label: '領域展開' },
+  double_attack: { N: 10, R: 15, SR: 30, UR: 40, maxCap: 60, unit: '%の確率で連続攻撃', label: '2回攻撃' },
+  lifesteal: { N: 10, R: 15, SR: 25, UR: 35, maxCap: 60, unit: '%の確率で与ダメをHP吸収', label: '吸収' },
+  ban: { N: 1, R: 2, SR: 5, UR: 8, maxCap: 15, unit: '%の確率で敵を即死させる', label: 'BAN' },
+  virus: { N: 10, R: 15, SR: 25, UR: 35, maxCap: 60, unit: '%で感染（毎ターン小ダメ）', label: 'ウイルス' },
+  burn: { N: 10, R: 15, SR: 25, UR: 35, maxCap: 60, unit: '%で発火（毎ターン大ダメ）', label: '大炎上' }
+};
+
+// 💡 装備の重複発動時の合算値および内訳テキストを生成する
+export const getCombinedEffectDescription = (eff, sources = []) => {
+  if (!eff || sources.length === 0) return { title: '', detail: '' };
+  
+  if (sources.length === 1) {
+    return {
+      title: getItemEffectDescription(sources[0].item || sources[0]),
+      detail: ''
+    };
+  }
+
+  const config = EFFECT_RATES[eff];
+  if (config) {
+    const breakdown = sources.map(s => {
+      const r = s.rarity || 'N';
+      const val = config[r] ?? config.R ?? 10;
+      return `${s.slotName}: ${val}%`;
+    });
+    const totalVal = Math.min(config.maxCap, sources.reduce((sum, s) => {
+      const r = s.rarity || 'N';
+      return sum + (config[r] ?? config.R ?? 10);
+    }, 0));
+
+    return {
+      title: `【${config.label}】 重複発動で合計 ${totalVal}${config.unit}`,
+      detail: `（内訳: ${breakdown.join(' ＋ ')}）`
+    };
+  }
+
+  return {
+    title: `${EFFECT_DESCRIPTIONS[eff] || '【特殊効果あり】'}`,
+    detail: `（${sources.map(s => s.slotName).join(' ＋ ')}で重複発動中）`
+  };
+};
+
