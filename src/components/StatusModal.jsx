@@ -178,7 +178,7 @@ const StatusModal = ({ isOpen, onClose, userLevel = 1, userExp = 0, levelInfo, h
                 <div style={{ fontSize: '0.7rem', color: '#991b1b', fontWeight: 'bold' }}>❤️ 最大HP</div>
                 <div style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#dc2626', margin: '2px 0' }}>{totalHp}</div>
                 <div style={{ fontSize: '0.65rem', color: '#7f1d1d' }}>
-                  Lv: {baseHp}
+                  基本: {baseHp}
                   {equipHp > 0 && <span style={{ color: '#16a34a', fontWeight: 'bold', marginLeft: '2px' }}>+{equipHp}</span>}
                 </div>
               </div>
@@ -188,7 +188,7 @@ const StatusModal = ({ isOpen, onClose, userLevel = 1, userExp = 0, levelInfo, h
                 <div style={{ fontSize: '0.7rem', color: '#9a3412', fontWeight: 'bold' }}>⚔️ 攻撃力</div>
                 <div style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#ea580c', margin: '2px 0' }}>{totalAtk}</div>
                 <div style={{ fontSize: '0.65rem', color: '#7c2d12' }}>
-                  Lv: {baseAtk}
+                  基本: {baseAtk}
                   {equipAtk > 0 && <span style={{ color: '#16a34a', fontWeight: 'bold', marginLeft: '2px' }}>+{equipAtk}</span>}
                 </div>
               </div>
@@ -198,7 +198,7 @@ const StatusModal = ({ isOpen, onClose, userLevel = 1, userExp = 0, levelInfo, h
                 <div style={{ fontSize: '0.7rem', color: '#1e40af', fontWeight: 'bold' }}>🛡️ 防御力</div>
                 <div style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#2563eb', margin: '2px 0' }}>{totalDef}</div>
                 <div style={{ fontSize: '0.65rem', color: '#1e3a8a' }}>
-                  Lv: {baseDef}
+                  基本: {baseDef}
                   {equipDef > 0 && <span style={{ color: '#16a34a', fontWeight: 'bold', marginLeft: '2px' }}>+{equipDef}</span>}
                 </div>
               </div>
