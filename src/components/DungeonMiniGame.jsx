@@ -630,7 +630,7 @@ const DungeonMiniGame = ({
           <span style={{ fontSize: '1.4rem' }}>{floor % 10 === 0 ? '👑' : '🏰'}</span>
           <div>
             <div style={{ fontWeight: 'bold', fontSize: '0.95rem', color: floor % 10 === 0 ? '#fca5a5' : '#c7d2fe' }}>
-              {floor % 10 === 0 ? '地下迷宮・ボスフロア' : '地下迷宮（トルネコ風探索）'}
+              {floor % 10 === 0 ? '地下迷宮・ボスフロア' : '地下迷宮'}
             </div>
             <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
               最高記録: <strong style={{ color: '#fbbf24' }}>B{bestFloor}F</strong>
