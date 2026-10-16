@@ -523,6 +523,30 @@ const DungeonMiniGame = ({
       newLogs.push(`💻 【解析】 ${getEffectMsg(getEffectSource('partner_hack') ? 'partner_hack' : 'partner_expose', hackItem)} (敵の防御力が0になった！)`);
     }
 
+    // 💥 【誤爆: gobaku】 予測不能のハプニング（N:5%, R:10%, SR:15%, UR:20%）
+    const gobakuItem = getEffectSource('gobaku');
+    const gobakuChance = getEffectRarityTotal('gobaku', { N: 0.05, R: 0.10, SR: 0.15, UR: 0.20 }, 0.10, 0.30);
+    if (gobakuItem && Math.random() < gobakuChance) {
+      const roll = Math.random();
+      if (roll < 0.60) {
+        const gDmg = Math.max(10, Math.floor(enemy.hp * 0.15));
+        currentEnemyHp = Math.max(0, currentEnemyHp - gDmg);
+        newLogs.push(`💥 ${getStackLabel('gobaku', '誤爆')} 送る相手を間違えた！ 「これあいつの悪口じゃん…」と敵に ${gDmg} の大ダメージ！`);
+        if (currentEnemyHp === 0) {
+          handleBattleVictory(newLogs, currentPlayerHp);
+          return;
+        }
+      } else if (roll < 0.85) {
+        const selfDmg = Math.max(3, Math.floor(pMaxHp * 0.08));
+        currentPlayerHp = Math.max(1, currentPlayerHp - selfDmg);
+        newLogs.push(`💥 ${getStackLabel('gobaku', '誤爆')} 全体チャットに誤爆した！ あまりの恥ずかしさで悶絶し ${selfDmg} のダメージ！`);
+      } else {
+        const gHeal = Math.max(5, Math.floor(pMaxHp * 0.10));
+        currentPlayerHp = Math.min(pMaxHp, currentPlayerHp + gHeal);
+        newLogs.push(`🎁 ${getStackLabel('gobaku', '誤爆')} ドリンク無料クーポンを誤爆した！ あなたのHPが ${gHeal} 回復した！`);
+      }
+    }
+
     // 会心率計算（レアリティ別ボーナス合算・上限キャップ付き）
     const critBonus = getEffectRarityTotal('crit_up', { N: 0.05, R: 0.10, SR: 0.20, UR: 0.25 }, 0.10, 0.50);
     let basePCrit = 0.10 + critBonus;
@@ -635,9 +659,35 @@ const DungeonMiniGame = ({
       newLogs.push(`😬 【ドン引き】 ${getEffectMsg('cringe', cringeItem)} (敵はドン引きして動けない！)`);
     }
 
+    // 🍜 【飯テロ: meshitero】（N:5%, R:10%, SR:20%, UR:25%）
+    const meshiteroItem = getEffectSource('meshitero');
+    const meshiteroChance = getEffectRarityTotal('meshitero', { N: 0.05, R: 0.10, SR: 0.20, UR: 0.25 }, 0.10, 0.40);
+    if (!isEnemyStunned && meshiteroItem && Math.random() < meshiteroChance) {
+      isEnemyStunned = true;
+      newLogs.push(`🍜 ${getStackLabel('meshitero', '飯テロ')} 深夜の特製背脂ニンニクマシマシ画像を投下！ 敵はお腹を押さえて動けなくなった！`);
+    }
+
+    // 💬 【既読スルー: kidoku_ignore】 敵攻撃を完全無視＆敵モヤモヤ自傷（N:5%, R:10%, SR:20%, UR:25%）
+    let isKidokuSkipped = false;
+    const kidokuItem = getEffectSource('kidoku_ignore');
+    const kidokuChance = getEffectRarityTotal('kidoku_ignore', { N: 0.05, R: 0.10, SR: 0.20, UR: 0.25 }, 0.10, 0.40);
+    if (!isEnemyStunned && kidokuItem && Math.random() < kidokuChance) {
+      isKidokuSkipped = true;
+      const moyamoyaDmg = Math.max(5, Math.floor(enemy.hp * 0.08));
+      currentEnemyHp = Math.max(0, currentEnemyHp - moyamoyaDmg);
+      newLogs.push(`💬 ${getStackLabel('kidoku_ignore', '既読スルー')} 敵の攻撃を既読のまま放置した！`);
+      newLogs.push(`🌀 敵は「返信まだかな…」とモヤモヤして自傷し、${moyamoyaDmg} のダメージを受けた！`);
+      if (currentEnemyHp === 0) {
+        handleBattleVictory(newLogs, currentPlayerHp);
+        return;
+      }
+    }
+
     // 敵の反撃ターン
     if (isEnemyStunned) {
       newLogs.push(`💤 【${enemy.name}】 は動けない！`);
+    } else if (isKidokuSkipped) {
+      // 既読スルーでスキップ済み
     } else {
       const enemySkills = enemy.skills || [];
       const usedSkill = (enemySkills.length > 0 && Math.random() < 0.30)
@@ -661,22 +711,28 @@ const DungeonMiniGame = ({
         const minDmg = Math.max(1, Math.floor(enemy.atk * 0.2 * skillMult));
         if (dmgToPlayer < minDmg) dmgToPlayer = minDmg;
 
-        // 回避判定 (stealth: N5%/R10%/SR20%, dodge_up: N5%/R10%/SR20%, hires: 35%)
+        // 回避判定 (stealth: N5%/R10%/SR20%, dodge_up: N5%/R10%/SR20%, giga_death: N5%/R10%/SR20%, hires: 35%)
         const stealthItem = getEffectSource('stealth');
         const dodgeBonus = getEffectRarityTotal('dodge_up', { N: 0.05, R: 0.10, SR: 0.20, UR: 0.25 }, 0.10, 0.50);
+        const gigaBonus = getEffectRarityTotal('giga_death', { N: 0.05, R: 0.10, SR: 0.20, UR: 0.25 }, 0.10, 0.40);
+        const gigaItem = getEffectSource('giga_death');
         const hiresItem = getEffectSource('hires');
         let isDodged = false;
 
-        let totalDodgeChance = dodgeBonus;
+        let totalDodgeChance = dodgeBonus + gigaBonus;
         if (stealthItem) {
           totalDodgeChance += getRarityRate(stealthItem, { N: 0.05, R: 0.10, SR: 0.20, UR: 0.25 }, 0.10);
         }
 
         if (totalDodgeChance > 0 && Math.random() < Math.min(0.60, totalDodgeChance)) {
           isDodged = true;
-          newLogs.push(stealthItem 
-            ? `🥷 【ステルス】 匿名性の陰に隠れて攻撃を回避した！`
-            : `💨 【回避】 華麗なステップで敵の攻撃をかわした！`);
+          if (gigaItem && Math.random() < 0.60) {
+            newLogs.push(`📶 【通信制限】 敵はギガ死（128kbps）でカクついて攻撃が間に合わなかった！`);
+          } else {
+            newLogs.push(stealthItem 
+              ? `🥷 【ステルス】 匿名性の陰に隠れて攻撃を回避した！`
+              : `💨 【回避】 華麗なステップで敵の攻撃をかわした！`);
+          }
         } else if (hiresItem && Math.random() < 0.35) {
           isDodged = true;
           newLogs.push(`🎧 【ハイレゾ】 ${getEffectMsg('hires', hiresItem)}`);

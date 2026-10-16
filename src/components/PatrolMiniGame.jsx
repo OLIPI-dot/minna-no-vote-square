@@ -349,6 +349,34 @@ const PatrolMiniGame = ({
       }
     }
 
+    // 💥 【誤爆: gobaku】 予測不能のハプニング（N:5%, R:10%, SR:15%, UR:20%）
+    const gobakuItem = getEffectSource('gobaku');
+    const gobakuChance = getEffectRarityTotal('gobaku', { N: 0.05, R: 0.10, SR: 0.15, UR: 0.20 }, 0.10, 0.30);
+    if (gobakuItem && Math.random() < gobakuChance) {
+      const roll = Math.random();
+      if (roll < 0.60) {
+        const gDmg = Math.max(10, Math.floor(enemy.hp * 0.15));
+        currentEnemyHp = Math.max(0, currentEnemyHp - gDmg);
+        newLogs.push(`💥 ${getStackLabel('gobaku', '誤爆')} 送る相手を間違えた！ 「これあいつの悪口じゃん…」と敵に ${gDmg} の大ダメージ！`);
+        if (currentEnemyHp === 0) {
+          newLogs.push(`🎉 敵は誤爆のショックに耐えきれず消滅した... 【${enemy.name}】 を撃退した！`);
+          setEnemyHp(0);
+          setPlayerHp(currentPlayerHp);
+          setBattleLog(newLogs);
+          handleWin(enemy);
+          return;
+        }
+      } else if (roll < 0.85) {
+        const selfDmg = Math.max(3, Math.floor(pMaxHp * 0.08));
+        currentPlayerHp = Math.max(1, currentPlayerHp - selfDmg);
+        newLogs.push(`💥 ${getStackLabel('gobaku', '誤爆')} 全体チャットに誤爆した！ あまりの恥ずかしさで悶絶し ${selfDmg} のダメージ！`);
+      } else {
+        const gHeal = Math.max(5, Math.floor(pMaxHp * 0.10));
+        currentPlayerHp = Math.min(pMaxHp, currentPlayerHp + gHeal);
+        newLogs.push(`🎁 ${getStackLabel('gobaku', '誤爆')} ドリンク無料クーポンを誤爆した！ あなたのHPが ${gHeal} 回復した！`);
+      }
+    }
+
     // 🎲 お互いの命中率とクリティカル判定（レアリティ別ボーナス合算・上限キャップ付き）
     const critBonus = getEffectRarityTotal('crit_up', { N: 0.05, R: 0.10, SR: 0.20, UR: 0.25 }, 0.10, 0.50);
     let basePCrit = 0.10 + critBonus;
@@ -371,7 +399,8 @@ const PatrolMiniGame = ({
     const pCrit = Math.random() < Math.min(0.70, basePCrit);
 
     const dodgeBonus = getEffectRarityTotal('dodge_up', { N: 0.05, R: 0.10, SR: 0.20, UR: 0.25 }, 0.10, 0.50);
-    let baseEMiss = 0.05 + dodgeBonus;
+    const gigaBonus = getEffectRarityTotal('giga_death', { N: 0.05, R: 0.10, SR: 0.20, UR: 0.25 }, 0.10, 0.40);
+    let baseEMiss = 0.05 + dodgeBonus + gigaBonus;
     const stealthItem = getEffectSource('stealth');
     if (stealthItem) {
       const stealthBonus = getRarityRate(stealthItem, { N: 0.05, R: 0.10, SR: 0.20, UR: 0.25 }, 0.10);
@@ -593,6 +622,14 @@ const PatrolMiniGame = ({
         isEnemyStunned = true;
         newLogs.push(`😰 ${getStackLabel('cringe', 'ドン引き')} ${getEffectMsg('cringe', cringeItem)}`);
       }
+
+      // 🍜 【飯テロ: meshitero】（N:5%, R:10%, SR:20%, UR:25%）
+      const meshiteroItem = getEffectSource('meshitero');
+      const meshiteroChance = getEffectRarityTotal('meshitero', { N: 0.05, R: 0.10, SR: 0.20, UR: 0.25 }, 0.10, 0.40);
+      if (currentEnemyHp > 0 && meshiteroItem && Math.random() < meshiteroChance) {
+        isEnemyStunned = true;
+        newLogs.push(`🍜 ${getStackLabel('meshitero', '飯テロ')} 深夜の特製背脂ニンニクマシマシ画像を投下！ 敵はお腹を押さえて動けなくなった！`);
+      }
       } // elseの閉じを追加
     }
 
@@ -650,12 +687,36 @@ const PatrolMiniGame = ({
       newLogs.push(`🚨 ${getStackLabel('report', '通報')} ${getEffectMsg('report', reportItem)}`);
     }
 
+    // 💬 【既読スルー: kidoku_ignore】 敵攻撃を完全無視＆敵モヤモヤ自傷（N:5%, R:10%, SR:20%, UR:25%）
+    const kidokuItem = getEffectSource('kidoku_ignore');
+    const kidokuChance = getEffectRarityTotal('kidoku_ignore', { N: 0.05, R: 0.10, SR: 0.20, UR: 0.25 }, 0.10, 0.40);
+    if (!skipEnemyAttack && kidokuItem && Math.random() < kidokuChance) {
+      skipEnemyAttack = true;
+      const moyamoyaDmg = Math.max(5, Math.floor(enemy.hp * 0.08));
+      currentEnemyHp = Math.max(0, currentEnemyHp - moyamoyaDmg);
+      newLogs.push(`💬 ${getStackLabel('kidoku_ignore', '既読スルー')} 敵の攻撃を既読のまま放置した！`);
+      newLogs.push(`🌀 敵は「返信まだかな…」とモヤモヤして自傷し、${moyamoyaDmg} のダメージを受けた！`);
+      if (currentEnemyHp === 0) {
+        newLogs.push(`🎉 敵は既読無視の絶望に耐えきれず消滅した... 【${enemy.name}】 を撃退した！`);
+        setEnemyHp(0);
+        setPlayerHp(currentPlayerHp);
+        setBattleLog(newLogs);
+        handleWin(enemy);
+        return;
+      }
+    }
+
     if (isEnemyStunned) {
       newLogs.push(`... 【${enemy.name}】 は虚空を見つめている。`);
     } else if (skipEnemyAttack) {
       // 謝罪等でスキップ済み
     } else if (eMiss) {
-      newLogs.push(`💨 敵の反撃... しかしあなたはヒョイッと避けた！`);
+      const gigaItem = getEffectSource('giga_death');
+      if (gigaItem && Math.random() < 0.60) {
+        newLogs.push(`📶 【通信制限】 敵はギガ死（128kbps）でカクついて攻撃が間に合わなかった！`);
+      } else {
+        newLogs.push(`💨 敵の反撃... しかしあなたはヒョイッと避けた！`);
+      }
     } else {
       // ⚡ 敵の固有スキル判定（所持していれば約30%の確率で発動）
       const enemySkills = enemy.skills || [];
