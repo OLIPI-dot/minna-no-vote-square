@@ -329,7 +329,7 @@ const Sidebar = ({
           </div>
 
           <div style={{ minHeight: '300px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {miniqueTab === 'patrol' && (
+            <div style={{ display: miniqueTab === 'patrol' ? 'block' : 'none' }}>
               <PatrolMiniGame 
                 userLevel={levelInfo?.level || 1} 
                 userExp={userExp}
@@ -346,9 +346,9 @@ const Sidebar = ({
                 setEncounteredEnemies={setEncounteredEnemies}
                 user={user}
               />
-            )}
+            </div>
 
-            {miniqueTab === 'dungeon' && (
+            <div style={{ display: miniqueTab === 'dungeon' ? 'block' : 'none' }}>
               <DungeonMiniGame 
                 userLevel={levelInfo?.level || 1} 
                 userExp={userExp}
@@ -364,22 +364,9 @@ const Sidebar = ({
                 setEncounteredEnemies={setEncounteredEnemies}
                 user={user}
               />
-            )}
+            </div>
 
-            {/* 🐉 ボス戦 (本実装完了まで一時非表示) */}
-            {/*
-            {miniqueTab === 'boss' && (
-              <BattleMiniGame 
-                userLevel={levelInfo?.level || 1} 
-                addExp={addExp} 
-                equipment={equipment} 
-                globalOnlineCount={globalOnlineCount} 
-                user={user}
-              />
-            )}
-            */}
-
-            {miniqueTab === 'gacha' && (
+            <div style={{ display: miniqueTab === 'gacha' ? 'block' : 'none' }}>
               <GachaMiniGame 
                 userLevel={levelInfo?.level || 1}
                 gachaTickets={gachaTickets} 
@@ -392,7 +379,7 @@ const Sidebar = ({
                 acquiredItems={acquiredItems}
                 setAcquiredItems={setAcquiredItems}
               />
-            )}
+            </div>
           </div>
         </div>
       {/* 5. 💬 X風・広場のタイムライン（つぶやき） */}

@@ -357,11 +357,10 @@ const PatrolMiniGame = ({
     let baseEMiss = dodgeCount > 0 ? Math.min(0.60, 0.05 + (0.25 * dodgeCount)) : 0.05; // 重複で+25%、最大60%
     const stealthItem = getEffectSource('stealth');
     if (stealthItem) baseEMiss = 0.20; // 匿名性で20%回避
-    if (cursedItem) baseEMiss = 0; // 呪われていると回避不可
     
     const eMiss = Math.random() < baseEMiss; 
     let ePainful = Math.random() < (enemy.type === 'rare' ? 0.15 : 0.05);
-    if (cursedItem) ePainful = Math.random() < 0.5; // 呪われていると敵の痛恨率が50%に跳ね上がる
+    if (cursedItem) ePainful = Math.random() < 0.20; // 呪われていると敵の痛恨率が20%に上昇
 
     const attentionItem = getEffectSource('attention_seeker');
     if (attentionItem) {

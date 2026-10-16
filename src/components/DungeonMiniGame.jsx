@@ -773,49 +773,64 @@ const DungeonMiniGame = ({
         setDungeonLog(prev => [`🐰💧 迷子のらびたんを地上へ救出した！（チケット+1）`, ...prev]);
       } else if (enemy.id === 'd_gem_rabbit') {
         const gemItem = ITEMS.find(i => i.id === 'ac_rabi_gem');
-        if (gemItem) {
+        if (gemItem && Math.random() < 0.40) {
           setCollectedItems(prev => [...prev, gemItem]);
           if (setInventory) setInventory(prev => [...prev, gemItem]);
+          logs.push(`🐰💎 「わー！見つかっちゃった！」と宝石を落として逃げていった！`);
+          logs.push(`🎁✨ 落とし物の 【らびたんの掘り出した宝石 (SR)】 を手に入れた！`);
+          setDungeonLog(prev => [`🐰💎 宝石らびたんを発見！貴重な宝石を回収した！`, ...prev]);
+        } else {
+          logs.push(`🐰💎 「わー！見つかっちゃった！」と猛ダッシュで逃げていった！`);
+          setDungeonLog(prev => [`🐰💎 宝石らびたんが逃走した！`, ...prev]);
         }
-        logs.push(`🐰💎 「わー！見つかっちゃった！」と宝石を抱えて逃げていった！`);
-        logs.push(`🎁 落とし物の 【らびたんの掘り出した宝石 (SR)】 を手に入れた！`);
-        setDungeonLog(prev => [`🐰💎 宝石らびたんを発見！貴重な宝石を回収した！`, ...prev]);
       } else if (enemy.id === 'd_muscle_rabbit') {
         const protein = ITEMS.find(i => i.id === 'ar_protein_drink');
-        if (protein) {
+        if (protein && Math.random() < 0.35) {
           setCollectedItems(prev => [...prev, protein]);
           if (setInventory) setInventory(prev => [...prev, protein]);
+          logs.push(`🐰💪 「ナイスバルク…！いい筋トレになったぜ…！」と爽やかに去っていった！`);
+          logs.push(`🎁✨ ムキムキらびたんから 【にんじん味の特濃プロテイン (SR)】 を譲り受けた！`);
+          setDungeonLog(prev => [`🐰💪 ムキムキらびたんと肉体を語り合い、プロテインを獲得！`, ...prev]);
+        } else {
+          logs.push(`🐰💪 「いい筋トレになったぜ…！またパンプアップしようぜ！」と爽やかに去っていった！`);
+          setDungeonLog(prev => [`🐰💪 ムキムキらびたんと汗を流した！`, ...prev]);
         }
-        logs.push(`🐰💪 「ナイスバルク…！いい筋トレになったぜ…！」と爽やかに去っていった！`);
-        logs.push(`🎁 ムキムキらびたんから 【にんじん味の特濃プロテイン (SR)】 を譲り受けた！`);
-        setDungeonLog(prev => [`🐰💪 ムキムキらびたんと肉体を語り合い、プロテインを獲得！`, ...prev]);
       } else if (enemy.id === 'd_living_rabbit') {
         const blanket = ITEMS.find(i => i.id === 'ar_kotatsu_blanket');
-        if (blanket) {
+        if (blanket && Math.random() < 0.35) {
           setCollectedItems(prev => [...prev, blanket]);
           if (setInventory) setInventory(prev => [...prev, blanket]);
+          logs.push(`🐰🛋️ 「たまには人と話すのも悪くないねぇ…これあげるよ」`);
+          logs.push(`🎁✨ 定住らびたんから 【地下ぐらしのぬくぬく毛布 (SR)】 をもらった！`);
+          setDungeonLog(prev => [`🐰🛋️ 定住らびたんのコタツでお茶を飲み、毛布をもらった！`, ...prev]);
+        } else {
+          logs.push(`🐰🛋️ 「ふぅ…お茶がうまいねぇ。気をつけて進みなよ〜」とお見送りしてくれた。`);
+          setDungeonLog(prev => [`🐰🛋️ 定住らびたんとコタツで一服した！`, ...prev]);
         }
-        logs.push(`🐰🛋️ 「たまには人と話すのも悪くないねぇ…これあげるよ」`);
-        logs.push(`🎁 定住らびたんから 【地下ぐらしのぬくぬく毛布 (SR)】 をもらった！`);
-        setDungeonLog(prev => [`🐰🛋️ 定住らびたんのコタツでお茶を飲み、毛布をもらった！`, ...prev]);
       } else if (enemy.id === 'd_dark_rabbit') {
         const darkCarrot = ITEMS.find(i => i.id === 'w_dark_carrot');
-        if (darkCarrot) {
+        if (darkCarrot && Math.random() < 0.25) {
           setCollectedItems(prev => [...prev, darkCarrot]);
           if (setInventory) setInventory(prev => [...prev, darkCarrot]);
+          logs.push(`🐰👿 「浄化される…！温かい光を…ありがとう…！」と元の白い姿に戻って光の中へ消えていった！`);
+          logs.push(`🎁✨ 奇跡のレアドロップ！！ 闇が結晶化した 【漆黒の呪われしにんじん (UR)】 を手に入れた！`);
+          setDungeonLog(prev => [`🐰👿 悪に堕ちたらびたんを救済し、URにんじんを獲得！`, ...prev]);
+        } else {
+          logs.push(`🐰👿 「浄化される…！温かい光を…ありがとう…！」と元の白い姿に戻って光の中へ消えていった！`);
+          setDungeonLog(prev => [`🐰👿 悪に堕ちたらびたんの魂を救済した！`, ...prev]);
         }
-        logs.push(`🐰👿 「浄化される…！温かい光を…ありがとう…！」と元の白い姿に戻って光の中へ消えていった！`);
-        logs.push(`🎁 闇が結晶化した 【漆黒の呪われしにんじん (UR)】 を手に入れた！`);
-        setDungeonLog(prev => [`🐰👿 悪に堕ちたらびたんの魂を救済した！`, ...prev]);
       } else if (enemy.id === 'd_myth_rabbit') {
         const crown = ITEMS.find(i => i.id === 'ac_ancient_crown');
-        if (crown) {
+        if (crown && Math.random() < 0.30) {
           setCollectedItems(prev => [...prev, crown]);
           if (setInventory) setInventory(prev => [...prev, crown]);
+          logs.push(`🐰👑 「見事だ、地上の旅人よ。この大地の加護をそなたに託そう…」`);
+          logs.push(`🏆✨ 神話の秘宝 【地底王の古代参冠 (LR)】 を授かった！！`);
+          setDungeonLog(prev => [`👑 伝説の地底兎から神話の古代冠を授かった！`, ...prev]);
+        } else {
+          logs.push(`🐰👑 「大地の鼓動をしかと見届けた。地上の平和を頼んだぞ…」と大地の光へ還っていった。`);
+          setDungeonLog(prev => [`👑 伝説の地底兎の試練を乗り越えた！`, ...prev]);
         }
-        logs.push(`🐰👑 「見事だ、地上の旅人よ。この大地の加護をそなたに託そう…」`);
-        logs.push(`🏆 神話の秘宝 【地底王の古代参冠 (LR)】 を授かった！！`);
-        setDungeonLog(prev => [`👑 伝説の地底兎から神話の古代冠を授かった！`, ...prev]);
       } else if (enemy.specialDropId && Math.random() < 0.35) {
         // 🎧 専用特別ドロップ判定（93万円のハイレゾおじさん等）
         const specialItem = ITEMS.find(i => i.id === enemy.specialDropId);
