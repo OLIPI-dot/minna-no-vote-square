@@ -317,6 +317,7 @@ const DungeonMiniGame = ({
         const pool = ITEMS.filter(i => rarityFilter.includes(i.rarity));
         const dropped = pool[Math.floor(Math.random() * pool.length)] || ITEMS[0];
         setCollectedItems(prev => [...prev, dropped]);
+        if (setInventory) setInventory(prev => [...prev, dropped]);
         setDungeonLog(prev => [
           `🎁 【宝箱発見！】 箱を開けると 【${dropped.name} (${dropped.rarity})】 が入っていた！`,
           ...prev
@@ -382,15 +383,12 @@ const DungeonMiniGame = ({
 
   // 🚪 地上へ帰還する（戦利品確定）
   const handleEscape = () => {
-    // 🎒 探索リュックの戦利品をプレイヤーデータに正式加算
+    // 🎒 探索リュックのEXP・チケットをプレイヤーデータに正式加算
     if (collectedExp > 0 && addExp) {
       addExp(collectedExp);
     }
     if (collectedTickets > 0 && addTickets) {
       addTickets(collectedTickets);
-    }
-    if (collectedItems.length > 0 && setInventory) {
-      setInventory(prev => [...prev, ...collectedItems]);
     }
     setDungeonState('escaped');
     updateBestFloor(floor);
@@ -578,6 +576,7 @@ const DungeonMiniGame = ({
         const gemItem = ITEMS.find(i => i.id === 'ac_rabi_gem');
         if (gemItem) {
           setCollectedItems(prev => [...prev, gemItem]);
+          if (setInventory) setInventory(prev => [...prev, gemItem]);
         }
         logs.push(`🐰💎 「わー！見つかっちゃった！」と宝石を抱えて逃げていった！`);
         logs.push(`🎁 落とし物の 【らびたんの掘り出した宝石 (SR)】 を手に入れた！`);
@@ -586,6 +585,7 @@ const DungeonMiniGame = ({
         const protein = ITEMS.find(i => i.id === 'ar_protein_drink');
         if (protein) {
           setCollectedItems(prev => [...prev, protein]);
+          if (setInventory) setInventory(prev => [...prev, protein]);
         }
         logs.push(`🐰💪 「ナイスバルク…！いい筋トレになったぜ…！」と爽やかに去っていった！`);
         logs.push(`🎁 ムキムキらびたんから 【にんじん味の特濃プロテイン (SR)】 を譲り受けた！`);
@@ -594,6 +594,7 @@ const DungeonMiniGame = ({
         const blanket = ITEMS.find(i => i.id === 'ar_kotatsu_blanket');
         if (blanket) {
           setCollectedItems(prev => [...prev, blanket]);
+          if (setInventory) setInventory(prev => [...prev, blanket]);
         }
         logs.push(`🐰🛋️ 「たまには人と話すのも悪くないねぇ…これあげるよ」`);
         logs.push(`🎁 定住らびたんから 【地下ぐらしのぬくぬく毛布 (SR)】 をもらった！`);
@@ -602,6 +603,7 @@ const DungeonMiniGame = ({
         const darkCarrot = ITEMS.find(i => i.id === 'w_dark_carrot');
         if (darkCarrot) {
           setCollectedItems(prev => [...prev, darkCarrot]);
+          if (setInventory) setInventory(prev => [...prev, darkCarrot]);
         }
         logs.push(`🐰👿 「浄化される…！温かい光を…ありがとう…！」と元の白い姿に戻って光の中へ消えていった！`);
         logs.push(`🎁 闇が結晶化した 【漆黒の呪われしにんじん (UR)】 を手に入れた！`);
@@ -610,6 +612,7 @@ const DungeonMiniGame = ({
         const crown = ITEMS.find(i => i.id === 'ac_ancient_crown');
         if (crown) {
           setCollectedItems(prev => [...prev, crown]);
+          if (setInventory) setInventory(prev => [...prev, crown]);
         }
         logs.push(`🐰👑 「見事だ、地上の旅人よ。この大地の加護をそなたに託そう…」`);
         logs.push(`🏆 神話の秘宝 【地底王の古代参冠 (LR)】 を授かった！！`);
@@ -619,6 +622,7 @@ const DungeonMiniGame = ({
         const specialItem = ITEMS.find(i => i.id === enemy.specialDropId);
         if (specialItem) {
           setCollectedItems(prev => [...prev, specialItem]);
+          if (setInventory) setInventory(prev => [...prev, specialItem]);
           logs.push(`🎁✨ 奇跡の激レアドロップ！！`);
           logs.push(`🎧 【${enemy.name}】 は首から下げていた 【${specialItem.name} (${specialItem.rarity})】 を落としていった！！`);
         }
@@ -631,6 +635,7 @@ const DungeonMiniGame = ({
         const pool = ITEMS.filter(i => rarityFilter.includes(i.rarity));
         const dropped = pool[Math.floor(Math.random() * pool.length)] || ITEMS[0];
         setCollectedItems(prev => [...prev, dropped]);
+        if (setInventory) setInventory(prev => [...prev, dropped]);
         logs.push(`🎁 敵が 【${dropped.name} (${dropped.rarity})】 を落とした！`);
       }
       setDungeonLog(prev => [
@@ -735,8 +740,9 @@ const DungeonMiniGame = ({
               maxWidth: '280px',
               margin: '10px auto 0 auto'
             }}>
-              ⚠️ <strong>スリル満点の脱出ルール</strong><br />
-              地下で力尽きると今回の戦利品を落としてしまいます！危なくなったら「🚪 地上へ帰還」して安全に持ち帰ろう！
+              ⚠️ <strong>脱出ルール（装備あんしん保護🛡️）</strong><br />
+              地下で力尽きると獲得EXPやチケットを落としてしまいます（※拾った装備・アイテムは100%守られます！）。
+              EXPやチケットを安全に持ち帰るなら「🚪 地上へ帰還」しよう！
             </div>
           </div>
 
@@ -800,12 +806,12 @@ const DungeonMiniGame = ({
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            fontSize: '0.75rem',
+            fontSize: '0.74rem',
             color: '#c7d2fe'
           }}>
-            <span>🎒 持ち帰り待機中の戦利品:</span>
+            <span>🎒 持ち帰り待機中:</span>
             <span style={{ fontWeight: 'bold', color: '#fcd34d' }}>
-              EXP +{collectedExp} / 🎫 {collectedTickets}枚 / 🎁 {collectedItems.length}個
+              EXP +{collectedExp} / 🎫 {collectedTickets}枚 <span style={{ color: '#34d399', fontSize: '0.7rem' }}>（🛡️ 装備 {collectedItems.length}個 保護済）</span>
             </span>
           </div>
 
@@ -945,7 +951,7 @@ const DungeonMiniGame = ({
           }}>
             <span>🎒 持ち帰り待機中:</span>
             <span style={{ fontWeight: 'bold', color: '#fcd34d' }}>
-              EXP +{collectedExp} / 🎫 {collectedTickets}枚 / 🎁 {collectedItems.length}個
+              EXP +{collectedExp} / 🎫 {collectedTickets}枚 <span style={{ color: '#34d399', fontSize: '0.68rem' }}>（🛡️ 装備 {collectedItems.length}個 保護済）</span>
             </span>
           </div>
           {/* ボス警告バナー（10階ごと） */}
@@ -1127,9 +1133,11 @@ const DungeonMiniGame = ({
             <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginTop: '4px', lineHeight: 1.6 }}>
               B{floor}F で力尽き、地上に担ぎ込まれました。<br />
               <span style={{ color: '#fca5a5' }}>
-                今回の探索で集めた戦利品（EXP +{collectedExp}、チケット {collectedTickets}枚、アイテム {collectedItems.length}個）はすべて落としてしまいました…
+                今回の探索で集めた EXP (+{collectedExp}) とチケット ({collectedTickets}枚) は落としてしまいました…
               </span><br />
-              <span style={{ fontSize: '0.72rem', color: '#64748b' }}>（※もともと持っている自分の装備やレベルは無事です）</span>
+              <strong style={{ color: '#34d399', fontSize: '0.82rem' }}>
+                🛡️ ですが、拾った装備・アイテム（{collectedItems.length}個）はすべて無事に持ち帰れました！✨
+              </strong>
             </div>
           </div>
 
