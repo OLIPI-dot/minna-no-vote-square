@@ -436,8 +436,10 @@ const DungeonMiniGame = ({
       ['weapon', 'armor', 'accessory', 'partner'].forEach(slot => {
         const item = equipment?.[slot];
         if (item) {
-          const itemEff = item.effect || ITEMS.find(i => (item.id && i.id === String(item.id).split('_')[0]) || i.name === item.name)?.effect;
-          if (itemEff === eff) sources.push(item);
+          const matchedItem = ITEMS.find(i => (item.id && i.id === String(item.id).split('_')[0]) || i.name === item.name);
+          const itemEff = item.effect || matchedItem?.effect;
+          const itemRarity = item.rarity || matchedItem?.rarity || 'N';
+          if (itemEff === eff) sources.push({ ...item, rarity: itemRarity });
         }
       });
       return sources;
@@ -450,6 +452,21 @@ const DungeonMiniGame = ({
 
     const getEffectCount = (eff) => getEffectSources(eff).length;
     const getEffectChance = (eff, baseRate, maxCap = 0.50) => Math.min(maxCap, baseRate * getEffectCount(eff));
+
+    // レアリティごとのレート・効果量マップから値を取得
+    const getRarityRate = (item, rates, defaultRate = 0.10) => {
+      if (!item) return 0;
+      return rates[item.rarity] ?? defaultRate;
+    };
+
+    // 指定エフェクトを持つ全装備のレート合算（重複加算 & 上限キャップ付き）
+    const getEffectRarityTotal = (eff, rates, defaultRate = 0.10, maxCap = 0.60) => {
+      const sources = getEffectSources(eff);
+      if (sources.length === 0) return 0;
+      const total = sources.reduce((sum, item) => sum + getRarityRate(item, rates, defaultRate), 0);
+      return Math.min(maxCap, total);
+    };
+
     const getStackLabel = (eff, label) => {
       const count = getEffectCount(eff);
       return count > 1 ? `【${label}×${count}】` : `【${label}】`;
@@ -467,10 +484,10 @@ const DungeonMiniGame = ({
       return;
     }
 
-    // ✨ 【自動回復: regen】
+    // ✨ 【自動回復: regen】（N:3%, R:5%, SR:10%, UR:15%）
     const regenItem = getEffectSource('regen');
     if (regenItem) {
-      const healPct = Math.min(0.30, 0.10 * getEffectCount('regen'));
+      const healPct = getEffectRarityTotal('regen', { N: 0.03, R: 0.05, SR: 0.10, UR: 0.15 }, 0.05, 0.30);
       const healAmount = Math.max(1, Math.floor(pMaxHp * healPct));
       currentPlayerHp = Math.min(pMaxHp, currentPlayerHp + healAmount);
       newLogs.push(`✨ ${getStackLabel('regen', '回復')} ${getEffectMsg('regen', regenItem)} (HP +${healAmount})`);
@@ -506,15 +523,15 @@ const DungeonMiniGame = ({
       newLogs.push(`💻 【解析】 ${getEffectMsg(getEffectSource('partner_hack') ? 'partner_hack' : 'partner_expose', hackItem)} (敵の防御力が0になった！)`);
     }
 
-    // 会心率計算
-    const critCount = getEffectCount('crit_up');
-    let basePCrit = critCount > 0 ? Math.min(0.60, 0.15 + (0.20 * critCount)) : 0.15;
+    // 会心率計算（レアリティ別ボーナス合算・上限キャップ付き）
+    const critBonus = getEffectRarityTotal('crit_up', { N: 0.05, R: 0.10, SR: 0.20, UR: 0.25 }, 0.10, 0.50);
+    let basePCrit = 0.10 + critBonus;
     const cheerItem = getEffectSource('partner_cheer');
     if (cheerItem) basePCrit += 0.20;
     const cursedItem = getEffectSource('cursed_power');
     if (cursedItem) basePCrit = 0.50;
 
-    const isCrit = Math.random() < basePCrit;
+    const isCrit = Math.random() < Math.min(0.70, basePCrit);
 
     // 攻撃計算
     let baseDmg = Math.max(5, pAtk - Math.floor(effectiveEnemyDef * 0.6));
@@ -560,25 +577,31 @@ const DungeonMiniGame = ({
       ? `💥 会心の一撃！！！ あなたの猛攻で ${dmgToEnemy} の大ダメージ！` 
       : `⚔️ あなたの攻撃！ 敵に ${dmgToEnemy} のダメージ！`);
 
-    // 🚫 【BAN / ブロック: ban / block】 5%で敵を即死
+    // 🚫 【BAN / ブロック: ban / block】（N:1%, R:2%, SR:5%, UR:8% 最大15%）
     const banItem = getEffectSource('ban') || getEffectSource('block');
-    if (currentEnemyHp > 0 && banItem && Math.random() < 0.05) {
+    const banChance = getEffectRarityTotal('ban', { N: 0.01, R: 0.02, SR: 0.05, UR: 0.08 }, 0.02, 0.15)
+      + getEffectRarityTotal('block', { N: 0.01, R: 0.02, SR: 0.05, UR: 0.08 }, 0.02, 0.15);
+    if (currentEnemyHp > 0 && banItem && Math.random() < Math.min(0.20, banChance)) {
       currentEnemyHp = 0;
       newLogs.push(`🚫 【BAN】 ${getEffectMsg(getEffectSource('ban') ? 'ban' : 'block', banItem)} (敵のアカウントを完全凍結した！)`);
     }
 
-    // 🩸 【吸血: lifesteal】
+    // 🩸 【吸血: lifesteal】（N:10%/15%, R:15%/25%, SR:25%/40%, UR:35%/50%）
     const lifestealItem = getEffectSource('lifesteal');
-    if (currentEnemyHp > 0 && lifestealItem && Math.random() < getEffectChance('lifesteal', 0.30, 0.60)) {
-      const drain = Math.max(1, Math.floor(dmgToEnemy * 0.35));
+    const lifestealChance = getEffectRarityTotal('lifesteal', { N: 0.10, R: 0.15, SR: 0.25, UR: 0.35 }, 0.15, 0.60);
+    if (currentEnemyHp > 0 && lifestealItem && Math.random() < lifestealChance) {
+      const drainRate = getEffectRarityTotal('lifesteal', { N: 0.15, R: 0.25, SR: 0.40, UR: 0.50 }, 0.25, 0.60);
+      const drain = Math.max(1, Math.floor(dmgToEnemy * drainRate));
       currentPlayerHp = Math.min(pMaxHp, currentPlayerHp + drain);
       newLogs.push(`🩸 ${getStackLabel('lifesteal', '吸収')} HPを ${drain} 吸収した！`);
     }
 
-    // ⚔️ 【連撃: double_attack】
+    // ⚔️ 【連撃: double_attack】（N:10%/40%, R:15%/60%, SR:30%/80%, UR:40%/100%）
     const doubleItem = getEffectSource('double_attack');
-    if (currentEnemyHp > 0 && doubleItem && Math.random() < getEffectChance('double_attack', 0.30, 0.60)) {
-      const secondDmg = Math.max(1, Math.floor(dmgToEnemy * 0.75));
+    const doubleChance = getEffectRarityTotal('double_attack', { N: 0.10, R: 0.15, SR: 0.30, UR: 0.40 }, 0.15, 0.60);
+    if (currentEnemyHp > 0 && doubleItem && Math.random() < doubleChance) {
+      const doubleDmgRate = getEffectRarityTotal('double_attack', { N: 0.40, R: 0.60, SR: 0.80, UR: 1.00 }, 0.60, 1.00);
+      const secondDmg = Math.max(1, Math.floor(dmgToEnemy * doubleDmgRate));
       currentEnemyHp = Math.max(0, currentEnemyHp - secondDmg);
       newLogs.push(`⚔️ ${getStackLabel('double_attack', '連撃')} 追撃で ${secondDmg} のダメージ！`);
     }
@@ -600,12 +623,14 @@ const DungeonMiniGame = ({
     // スタン判定 (mental_damage / cringe)
     let isEnemyStunned = false;
     const mentalItem = getEffectSource('mental_damage');
-    if (mentalItem && Math.random() < 0.15) {
+    const mentalChance = getEffectRarityTotal('mental_damage', { N: 0.05, R: 0.08, SR: 0.15, UR: 0.20 }, 0.08, 0.40);
+    if (mentalItem && Math.random() < mentalChance) {
       isEnemyStunned = true;
       newLogs.push(`🧠 【精神攻撃】 ${getEffectMsg('mental_damage', mentalItem)} (敵はショックで行動不能！)`);
     }
     const cringeItem = getEffectSource('cringe');
-    if (!isEnemyStunned && cringeItem && Math.random() < 0.10) {
+    const cringeChance = getEffectRarityTotal('cringe', { N: 0.03, R: 0.05, SR: 0.10, UR: 0.15 }, 0.05, 0.25);
+    if (!isEnemyStunned && cringeItem && Math.random() < cringeChance) {
       isEnemyStunned = true;
       newLogs.push(`😬 【ドン引き】 ${getEffectMsg('cringe', cringeItem)} (敵はドン引きして動けない！)`);
     }
@@ -636,18 +661,22 @@ const DungeonMiniGame = ({
         const minDmg = Math.max(1, Math.floor(enemy.atk * 0.2 * skillMult));
         if (dmgToPlayer < minDmg) dmgToPlayer = minDmg;
 
-        // 回避判定 (stealth: 20%, dodge_up: 30%, hires: 35%)
+        // 回避判定 (stealth: N5%/R10%/SR20%, dodge_up: N5%/R10%/SR20%, hires: 35%)
         const stealthItem = getEffectSource('stealth');
-        const dodgeItem = getEffectSource('dodge_up');
+        const dodgeBonus = getEffectRarityTotal('dodge_up', { N: 0.05, R: 0.10, SR: 0.20, UR: 0.25 }, 0.10, 0.50);
         const hiresItem = getEffectSource('hires');
         let isDodged = false;
 
-        if (stealthItem && Math.random() < 0.20) {
+        let totalDodgeChance = dodgeBonus;
+        if (stealthItem) {
+          totalDodgeChance += getRarityRate(stealthItem, { N: 0.05, R: 0.10, SR: 0.20, UR: 0.25 }, 0.10);
+        }
+
+        if (totalDodgeChance > 0 && Math.random() < Math.min(0.60, totalDodgeChance)) {
           isDodged = true;
-          newLogs.push(`🥷 【ステルス】 匿名性の陰に隠れて攻撃を回避した！`);
-        } else if (dodgeItem && Math.random() < 0.30) {
-          isDodged = true;
-          newLogs.push(`💨 【回避】 華麗なステップで敵の攻撃をかわした！`);
+          newLogs.push(stealthItem 
+            ? `🥷 【ステルス】 匿名性の陰に隠れて攻撃を回避した！`
+            : `💨 【回避】 華麗なステップで敵の攻撃をかわした！`);
         } else if (hiresItem && Math.random() < 0.35) {
           isDodged = true;
           newLogs.push(`🎧 【ハイレゾ】 ${getEffectMsg('hires', hiresItem)}`);
@@ -668,23 +697,25 @@ const DungeonMiniGame = ({
             return;
           }
 
-          // 📜 【クソリプ防御: kusorep】 被弾時20%でダメージ1
+          // 📜 【クソリプ防御: kusorep】 被弾時（N:5%, R:10%, SR:20%, UR:30%）
           const kusorepItem = getEffectSource('kusorep');
+          const kusorepChance = getEffectRarityTotal('kusorep', { N: 0.05, R: 0.10, SR: 0.20, UR: 0.30 }, 0.10, 0.50);
           const privilegeItem = getEffectSource('privilege');
           const lockItem = getEffectSource('lock_account');
           const lawItem = getEffectSource('partner_law');
 
-          if (kusorepItem && Math.random() < getEffectChance('kusorep', 0.20, 0.50)) {
+          if (kusorepItem && Math.random() < kusorepChance) {
             dmgToPlayer = 1;
             newLogs.push(`📜 ${getStackLabel('kusorep', 'クソリプ')} ${getEffectMsg('kusorep', kusorepItem)} (ダメージが1になった！)`);
           } else if (privilegeItem && Math.random() < getEffectChance('privilege', 0.25, 0.50)) {
             dmgToPlayer = 0;
             newLogs.push(`👑 ${getStackLabel('privilege', '特権')} ${getEffectMsg('privilege', privilegeItem)} (ダメージを完全無効化！)`);
           } else {
-            // 🔒 【鍵垢: lock_account】 常にダメージ10%カット
+            // 🔒 【鍵垢: lock_account】 ダメージ軽減（N:5%, R:10%, SR:15%, UR:20%）
             if (lockItem) {
-              dmgToPlayer = Math.max(1, Math.floor(dmgToPlayer * 0.90));
-              newLogs.push(`🔒 【鍵垢】 ${getEffectMsg('lock_account', lockItem)} (ダメージ10%軽減)`);
+              const lockCut = getEffectRarityTotal('lock_account', { N: 0.05, R: 0.10, SR: 0.15, UR: 0.20 }, 0.10, 0.30);
+              dmgToPlayer = Math.max(1, Math.floor(dmgToPlayer * (1.0 - lockCut)));
+              newLogs.push(`🔒 【鍵垢】 ${getEffectMsg('lock_account', lockItem)} (ダメージ${Math.round(lockCut * 100)}%軽減)`);
             } else if (lawItem && Math.random() < 0.50) {
               dmgToPlayer = Math.max(1, Math.floor(dmgToPlayer * 0.50));
               newLogs.push(`👨‍⚖️ 【異議あり】 ${getEffectMsg('partner_law', lawItem)} (ダメージ半減)`);

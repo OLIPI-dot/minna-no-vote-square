@@ -601,7 +601,7 @@
     "hp": 15,
     "icon": "👓",
     "desc": "目の疲れを軽減し、長期戦に対応できる。",
-    "effect": "reflect"
+    "effect": "dodge_up"
   },
   {
     "id": "ac104",
@@ -1969,7 +1969,7 @@
     "hp": 0,
     "icon": "👽",
     "desc": "あらゆる電波や毒を弾くと言い張っている。",
-    "effect": "virus"
+    "effect": "kusorep"
   },
   {
     "id": "a506",
@@ -2535,7 +2535,7 @@
     "hp": -10,
     "icon": "🎎",
     "desc": "呪いをかけるための人形だが、間違えて着てしまった。",
-    "effect": "reflect"
+    "effect": "cringe"
   },
   {
     "id": "a802",
@@ -3036,7 +3036,7 @@
     "hp": 5,
     "icon": "😷",
     "desc": "ウイルスは防げないが、顔は隠せる。",
-    "effect": "virus"
+    "effect": "stealth"
   },
   {
     "id": "a1002",
@@ -5206,7 +5206,7 @@
     "hp": 0,
     "icon": "👑",
     "desc": "一般会員を追い出す謎の優越感で攻撃力が上がる。",
-    "effect": "privilege"
+    "effect": "crit_up"
   },
   {
     "id": "w8005",
@@ -6220,7 +6220,7 @@
     "hp": 0,
     "icon": "🔨",
     "desc": "「ぬるぽ」と言われたら反射的に殴らなければならない呪い。",
-    "effect": "reflect"
+    "effect": "double_attack"
   },
   {
     "id": "ac10005",
@@ -6413,7 +6413,7 @@
     "hp": 0,
     "icon": "🧪",
     "desc": "使用すると次元を超えた速度で連投が可能になる。",
-    "effect": "virus"
+    "effect": "double_attack"
   },
   {
     "id": "w11004",
@@ -6592,7 +6592,7 @@
     "hp": 0,
     "icon": "🔨",
     "desc": "条件反射で叩き込む伝統芸能。",
-    "effect": "reflect"
+    "effect": "double_attack"
   },
   {
     "id": "ac11002",
@@ -7228,7 +7228,7 @@
     "hp": 20,
     "icon": "🤝",
     "desc": "タワマンと高級車の写真を見せびらかす。胡散臭さで敵を威圧する。",
-    "effect": "lock_account"
+    "effect": "cringe"
   },
   {
     "id": "p12007",
@@ -7839,7 +7839,7 @@
     "hp": 24,
     "icon": "⚔️",
     "desc": "「え、聞こえませんけどぉ？」と相手の鼓膜を破壊する無慈悲な声。",
-    "effect": "stealth"
+    "effect": "mental_damage"
   },
   {
     "id": "w14010",
@@ -7954,7 +7954,7 @@
     "hp": 30,
     "icon": "🧢",
     "desc": "「あたまわるわる〜」と考えないことで、あらゆる精神攻撃を無効化する。",
-    "effect": "privilege"
+    "effect": "kusorep"
   },
   {
     "id": "a14009",
@@ -8514,7 +8514,7 @@
     "hp": 14,
     "icon": "⚡",
     "desc": "Tさんが拝んでくれた強力な塩。毒や状態異常を全解除する。",
-    "effect": "virus"
+    "effect": "regen"
   },
   {
     "id": "i15007",
@@ -8873,7 +8873,7 @@
     "hp": 15,
     "icon": "🔒",
     "desc": "炎上した瞬間に鍵をかけて安全圏から味方と傷を舐め合う。",
-    "effect": "burn"
+    "effect": "lock_account"
   },
   {
     "id": "a16007",
@@ -9857,7 +9857,7 @@
     "hp": 20,
     "icon": "💳",
     "desc": "一般会員を追い出して高画質で視聴できる選民思想のバリア。",
-    "effect": "privilege"
+    "effect": "crit_up"
   },
   {
     "id": "a18010",
@@ -10249,7 +10249,7 @@
     "hp": 10,
     "icon": "🛡️",
     "desc": "どんなウイルスが入っていても「自己責任」の一言で責任逃れする防壁。",
-    "effect": "virus"
+    "effect": "kusorep"
   },
   {
     "id": "a19003",
@@ -10388,7 +10388,7 @@
     "hp": 16,
     "icon": "🎵",
     "desc": "頭から離れなくなる中毒性のある15秒のループ音。味方全員加速。",
-    "effect": "virus"
+    "effect": "double_attack"
   },
   {
     "id": "i19004",
@@ -10868,7 +10868,7 @@
     "hp": 15,
     "icon": "⌚",
     "desc": "1秒間に16連射を目指してガチャガチャ叩く機械。反射神経が上がる。",
-    "effect": "reflect"
+    "effect": "crit_up"
   },
   {
     "id": "i20004",
@@ -11136,7 +11136,7 @@
     "hp": 0,
     "icon": "📜",
     "desc": "無能な勇者パーティーリーダーが叩きつける解雇通告。後で痛い目を見る。",
-    "effect": "ban"
+    "effect": "mental_damage"
   },
   {
     "id": "w21007",
@@ -11414,7 +11414,7 @@
     "hp": 15,
     "icon": "📄",
     "desc": "勇者に捨てられた証。これを持った者は後に真の英雄へと覚醒する。",
-    "effect": "ban"
+    "effect": "mental_damage"
   },
   {
     "id": "i21006",
@@ -11502,7 +11502,7 @@
     "hp": 15,
     "icon": "🔦",
     "desc": "暗闇の廃屋を照らす明かり。隠れた敵の弱点を照らし出す。",
-    "effect": "stealth"
+    "effect": "crit_up"
   },
   {
     "id": "p21001",
@@ -11617,7 +11617,7 @@
     "hp": 20,
     "icon": "🥺",
     "desc": "「お願い、戻ってきて…」と泣きついて敵の足を引っ張る。",
-    "effect": "ban"
+    "effect": "partner_kusorep"
   },
   {
     "id": "p21010",
@@ -11857,7 +11857,7 @@
     "hp": 15,
     "icon": "😵",
     "desc": "10万円吸い込まれて感情が無になった状態。精神攻撃を無効化。",
-    "effect": "privilege"
+    "effect": "kusorep"
   },
   {
     "id": "a22007",
