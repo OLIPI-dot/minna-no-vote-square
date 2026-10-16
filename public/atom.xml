@@ -4,11 +4,72 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-16T07:45:14.898Z</updated>
+  <updated>2026-10-16T12:51:53.127Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>日本郵便のメアドから迷惑メール</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23443"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23443</id>
+    <updated>2026-10-16T12:51:51.101Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;サーバーに不正アクセス&quot;,
+  &quot;point1_desc&quot;: &quot;日本郵便のサーバーが外部からの不正アクセスを受け、保有するメールアドレスから約52万通におよぶ大量の迷惑メールが送信されていたことが16日に判明した。&quot;,
+  &quot;point2_title&quot;: &quot;詐欺被害は未確認&quot;,
+  &quot;poi...</summary>
+  </entry>
+  <entry>
+    <title>トヨタ 30年までに全車種をSDVに</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23442"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23442</id>
+    <updated>2026-10-16T12:51:33.117Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;話題&quot;,
+  &quot;point1_title&quot;: &quot;全車種をソフト車化へ&quot;,
+  &quot;point1_desc&quot;: &quot;トヨタ自動車は2030年までに、世界展開する約50車種の全車両をソフトウェアで機能や性能を高める仕様に変更する方針を発表した。定額課金モデルの拡大など新たな収益源の確保を狙う。&quot;,
+  &quot;point2_title&quot;: &quot;独自ソフトで機...</summary>
+  </entry>
+  <entry>
+    <title>緊急地震速報 ドコモで配信されず</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23441"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23441</id>
+    <updated>2026-10-16T12:51:13.235Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;緊急地震速報の不具合&quot;,
+  &quot;point1_desc&quot;: &quot;NTTドコモは、気象庁から発表された緊急地震速報が同社の端末で正常に通知されなかった件について、システム内部に不具合が発生していたことが原因であると公式に発表し謝罪した。&quot;,
+  &quot;point2_title&quot;: &quot;気象庁の誤報と取...</summary>
+  </entry>
+  <entry>
+    <title>簗氏巡り 自民鶴保氏が首相に苦言</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23440"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23440</id>
+    <updated>2026-10-16T12:50:55.521Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;高市首相が参院予算委で陳謝&quot;,
+  &quot;point1_desc&quot;: &quot;高市早苗首相は16日の参院予算委員会において、簗和生前農林水産相が辞任した件について深く頭を下げ、「大変申し訳ない」と陳謝した。自民党の鶴保庸介氏からの質問に対して答弁したものである。&quot;,
+  &quot;point2_title&quot;:...</summary>
+  </entry>
+  <entry>
+    <title>自公再連立巡り 斉藤元代表が含み</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23439"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23439</id>
+    <updated>2026-10-16T12:50:36.660Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;自民との再連立を明確に否定&quot;,
+  &quot;point1_desc&quot;: &quot;公明党の斉藤鉄夫元代表は、自民党との連立政権離脱から1年が経過した件についてのインタビューで、現時点での自民党との再連立の可能性を完全に否定する考えを明確に示しました。&quot;,
+  &quot;point2_title&quot;: &quot;連立離脱の背...</summary>
+  </entry>
   <entry>
     <title>ヤマト運輸 個人情報530万件流出</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23438"/>
@@ -556,65 +617,5 @@
   &quot;point1_title&quot;: &quot;磁気切符からQRへ切り替え&quot;,
   &quot;point1_desc&quot;: &quot;JR東日本や大手私鉄など鉄道7社は、従来の磁気乗車券を廃止し、QRコードを活用した新たな乗車券システムへ移行する。導入は2027年春を予定しており、利用者の利便性向上を図る。&quot;,
   &quot;point2_title&quot;: &quot;主要鉄...</summary>
-  </entry>
-  <entry>
-    <title>こども園でゼリー詰まらせ4歳死亡</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23393"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23393</id>
-    <updated>2026-10-13T07:44:14.355Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;こども園で誤飲事故&quot;,
-  &quot;point1_desc&quot;: &quot;奈良県香芝市の認定こども園にて、4歳の男の子が凍らせたゼリーを誤ってのどに詰まらせる事故が発生しました。男児は心肺停止の状態で病院へと搬送されましたが、その後死亡が確認されました。&quot;,
-  &quot;point2_title&quot;: &quot;凍らせた...</summary>
-  </entry>
-  <entry>
-    <title>中国車の輸出なぜ激増 欧州が対応</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23392"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23392</id>
-    <updated>2026-10-13T07:43:55.113Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;中国の9月新車販売が減少&quot;,
-  &quot;point1_desc&quot;: &quot;2026年9月の中国における新車販売台数は前年同期比で8.4%減少した。特に国内販売は26%減と大きく落ち込んでおり、国内市場の需要減退が鮮明になっている。&quot;,
-  &quot;point2_title&quot;: &quot;自動車輸出が大幅に増加&quot;,...</summary>
-  </entry>
-  <entry>
-    <title>5年前から閉鎖 東大「赤門」は今</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23391"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23391</id>
-    <updated>2026-10-13T02:17:06.422Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;話題&quot;,
-  &quot;point1_title&quot;: &quot;東大の赤門が閉鎖中&quot;,
-  &quot;point1_desc&quot;: &quot;東京大学の象徴である赤門は、耐震上の問題が見つかったため5年前から閉鎖されています。現在は安全確保のため門全体が覆いに包まれており、通過することはもちろん姿を見ることもできません。&quot;,
-  &quot;point2_title&quot;: &quot;耐震性の問題...</summary>
-  </entry>
-  <entry>
-    <title>熟年離婚 修復経ず別れるケース増</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23390"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23390</id>
-    <updated>2026-10-13T02:16:47.684Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;話題&quot;,
-  &quot;point1_title&quot;: &quot;熟年離婚の割合が過去最高&quot;,
-  &quot;point1_desc&quot;: &quot;現代の日本では3組に1組が離婚する時代と言われているが、その中でも熟年離婚の割合が過去最高を記録している。修復のステップを経ずに離婚へと至るケースが急増している状況だ。（89文字）&quot;,
-  &quot;point2_title&quot;: &quot;切り出...</summary>
-  </entry>
-  <entry>
-    <title>英基地事件はイラン関与 共同声明</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23389"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23389</id>
-    <updated>2026-10-13T02:16:28.489Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;英空軍基地近くで逮捕&quot;,
-  &quot;point1_desc&quot;: &quot;米軍も利用する英空軍基地の周辺において、テロ行為を画策した疑いで男7人が逮捕された。治安当局は早期摘発により重大な被害を防ぐことに成功したが、緊張が続いている。（86文字）&quot;,
-  &quot;point2_title&quot;: &quot;イランの関与を...</summary>
   </entry>
 </feed>
