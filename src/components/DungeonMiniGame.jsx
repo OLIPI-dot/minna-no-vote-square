@@ -773,7 +773,7 @@ const DungeonMiniGame = ({
         setDungeonLog(prev => [`🐰💧 迷子のらびたんを地上へ救出した！（チケット+1）`, ...prev]);
       } else if (enemy.id === 'd_gem_rabbit') {
         const gemItem = ITEMS.find(i => i.id === 'ac_rabi_gem');
-        if (gemItem && Math.random() < 0.40) {
+        if (gemItem && Math.random() < 0.10) {
           setCollectedItems(prev => [...prev, gemItem]);
           if (setInventory) setInventory(prev => [...prev, gemItem]);
           logs.push(`🐰💎 「わー！見つかっちゃった！」と宝石を落として逃げていった！`);
@@ -785,7 +785,7 @@ const DungeonMiniGame = ({
         }
       } else if (enemy.id === 'd_muscle_rabbit') {
         const protein = ITEMS.find(i => i.id === 'ar_protein_drink');
-        if (protein && Math.random() < 0.35) {
+        if (protein && Math.random() < 0.08) {
           setCollectedItems(prev => [...prev, protein]);
           if (setInventory) setInventory(prev => [...prev, protein]);
           logs.push(`🐰💪 「ナイスバルク…！いい筋トレになったぜ…！」と爽やかに去っていった！`);
@@ -797,7 +797,7 @@ const DungeonMiniGame = ({
         }
       } else if (enemy.id === 'd_living_rabbit') {
         const blanket = ITEMS.find(i => i.id === 'ar_kotatsu_blanket');
-        if (blanket && Math.random() < 0.35) {
+        if (blanket && Math.random() < 0.08) {
           setCollectedItems(prev => [...prev, blanket]);
           if (setInventory) setInventory(prev => [...prev, blanket]);
           logs.push(`🐰🛋️ 「たまには人と話すのも悪くないねぇ…これあげるよ」`);
@@ -809,11 +809,11 @@ const DungeonMiniGame = ({
         }
       } else if (enemy.id === 'd_dark_rabbit') {
         const darkCarrot = ITEMS.find(i => i.id === 'w_dark_carrot');
-        if (darkCarrot && Math.random() < 0.25) {
+        if (darkCarrot && Math.random() < 0.05) {
           setCollectedItems(prev => [...prev, darkCarrot]);
           if (setInventory) setInventory(prev => [...prev, darkCarrot]);
           logs.push(`🐰👿 「浄化される…！温かい光を…ありがとう…！」と元の白い姿に戻って光の中へ消えていった！`);
-          logs.push(`🎁✨ 奇跡のレアドロップ！！ 闇が結晶化した 【漆黒の呪われしにんじん (UR)】 を手に入れた！`);
+          logs.push(`🎁✨ 奇跡の激レアドロップ！！ 闇が結晶化した 【漆黒の呪われしにんじん (UR)】 を手に入れた！`);
           setDungeonLog(prev => [`🐰👿 悪に堕ちたらびたんを救済し、URにんじんを獲得！`, ...prev]);
         } else {
           logs.push(`🐰👿 「浄化される…！温かい光を…ありがとう…！」と元の白い姿に戻って光の中へ消えていった！`);
@@ -821,11 +821,11 @@ const DungeonMiniGame = ({
         }
       } else if (enemy.id === 'd_myth_rabbit') {
         const crown = ITEMS.find(i => i.id === 'ac_ancient_crown');
-        if (crown && Math.random() < 0.30) {
+        if (crown && Math.random() < 0.03) {
           setCollectedItems(prev => [...prev, crown]);
           if (setInventory) setInventory(prev => [...prev, crown]);
           logs.push(`🐰👑 「見事だ、地上の旅人よ。この大地の加護をそなたに託そう…」`);
-          logs.push(`🏆✨ 神話の秘宝 【地底王の古代参冠 (LR)】 を授かった！！`);
+          logs.push(`🏆✨ 神話の超幻ドロップ！！ 【地底王の古代参冠 (LR)】 を授かった！！`);
           setDungeonLog(prev => [`👑 伝説の地底兎から神話の古代冠を授かった！`, ...prev]);
         } else {
           logs.push(`🐰👑 「大地の鼓動をしかと見届けた。地上の平和を頼んだぞ…」と大地の光へ還っていった。`);

@@ -5986,7 +5986,7 @@
   {
     "id": "d_lost_rabbit",
     "dexNo": 301,
-    "type": "elite",
+    "type": "dungeon_special",
     "name": "✨ 地下から出られなくなったらびたん🐰💧",
     "hp": 20,
     "atk": 1,
@@ -6006,7 +6006,7 @@
   {
     "id": "d_gem_rabbit",
     "dexNo": 302,
-    "type": "elite",
+    "type": "dungeon_special",
     "name": "✨ 宝石を探しに行くと行ったまま帰ってこないらびたん🐰💎",
     "hp": 35,
     "atk": 1,
@@ -6027,7 +6027,7 @@
   {
     "id": "d_muscle_rabbit",
     "dexNo": 303,
-    "type": "elite",
+    "type": "dungeon_special",
     "name": "✨ 地下を掘りすぎてムキムキになったらびたん🐰💪",
     "hp": 320,
     "atk": 48,
@@ -6048,7 +6048,7 @@
   {
     "id": "d_living_rabbit",
     "dexNo": 304,
-    "type": "elite",
+    "type": "dungeon_special",
     "name": "✨ 脱出を諦めて地下で暮らすと決めたらびたん🐰🛋️",
     "hp": 40,
     "atk": 1,
@@ -6068,7 +6068,7 @@
   {
     "id": "d_dark_rabbit",
     "dexNo": 305,
-    "type": "elite",
+    "type": "dungeon_special",
     "name": "✨《漆黒の絶望》出れないショックから悪に堕ちたらびたん🐰👿",
     "hp": 450,
     "atk": 55,
@@ -6089,7 +6089,7 @@
   {
     "id": "d_myth_rabbit",
     "dexNo": 306,
-    "type": "rare",
+    "type": "dungeon_special",
     "name": "✨《神話の終極》伝説の地底兎と化したらびたん🐰👑🌋",
     "hp": 1200,
     "atk": 85,

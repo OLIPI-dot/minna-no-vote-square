@@ -325,7 +325,7 @@
   {
     "id": "d_dark_rabbit",
     "dexNo": 9205,
-    "type": "dungeon_elite",
+    "type": "dungeon_rabbit",
     "name": "✨《漆黒の絶望》出れないショックから悪に堕ちたらびたん🐰👿",
     "hp": 450,
     "atk": 55,
@@ -346,7 +346,7 @@
   {
     "id": "d_myth_rabbit",
     "dexNo": 9206,
-    "type": "dungeon_boss",
+    "type": "dungeon_rabbit",
     "name": "✨《神話の終極》伝説の地底兎と化したらびたん🐰👑🌋",
     "hp": 1200,
     "atk": 85,
