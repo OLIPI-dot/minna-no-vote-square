@@ -447,6 +447,33 @@ function App() {
         }
         localStorage.setItem('daily_patrols_v2', JSON.stringify({ date: todayStr, count: syncedPatrolCount }));
 
+        // 🗝️ 地下パトロール挑戦権・最高階数のクラウド同期
+        const dbDungeonDate = currentUser.user_metadata?.daily_dungeon_date || '';
+        const dbDungeonRemaining = dbDungeonDate === todayStr ? (typeof currentUser.user_metadata?.daily_dungeon_remaining === 'number' ? currentUser.user_metadata.daily_dungeon_remaining : 3) : 3;
+        const dbDungeonBest = currentUser.user_metadata?.dungeon_best_floor || 1;
+
+        let localDungeonData = {};
+        try { localDungeonData = JSON.parse(localStorage.getItem('daily_dungeon_attempts_v1') || '{}'); } catch(e){}
+        const localDungeonRemaining = localDungeonData.date === todayStr ? (typeof localDungeonData.remaining === 'number' ? localDungeonData.remaining : 3) : 3;
+        const localDungeonBest = parseInt(localStorage.getItem('minique_dungeon_best') || '1', 10);
+
+        // 消費が進んでいる方（残り回数が少ない方）を採用して巻き戻しを防止
+        const syncedDungeonRemaining = Math.min(dbDungeonRemaining, localDungeonRemaining);
+        const syncedDungeonBest = Math.max(dbDungeonBest, localDungeonBest);
+
+        if (syncedDungeonRemaining !== dbDungeonRemaining || dbDungeonDate !== todayStr) {
+          updates.daily_dungeon_date = todayStr;
+          updates.daily_dungeon_remaining = syncedDungeonRemaining;
+          shouldUpdate = true;
+        }
+        if (syncedDungeonBest > dbDungeonBest) {
+          updates.dungeon_best_floor = syncedDungeonBest;
+          shouldUpdate = true;
+        }
+
+        localStorage.setItem('daily_dungeon_attempts_v1', JSON.stringify({ date: todayStr, remaining: syncedDungeonRemaining }));
+        localStorage.setItem('minique_dungeon_best', String(syncedDungeonBest));
+
         // 🛡️ 装備のクラウド同期
         let localEquip = null;
         try { localEquip = JSON.parse(localStorage.getItem('min_ake_equipment') || '{}'); } catch(e){}

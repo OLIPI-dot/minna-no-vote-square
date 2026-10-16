@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { supabase } from '../supabaseClient';
 import { ENEMIES, scaleEnemy, rollEnemy } from '../enemies';
 import DUNGEON_ENEMIES from '../data/dungeon_enemies.json';
 import { ITEMS } from '../items';
@@ -99,8 +100,12 @@ const DungeonMiniGame = ({
   const [collectedItems, setCollectedItems] = useState([]);
   const [healCount, setHealCount] = useState(0);
 
-  // 最高到達階層（localStorage保存）
+  // 最高到達階層（クラウド ＆ localStorage同期）
   const [bestFloor, setBestFloor] = useState(() => {
+    const cloudBest = user?.user_metadata?.dungeon_best_floor;
+    if (typeof cloudBest === 'number' && cloudBest > 1) {
+      return cloudBest;
+    }
     try {
       return parseInt(localStorage.getItem('minique_dungeon_best') || '1', 10);
     } catch {
@@ -121,15 +126,30 @@ const DungeonMiniGame = ({
       } catch (e) {
         console.error(e);
       }
+      if (user && supabase) {
+        supabase.auth.updateUser({
+          data: { dungeon_best_floor: newFloor }
+        }).catch(console.error);
+      }
     }
   };
 
-  // 🗝️ 地下パトロール挑戦回数管理（1日基本3回 ＋ 地上パトロールで鍵ドロップ）
+  // 🗝️ 地下パトロール挑戦回数管理（1日基本3回 ＋ 地上パトロールで鍵ドロップ、クラウド同期）
   const getTodayStr = () => new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
   const BASE_DAILY_ATTEMPTS = 3;
 
   const getDungeonAttempts = () => {
     const todayStr = getTodayStr();
+    // ☁️ クラウドのアカウントデータがあれば最優先で参照
+    if (user?.user_metadata?.daily_dungeon_date === todayStr) {
+      const cloudRem = user.user_metadata.daily_dungeon_remaining;
+      if (typeof cloudRem === 'number') {
+        try {
+          localStorage.setItem('daily_dungeon_attempts_v1', JSON.stringify({ date: todayStr, remaining: cloudRem }));
+        } catch(e) {}
+        return cloudRem;
+      }
+    }
     try {
       const data = JSON.parse(localStorage.getItem('daily_dungeon_attempts_v1') || '{}');
       if (data.date === todayStr) {
@@ -143,12 +163,15 @@ const DungeonMiniGame = ({
 
   const [remainingAttempts, setRemainingAttempts] = useState(() => getDungeonAttempts());
 
-  // ロビーに戻った時やタブ切り替え時に最新の残り回数を同期
+  // ロビーに戻った時やユーザー情報更新時に最新の残り回数を同期
   useEffect(() => {
     if (dungeonState === 'lobby') {
       setRemainingAttempts(getDungeonAttempts());
+      if (user?.user_metadata?.dungeon_best_floor) {
+        setBestFloor(prev => Math.max(prev, user.user_metadata.dungeon_best_floor));
+      }
     }
-  }, [dungeonState]);
+  }, [dungeonState, user]);
 
   const saveRemainingAttempts = (newRemaining) => {
     const todayStr = getTodayStr();
@@ -160,6 +183,15 @@ const DungeonMiniGame = ({
       }));
     } catch (e) {
       console.error(e);
+    }
+    // ☁️ クラウドに即時同期
+    if (user && supabase) {
+      supabase.auth.updateUser({
+        data: {
+          daily_dungeon_date: todayStr,
+          daily_dungeon_remaining: newRemaining
+        }
+      }).catch(console.error);
     }
   };
 

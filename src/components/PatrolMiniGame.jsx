@@ -1130,6 +1130,14 @@ const PatrolMiniGame = ({
           date: todayStr,
           remaining: newRemaining
         }));
+        if (user && supabase) {
+          supabase.auth.updateUser({
+            data: {
+              daily_dungeon_date: todayStr,
+              daily_dungeon_remaining: newRemaining
+            }
+          }).catch(console.error);
+        }
         setBattleLog(prev => [
           ...prev, 
           `🗝️ 【地下の鍵】を発見！本日の「地下パトロール」挑戦回数が +1 回増えた！（本日残り ${newRemaining} 回）`
