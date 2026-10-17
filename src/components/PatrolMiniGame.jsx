@@ -147,7 +147,7 @@ const PatrolMiniGame = ({
   const botIntervalRef = useRef(null);
   const winProcessedRef = useRef(false);
 
-  // 1日のパトロール回数制限 (最大10回 - クラウドおよびローカルで同期)
+  // 1日のパトロール回数制限 (最大20回 - クラウドおよびローカルで同期)
   const getTodayPatrols = () => {
     const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
     let localCount = 0;
@@ -156,13 +156,16 @@ const PatrolMiniGame = ({
       if (data.date === todayStr) localCount = data.count || 0;
     } catch { localCount = 0; }
 
-    let cloudCount = 0;
-    if (user?.user_metadata?.daily_patrol_date === todayStr) {
-      cloudCount = user.user_metadata?.daily_patrol_count || 0;
+    // ☁️ ログイン中の場合はクラウド（Supabase）の値をマスターとして優先同期
+    if (user && user.user_metadata?.daily_patrol_date === todayStr) {
+      const cloudCount = user.user_metadata?.daily_patrol_count ?? 0;
+      try {
+        localStorage.setItem('daily_patrols_v2', JSON.stringify({ date: todayStr, count: cloudCount }));
+      } catch (e) {}
+      return { date: todayStr, count: cloudCount };
     }
 
-    const count = Math.max(localCount, cloudCount);
-    return { date: todayStr, count };
+    return { date: todayStr, count: localCount };
   };
   const [patrolsToday, setPatrolsToday] = useState(() => getTodayPatrols().count);
   const MAX_PATROLS = 20; // 1日20回まで（たっぷり冒険！）
