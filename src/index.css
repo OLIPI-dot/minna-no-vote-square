@@ -167,3 +167,119 @@ html, body {
   80% { transform: translate(-50%, -10px); opacity: 1; }
   100% { transform: translate(-50%, -50px); opacity: 0; }
 }
+
+/* 🎮 みんクエ専用 プレミアム3Dステータスボタン */
+.minique-status-btn {
+  position: relative;
+  background: linear-gradient(180deg, #60a5fa 0%, #3b82f6 45%, #2563eb 100%);
+  color: #ffffff;
+  border: 1px solid #2563eb;
+  border-bottom: 3px solid #1d4ed8;
+  border-radius: 12px;
+  padding: 4px 12px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  box-shadow: 0 3px 6px rgba(37, 99, 235, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.12s ease;
+  overflow: hidden;
+}
+
+.minique-status-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 45%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.05) 100%);
+  border-radius: 10px 10px 0 0;
+  pointer-events: none;
+}
+
+.minique-status-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  filter: brightness(1.05);
+}
+
+.minique-status-btn:active {
+  transform: translateY(2px);
+  border-bottom-width: 1px;
+  box-shadow: 0 1px 2px rgba(37, 99, 235, 0.2);
+}
+
+/* 🕹️ みんクエ タブパネル枠 (操作盤デザイン) */
+.minique-panel-container {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+  padding: 10px 8px 8px 8px;
+  margin: 14px 0 10px 0;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), inset 0 1px 2px rgba(255, 255, 255, 0.9);
+}
+
+/* パネル上部の中央アクセントピル（擬似要素） */
+.minique-panel-container::before {
+  content: 'QUEST MENU';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #64748b;
+  font-size: 0.6rem;
+  font-weight: 900;
+  letter-spacing: 0.8px;
+  padding: 1px 8px;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+/* 🔘 みんクエ タブボタン共通 3Dスタイル */
+.minique-tab-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 9px 4px;
+  border-radius: 9px;
+  font-weight: 800;
+  font-size: 0.78rem;
+  white-space: nowrap !important;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* ボタン上部のツヤ（擬似要素） */
+.minique-tab-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0) 100%);
+  border-radius: 8px 8px 0 0;
+  pointer-events: none;
+}
+
+.minique-tab-btn:hover {
+  transform: translateY(-1px);
+}
+
+.minique-tab-btn:active {
+  transform: translateY(1px);
+}
