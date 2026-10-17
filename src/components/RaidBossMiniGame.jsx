@@ -12,7 +12,8 @@ const RaidBossMiniGame = ({
   equipment = {},
   user,
   hn = 'あなた',
-  globalOnlineCount = 1
+  globalOnlineCount = 1,
+  addTimelineRecord
 }) => {
   // 今日の曜日 (0:日, 1:月, ..., 6:土)
   const todayDay = new Date().getDay();
@@ -462,6 +463,15 @@ const RaidBossMiniGame = ({
         `🧪 秘伝の回復薬をグイッと飲んで気絶から即座に復活した！！ (残り${nextHeals}回)`,
         ...logs
       ].slice(0, 15));
+      if (addTimelineRecord) {
+        addTimelineRecord({
+          type: 'raid',
+          result: 'heal',
+          enemyName: '秘伝の回復薬',
+          enemyIcon: '🧪',
+          detail: '回復薬で気絶から即座に復活！'
+        });
+      }
       return;
     }
 
@@ -476,6 +486,15 @@ const RaidBossMiniGame = ({
       `🧪 回復薬を使用した！ HPが ${healAmt} 回復した！ (残り${nextHeals}回)`,
       ...logs
     ].slice(0, 15));
+    if (addTimelineRecord) {
+      addTimelineRecord({
+        type: 'raid',
+        result: 'heal',
+        enemyName: '秘伝の回復薬',
+        enemyIcon: '🧪',
+        detail: `回復薬で HP +${healAmt} 回復！`
+      });
+    }
   };
 
   // 攻撃処理（プレイヤー即時反映 ＋ ボス反撃 ＋ 仲間加勢）
@@ -535,7 +554,20 @@ const RaidBossMiniGame = ({
       }).catch(err => console.warn('Raid cloud sync error:', err));
     }
 
-    // ⚖️ レイドボスは「参加賞(800 EXP)」や「討伐成功報酬(3500 EXP)」でまとまって獲得するため、毎回の攻撃EXPは付与しない
+    // 📜 冒険タイムラインへ攻撃記録を追加！
+    if (addTimelineRecord) {
+      addTimelineRecord({
+        type: 'raid',
+        result: isCrit ? 'crit' : 'attack',
+        enemyName: currentBoss.name,
+        enemyIcon: currentBoss.icon || '🐉',
+        damage: calculatedDmg,
+        isCrit,
+        detail: isCrit
+          ? `会心の一撃！ ${calculatedDmg.toLocaleString()} の大ダメージ！`
+          : `『${weaponName}』で ${calculatedDmg.toLocaleString()} ダメージ！`
+      });
+    }
 
     if (nextHp > 0) {
       setTimeout(() => {
@@ -562,6 +594,15 @@ const RaidBossMiniGame = ({
               logMsg,
               ...prev
             ].slice(0, 15));
+            if (addTimelineRecord) {
+              addTimelineRecord({
+                type: 'raid',
+                result: 'faint',
+                enemyName: currentBoss.name,
+                enemyIcon: currentBoss.icon || '🐉',
+                detail: `ボスの猛攻で戦闘不能（気絶）…！`
+              });
+            }
           } else {
             setRaidLogs(prev => [
               `💥 『${currentBoss.name}』の『${randomSkill}』！ あなたは ${mitigatedDmg} のダメージを受けた！`,
@@ -577,6 +618,17 @@ const RaidBossMiniGame = ({
       setRaidLogs(prev => [victoryMsg, logMsg, ...prev].slice(0, 15));
       if (addTickets) addTickets(currentBoss.rewardTickets);
       if (addExp) addExp(currentBoss.rewardExp);
+      if (addTimelineRecord) {
+        addTimelineRecord({
+          type: 'raid',
+          result: 'victory',
+          enemyName: currentBoss.name,
+          enemyIcon: currentBoss.icon || '🐉',
+          exp: currentBoss.rewardExp,
+          tickets: currentBoss.rewardTickets,
+          detail: `討伐成功！！広場のみんなで撃破 🎉`
+        });
+      }
     }
 
     setCooldown(3);
