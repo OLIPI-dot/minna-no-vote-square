@@ -286,7 +286,7 @@ const RaidBossMiniGame = ({
         ) : (
           <>
             <span>⚔️</span>
-            <span>ボスを一斉攻撃する！</span>
+            <span>攻撃する！</span>
           </>
         )}
       </button>
