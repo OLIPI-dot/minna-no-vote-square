@@ -145,15 +145,25 @@ const RaidBossMiniGame = ({
 
   const myDamage = rankingList.find(r => r.isMe)?.damage || 0;
 
-  // 🎁 レイド参加賞（1回攻撃で毎日ガチャチケ3枚＆800EXP）の受取管理
-  const [hasClaimedParticipation, setHasClaimedParticipation] = useState(() => {
+  // 🎁 レイド参加賞（1回攻撃で毎日ガチャチケ3枚＆800EXP）の受取管理（クラウド同期）
+  const getParticipationClaimed = () => {
+    const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
+    if (user?.user_metadata?.raid_participation_claimed_date === todayStr) {
+      try { localStorage.setItem(`minique_raid_participation_${todayStr}`, 'true'); } catch (e) {}
+      return true;
+    }
     try {
-      const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
       return localStorage.getItem(`minique_raid_participation_${todayStr}`) === 'true';
     } catch (e) {
       return false;
     }
-  });
+  };
+
+  const [hasClaimedParticipation, setHasClaimedParticipation] = useState(() => getParticipationClaimed());
+
+  useEffect(() => {
+    setHasClaimedParticipation(getParticipationClaimed());
+  }, [user]);
 
   const handleClaimParticipation = () => {
     if (hasClaimedParticipation || myDamage <= 0) return;
@@ -162,6 +172,14 @@ const RaidBossMiniGame = ({
       localStorage.setItem(`minique_raid_participation_${todayStr}`, 'true');
     } catch (e) {}
     setHasClaimedParticipation(true);
+
+    if (user && supabase) {
+      supabase.auth.updateUser({
+        data: {
+          raid_participation_claimed_date: todayStr
+        }
+      }).catch(err => console.warn('Cloud sync error for raid participation:', err));
+    }
 
     const PARTICIPATION_TICKETS = 3;
     const PARTICIPATION_EXP = 800;

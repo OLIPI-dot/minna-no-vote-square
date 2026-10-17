@@ -177,19 +177,40 @@ const PatrolMiniGame = ({
     localStorage.setItem('daily_patrols_v3', JSON.stringify(current));
   }, [user]);
 
-  // 📜 パトロール記録の履歴管理
+  // 📜 パトロール記録の履歴管理（クラウド ＆ ローカル双方向同期）
   const getPatrolHistory = () => {
     const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
+    let localHistory = [];
     try {
       const saved = localStorage.getItem('daily_patrol_history_v1');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed.date === todayStr && Array.isArray(parsed.history)) {
-          return parsed.history;
+          localHistory = parsed.history;
         }
       }
     } catch (e) {}
-    return [];
+
+    // ☁️ クラウドに保存された履歴があれば優先・統合
+    const cloudData = user?.user_metadata?.daily_patrol_history_v1;
+    if (cloudData && cloudData.date === todayStr && Array.isArray(cloudData.history)) {
+      const combined = [...cloudData.history];
+      localHistory.forEach(p => {
+        if (!combined.some(c => c.time === p.time && c.enemyName === p.enemyName)) {
+          combined.push(p);
+        }
+      });
+      const merged = combined.slice(0, 5);
+      try {
+        localStorage.setItem('daily_patrol_history_v1', JSON.stringify({
+          date: todayStr,
+          history: merged
+        }));
+      } catch (e) {}
+      return merged;
+    }
+
+    return localHistory;
   };
 
   const [patrolHistory, setPatrolHistory] = useState(() => getPatrolHistory());
@@ -202,22 +223,54 @@ const PatrolMiniGame = ({
 
     setPatrolHistory(prev => {
       const updated = [newRecord, ...prev].slice(0, 5);
+      const payload = {
+        date: todayStr,
+        history: updated
+      };
+
       try {
-        localStorage.setItem('daily_patrol_history_v1', JSON.stringify({
-          date: todayStr,
-          history: updated
-        }));
+        localStorage.setItem('daily_patrol_history_v1', JSON.stringify(payload));
       } catch (e) {}
+
+      // ☁️ クラウド（Supabase user_metadata）へ即時バックアップ！
+      if (user && supabase) {
+        supabase.auth.updateUser({
+          data: {
+            daily_patrol_history_v1: payload
+          }
+        }).catch(err => console.warn('Cloud sync error for patrol history:', err));
+      }
+
       return updated;
     });
   };
 
-  // ロビー待機画面に戻った時に最新の履歴を同期
+  // ユーザーのログイン情報やロビー待機画面復帰時に最新の履歴を同期
   useEffect(() => {
-    if (battleState === 'idle') {
-      setPatrolHistory(getPatrolHistory());
-    }
-  }, [battleState]);
+    setPatrolHistory(getPatrolHistory());
+  }, [user, battleState]);
+
+  // ローカルに記録があってクラウドにない場合、自動でクラウドへ同期
+  useEffect(() => {
+    if (!user || !supabase) return;
+    const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
+    const cloudData = user.user_metadata?.daily_patrol_history_v1;
+    try {
+      const saved = localStorage.getItem('daily_patrol_history_v1');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.date === todayStr && Array.isArray(parsed.history) && parsed.history.length > 0) {
+          if (!cloudData || cloudData.date !== todayStr || (cloudData.history?.length || 0) < parsed.history.length) {
+            supabase.auth.updateUser({
+              data: {
+                daily_patrol_history_v1: parsed
+              }
+            }).catch(console.warn);
+          }
+        }
+      }
+    } catch (e) {}
+  }, [user]);
 
   const equipSlots = ['weapon', 'armor', 'accessory', 'partner'];
   const pMaxHp = (userLevel * 10 + 100) + equipSlots.reduce((sum, s) => sum + (equipment?.[s]?.hp || 0), 0);

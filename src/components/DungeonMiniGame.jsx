@@ -199,18 +199,39 @@ const DungeonMiniGame = ({
 
   const [remainingAttempts, setRemainingAttempts] = useState(() => getDungeonAttempts());
 
-  // 📜 本日の探索記録（冒険履歴）
+  // 📜 本日の探索記録（冒険履歴 - クラウド ＆ ローカル双方向同期）
   const getDungeonHistory = () => {
     const todayStr = getTodayStr();
+    let localHistory = [];
     try {
       const data = JSON.parse(localStorage.getItem('daily_dungeon_history_v1') || '{}');
       if (data.date === todayStr && Array.isArray(data.history)) {
-        return data.history;
+        localHistory = data.history;
       }
     } catch (e) {
       console.error(e);
     }
-    return [];
+
+    // ☁️ クラウドに保存された履歴があれば優先・統合
+    const cloudData = user?.user_metadata?.daily_dungeon_history_v1;
+    if (cloudData && cloudData.date === todayStr && Array.isArray(cloudData.history)) {
+      const combined = [...cloudData.history];
+      localHistory.forEach(p => {
+        if (!combined.some(c => c.time === p.time && c.floor === p.floor)) {
+          combined.push(p);
+        }
+      });
+      const merged = combined.slice(0, 5);
+      try {
+        localStorage.setItem('daily_dungeon_history_v1', JSON.stringify({
+          date: todayStr,
+          history: merged
+        }));
+      } catch (e) {}
+      return merged;
+    }
+
+    return localHistory;
   };
 
   const [dungeonHistory, setDungeonHistory] = useState(() => getDungeonHistory());
@@ -223,14 +244,25 @@ const DungeonMiniGame = ({
 
     setDungeonHistory(prev => {
       const updated = [newRecord, ...prev].slice(0, 5);
+      const payload = {
+        date: todayStr,
+        history: updated
+      };
       try {
-        localStorage.setItem('daily_dungeon_history_v1', JSON.stringify({
-          date: todayStr,
-          history: updated
-        }));
+        localStorage.setItem('daily_dungeon_history_v1', JSON.stringify(payload));
       } catch (e) {
         console.error(e);
       }
+
+      // ☁️ クラウド（Supabase user_metadata）へ即時バックアップ！
+      if (user && supabase) {
+        supabase.auth.updateUser({
+          data: {
+            daily_dungeon_history_v1: payload
+          }
+        }).catch(err => console.warn('Cloud sync error for dungeon history:', err));
+      }
+
       return updated;
     });
   };
@@ -245,6 +277,28 @@ const DungeonMiniGame = ({
       }
     }
   }, [dungeonState, user]);
+
+  // ローカルに記録があってクラウドにない場合、自動でクラウドへ同期
+  useEffect(() => {
+    if (!user || !supabase) return;
+    const todayStr = getTodayStr();
+    const cloudData = user.user_metadata?.daily_dungeon_history_v1;
+    try {
+      const saved = localStorage.getItem('daily_dungeon_history_v1');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.date === todayStr && Array.isArray(parsed.history) && parsed.history.length > 0) {
+          if (!cloudData || cloudData.date !== todayStr || (cloudData.history?.length || 0) < parsed.history.length) {
+            supabase.auth.updateUser({
+              data: {
+                daily_dungeon_history_v1: parsed
+              }
+            }).catch(console.warn);
+          }
+        }
+      }
+    } catch (e) {}
+  }, [user]);
 
   const saveRemainingAttempts = (newRemaining) => {
     const todayStr = getTodayStr();
