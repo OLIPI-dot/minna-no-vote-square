@@ -507,7 +507,14 @@ function App() {
         const hasDbInv = Array.isArray(dbInventory) && dbInventory.length > 0;
 
         if (hasLocalInv && !hasDbInv) {
-          updates.custom_inventory = localInv;
+          const activeEquippedIds = new Set(
+            Object.values(localEquip || {})
+              .filter(Boolean)
+              .map(e => e.id)
+              .filter(Boolean)
+          );
+          const cleanedInv = localInv.filter(it => !activeEquippedIds.has(it.id));
+          updates.custom_inventory = cleanedInv;
           shouldUpdate = true;
         } else if (hasDbInv) {
           // 端末間で入手したアイテムが消えないよう合成
@@ -517,11 +524,19 @@ function App() {
               if (it && it.id && !mergedInv.some(m => m.id === it.id)) mergedInv.push(it);
             });
           }
-          const syncedInv = mergedInv.map(syncItemWithMaster);
+          // ⚠️ 現在装備枠にセットされているアイテムそのものはカバンから除外して二重存在を防止
+          const activeEquippedIds = new Set(
+            Object.values(mergedEquip || localEquip || {})
+              .filter(Boolean)
+              .map(e => e.id)
+              .filter(Boolean)
+          );
+          const cleanedInv = mergedInv.filter(it => !activeEquippedIds.has(it.id));
+          const syncedInv = cleanedInv.map(syncItemWithMaster);
           setInventory(syncedInv);
           localStorage.setItem('min_ake_inventory', JSON.stringify(syncedInv));
-          if (mergedInv.length > dbInventory.length) {
-            updates.custom_inventory = mergedInv;
+          if (syncedInv.length !== dbInventory.length) {
+            updates.custom_inventory = syncedInv;
             shouldUpdate = true;
           }
         }

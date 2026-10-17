@@ -298,7 +298,7 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
                         {RARITY_CONFIG[equipment[selectedSlot].rarity]?.sparkle && <span>{RARITY_CONFIG[equipment[selectedSlot].rarity]?.sparkle}</span>}
                         <span>{equipment[selectedSlot].rarity}</span>
                       </span>
-                      <span style={{ fontWeight: 'bold', fontSize: '0.82rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', ...getRarityTextStyle(equipment[selectedSlot].rarity) }}>
+                      <span style={{ fontWeight: 'bold', fontSize: '0.82rem', wordBreak: 'break-word', ...getRarityTextStyle(equipment[selectedSlot].rarity) }}>
                         {equipment[selectedSlot].name}
                       </span>
                     </div>
@@ -306,7 +306,7 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
                       ATK+{equipment[selectedSlot].atk} / DEF+{equipment[selectedSlot].def} / HP+{equipment[selectedSlot].hp}
                     </div>
                     {getEffectKey(equipment[selectedSlot]) && (
-                      <div style={{ fontSize: '0.66rem', color: '#92400e', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '4px', padding: '2px 5px', marginTop: '2px', fontWeight: 'bold', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      <div style={{ fontSize: '0.68rem', color: '#92400e', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '4px', padding: '3px 6px', marginTop: '3px', fontWeight: 'bold', lineHeight: 1.35, wordBreak: 'break-word' }}>
                         ✨ {getItemEffectDescription(equipment[selectedSlot])}
                       </div>
                     )}
@@ -321,75 +321,99 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
             </div>
 
             {/* カバンの中身 */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-              <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 'bold' }}>
-                カバンの中 ({inventory.filter(i => i.type === selectedSlot).length}個)
-              </div>
-            </div>
-            <div style={{ overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: '6px', paddingRight: '2px', minHeight: '180px' }}>
-              {inventory.filter(i => i.type === selectedSlot).length === 0 ? (
-                <div style={{ textAlign: 'center', color: '#94a3b8', padding: '20px 0', fontSize: '0.75rem' }}>装備可能なアイテムがありません</div>
-              ) : (
-                inventory.filter(i => i.type === selectedSlot).map(rawItem => {
-                  const item = syncItemWithMaster(rawItem);
-                  const currentEquip = syncItemWithMaster(equipment[selectedSlot]);
-                  const diffAtk = item.atk - (currentEquip ? currentEquip.atk : 0);
-                  const diffDef = item.def - (currentEquip ? currentEquip.def : 0);
-                  const diffHp = item.hp - (currentEquip ? currentEquip.hp : 0);
+            {(() => {
+              const currentEquip = syncItemWithMaster(equipment[selectedSlot]);
+              // 装備中のアイテムそのもの（ID一致）はカバンから除外して非表示（見えなく）する！
+              const displaySlotItems = inventory
+                .filter(i => i.type === selectedSlot)
+                .filter(i => {
+                  if (currentEquip && i.id && currentEquip.id && i.id === currentEquip.id) {
+                    return false; // 装備中そのものはカバンから非表示！
+                  }
+                  return true;
+                });
 
-                  const renderDiff = (diff) => {
-                    if (diff > 0) return <span style={{ color: '#10b981', fontWeight: 'bold', marginLeft: '2px' }}>(+{diff})</span>;
-                    if (diff < 0) return <span style={{ color: '#ef4444', fontWeight: 'bold', marginLeft: '2px' }}>({diff})</span>;
-                    return <span style={{ color: '#94a3b8', marginLeft: '2px' }}>(±0)</span>;
-                  };
-
-                  return (
-                    <div key={item.id} style={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      gap: '8px', 
-                      padding: '8px 10px', 
-                      background: 'white', 
-                      border: `1.5px solid ${getRarityColor(item.rarity)}`, 
-                      borderRadius: '8px', 
-                      boxShadow: ['SR', 'UR', 'LR'].includes(item.rarity) ? RARITY_CONFIG[item.rarity]?.boxGlow : '0 1px 3px rgba(0,0,0,0.06)' 
-                    }}>
-                      <div style={{ fontSize: '1.5rem', flexShrink: 0, lineHeight: 1 }}>{item.icon}</div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px', flexWrap: 'wrap' }}>
-                          <span style={getRarityBadgeStyle(item.rarity)}>
-                            {RARITY_CONFIG[item.rarity]?.sparkle && <span>{RARITY_CONFIG[item.rarity]?.sparkle}</span>}
-                            <span>{item.rarity}</span>
-                          </span>
-                          <span style={{ fontWeight: 'bold', fontSize: '0.8rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', ...getRarityTextStyle(item.rarity) }}>
-                            {item.name}
-                          </span>
-                        </div>
-                        <div style={{ fontSize: '0.72rem', color: '#475569', display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '2px' }}>
-                          <span>ATK: {item.atk}{renderDiff(diffAtk)}</span>
-                          <span>DEF: {item.def}{renderDiff(diffDef)}</span>
-                          <span>HP: {item.hp}{renderDiff(diffHp)}</span>
-                          <span style={{ color: userLevel >= getReqLevel(item) ? '#059669' : '#ef4444', fontWeight: 'bold', marginLeft: 'auto', fontSize: '0.68rem' }}>
-                            必要Lv: {getReqLevel(item)}
-                          </span>
-                        </div>
-                        {getEffectKey(item) && (
-                          <div style={{ fontSize: '0.66rem', color: '#92400e', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '4px', padding: '2px 5px', marginTop: '2px', fontWeight: 'bold', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                            ✨ {getItemEffectDescription(item)}
-                          </div>
-                        )}
-                      </div>
-                      <button 
-                        onClick={() => { equipFromInventory(item); setSelectedSlot(null); }} 
-                        disabled={userLevel < getReqLevel(item)}
-                        style={{ background: userLevel >= getReqLevel(item) ? '#10b981' : '#94a3b8', color: 'white', border: 'none', padding: '6px 10px', borderRadius: '6px', cursor: userLevel >= getReqLevel(item) ? 'pointer' : 'not-allowed', fontWeight: 'bold', fontSize: '0.75rem', flexShrink: 0 }}>
-                        {userLevel >= getReqLevel(item) ? '装備' : `Lv${getReqLevel(item)}`}
-                      </button>
+              return (
+                <>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                    <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 'bold' }}>
+                      カバンの中 ({displaySlotItems.length}個)
                     </div>
-                  );
-                })
-              )}
-            </div>
+                  </div>
+                  <div style={{ overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: '6px', paddingRight: '2px', minHeight: '180px' }}>
+                    {displaySlotItems.length === 0 ? (
+                      <div style={{ textAlign: 'center', color: '#94a3b8', padding: '24px 0', fontSize: '0.75rem', lineHeight: 1.6 }}>
+                        カバンに他の{selectedSlot === 'weapon' ? '武器' : selectedSlot === 'armor' ? '防具' : selectedSlot === 'accessory' ? 'アクセ' : 'お供'}はありません
+                      </div>
+                    ) : (
+                      displaySlotItems.map(rawItem => {
+                        const item = syncItemWithMaster(rawItem);
+                        const diffAtk = item.atk - (currentEquip ? currentEquip.atk : 0);
+                        const diffDef = item.def - (currentEquip ? currentEquip.def : 0);
+                        const diffHp = item.hp - (currentEquip ? currentEquip.hp : 0);
+                        const isDuplicateName = currentEquip && currentEquip.name === item.name;
+
+                        const renderDiff = (diff) => {
+                          if (diff > 0) return <span style={{ color: '#10b981', fontWeight: 'bold', marginLeft: '2px' }}>(+{diff})</span>;
+                          if (diff < 0) return <span style={{ color: '#ef4444', fontWeight: 'bold', marginLeft: '2px' }}>({diff})</span>;
+                          return <span style={{ color: '#94a3b8', marginLeft: '2px' }}>(±0)</span>;
+                        };
+
+                        return (
+                          <div key={item.id} style={{ 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            gap: '8px', 
+                            padding: '8px 10px', 
+                            background: 'white', 
+                            border: `1.5px solid ${getRarityColor(item.rarity)}`, 
+                            borderRadius: '8px', 
+                            boxShadow: ['SR', 'UR', 'LR'].includes(item.rarity) ? RARITY_CONFIG[item.rarity]?.boxGlow : '0 1px 3px rgba(0,0,0,0.06)' 
+                          }}>
+                            <div style={{ fontSize: '1.5rem', flexShrink: 0, lineHeight: 1 }}>{item.icon}</div>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '5px', flexWrap: 'wrap' }}>
+                                <span style={getRarityBadgeStyle(item.rarity)}>
+                                  {RARITY_CONFIG[item.rarity]?.sparkle && <span>{RARITY_CONFIG[item.rarity]?.sparkle}</span>}
+                                  <span>{item.rarity}</span>
+                                </span>
+                                <span style={{ fontWeight: 'bold', fontSize: '0.8rem', wordBreak: 'break-word', ...getRarityTextStyle(item.rarity) }}>
+                                  {item.name}
+                                </span>
+                                {isDuplicateName && (
+                                  <span style={{ fontSize: '0.62rem', background: '#e0e7ff', color: '#4338ca', padding: '1px 5px', borderRadius: '4px', fontWeight: 'bold' }}>
+                                    📦 予備(2個目)
+                                  </span>
+                                )}
+                              </div>
+                              <div style={{ fontSize: '0.72rem', color: '#475569', display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '2px' }}>
+                                <span>ATK: {item.atk}{renderDiff(diffAtk)}</span>
+                                <span>DEF: {item.def}{renderDiff(diffDef)}</span>
+                                <span>HP: {item.hp}{renderDiff(diffHp)}</span>
+                                <span style={{ color: userLevel >= getReqLevel(item) ? '#059669' : '#ef4444', fontWeight: 'bold', marginLeft: 'auto', fontSize: '0.68rem' }}>
+                                  必要Lv: {getReqLevel(item)}
+                                </span>
+                              </div>
+                              {getEffectKey(item) && (
+                                <div style={{ fontSize: '0.68rem', color: '#92400e', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '4px', padding: '3px 6px', marginTop: '3px', fontWeight: 'bold', lineHeight: 1.35, wordBreak: 'break-word' }}>
+                                  ✨ {getItemEffectDescription(item)}
+                                </div>
+                              )}
+                            </div>
+                            <button 
+                              onClick={() => { equipFromInventory(item); setSelectedSlot(null); }} 
+                              disabled={userLevel < getReqLevel(item)}
+                              style={{ background: userLevel >= getReqLevel(item) ? '#10b981' : '#94a3b8', color: 'white', border: 'none', padding: '6px 10px', borderRadius: '6px', cursor: userLevel >= getReqLevel(item) ? 'pointer' : 'not-allowed', fontWeight: 'bold', fontSize: '0.75rem', flexShrink: 0 }}>
+                              {userLevel >= getReqLevel(item) ? (isDuplicateName ? '入替' : '装備') : `Lv${getReqLevel(item)}`}
+                            </button>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+                </>
+              );
+            })()}
           </div>
         </div>,
         document.body
@@ -414,6 +438,7 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
                   const diffAtk = item.atk - (currentEquip ? currentEquip.atk : 0);
                   const diffDef = item.def - (currentEquip ? currentEquip.def : 0);
                   const diffHp = item.hp - (currentEquip ? currentEquip.hp : 0);
+                  const isEquipped = Object.values(equipment).some(eq => eq && eq.id === item.id);
 
                   const renderDiff = (diff) => {
                     if (diff > 0) return <span style={{ color: '#10b981', fontWeight: 'bold', marginLeft: '2px' }}>(+{diff})</span>;
@@ -429,21 +454,26 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
                       alignItems: 'center', 
                       gap: '8px', 
                       padding: '8px 10px', 
-                      background: '#f8fafc', 
-                      border: `1.5px solid ${getRarityColor(item.rarity)}`, 
+                      background: isEquipped ? '#f0fdf4' : '#f8fafc', 
+                      border: isEquipped ? '2px solid #10b981' : `1.5px solid ${getRarityColor(item.rarity)}`, 
                       borderRadius: '8px',
                       boxShadow: ['SR', 'UR', 'LR'].includes(item.rarity) ? RARITY_CONFIG[item.rarity]?.boxGlow : 'none'
                     }}>
                       <div style={{ fontSize: '1.6rem', flexShrink: 0, lineHeight: 1 }}>{item.icon}</div>
-                      <div style={{ flex: 1 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                           <span style={getRarityBadgeStyle(item.rarity)}>
                             {RARITY_CONFIG[item.rarity]?.sparkle && <span>{RARITY_CONFIG[item.rarity]?.sparkle}</span>}
                             <span>{item.rarity}</span>
                           </span>
-                          <span style={{ fontWeight: 'bold', ...getRarityTextStyle(item.rarity) }}>
+                          <span style={{ fontWeight: 'bold', wordBreak: 'break-word', ...getRarityTextStyle(item.rarity) }}>
                             {item.name}
                           </span>
+                          {isEquipped && (
+                            <span style={{ fontSize: '0.65rem', background: '#dcfce7', color: '#15803d', border: '1px solid #86efac', padding: '1px 5px', borderRadius: '4px', fontWeight: 'bold' }}>
+                              ⚔️ 装備中
+                            </span>
+                          )}
                           <span style={{ fontSize: '0.7rem', background: '#e2e8f0', color: '#475569', padding: '2px 6px', borderRadius: '4px' }}>
                             {typeLabels[item.type] || item.type}
                           </span>
@@ -456,23 +486,31 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
                             必要Lv: {getReqLevel(item)}
                           </span>
                         </div>
-                        <div style={{ fontSize: '0.7rem', color: '#64748b' }}>{item.desc}</div>
+                        <div style={{ fontSize: '0.7rem', color: '#64748b', wordBreak: 'break-word' }}>{item.desc}</div>
                         {getEffectKey(item) && (
-                          <div style={{ fontSize: '0.7rem', color: '#92400e', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '4px', padding: '3px 6px', marginTop: '4px', fontWeight: 'bold', lineHeight: 1.4 }}>
+                          <div style={{ fontSize: '0.7rem', color: '#92400e', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '4px', padding: '3px 6px', marginTop: '4px', fontWeight: 'bold', lineHeight: 1.35, wordBreak: 'break-word' }}>
                             ✨ {getItemEffectDescription(item)}
                           </div>
                         )}
                       </div>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                        <button 
-                          onClick={() => equipFromInventory(item)} 
-                          disabled={userLevel < getReqLevel(item)}
-                          style={{ background: userLevel >= getReqLevel(item) ? '#10b981' : '#94a3b8', color: 'white', border: 'none', padding: '4px 8px', borderRadius: '4px', cursor: userLevel >= getReqLevel(item) ? 'pointer' : 'not-allowed', fontWeight: 'bold', fontSize: '0.8rem' }}>
-                          {userLevel >= getReqLevel(item) ? '装備' : `Lv${getReqLevel(item)}`}
-                        </button>
-                        <button onClick={() => handleSellFromInventory(item)} style={{ background: '#f59e0b', color: 'white', border: 'none', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem' }}>
-                          売却
-                        </button>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', flexShrink: 0 }}>
+                        {isEquipped ? (
+                          <div style={{ background: '#10b981', color: 'white', padding: '5px 8px', borderRadius: '4px', fontWeight: 'bold', fontSize: '0.75rem', textAlign: 'center' }}>
+                            装備中
+                          </div>
+                        ) : (
+                          <>
+                            <button 
+                              onClick={() => equipFromInventory(item)} 
+                              disabled={userLevel < getReqLevel(item)}
+                              style={{ background: userLevel >= getReqLevel(item) ? '#10b981' : '#94a3b8', color: 'white', border: 'none', padding: '4px 8px', borderRadius: '4px', cursor: userLevel >= getReqLevel(item) ? 'pointer' : 'not-allowed', fontWeight: 'bold', fontSize: '0.8rem' }}>
+                              {userLevel >= getReqLevel(item) ? '装備' : `Lv${getReqLevel(item)}`}
+                            </button>
+                            <button onClick={() => handleSellFromInventory(item)} style={{ background: '#f59e0b', color: 'white', border: 'none', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem' }}>
+                              売却
+                            </button>
+                          </>
+                        )}
                       </div>
                     </div>
                   );
