@@ -85,7 +85,8 @@ const RaidBossMiniGame = ({
         ? Math.min(localHeals, cloudProgress.healsLeft)
         : localHeals;
 
-      const syncedRanking = defaultRanking.map(r => {
+      const cleanedDefault = defaultRanking.filter(r => r.isMe || r.name !== (hn || 'あなた'));
+      const syncedRanking = cleanedDefault.map(r => {
         if (r.isMe) return { ...r, damage: syncedMyDmg, name: hn || 'あなた' };
         return r;
       }).sort((a, b) => b.damage - a.damage);
@@ -220,7 +221,8 @@ const RaidBossMiniGame = ({
       setBossHp(bestHp);
       try { localStorage.setItem(getTodayKey(), String(bestHp)); } catch (e) {}
 
-      const updatedRanking = rankingList.map(r => r.isMe ? { ...r, damage: bestMyDmg, name: hn || 'あなた' } : r).sort((a, b) => b.damage - a.damage);
+      const cleanedRanking = rankingList.filter(r => r.isMe || r.name !== (hn || 'あなた'));
+      const updatedRanking = cleanedRanking.map(r => r.isMe ? { ...r, damage: bestMyDmg, name: hn || 'あなた' } : r).sort((a, b) => b.damage - a.damage);
       setRankingList(updatedRanking);
       try { localStorage.setItem(getRankingKey(), JSON.stringify(updatedRanking)); } catch (e) {}
 
@@ -341,27 +343,45 @@ const RaidBossMiniGame = ({
       ].slice(0, 15));
 
       setRankingList(prevList => {
-        let found = false;
-        let nextList = prevList.map(item => {
-          if (item.name === allyName && !item.isMe) {
-            found = true;
-            return { ...item, damage: item.damage + allyDmg };
-          }
-          return item;
-        });
+        const myDisplayName = hn || 'あなた';
+        const isFromMe = allyName === myDisplayName;
 
-        if (!found) {
-          nextList.push({
-            id: `p_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
-            name: allyName,
-            damage: payload.totalDamage || allyDmg,
-            isMe: false
+        // まず、自分と同名の非isMeな分身を綺麗に排除
+        let baseList = prevList.filter(item => item.isMe || item.name !== myDisplayName);
+
+        if (isFromMe) {
+          // 自分の別端末からの送信なら、自分自身のダメージとしてマージ
+          baseList = baseList.map(item => {
+            if (item.isMe) {
+              const newDmg = Math.max(item.damage, payload.totalDamage || (item.damage + allyDmg));
+              return { ...item, damage: newDmg };
+            }
+            return item;
           });
+        } else {
+          // 他のプレイヤーからの送信
+          let found = false;
+          baseList = baseList.map(item => {
+            if (item.name === allyName && !item.isMe) {
+              found = true;
+              return { ...item, damage: item.damage + allyDmg };
+            }
+            return item;
+          });
+
+          if (!found) {
+            baseList.push({
+              id: `p_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+              name: allyName,
+              damage: payload.totalDamage || allyDmg,
+              isMe: false
+            });
+          }
         }
 
-        nextList.sort((a, b) => b.damage - a.damage);
-        try { localStorage.setItem(getRankingKey(), JSON.stringify(nextList)); } catch (e) {}
-        return nextList;
+        baseList.sort((a, b) => b.damage - a.damage);
+        try { localStorage.setItem(getRankingKey(), JSON.stringify(baseList)); } catch (e) {}
+        return baseList;
       });
     });
 
