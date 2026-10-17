@@ -1366,9 +1366,38 @@ function App() {
 
     document.title = pageTitle;
 
-    const cleanDesc = currentSurvey && currentSurvey.description
-      ? currentSurvey.description.slice(0, 100).replace(/https?:\/\/\S+/g, '').trim() + '...'
-      : metaDescription;
+    let cleanDesc = metaDescription;
+    if (currentSurvey && currentSurvey.description) {
+      const raw = currentSurvey.description;
+      let text = '';
+      if (raw.includes('[[SUMMARY:')) {
+        try {
+          const match = raw.match(/\[\[SUMMARY:\s*([\s\S]*?)\s*\]\]/);
+          if (match && match[1]) {
+            const json = JSON.parse(match[1]);
+            const parts = [];
+            if (json.point1_desc) parts.push(json.point1_desc);
+            if (json.point2_desc) parts.push(json.point2_desc);
+            if (json.rabi_comment) parts.push(json.rabi_comment);
+            text = parts.join(' ').trim();
+          }
+        } catch (e) {
+          text = raw.replace(/\[\[SUMMARY:[\s\S]*?\]\]/g, '').trim();
+        }
+      } else {
+        text = raw;
+      }
+      text = text
+        .replace(/<[^>]*>?/gm, '')
+        .replace(/\[.*?\]\(.*?\)/g, '')
+        .replace(/https?:\/\/\S+/g, '')
+        .replace(/[#*`_~]/g, '')
+        .replace(/（出典：.*?）/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+      if (text.length > 115) text = text.substring(0, 110) + '...';
+      cleanDesc = text ? `${text} 投票結果やみんなのリアルなコメントを「みんアケ」でチェック！` : metaDescription;
+    }
 
     // ヘルパー: メタタグの更新魔法 🪄
     const updateMeta = (selector, attr, content) => {
