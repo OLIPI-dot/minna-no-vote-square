@@ -1607,15 +1607,33 @@ const PatrolMiniGame = ({
                     lineHeight: 1.4,
                     padding: '7px 9px',
                     borderRadius: '8px',
-                    background: '#f8fafc',
-                    border: '1px solid #e2e8f0',
+                    background: idx === 0 ? '#f0fdf4' : '#f8fafc',
+                    border: idx === 0 ? '1px solid #86efac' : '1px solid #e2e8f0',
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: '4px'
+                    gap: '4px',
+                    boxShadow: idx === 0 ? '0 1px 3px rgba(16, 185, 129, 0.12)' : 'none'
                   }}>
                     {/* 1行目: [時間] ＆ 結末バッジ（左右両端にすっきり配置） */}
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        {idx === 0 && (
+                          <span style={{
+                            background: 'linear-gradient(135deg, #ef4444, #f97316)',
+                            color: '#ffffff',
+                            fontSize: '0.62rem',
+                            fontWeight: '900',
+                            padding: '1px 5px',
+                            borderRadius: '4px',
+                            letterSpacing: '0.5px',
+                            boxShadow: '0 1px 3px rgba(239, 68, 68, 0.35)',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            lineHeight: 1.2
+                          }}>
+                            New!
+                          </span>
+                        )}
                         <span style={{ color: '#94a3b8', fontFamily: 'monospace', fontSize: '0.7rem' }}>[{h.time}]</span>
                         {h.isHardMode && (
                           <span style={{ fontSize: '0.65rem', background: '#fee2e2', color: '#dc2626', padding: '1px 5px', borderRadius: '4px', fontWeight: 'bold' }}>深層</span>

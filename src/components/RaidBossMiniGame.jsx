@@ -946,7 +946,23 @@ const RaidBossMiniGame = ({
                   gap: '5px'
                 }}
               >
-                {isLatest && <span style={{ color: '#fbbf24', fontSize: '0.65rem' }}>▶</span>}
+                {isLatest && (
+                  <span style={{
+                    background: 'linear-gradient(135deg, #ef4444, #f97316)',
+                    color: '#ffffff',
+                    fontSize: '0.58rem',
+                    fontWeight: '900',
+                    padding: '0px 4px',
+                    borderRadius: '3px',
+                    letterSpacing: '0.3px',
+                    marginRight: '2px',
+                    flexShrink: 0,
+                    lineHeight: 1.3,
+                    boxShadow: '0 1px 3px rgba(239, 68, 68, 0.4)'
+                  }}>
+                    New!
+                  </span>
+                )}
                 <span>{log}</span>
               </div>
             );
