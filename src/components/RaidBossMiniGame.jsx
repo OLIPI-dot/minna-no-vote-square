@@ -62,6 +62,9 @@ const RaidBossMiniGame = ({
   const [playerHp, setPlayerHp] = useState(pMaxHp);
   const [faintSeconds, setFaintSeconds] = useState(0);
 
+  // 🧪 回復薬（最大3回まで・HP回復＆気絶からの即時復活に使用可能）
+  const [healsLeft, setHealsLeft] = useState(3);
+
   // 📡 オンライン同期ステート（10秒バッチ＆超軽量WebSocket）
   const unsyncedDamageRef = useRef(0);
   const channelRef = useRef(null);
@@ -131,7 +134,6 @@ const RaidBossMiniGame = ({
       }
     } catch (e) {}
 
-    // 初期ランキング（広場の仲間たち）
     return [
       { id: 'npc_1', name: 'ベテラン広場民 🛡️', damage: 8500, isMe: false },
       { id: 'npc_2', name: '深夜の調査兵 🔦', damage: 5200, isMe: false },
@@ -141,7 +143,6 @@ const RaidBossMiniGame = ({
     ];
   });
 
-  // 自分の与ダメージ取得
   const myDamage = rankingList.find(r => r.isMe)?.damage || 0;
 
   // ⚡ 10秒バッチ同期のリアルタイムWebSocket購読
@@ -162,20 +163,17 @@ const RaidBossMiniGame = ({
       const allyName = payload.senderName || '広場民';
       const allyDmg = payload.damage;
 
-      // ボスHP減少
       setBossHp(prevHp => {
         const nextHp = Math.max(0, prevHp - allyDmg);
         try { localStorage.setItem(getTodayKey(), String(nextHp)); } catch (e) {}
         return nextHp;
       });
 
-      // 実況ログ追加
       setRaidLogs(logs => [
-        `🤝 【共闘速報】 『${allyName}』 が ${allyDmg.toLocaleString()} のダメージを叩き込んだ！`,
+        `🤝 【共闘速報】 『${allyName}』 が ${allyDmg.toLocaleString()} の追撃ダメージ！`,
         ...logs
       ].slice(0, 15));
 
-      // ランキング更新
       setRankingList(prevList => {
         let found = false;
         let nextList = prevList.map(item => {
@@ -209,11 +207,9 @@ const RaidBossMiniGame = ({
 
     channelRef.current = channel;
 
-    // ⏱️ 1秒ごとのタイマー更新 ＆ 10秒ごとのバッチ送信
     const intervalTimer = setInterval(() => {
       setSyncSecondsLeft(prev => {
         if (prev <= 1) {
-          // 10秒到達：溜まったダメージを送信！
           if (unsyncedDamageRef.current > 0 && channelRef.current) {
             const dmgToSend = unsyncedDamageRef.current;
             unsyncedDamageRef.current = 0;
@@ -243,41 +239,62 @@ const RaidBossMiniGame = ({
     };
   }, [currentBoss.id, hn, myDamage]);
 
+  // 🧪 回復薬を使う（HP回復 または 気絶からの即座復帰）
+  const handleHeal = () => {
+    if (healsLeft <= 0 || bossHp <= 0) return;
+
+    if (faintSeconds > 0) {
+      try { localStorage.removeItem(getFaintKey()); } catch (e) {}
+      setFaintSeconds(0);
+      setPlayerHp(pMaxHp);
+      setHealsLeft(prev => prev - 1);
+      setRaidLogs(logs => [
+        `🧪 秘伝の回復薬をグイッと飲んで気絶から即座に復活した！！ (残り${healsLeft - 1}回)`,
+        ...logs
+      ].slice(0, 15));
+      return;
+    }
+
+    if (playerHp >= pMaxHp) return;
+
+    const healAmt = Math.round(pMaxHp * 0.5);
+    const newHp = Math.min(pMaxHp, playerHp + healAmt);
+    setPlayerHp(newHp);
+    setHealsLeft(prev => prev - 1);
+    setRaidLogs(logs => [
+      `🧪 回復薬を使用した！ HPが ${healAmt} 回復した！ (残り${healsLeft - 1}回)`,
+      ...logs
+    ].slice(0, 15));
+  };
+
   // 攻撃処理（プレイヤー即時反映 ＋ ボス反撃 ＋ 仲間加勢）
   const handleAttack = () => {
     if (cooldown > 0 || isAttacking || faintSeconds > 0 || bossHp <= 0) return;
 
     setIsAttacking(true);
 
-    // 1. プレイヤーの与ダメージ計算
     const isCrit = Math.random() < 0.22;
     const critMult = isCrit ? 1.85 : 1.0;
     const variance = 0.85 + (Math.random() * 0.30);
     const calculatedDmg = Math.max(15, Math.floor(myTotalAtk * variance * critMult));
 
-    // 10秒バッチ送信用の未送信ダメージに蓄積
     unsyncedDamageRef.current += calculatedDmg;
 
-    // 2. 広場の仲間の加勢ダメージ（100〜250）
     const allyDmg = Math.floor(80 + Math.random() * 180);
     const totalTurnDmg = calculatedDmg + allyDmg;
 
-    // 新しいボスHP
     const nextHp = Math.max(0, bossHp - totalTurnDmg);
     setBossHp(nextHp);
     try { localStorage.setItem(getTodayKey(), String(nextHp)); } catch (e) {}
 
-    // ダメージポップアップ
     setDamagePopup({ val: calculatedDmg, isCrit });
     setTimeout(() => setDamagePopup(null), 1100);
 
-    // ログ追加（自分と仲間）
     const weaponName = equipment?.weapon?.name || '素手';
     const logMsg = isCrit
       ? `💥 【会心の一撃！】 『${weaponName}』 で ${calculatedDmg.toLocaleString()} の超大ダメージ！`
       : `⚔️ 『${weaponName}』 で ${calculatedDmg.toLocaleString()} のダメージを与えた！`;
 
-    // 3. ランキング更新（自分と仲間）
     let updatedRanking = rankingList.map(entry => {
       if (entry.isMe) {
         return { ...entry, name: hn || 'あなた', damage: entry.damage + calculatedDmg };
@@ -289,11 +306,9 @@ const RaidBossMiniGame = ({
     setRankingList(updatedRanking);
     try { localStorage.setItem(getRankingKey(), JSON.stringify(updatedRanking)); } catch (e) {}
 
-    // EXPボーナス（微量）
     const smallExp = Math.floor(calculatedDmg / 20) + 6;
     if (addExp) addExp(smallExp);
 
-    // 4. ボスの反撃ターン
     if (nextHp > 0) {
       setTimeout(() => {
         const randomSkill = currentBoss.skills[Math.floor(Math.random() * currentBoss.skills.length)];
@@ -308,13 +323,13 @@ const RaidBossMiniGame = ({
           setTimeout(() => setBossAttackPopup(null), 1200);
 
           if (nextPlayerHp === 0) {
-            const faintTime = 30; // 30秒気絶
+            const faintTime = 30;
             setFaintSeconds(faintTime);
             try {
               localStorage.setItem(getFaintKey(), String(Date.now() + faintTime * 1000));
             } catch (e) {}
             setRaidLogs(prev => [
-              `😵 【戦闘不能…！】 ボスの強烈な一撃で気絶してしまった！ 30秒後に全快で復活します。（ペナルティなし）`,
+              `😵 【戦闘不能…！】 ボスの強烈な一撃で気絶してしまった！ (回復薬で即復帰可能)`,
               `💥 『${currentBoss.name}』の『${randomSkill}』！ あなたは ${mitigatedDmg} のダメージを受けた！`,
               logMsg,
               ...prev
@@ -330,14 +345,12 @@ const RaidBossMiniGame = ({
         });
       }, 400);
     } else {
-      // ボス討伐成功！
       const victoryMsg = `🎉🎉 【討伐成功！！】 広場のみんなで 『${currentBoss.name}』 を打ち倒した！！ 🎉🎉`;
       setRaidLogs(prev => [victoryMsg, logMsg, ...prev].slice(0, 15));
       if (addTickets) addTickets(currentBoss.rewardTickets);
       if (addExp) addExp(currentBoss.rewardExp);
     }
 
-    // クールタイム設定 (3秒)
     setCooldown(3);
     setIsAttacking(false);
   };
@@ -345,7 +358,6 @@ const RaidBossMiniGame = ({
   const hpPercent = Math.max(0, Math.min(100, (bossHp / currentBoss.maxHp) * 100));
   const playerHpPercent = Math.max(0, Math.min(100, (playerHp / pMaxHp) * 100));
 
-  // 自分の順位
   const myRankIdx = rankingList.findIndex(r => r.isMe);
   const myRank = myRankIdx >= 0 ? myRankIdx + 1 : rankingList.length;
 
@@ -364,16 +376,16 @@ const RaidBossMiniGame = ({
       <div style={{
         background: currentBoss.bgGradient,
         borderRadius: '10px',
-        padding: '12px 10px',
+        padding: '10px 10px 8px 10px',
         border: `1px solid ${currentBoss.accentColor}44`,
         boxShadow: `0 4px 16px ${currentBoss.accentColor}22`,
-        marginBottom: '10px',
+        marginBottom: '8px',
         position: 'relative'
       }}>
         {/* 曜日バッジ ＆ 10秒同期インジケーター */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
           <span style={{
-            fontSize: '0.7rem',
+            fontSize: '0.68rem',
             fontWeight: 'bold',
             background: 'rgba(0,0,0,0.4)',
             color: currentBoss.accentColor,
@@ -397,9 +409,9 @@ const RaidBossMiniGame = ({
         </div>
 
         {/* ボスアイコン ＆ ダメージポップアップ */}
-        <div style={{ position: 'relative', display: 'inline-block', margin: '4px 0' }}>
+        <div style={{ position: 'relative', display: 'inline-block', margin: '2px 0' }}>
           <div style={{
-            fontSize: '3.6rem',
+            fontSize: '3.4rem',
             filter: `drop-shadow(0 0 14px ${currentBoss.accentColor}88)`,
             transform: isAttacking ? 'scale(0.95)' : 'scale(1)',
             transition: 'transform 0.1s'
@@ -407,7 +419,6 @@ const RaidBossMiniGame = ({
             {currentBoss.icon}
           </div>
 
-          {/* プレイヤーからのダメージポップアップ */}
           {damagePopup && (
             <div style={{
               position: 'absolute',
@@ -428,15 +439,14 @@ const RaidBossMiniGame = ({
             </div>
           )}
 
-          {/* ボスからの被弾ポップアップ */}
           {bossAttackPopup && (
             <div style={{
               position: 'absolute',
-              bottom: '-10px',
+              bottom: '-8px',
               left: '50%',
               transform: 'translate(-50%, 0)',
               color: '#f87171',
-              fontSize: '0.85rem',
+              fontSize: '0.82rem',
               fontWeight: 'bold',
               background: 'rgba(0,0,0,0.85)',
               padding: '2px 8px',
@@ -452,27 +462,21 @@ const RaidBossMiniGame = ({
         </div>
 
         {/* ボス名 */}
-        <div style={{ fontSize: '0.75rem', color: currentBoss.accentColor, fontWeight: 'bold' }}>
-          {currentBoss.title}
-        </div>
-        <div style={{ fontSize: '1.05rem', fontWeight: 'bold', color: '#ffffff', letterSpacing: '0.5px', margin: '2px 0 4px 0' }}>
+        <div style={{ fontSize: '1.02rem', fontWeight: 'bold', color: '#ffffff', letterSpacing: '0.5px', margin: '2px 0 2px 0' }}>
           {currentBoss.name}
-        </div>
-        <div style={{ fontSize: '0.7rem', color: '#cbd5e1', lineHeight: 1.4, maxWidth: '280px', margin: '0 auto' }}>
-          {currentBoss.desc}
         </div>
 
         {/* 巨大HPバー */}
-        <div style={{ marginTop: '8px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.68rem', fontWeight: 'bold', marginBottom: '3px' }}>
-            <span style={{ color: '#ef4444' }}>BOSS HP (全プレイヤー共有)</span>
+        <div style={{ marginTop: '6px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.68rem', fontWeight: 'bold', marginBottom: '2px' }}>
+            <span style={{ color: '#ef4444' }}>BOSS HP</span>
             <span style={{ color: '#f8fafc', fontFamily: 'monospace' }}>
               {bossHp.toLocaleString()} / {currentBoss.maxHp.toLocaleString()} ({hpPercent.toFixed(1)}%)
             </span>
           </div>
           <div style={{
             width: '100%',
-            height: '14px',
+            height: '13px',
             background: 'rgba(0,0,0,0.5)',
             borderRadius: '7px',
             border: '1px solid rgba(255,255,255,0.15)',
@@ -494,19 +498,65 @@ const RaidBossMiniGame = ({
         </div>
       </div>
 
+      {/* 📢 【新配置】リアルタイム実況ログ（上部に配置して一目でわかる！） */}
+      <div style={{
+        background: 'rgba(0, 0, 0, 0.45)',
+        borderRadius: '8px',
+        padding: '6px 8px',
+        marginBottom: '8px',
+        border: '1px solid rgba(255, 255, 255, 0.08)',
+        textAlign: 'left',
+        maxHeight: '68px',
+        overflowY: 'auto',
+        scrollbarWidth: 'none'
+      }}>
+        {raidLogs.slice(0, 3).map((log, idx) => {
+          const isLatest = idx === 0;
+          const isFaint = log.includes('気絶') || log.includes('戦闘不能');
+          const isHeal = log.includes('回復薬');
+          const isCrit = log.includes('会心');
+          const isAlly = log.includes('共闘速報');
+
+          let color = '#cbd5e1';
+          if (isFaint) color = '#fca5a5';
+          else if (isHeal) color = '#86efac';
+          else if (isCrit) color = '#fef08a';
+          else if (isAlly) color = '#38bdf8';
+
+          return (
+            <div
+              key={idx}
+              style={{
+                fontSize: isLatest ? '0.74rem' : '0.68rem',
+                fontWeight: isLatest ? 'bold' : 'normal',
+                color,
+                lineHeight: 1.4,
+                marginBottom: '2px',
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: '4px'
+              }}
+            >
+              {isLatest && <span style={{ color: '#fbbf24', fontSize: '0.65rem' }}>▶</span>}
+              <span>{log}</span>
+            </div>
+          );
+        })}
+      </div>
+
       {/* プレイヤーのHP & 戦闘力ステータス */}
       <div style={{
         background: 'rgba(255, 255, 255, 0.05)',
         borderRadius: '8px',
-        padding: '8px 10px',
-        marginBottom: '10px',
+        padding: '7px 9px',
+        marginBottom: '8px',
         textAlign: 'left',
         border: '1px solid rgba(255, 255, 255, 0.06)'
       }}>
         {/* プレイヤーHPバー */}
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.68rem', fontWeight: 'bold', marginBottom: '3px' }}>
           <span style={{ color: faintSeconds > 0 ? '#ef4444' : '#10b981' }}>
-            {faintSeconds > 0 ? '😵 気絶中…' : '💚 あなたのHP'}
+            {faintSeconds > 0 ? `😵 気絶中… (残り${faintSeconds}秒)` : '💚 あなたのHP'}
           </span>
           <span style={{ color: '#f8fafc', fontFamily: 'monospace' }}>
             {playerHp} / {pMaxHp}
@@ -518,7 +568,7 @@ const RaidBossMiniGame = ({
           background: 'rgba(0,0,0,0.4)',
           borderRadius: '4px',
           overflow: 'hidden',
-          marginBottom: '8px'
+          marginBottom: '6px'
         }}>
           <div style={{
             width: `${playerHpPercent}%`,
@@ -534,7 +584,6 @@ const RaidBossMiniGame = ({
           }}></div>
         </div>
 
-        {/* 攻撃力・防御力・与ダメージ */}
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem' }}>
           <div>
             <span style={{ color: '#94a3b8' }}>ATK </span>
@@ -543,65 +592,108 @@ const RaidBossMiniGame = ({
             <strong style={{ color: '#60a5fa' }}>{myTotalDef}</strong>
           </div>
           <div>
-            <span style={{ color: '#94a3b8' }}>累計ダメージ: </span>
+            <span style={{ color: '#94a3b8' }}>累計: </span>
             <strong style={{ color: '#38bdf8' }}>{myDamage.toLocaleString()}</strong>
           </div>
         </div>
       </div>
 
-      {/* 攻撃アクションボタン */}
-      <button
-        onClick={handleAttack}
-        disabled={cooldown > 0 || faintSeconds > 0 || bossHp <= 0}
-        style={{
-          width: '100%',
-          padding: '11px',
-          borderRadius: '8px',
-          border: 'none',
-          background: bossHp <= 0
-            ? '#334155'
-            : faintSeconds > 0
-              ? 'linear-gradient(135deg, #475569 0%, #334155 100%)'
-              : cooldown > 0
+      {/* ⚔️ 操作ボタン（攻撃 ＆ 🧪回復薬の2列配置） */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '6px', marginBottom: '8px' }}>
+        {/* 攻撃アクションボタン */}
+        <button
+          onClick={handleAttack}
+          disabled={cooldown > 0 || faintSeconds > 0 || bossHp <= 0}
+          style={{
+            padding: '11px',
+            borderRadius: '8px',
+            border: 'none',
+            background: bossHp <= 0
+              ? '#334155'
+              : faintSeconds > 0
                 ? '#475569'
-                : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
-          color: 'white',
-          fontWeight: 'bold',
-          fontSize: '0.92rem',
-          cursor: cooldown > 0 || faintSeconds > 0 || bossHp <= 0 ? 'not-allowed' : 'pointer',
-          boxShadow: cooldown > 0 || faintSeconds > 0 || bossHp <= 0 ? 'none' : '0 4px 14px rgba(239, 68, 68, 0.45)',
-          transition: 'all 0.2s',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '6px'
-        }}
-      >
-        {bossHp <= 0 ? (
-          <span>🎉 本日のレイドボス討伐成功！</span>
-        ) : faintSeconds > 0 ? (
-          <span>😵 気絶中... 休憩待機中 (残り{faintSeconds}秒)</span>
-        ) : cooldown > 0 ? (
-          <span>⏳ 攻撃準備中... ({cooldown}秒)</span>
-        ) : (
-          <>
-            <span>⚔️</span>
-            <span>攻撃する！</span>
-          </>
-        )}
-      </button>
+                : cooldown > 0
+                  ? '#475569'
+                  : 'linear-gradient(180deg, #f87171 0%, #ef4444 50%, #dc2626 100%)',
+            borderBottom: (cooldown > 0 || faintSeconds > 0 || bossHp <= 0) ? 'none' : '3px solid #991b1b',
+            color: 'white',
+            fontWeight: 'bold',
+            fontSize: '0.92rem',
+            cursor: cooldown > 0 || faintSeconds > 0 || bossHp <= 0 ? 'not-allowed' : 'pointer',
+            boxShadow: cooldown > 0 || faintSeconds > 0 || bossHp <= 0 ? 'none' : '0 3px 10px rgba(239, 68, 68, 0.4)',
+            transition: 'all 0.15s ease',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '6px'
+          }}
+        >
+          {bossHp <= 0 ? (
+            <span>🎉 本日の討伐成功！</span>
+          ) : faintSeconds > 0 ? (
+            <span>😵 気絶中... ({faintSeconds}s)</span>
+          ) : cooldown > 0 ? (
+            <span>⏳ 準備中... ({cooldown}s)</span>
+          ) : (
+            <>
+              <span>⚔️</span>
+              <span>攻撃する！</span>
+            </>
+          )}
+        </button>
+
+        {/* 🧪 回復薬ボタン（HP回復 ＆ 気絶時の即時復活対応） */}
+        <button
+          onClick={handleHeal}
+          disabled={healsLeft <= 0 || (playerHp >= pMaxHp && faintSeconds <= 0) || bossHp <= 0}
+          title={faintSeconds > 0 ? "回復薬で即座に気絶から復活！" : "HPを約50%回復します"}
+          style={{
+            padding: '11px 12px',
+            borderRadius: '8px',
+            border: '1px solid #059669',
+            borderBottom: '3px solid #047857',
+            background: healsLeft <= 0 || (playerHp >= pMaxHp && faintSeconds <= 0)
+              ? '#334155'
+              : faintSeconds > 0
+                ? 'linear-gradient(180deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%)' // 気絶中は目立つゴールド「即復活！」
+                : 'linear-gradient(180deg, #34d399 0%, #10b981 50%, #059669 100%)',
+            color: 'white',
+            fontWeight: 'bold',
+            fontSize: '0.82rem',
+            cursor: healsLeft <= 0 || (playerHp >= pMaxHp && faintSeconds <= 0) ? 'not-allowed' : 'pointer',
+            boxShadow: healsLeft <= 0 ? 'none' : '0 3px 8px rgba(16, 185, 129, 0.35)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '4px',
+            whiteSpace: 'nowrap',
+            transition: 'all 0.15s ease'
+          }}
+        >
+          <span>🧪</span>
+          <span>{faintSeconds > 0 ? '即復活' : '回復'}</span>
+          <span style={{
+            fontSize: '0.65rem',
+            background: 'rgba(0,0,0,0.25)',
+            padding: '1px 5px',
+            borderRadius: '6px'
+          }}>
+            {healsLeft}
+          </span>
+        </button>
+      </div>
 
       {/* 🏆 ダメージ貢献ランキングカード */}
       <div style={{
-        marginTop: '12px',
-        padding: '10px',
+        padding: '8px 10px',
         background: 'rgba(0, 0, 0, 0.35)',
         borderRadius: '8px',
         border: '1px solid rgba(255, 255, 255, 0.08)',
-        textAlign: 'left'
+        textAlign: 'left',
+        marginBottom: '8px'
       }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-          <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: '#fbbf24', display: 'flex', alignItems: 'center', gap: '4px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+          <span style={{ fontSize: '0.74rem', fontWeight: 'bold', color: '#fbbf24', display: 'flex', alignItems: 'center', gap: '4px' }}>
             <span>🏆</span>
             <span>ダメージ貢献ランキング</span>
           </span>
@@ -610,7 +702,7 @@ const RaidBossMiniGame = ({
           </span>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
           {rankingList.slice(0, 5).map((item, idx) => {
             const isMe = item.isMe;
             const medal = idx === 0 ? '👑' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `${idx + 1}.`;
@@ -621,15 +713,15 @@ const RaidBossMiniGame = ({
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
-                  padding: '5px 8px',
-                  borderRadius: '6px',
+                  padding: '4px 7px',
+                  borderRadius: '5px',
                   background: isMe ? 'rgba(56, 189, 248, 0.15)' : 'rgba(255, 255, 255, 0.03)',
                   border: isMe ? '1px solid rgba(56, 189, 248, 0.35)' : '1px solid transparent',
-                  fontSize: '0.72rem'
+                  fontSize: '0.7rem'
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', overflow: 'hidden' }}>
-                  <span style={{ width: '18px', textAlign: 'center', fontWeight: 'bold' }}>{medal}</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '5px', overflow: 'hidden' }}>
+                  <span style={{ width: '16px', textAlign: 'center', fontWeight: 'bold' }}>{medal}</span>
                   <span style={{
                     fontWeight: isMe ? 'bold' : 'normal',
                     color: isMe ? '#38bdf8' : '#e2e8f0',
@@ -652,14 +744,13 @@ const RaidBossMiniGame = ({
 
       {/* ボススキル / 報酬情報カード */}
       <div style={{
-        marginTop: '10px',
-        padding: '8px 10px',
+        padding: '6px 8px',
         background: 'rgba(0,0,0,0.25)',
-        borderRadius: '8px',
-        fontSize: '0.68rem',
+        borderRadius: '6px',
+        fontSize: '0.66rem',
         textAlign: 'left'
       }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', color: '#94a3b8', marginBottom: '4px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', color: '#94a3b8', marginBottom: '2px' }}>
           <span>討伐報酬:</span>
           <span style={{ color: '#fbbf24', fontWeight: 'bold' }}>
             🎫 ガチャチケ {currentBoss.rewardTickets}枚 / ⭐ {currentBoss.rewardExp} EXP
@@ -669,27 +760,6 @@ const RaidBossMiniGame = ({
           <span>警戒スキル: </span>
           <span style={{ color: '#fca5a5' }}>{currentBoss.skills.join(' / ')}</span>
         </div>
-      </div>
-
-      {/* 討伐実況ログ */}
-      <div style={{
-        marginTop: '10px',
-        background: 'rgba(0,0,0,0.4)',
-        borderRadius: '6px',
-        padding: '6px 8px',
-        maxHeight: '90px',
-        overflowY: 'auto',
-        fontSize: '0.68rem',
-        textAlign: 'left',
-        color: '#94a3b8',
-        lineHeight: 1.5,
-        scrollbarWidth: 'none'
-      }}>
-        {raidLogs.map((log, idx) => (
-          <div key={idx} style={{ color: idx === 0 ? '#f8fafc' : '#94a3b8', fontWeight: idx === 0 ? 'bold' : 'normal' }}>
-            {log}
-          </div>
-        ))}
       </div>
     </div>
   );
