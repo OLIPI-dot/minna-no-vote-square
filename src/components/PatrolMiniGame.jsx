@@ -1504,6 +1504,70 @@ const PatrolMiniGame = ({
       gap: '3px' 
     }}>
       {[...battleLog].reverse().map((log, i) => {
+        // 🎊 レベルアップの特別華やか装飾バナー
+        if (log.includes('LEVEL UP')) {
+          return (
+            <div key={i} style={{
+              background: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 50%, #fde68a 100%)',
+              border: '1.5px solid #f59e0b',
+              borderRadius: '6px',
+              padding: '5px 8px',
+              margin: '3px 0',
+              textAlign: 'center',
+              boxShadow: '0 2px 6px rgba(245, 158, 11, 0.25)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px',
+              animation: 'fadeIn 0.25s ease-out'
+            }}>
+              <span style={{ fontSize: '0.95rem' }}>🎊</span>
+              <span style={{
+                background: 'linear-gradient(90deg, #d97706, #b45309)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                fontWeight: '900',
+                fontSize: '0.8rem',
+                letterSpacing: '0.5px'
+              }}>
+                {log.replace(/^[🎊✨\s]+/, '')}
+              </span>
+              <span style={{ fontSize: '0.95rem' }}>✨</span>
+            </div>
+          );
+        }
+
+        // 💪 ステータスアップの特別華やか装飾バナー
+        if (log.includes('最大HP +') || log.includes('HP +') || log.includes('ステータスUP')) {
+          return (
+            <div key={i} style={{
+              background: 'linear-gradient(135deg, #ecfdf5 0%, #eff6ff 100%)',
+              border: '1px solid #6ee7b7',
+              borderRadius: '6px',
+              padding: '4px 8px',
+              margin: '2px 0',
+              textAlign: 'center',
+              boxShadow: '0 1px 4px rgba(16, 185, 129, 0.15)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px',
+              animation: 'fadeIn 0.25s ease-out'
+            }}>
+              <span style={{ fontSize: '0.9rem' }}>💪</span>
+              <span style={{
+                color: '#047857',
+                fontWeight: '900',
+                fontSize: '0.76rem',
+                letterSpacing: '0.3px'
+              }}>
+                {log.replace(/^[💪\s]+/, '')}
+              </span>
+              <span style={{ fontSize: '0.85rem' }}>⚡</span>
+            </div>
+          );
+        }
+
         let logStyle = { animation: 'fadeIn 0.2s', borderBottom: i !== battleLog.length - 1 ? '1px dashed #e2e8f0' : 'none', paddingBottom: '3px', lineHeight: 1.35 };
         
         if (log.includes('撃退した') || log.includes('不戦勝')) {
