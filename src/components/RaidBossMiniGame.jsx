@@ -300,7 +300,7 @@ const RaidBossMiniGame = ({
     }
 
     const PARTICIPATION_TICKETS = 3;
-    const PARTICIPATION_EXP = 800;
+    const PARTICIPATION_EXP = 200;
 
     if (addTickets) addTickets(PARTICIPATION_TICKETS);
     if (addExp) addExp(PARTICIPATION_EXP);
@@ -927,8 +927,8 @@ const RaidBossMiniGame = ({
             {hasClaimedParticipation
               ? '本日受取済み (討伐成功時はさらに12枚！)'
               : myDamage > 0
-                ? '🎫 チケット3枚 ＋ ⭐ 800 EXP が届いています！'
-                : '1回攻撃すると、🎫 チケット3枚＋⭐ 800 EXP 獲得！'}
+                ? '🎫 チケット3枚 ＋ ⭐ 200 EXP が届いています！'
+                : '1回攻撃すると、🎫 チケット3枚＋⭐ 200 EXP 獲得！'}
           </div>
         </div>
 
