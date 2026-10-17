@@ -128,6 +128,7 @@ const DungeonMiniGame = ({
   const [collectedExp, setCollectedExp] = useState(0);
   const [collectedTickets, setCollectedTickets] = useState(0);
   const [collectedItems, setCollectedItems] = useState([]);
+  const [defeatedMonsters, setDefeatedMonsters] = useState([]); // その探索で倒した敵の記録
   const [healCount, setHealCount] = useState(0);
 
   // 最高到達階層（クラウド ＆ localStorage同期）
@@ -341,6 +342,7 @@ const DungeonMiniGame = ({
     setCollectedExp(0);
     setCollectedTickets(0);
     setCollectedItems([]);
+    setDefeatedMonsters([]);
     setPlayerHp(pMaxHp);
     setHealCount(0);
     initFloor(1, pMaxHp);
@@ -536,10 +538,12 @@ const DungeonMiniGame = ({
       }
       addDungeonHistoryRecord({
         floor,
+        level: userLevel,
         result: 'escaped',
         exp: collectedExp,
         tickets: collectedTickets,
-        items: collectedItems
+        items: collectedItems,
+        monsters: defeatedMonsters
       });
     }
     setDungeonState('escaped');
@@ -966,10 +970,12 @@ const DungeonMiniGame = ({
       setBattleLog(newLogs);
       addDungeonHistoryRecord({
         floor,
+        level: userLevel,
         result: 'lost',
         exp: 0,
         tickets: 0,
-        items: collectedItems
+        items: collectedItems,
+        monsters: defeatedMonsters
       });
       setDungeonState('lost');
       return;
@@ -1001,6 +1007,24 @@ const DungeonMiniGame = ({
     const baseExp = enemy.type === 'rare' ? 220 : enemy.type === 'elite' ? 110 : 50;
     const earnedExp = baseExp + (floor * 10);
     setCollectedExp(prev => prev + earnedExp);
+
+    // 討伐モンスター記録に追加
+    if (enemy) {
+      setDefeatedMonsters(prev => {
+        const existing = prev.find(m => m.id === enemy.id);
+        if (existing) {
+          return prev.map(m => m.id === enemy.id ? { ...m, count: (m.count || 1) + 1 } : m);
+        }
+        return [...prev, {
+          id: enemy.id,
+          name: enemy.name,
+          icon: enemy.icon || '👾',
+          type: enemy.type || 'normal',
+          isBoss: isBossFloor,
+          count: 1
+        }];
+      });
+    }
 
     logs.push(`🎉 【${enemy.name}】 を撃破した！ (EXP +${earnedExp})`);
 
@@ -1279,39 +1303,63 @@ const DungeonMiniGame = ({
                 地下へ出発するとここに記録が残ります🔦
               </div>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                {dungeonHistory.map((h, idx) => (
-                  <div key={idx} style={{
-                    fontSize: '0.73rem',
-                    lineHeight: 1.4,
-                    padding: '5px 8px',
-                    borderRadius: '6px',
-                    background: 'rgba(255, 255, 255, 0.04)',
-                    border: '1px solid rgba(255, 255, 255, 0.04)'
-                  }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ color: '#94a3b8', fontFamily: 'monospace' }}>{h.time}</span>
-                      <span style={{ fontWeight: 'bold', color: '#38bdf8' }}>B{h.floor}F 到達</span>
-                      <span style={{
-                        fontWeight: 'bold',
-                        color: h.result === 'escaped' ? '#34d399' : h.result === 'lost' ? '#f87171' : '#94a3b8'
-                      }}>
-                        {h.result === 'escaped' ? '無事帰還 🎉' : h.result === 'lost' ? '力尽きた 💀' : '即時帰還'}
-                      </span>
-                    </div>
-                    {(h.exp > 0 || h.tickets > 0 || (h.items && h.items.length > 0)) && (
-                      <div style={{ marginTop: '3px', fontSize: '0.7rem' }}>
-                        <div style={{ color: '#fcd34d', marginBottom: (h.items && h.items.length > 0) ? '3px' : 0 }}>
-                          {h.exp > 0 && `EXP +${h.exp} `}
-                          {h.tickets > 0 && `🎫 +${h.tickets} `}
-                          {h.items && h.items.length > 0 && (
-                            <span style={{ color: '#93c5fd', fontWeight: 'bold' }}>
-                              🎁 装備×{h.items.length}
-                            </span>
-                          )}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {dungeonHistory.map((h, idx) => {
+                  const monsterCount = h.monsters ? h.monsters.reduce((sum, m) => sum + (m.count || 1), 0) : 0;
+                  return (
+                    <div key={idx} style={{
+                      fontSize: '0.73rem',
+                      lineHeight: 1.45,
+                      padding: '7px 9px',
+                      borderRadius: '8px',
+                      background: 'rgba(255, 255, 255, 0.04)',
+                      border: '1px solid rgba(255, 255, 255, 0.06)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '3px'
+                    }}>
+                      {/* 1行目: [時間] 到達階 (Lv)　結末 */}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                          <span style={{ color: '#94a3b8', fontFamily: 'monospace', fontSize: '0.7rem' }}>[{h.time}]</span>
+                          <span style={{ fontWeight: 'bold', color: '#38bdf8' }}>
+                            B{h.floor}F 到達 {h.level ? <span style={{ color: '#fbbf24', fontSize: '0.68rem', fontWeight: 'bold' }}>(Lv.{h.level})</span> : ''}
+                          </span>
                         </div>
-                        {h.items && h.items.length > 0 && (
-                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '3px' }}>
+                        <span style={{
+                          fontWeight: 'bold',
+                          fontSize: '0.72rem',
+                          color: h.result === 'escaped' ? '#34d399' : h.result === 'lost' ? '#f87171' : '#94a3b8'
+                        }}>
+                          {h.result === 'escaped' ? '無事帰還 🎉' : h.result === 'lost' ? '力尽きた 💀' : '即時帰還'}
+                        </span>
+                      </div>
+
+                      {/* 2行目: ⭐ EXP +◯　🎫 チケット ◯枚 */}
+                      {(h.exp > 0 || h.tickets > 0) && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.7rem' }}>
+                          {h.exp > 0 && <span style={{ color: '#fbbf24' }}>⭐ EXP <strong>+{h.exp}</strong></span>}
+                          {h.tickets > 0 && <span style={{ color: '#34d399' }}>🎫 チケット <strong>{h.tickets}枚</strong></span>}
+                        </div>
+                      )}
+
+                      {/* 3行目: ⚔️ 討伐(◯体): モンスター一覧 */}
+                      {h.monsters && h.monsters.length > 0 && (
+                        <div style={{ fontSize: '0.68rem', color: '#cbd5e1', lineHeight: 1.4 }}>
+                          <span style={{ color: '#f87171', fontWeight: 'bold' }}>⚔️ 討伐({monsterCount}体): </span>
+                          {h.monsters.map((m, mIdx) => (
+                            <span key={mIdx}>
+                              {m.icon || '👾'} {m.name}{m.count > 1 ? `×${m.count}` : ''}{mIdx < h.monsters.length - 1 ? ', ' : ''}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* 4行目: 🎁 戦利品: [レア度] アイテム名 */}
+                      {h.items && h.items.length > 0 && (
+                        <div style={{ fontSize: '0.68rem', marginTop: '1px', display: 'flex', alignItems: 'flex-start', gap: '4px', flexWrap: 'wrap' }}>
+                          <span style={{ color: '#93c5fd', fontWeight: 'bold', flexShrink: 0 }}>🎁 戦利品:</span>
+                          <span style={{ display: 'inline-flex', flexWrap: 'wrap', gap: '3px' }}>
                             {h.items.map((it, itemIdx) => {
                               const isHighRarity = ['SR', 'UR', 'LR'].includes(it.rarity);
                               const rarityCfg = RARITY_CONFIG[it.rarity] || RARITY_CONFIG.N;
@@ -1321,7 +1369,7 @@ const DungeonMiniGame = ({
                                   style={{
                                     fontSize: '0.65rem',
                                     padding: '1px 5px',
-                                    borderRadius: '6px',
+                                    borderRadius: '5px',
                                     background: isHighRarity ? 'rgba(0,0,0,0.5)' : 'rgba(255, 255, 255, 0.05)',
                                     border: isHighRarity ? `1px solid ${rarityCfg.darkColor}` : '1px solid rgba(255, 255, 255, 0.1)',
                                     display: 'inline-flex',
@@ -1337,12 +1385,12 @@ const DungeonMiniGame = ({
                                 </span>
                               );
                             })}
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                ))}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>
