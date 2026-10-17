@@ -126,9 +126,7 @@ const PatrolMiniGame = ({
   globalOnlineCount, 
   encounteredEnemies = [], 
   setEncounteredEnemies,
-  user,
-  timelineHistory: externalTimelineHistory,
-  addTimelineRecord: externalAddTimelineRecord
+  user
 }) => {
   const [battleState, setBattleState] = useState('idle'); // idle, battling, won, lost
   const [enemy, setEnemy] = useState(null);
@@ -179,7 +177,7 @@ const PatrolMiniGame = ({
     localStorage.setItem('daily_patrols_v3', JSON.stringify(current));
   }, [user]);
 
-  // 📜 パトロール記録の履歴管理（クラウド ＆ ローカル双方向同期）
+  // 📜 パトロール記録の履歴管理（パトロール専用・クラウド ＆ ローカル双方向同期）
   const sortPatrolHistoryDesc = (list) => {
     if (!Array.isArray(list)) return [];
     return [...list].sort((a, b) => {
@@ -197,7 +195,8 @@ const PatrolMiniGame = ({
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed.date === todayStr && Array.isArray(parsed.history)) {
-          localHistory = parsed.history;
+          // パトロール専用ログのみを抽出（レイド等と完全分離）
+          localHistory = parsed.history.filter(p => !p.type || p.type === 'patrol');
         }
       }
     } catch (e) {}
@@ -205,7 +204,7 @@ const PatrolMiniGame = ({
     // ☁️ クラウドに保存された履歴があれば優先・統合
     const cloudData = user?.user_metadata?.daily_patrol_history_v1;
     if (cloudData && cloudData.date === todayStr && Array.isArray(cloudData.history)) {
-      const combined = [...cloudData.history];
+      const combined = cloudData.history.filter(p => !p.type || p.type === 'patrol');
       localHistory.forEach(p => {
         if (!combined.some(c => c.time === p.time && c.enemyName === p.enemyName)) {
           combined.push(p);
@@ -226,21 +225,16 @@ const PatrolMiniGame = ({
   };
 
   const [patrolHistory, setPatrolHistory] = useState(() => getPatrolHistory());
-  const displayHistory = externalTimelineHistory || patrolHistory;
 
   const addPatrolHistoryRecord = (record) => {
-    if (externalAddTimelineRecord) {
-      externalAddTimelineRecord(record);
-      return;
-    }
-
     const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
     const now = new Date();
     const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-    const newRecord = { ...record, time: timeStr, timestamp: Date.now() };
+    const newRecord = { ...record, type: 'patrol', time: timeStr, timestamp: Date.now() };
 
     setPatrolHistory(prev => {
-      const updated = sortPatrolHistoryDesc([newRecord, ...prev]).slice(0, 15);
+      const filtered = prev.filter(p => !p.type || p.type === 'patrol');
+      const updated = sortPatrolHistoryDesc([newRecord, ...filtered]).slice(0, 15);
       const payload = {
         date: todayStr,
         history: updated
@@ -1507,14 +1501,14 @@ const PatrolMiniGame = ({
             }}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.8rem', fontWeight: 'bold', color: '#1e293b' }}>
                 <span>📜</span>
-                <span>冒険タイムライン</span>
+                <span>パトロール記録</span>
               </span>
               <span style={{ fontSize: '0.7rem', color: '#64748b' }}>
-                {displayHistory.length > 0 ? `本日 直近${displayHistory.length}件` : '本日 未記録'}
+                {patrolHistory.length > 0 ? `本日 直近${patrolHistory.length}回` : '本日 未記録'}
               </span>
             </div>
 
-            {displayHistory.length === 0 ? (
+            {patrolHistory.length === 0 ? (
               <div style={{
                 fontSize: '0.72rem',
                 color: '#94a3b8',
@@ -1524,8 +1518,8 @@ const PatrolMiniGame = ({
                 background: '#f8fafc',
                 borderRadius: '6px'
               }}>
-                まだ本日の冒険記録がありません。<br />
-                広場パトロールやレイドボスに挑むとここに記録が残ります⚔️🌸
+                まだ本日のパトロール記録がありません。<br />
+                広場を見回りに出発するとここに記録が残ります🌸
               </div>
             ) : (
               <div style={{ 
@@ -1536,167 +1530,77 @@ const PatrolMiniGame = ({
                 overflowY: 'auto', 
                 paddingRight: '3px' 
               }}>
-                {sortPatrolHistoryDesc(displayHistory).map((h, idx) => {
-                  const isRaid = h.type === 'raid';
-
-                  if (isRaid) {
-                    let badgeBg = '#f1f5f9';
-                    let badgeColor = '#475569';
-                    let badgeBorder = '#e2e8f0';
-                    let badgeText = '攻撃 ⚔️';
-
-                    if (h.result === 'victory') {
-                      badgeBg = '#dcfce7';
-                      badgeColor = '#15803d';
-                      badgeBorder = '#bbf7d0';
-                      badgeText = '討伐 🎉';
-                    } else if (h.result === 'crit') {
-                      badgeBg = '#fef3c7';
-                      badgeColor = '#b45309';
-                      badgeBorder = '#fde68a';
-                      badgeText = '会心 💥';
-                    } else if (h.result === 'faint') {
-                      badgeBg = '#fee2e2';
-                      badgeColor = '#b91c1c';
-                      badgeBorder = '#fecaca';
-                      badgeText = '気絶 😵';
-                    } else if (h.result === 'heal') {
-                      badgeBg = '#ccfbf1';
-                      badgeColor = '#0f766e';
-                      badgeBorder = '#99f6e4';
-                      badgeText = '回復 🧪';
-                    }
-
-                    return (
-                      <div key={idx} style={{
-                        fontSize: '0.74rem',
-                        lineHeight: 1.45,
-                        padding: '8px 10px',
-                        borderRadius: '8px',
-                        background: h.result === 'victory' ? '#f0fdf4' : h.result === 'faint' ? '#fff1f2' : '#f8fafc',
-                        border: `1px solid ${h.result === 'victory' ? '#bbf7d0' : h.result === 'faint' ? '#fecaca' : '#e2e8f0'}`,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '4px'
+                {sortPatrolHistoryDesc(patrolHistory).map((h, idx) => (
+                  <div key={idx} style={{
+                    fontSize: '0.74rem',
+                    lineHeight: 1.45,
+                    padding: '8px 10px',
+                    borderRadius: '8px',
+                    background: '#f8fafc',
+                    border: '1px solid #e2e8f0',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '4px'
+                  }}>
+                    {/* 1行目: [時間] ＆ 結末バッジ（左右両端にすっきり配置） */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <span style={{ color: '#94a3b8', fontFamily: 'monospace', fontSize: '0.7rem' }}>[{h.time}]</span>
+                        {h.isHardMode && (
+                          <span style={{ fontSize: '0.65rem', background: '#fee2e2', color: '#dc2626', padding: '1px 5px', borderRadius: '4px', fontWeight: 'bold' }}>深層</span>
+                        )}
+                      </div>
+                      <span style={{
+                        fontWeight: 'bold',
+                        fontSize: '0.72rem',
+                        padding: '1px 7px',
+                        borderRadius: '10px',
+                        background: h.result === 'won' ? '#dcfce7' : '#fee2e2',
+                        color: h.result === 'won' ? '#15803d' : '#b91c1c',
+                        border: `1px solid ${h.result === 'won' ? '#bbf7d0' : '#fecaca'}`
                       }}>
-                        {/* 1行目: [時間] ＆ レイドバッジ ＆ 結末バッジ */}
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                            <span style={{ color: '#94a3b8', fontFamily: 'monospace', fontSize: '0.7rem' }}>[{h.time}]</span>
-                            <span style={{ fontSize: '0.65rem', background: '#e0e7ff', color: '#4338ca', padding: '1px 5px', borderRadius: '4px', fontWeight: 'bold' }}>レイド</span>
-                          </div>
-                          <span style={{
-                            fontWeight: 'bold',
-                            fontSize: '0.72rem',
-                            padding: '1px 7px',
-                            borderRadius: '10px',
-                            background: badgeBg,
-                            color: badgeColor,
-                            border: `1px solid ${badgeBorder}`
-                          }}>
-                            {badgeText}
-                          </span>
-                        </div>
+                        {h.result === 'won' ? '撃退 🎉' : '逃げられた 💀'}
+                      </span>
+                    </div>
 
-                        {/* 2行目: ボスアイコン ＋ ボス名 */}
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                          <span style={{ fontSize: '1.05rem', flexShrink: 0, lineHeight: 1 }}>{h.enemyIcon || '🐉'}</span>
-                          <span style={{ fontWeight: '900', color: '#1e293b', fontSize: '0.82rem', wordBreak: 'break-word' }}>
-                            {h.enemyName}
-                          </span>
-                        </div>
-
-                        {/* 3行目: ダメージ または EXP/チケット */}
-                        {(h.damage > 0 || h.exp > 0 || h.tickets > 0) && (
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.72rem', background: '#f1f5f9', padding: '3px 7px', borderRadius: '4px', width: 'fit-content', flexWrap: 'wrap' }}>
-                            {h.damage > 0 && <span style={{ color: '#dc2626', fontWeight: 'bold' }}>💥 {h.damage.toLocaleString()} dmg</span>}
-                            {h.exp > 0 && <span style={{ color: '#d97706', fontWeight: 'bold' }}>⭐ EXP +{h.exp}</span>}
-                            {h.tickets > 0 && <span style={{ color: '#2563eb', fontWeight: 'bold' }}>🎫 チケット {h.tickets}枚</span>}
-                          </div>
-                        )}
-
-                        {/* 4行目: 詳細メッセージ */}
-                        {h.detail && (
-                          <div style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: '500' }}>
-                            {h.detail}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  }
-
-                  return (
-                    <div key={idx} style={{
-                      fontSize: '0.74rem',
-                      lineHeight: 1.45,
-                      padding: '8px 10px',
-                      borderRadius: '8px',
-                      background: '#f8fafc',
-                      border: '1px solid #e2e8f0',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '4px'
-                    }}>
-                      {/* 1行目: [時間] ＆ 結末バッジ（左右両端にすっきり配置） */}
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <span style={{ color: '#94a3b8', fontFamily: 'monospace', fontSize: '0.7rem' }}>[{h.time}]</span>
-                          {h.isHardMode && (
-                            <span style={{ fontSize: '0.65rem', background: '#fee2e2', color: '#dc2626', padding: '1px 5px', borderRadius: '4px', fontWeight: 'bold' }}>深層</span>
-                          )}
-                        </div>
-                        <span style={{
-                          fontWeight: 'bold',
-                          fontSize: '0.72rem',
-                          padding: '1px 7px',
-                          borderRadius: '10px',
-                          background: h.result === 'won' ? '#dcfce7' : '#fee2e2',
-                          color: h.result === 'won' ? '#15803d' : '#b91c1c',
-                          border: `1px solid ${h.result === 'won' ? '#bbf7d0' : '#fecaca'}`
-                        }}>
-                          {h.result === 'won' ? '撃退 🎉' : '逃げられた 💀'}
-                        </span>
-                      </div>
-
-                      {/* 2行目: 敵アイコン ＋ 敵フルネーム (Lv.◯)（折り返し可能で絶対に切れない！） */}
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                        <span style={{ fontSize: '1.05rem', flexShrink: 0, lineHeight: 1 }}>{h.enemyIcon || '👾'}</span>
-                        <span style={{ fontWeight: '900', color: '#1e293b', fontSize: '0.82rem', wordBreak: 'break-word' }}>
-                          {h.enemyName}
-                        </span>
-                        {h.level && (
-                          <span style={{ color: '#64748b', fontSize: '0.7rem', fontWeight: 'bold' }}>(Lv.{h.level})</span>
-                        )}
-                      </div>
-
-                      {/* 3行目: ⭐ EXP +◯　🎫 チケット ◯枚 */}
-                      {(h.exp > 0 || h.tickets > 0) && (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.72rem', background: '#f1f5f9', padding: '3px 7px', borderRadius: '4px', width: 'fit-content' }}>
-                          {h.exp > 0 && <span style={{ color: '#d97706', fontWeight: 'bold' }}>⭐ EXP +{h.exp}</span>}
-                          {h.tickets > 0 && <span style={{ color: '#2563eb', fontWeight: 'bold' }}>🎫 チケット {h.tickets}枚</span>}
-                        </div>
-                      )}
-
-                      {/* 4行目: 🎁 戦利品（ドロップ品がある場合） */}
-                      {h.dropItem && (
-                        <div style={{ fontSize: '0.7rem', display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
-                          <span style={{ color: '#ec4899', fontWeight: 'bold', flexShrink: 0 }}>🎁 獲得:</span>
-                          <span style={{
-                            fontSize: '0.68rem',
-                            padding: '1px 7px',
-                            borderRadius: '4px',
-                            background: '#fdf2f8',
-                            border: '1px solid #fbcfe8',
-                            color: '#db2777',
-                            fontWeight: 'bold'
-                          }}>
-                            {h.dropItem}
-                          </span>
-                        </div>
+                    {/* 2行目: 敵アイコン ＋ 敵フルネーム (Lv.◯)（折り返し可能で絶対に切れない！） */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                      <span style={{ fontSize: '1.05rem', flexShrink: 0, lineHeight: 1 }}>{h.enemyIcon || '👾'}</span>
+                      <span style={{ fontWeight: '900', color: '#1e293b', fontSize: '0.82rem', wordBreak: 'break-word' }}>
+                        {h.enemyName}
+                      </span>
+                      {h.level && (
+                        <span style={{ color: '#64748b', fontSize: '0.7rem', fontWeight: 'bold' }}>(Lv.{h.level})</span>
                       )}
                     </div>
-                  );
-                })}
+
+                    {/* 3行目: ⭐ EXP +◯　🎫 チケット ◯枚 */}
+                    {(h.exp > 0 || h.tickets > 0) && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.72rem', background: '#f1f5f9', padding: '3px 7px', borderRadius: '4px', width: 'fit-content' }}>
+                        {h.exp > 0 && <span style={{ color: '#d97706', fontWeight: 'bold' }}>⭐ EXP +{h.exp}</span>}
+                        {h.tickets > 0 && <span style={{ color: '#2563eb', fontWeight: 'bold' }}>🎫 チケット {h.tickets}枚</span>}
+                      </div>
+                    )}
+
+                    {/* 4行目: 🎁 戦利品（ドロップ品がある場合） */}
+                    {h.dropItem && (
+                      <div style={{ fontSize: '0.7rem', display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
+                        <span style={{ color: '#ec4899', fontWeight: 'bold', flexShrink: 0 }}>🎁 獲得:</span>
+                        <span style={{
+                          fontSize: '0.68rem',
+                          padding: '1px 7px',
+                          borderRadius: '4px',
+                          background: '#fdf2f8',
+                          border: '1px solid #fbcfe8',
+                          color: '#db2777',
+                          fontWeight: 'bold'
+                        }}>
+                          {h.dropItem}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
             )}
           </div>

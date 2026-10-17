@@ -12,8 +12,7 @@ const RaidBossMiniGame = ({
   equipment = {},
   user,
   hn = 'あなた',
-  globalOnlineCount = 1,
-  addTimelineRecord
+  globalOnlineCount = 1
 }) => {
   // 今日の曜日 (0:日, 1:月, ..., 6:土)
   const todayDay = new Date().getDay();
@@ -35,7 +34,12 @@ const RaidBossMiniGame = ({
     return `minique_raid_faint_${currentBoss.id}_${todayStr}`;
   };
 
-  // ☁️ レイド進捗（ボスHP・自ダメージ・ランキング・回復薬）のクラウド ＆ ローカル双方向同期
+  const getLogsKey = () => {
+    const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
+    return `minique_raid_logs_${currentBoss.id}_${todayStr}`;
+  };
+
+  // ☁️ レイド進捗（ボスHP・自ダメージ・ランキング・回復薬・実況ログ）のクラウド ＆ ローカル双方向同期
   const getInitialRaidProgress = () => {
     const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
     let localBossHp = currentBoss.maxHp;
@@ -65,6 +69,20 @@ const RaidBossMiniGame = ({
       }
     } catch (e) {}
 
+    let localLogs = null;
+    try {
+      const saved = localStorage.getItem(getLogsKey());
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) localLogs = parsed;
+      }
+    } catch (e) {}
+
+    const defaultLogs = localLogs || [
+      `⚔️ 【${currentBoss.title}】 ${currentBoss.name} が広場に出現中！`,
+      `📡 10秒更新のリアルタイム通信で広場のみんなと共闘中！`
+    ];
+
     const defaultRanking = localRanking || [
       { id: 'npc_1', name: 'ベテラン広場民 🛡️', damage: 8500, isMe: false },
       { id: 'npc_2', name: '深夜の調査兵 🔦', damage: 5200, isMe: false },
@@ -85,6 +103,10 @@ const RaidBossMiniGame = ({
       const syncedHeals = typeof cloudProgress.healsLeft === 'number'
         ? Math.min(localHeals, cloudProgress.healsLeft)
         : localHeals;
+      const cloudLogs = Array.isArray(cloudProgress.raidLogs) && cloudProgress.raidLogs.length > 0
+        ? cloudProgress.raidLogs
+        : null;
+      const syncedLogs = cloudLogs || defaultLogs;
 
       const cleanedDefault = defaultRanking.filter(r => r.isMe || r.name !== (hn || 'あなた'));
       const syncedRanking = cleanedDefault.map(r => {
@@ -96,19 +118,22 @@ const RaidBossMiniGame = ({
         localStorage.setItem(getTodayKey(), String(syncedBossHp));
         localStorage.setItem(getRankingKey(), JSON.stringify(syncedRanking));
         localStorage.setItem(`minique_raid_heals_${currentBoss.id}_${todayStr}`, String(syncedHeals));
+        localStorage.setItem(getLogsKey(), JSON.stringify(syncedLogs));
       } catch (e) {}
 
       return {
         bossHp: syncedBossHp,
         rankingList: syncedRanking,
-        healsLeft: syncedHeals
+        healsLeft: syncedHeals,
+        raidLogs: syncedLogs
       };
     }
 
     return {
       bossHp: localBossHp,
       rankingList: defaultRanking,
-      healsLeft: localHeals
+      healsLeft: localHeals,
+      raidLogs: defaultLogs
     };
   };
 
@@ -180,10 +205,19 @@ const RaidBossMiniGame = ({
   const [cooldown, setCooldown] = useState(0);
   const [damagePopup, setDamagePopup] = useState(null);
   const [bossAttackPopup, setBossAttackPopup] = useState(null);
-  const [raidLogs, setRaidLogs] = useState(() => [
+  const [raidLogs, setRaidLogs] = useState(() => initialProgress.current.raidLogs || [
     `⚔️ 【${currentBoss.title}】 ${currentBoss.name} が広場に出現中！`,
     `📡 10秒更新のリアルタイム通信で広場のみんなと共闘中！`
   ]);
+
+  // 📜 レイド専用ログをローカルストレージへ自動永続化（リロードでもしっかり残る！）
+  useEffect(() => {
+    if (raidLogs && raidLogs.length > 0) {
+      try {
+        localStorage.setItem(getLogsKey(), JSON.stringify(raidLogs));
+      } catch (e) {}
+    }
+  }, [raidLogs]);
 
   // クールタイムタイマー
   useEffect(() => {
@@ -462,16 +496,7 @@ const RaidBossMiniGame = ({
       setRaidLogs(logs => [
         `🧪 秘伝の回復薬をグイッと飲んで気絶から即座に復活した！！ (残り${nextHeals}回)`,
         ...logs
-      ].slice(0, 15));
-      if (addTimelineRecord) {
-        addTimelineRecord({
-          type: 'raid',
-          result: 'heal',
-          enemyName: '秘伝の回復薬',
-          enemyIcon: '🧪',
-          detail: '回復薬で気絶から即座に復活！'
-        });
-      }
+      ].slice(0, 20));
       return;
     }
 
@@ -485,16 +510,7 @@ const RaidBossMiniGame = ({
     setRaidLogs(logs => [
       `🧪 回復薬を使用した！ HPが ${healAmt} 回復した！ (残り${nextHeals}回)`,
       ...logs
-    ].slice(0, 15));
-    if (addTimelineRecord) {
-      addTimelineRecord({
-        type: 'raid',
-        result: 'heal',
-        enemyName: '秘伝の回復薬',
-        enemyIcon: '🧪',
-        detail: `回復薬で HP +${healAmt} 回復！`
-      });
-    }
+    ].slice(0, 20));
   };
 
   // 攻撃処理（プレイヤー即時反映 ＋ ボス反撃 ＋ 仲間加勢）
@@ -548,25 +564,11 @@ const RaidBossMiniGame = ({
             myDamage: currentMyDmg,
             bossHp: nextHp,
             healsLeft: healsLeft,
-            rankingList: updatedRanking
+            rankingList: updatedRanking,
+            raidLogs: [logMsg, ...raidLogs].slice(0, 15)
           }
         }
       }).catch(err => console.warn('Raid cloud sync error:', err));
-    }
-
-    // 📜 冒険タイムラインへ攻撃記録を追加！
-    if (addTimelineRecord) {
-      addTimelineRecord({
-        type: 'raid',
-        result: isCrit ? 'crit' : 'attack',
-        enemyName: currentBoss.name,
-        enemyIcon: currentBoss.icon || '🐉',
-        damage: calculatedDmg,
-        isCrit,
-        detail: isCrit
-          ? `会心の一撃！ ${calculatedDmg.toLocaleString()} の大ダメージ！`
-          : `『${weaponName}』で ${calculatedDmg.toLocaleString()} ダメージ！`
-      });
     }
 
     if (nextHp > 0) {
@@ -593,42 +595,22 @@ const RaidBossMiniGame = ({
               `💥 『${currentBoss.name}』の『${randomSkill}』！ あなたは ${mitigatedDmg} のダメージを受けた！`,
               logMsg,
               ...prev
-            ].slice(0, 15));
-            if (addTimelineRecord) {
-              addTimelineRecord({
-                type: 'raid',
-                result: 'faint',
-                enemyName: currentBoss.name,
-                enemyIcon: currentBoss.icon || '🐉',
-                detail: `ボスの猛攻で戦闘不能（気絶）…！`
-              });
-            }
+            ].slice(0, 20));
           } else {
             setRaidLogs(prev => [
               `💥 『${currentBoss.name}』の『${randomSkill}』！ あなたは ${mitigatedDmg} のダメージを受けた！`,
               logMsg,
               ...prev
-            ].slice(0, 15));
+            ].slice(0, 20));
           }
           return nextPlayerHp;
         });
       }, 400);
     } else {
       const victoryMsg = `🎉🎉 【討伐成功！！】 広場のみんなで 『${currentBoss.name}』 を打ち倒した！！ 🎉🎉`;
-      setRaidLogs(prev => [victoryMsg, logMsg, ...prev].slice(0, 15));
+      setRaidLogs(prev => [victoryMsg, logMsg, ...prev].slice(0, 20));
       if (addTickets) addTickets(currentBoss.rewardTickets);
       if (addExp) addExp(currentBoss.rewardExp);
-      if (addTimelineRecord) {
-        addTimelineRecord({
-          type: 'raid',
-          result: 'victory',
-          enemyName: currentBoss.name,
-          enemyIcon: currentBoss.icon || '🐉',
-          exp: currentBoss.rewardExp,
-          tickets: currentBoss.rewardTickets,
-          detail: `討伐成功！！広場のみんなで撃破 🎉`
-        });
-      }
     }
 
     setCooldown(3);
@@ -778,50 +760,59 @@ const RaidBossMiniGame = ({
         </div>
       </div>
 
-      {/* 📢 【新配置】リアルタイム実況ログ（ゆったり広げて見やすさ大幅UP！） */}
+      {/* 📢 【レイド専用】リアルタイム実況ログ（最新15件をしっかり永続保存＆スクロール可能） */}
       <div style={{
         background: 'rgba(0, 0, 0, 0.55)',
         borderRadius: '8px',
         padding: '8px 10px',
         marginBottom: '8px',
         border: '1px solid rgba(255, 255, 255, 0.1)',
-        textAlign: 'left',
-        maxHeight: '105px',
-        overflowY: 'auto',
-        scrollbarWidth: 'thin'
+        textAlign: 'left'
       }}>
-        {raidLogs.slice(0, 5).map((log, idx) => {
-          const isLatest = idx === 0;
-          const isFaint = log.includes('気絶') || log.includes('戦闘不能');
-          const isHeal = log.includes('回復薬');
-          const isCrit = log.includes('会心');
-          const isAlly = log.includes('共闘速報');
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px', fontSize: '0.68rem', color: '#94a3b8', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '3px' }}>
+          <span style={{ fontWeight: 'bold', color: '#cbd5e1' }}>📢 レイド戦闘ログ</span>
+          <span>直近 {Math.min(raidLogs.length, 15)} 件</span>
+        </div>
+        <div style={{
+          maxHeight: '135px',
+          overflowY: 'auto',
+          scrollbarWidth: 'thin',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '3px'
+        }}>
+          {raidLogs.slice(0, 15).map((log, idx) => {
+            const isLatest = idx === 0;
+            const isFaint = log.includes('気絶') || log.includes('戦闘不能');
+            const isHeal = log.includes('回復薬');
+            const isCrit = log.includes('会心');
+            const isAlly = log.includes('共闘速報');
 
-          let color = '#cbd5e1';
-          if (isFaint) color = '#fca5a5';
-          else if (isHeal) color = '#86efac';
-          else if (isCrit) color = '#fef08a';
-          else if (isAlly) color = '#38bdf8';
+            let color = '#cbd5e1';
+            if (isFaint) color = '#fca5a5';
+            else if (isHeal) color = '#86efac';
+            else if (isCrit) color = '#fef08a';
+            else if (isAlly) color = '#38bdf8';
 
-          return (
-            <div
-              key={idx}
-              style={{
-                fontSize: isLatest ? '0.76rem' : '0.7rem',
-                fontWeight: isLatest ? 'bold' : 'normal',
-                color,
-                lineHeight: 1.45,
-                marginBottom: '3px',
-                display: 'flex',
-                alignItems: 'flex-start',
-                gap: '5px'
-              }}
-            >
-              {isLatest && <span style={{ color: '#fbbf24', fontSize: '0.65rem' }}>▶</span>}
-              <span>{log}</span>
-            </div>
-          );
-        })}
+            return (
+              <div
+                key={idx}
+                style={{
+                  fontSize: isLatest ? '0.76rem' : '0.7rem',
+                  fontWeight: isLatest ? 'bold' : 'normal',
+                  color,
+                  lineHeight: 1.45,
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: '5px'
+                }}
+              >
+                {isLatest && <span style={{ color: '#fbbf24', fontSize: '0.65rem' }}>▶</span>}
+                <span>{log}</span>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       {/* プレイヤーのHP & 戦闘力ステータス */}

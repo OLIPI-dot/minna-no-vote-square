@@ -116,85 +116,6 @@ const Sidebar = ({
     }
   };
 
-  // 📜 冒険タイムラインの共通管理（パトロール ＆ レイドボスなど）
-  const sortTimelineDesc = (list) => {
-    if (!Array.isArray(list)) return [];
-    return [...list].sort((a, b) => {
-      if (a.timestamp && b.timestamp) return b.timestamp - a.timestamp;
-      if (a.time && b.time) return b.time.localeCompare(a.time);
-      return 0;
-    });
-  };
-
-  const getTimelineHistory = () => {
-    const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
-    let localHistory = [];
-    try {
-      const saved = localStorage.getItem('daily_patrol_history_v1');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (parsed.date === todayStr && Array.isArray(parsed.history)) {
-          localHistory = parsed.history;
-        }
-      }
-    } catch (e) {}
-
-    const cloudData = user?.user_metadata?.daily_patrol_history_v1;
-    if (cloudData && cloudData.date === todayStr && Array.isArray(cloudData.history)) {
-      const combined = [...cloudData.history];
-      localHistory.forEach(p => {
-        if (!combined.some(c => (c.timestamp && p.timestamp ? c.timestamp === p.timestamp : (c.time === p.time && c.enemyName === p.enemyName)))) {
-          combined.push(p);
-        }
-      });
-      const sorted = sortTimelineDesc(combined).slice(0, 15);
-      try {
-        localStorage.setItem('daily_patrol_history_v1', JSON.stringify({
-          date: todayStr,
-          history: sorted
-        }));
-      } catch (e) {}
-      return sorted;
-    }
-
-    return sortTimelineDesc(localHistory).slice(0, 15);
-  };
-
-  const [timelineHistory, setTimelineHistory] = useState(() => getTimelineHistory());
-
-  const addTimelineRecord = (record) => {
-    const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
-    const now = new Date();
-    const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-    const newRecord = { ...record, time: timeStr, timestamp: Date.now() };
-
-    setTimelineHistory(prev => {
-      const updated = sortTimelineDesc([newRecord, ...prev]).slice(0, 15);
-      const payload = {
-        date: todayStr,
-        history: updated
-      };
-
-      try {
-        localStorage.setItem('daily_patrol_history_v1', JSON.stringify(payload));
-      } catch (e) {}
-
-      if (user && supabase) {
-        supabase.auth.updateUser({
-          data: {
-            daily_patrol_history_v1: payload
-          }
-        }).catch(err => console.warn('Cloud sync error for timeline:', err));
-      }
-
-      return updated;
-    });
-  };
-
-  useEffect(() => {
-    setTimelineHistory(getTimelineHistory());
-  }, [user]);
-
   return (
     <div className="live-feed-sidebar" style={{ minWidth: 0, width: '100%', boxSizing: 'border-box' }}>
       
@@ -486,8 +407,6 @@ const Sidebar = ({
                 encounteredEnemies={encounteredEnemies}
                 setEncounteredEnemies={setEncounteredEnemies}
                 user={user}
-                timelineHistory={timelineHistory}
-                addTimelineRecord={addTimelineRecord}
               />
             </div>
 
@@ -520,7 +439,6 @@ const Sidebar = ({
                 user={user}
                 hn={hn}
                 globalOnlineCount={globalOnlineCount}
-                addTimelineRecord={addTimelineRecord}
               />
             </div>
 
