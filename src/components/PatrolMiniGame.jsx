@@ -177,7 +177,48 @@ const PatrolMiniGame = ({
     localStorage.setItem('daily_patrols_v3', JSON.stringify(current));
   }, [user]);
 
-  // プレイヤーステータス計算（StatusModal / Dungeonと完全同一）
+  // 📜 パトロール記録の履歴管理
+  const getPatrolHistory = () => {
+    const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
+    try {
+      const saved = localStorage.getItem('daily_patrol_history_v1');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.date === todayStr && Array.isArray(parsed.history)) {
+          return parsed.history;
+        }
+      }
+    } catch (e) {}
+    return [];
+  };
+
+  const [patrolHistory, setPatrolHistory] = useState(() => getPatrolHistory());
+
+  const addPatrolHistoryRecord = (record) => {
+    const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
+    const now = new Date();
+    const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    const newRecord = { ...record, time: timeStr };
+
+    setPatrolHistory(prev => {
+      const updated = [newRecord, ...prev].slice(0, 5);
+      try {
+        localStorage.setItem('daily_patrol_history_v1', JSON.stringify({
+          date: todayStr,
+          history: updated
+        }));
+      } catch (e) {}
+      return updated;
+    });
+  };
+
+  // ロビー待機画面に戻った時に最新の履歴を同期
+  useEffect(() => {
+    if (battleState === 'idle') {
+      setPatrolHistory(getPatrolHistory());
+    }
+  }, [battleState]);
+
   const equipSlots = ['weapon', 'armor', 'accessory', 'partner'];
   const pMaxHp = (userLevel * 10 + 100) + equipSlots.reduce((sum, s) => sum + (equipment?.[s]?.hp || 0), 0);
   const pAtk = (userLevel * 5 + 10) + equipSlots.reduce((sum, s) => sum + (equipment?.[s]?.atk || 0), 0);
@@ -913,6 +954,17 @@ const PatrolMiniGame = ({
       setEnemyHp(currentEnemyHp);
       setBattleLog(newLogs);
       setBattleState('lost');
+      addPatrolHistoryRecord({
+        enemyName: enemy?.name || '未知の敵',
+        enemyIcon: enemy?.icon || '👾',
+        enemyType: enemy?.type,
+        level: enemy?.level || userLevel,
+        isHardMode,
+        result: 'lost',
+        exp: 0,
+        tickets: 0,
+        dropItem: null
+      });
       return;
     }
 
@@ -1058,6 +1110,17 @@ const PatrolMiniGame = ({
       if (currentPlayerHp === 0) {
         setBattleLog(prevLogs => [...prevLogs, `💀 目の前が真っ暗になった... 敵に逃げられた。`]);
         setBattleState('lost');
+        addPatrolHistoryRecord({
+          enemyName: enemy?.name || '未知の敵',
+          enemyIcon: enemy?.icon || '👾',
+          enemyType: enemy?.type,
+          level: enemy?.level || userLevel,
+          isHardMode,
+          result: 'lost',
+          exp: 0,
+          tickets: 0,
+          dropItem: null
+        });
       }
     }
   };
@@ -1108,21 +1171,27 @@ const PatrolMiniGame = ({
     }
     setBattleLog(prev => [...prev, ...logs]);
 
+    let earnedTickets = 0;
     if (defeatedEnemy.id === 'el4_2') {
-      addTickets(isHardMode ? 5 : 3); // はぐれらびたんは特大ガチャチケ3〜5枚！
+      earnedTickets = isHardMode ? 5 : 3; // はぐれらびたんは特大ガチャチケ3〜5枚！
     } else if (defeatedEnemy.id === 'el4') {
-      addTickets(isHardMode ? 3 : 1); // 迷子のらびたんはガチャチケ1〜3枚！
+      earnedTickets = isHardMode ? 3 : 1; // 迷子のらびたんはガチャチケ1〜3枚！
     } else if (defeatedEnemy.type === 'rare') {
-      addTickets(isHardMode ? 10 : 3); // 深層レアなら10枚！
+      earnedTickets = isHardMode ? 10 : 3; // 深層レアなら10枚！
     } else if (defeatedEnemy.type === 'elite') {
-      addTickets(isHardMode ? 3 : 1); // 深層エリートなら3枚
+      earnedTickets = isHardMode ? 3 : 1; // 深層エリートなら3枚
     } else if (isHardMode) {
-      addTickets(1); // 深層ならノーマル敵でもガチャチケが落ちる
+      earnedTickets = 1; // 深層ならノーマル敵でもガチャチケが落ちる
+    }
+    if (earnedTickets > 0) {
+      addTickets(earnedTickets);
     }
     
     // 伝説のUSAGI「らび -sin -」特別撃破判定！
     if (defeatedEnemy.id === 'e_rabi_sin' || defeatedEnemy.name.includes('らび -sin -')) {
-      addTickets(isHardMode ? 30 : 20); // ガチャチケ超大量！
+      const sinTickets = isHardMode ? 30 : 20;
+      addTickets(sinTickets);
+      earnedTickets += sinTickets;
       // 「らび -sin -」自身、または他の神話級LRアイテムを確定ドロップ！
       const rabiSinPartner = ITEMS.find(i => i.id === 'p_rabi_sin');
       const drop = (rabiSinPartner && Math.random() < 0.6) ? rabiSinPartner : rollGachaSpecific('LR');
@@ -1133,14 +1202,25 @@ const PatrolMiniGame = ({
           `🌈 ✨ 奇跡降臨！！！！伝説のUSAGI【らび -sin -】から最高峰の【虹箱（LR確定）】がドロップした！！！！`
         ]);
       }
+      addPatrolHistoryRecord({
+        enemyName: defeatedEnemy.name,
+        enemyIcon: defeatedEnemy.icon || '👾',
+        enemyType: defeatedEnemy.type,
+        level: defeatedEnemy.level || userLevel,
+        isHardMode,
+        result: 'won',
+        exp: earnedExp,
+        tickets: earnedTickets,
+        dropItem: drop ? `[${drop.rarity}] ${drop.name}` : null
+      });
       return;
     }
 
     // レアエネミーなら赤箱ドロップ判定
+    let drop = null;
     if (defeatedEnemy.type === 'rare') {
       const rand = Math.random();
       // 激甘ドロップ: LR 2%, UR 20%, それ以外はR以上確定など
-      let drop = null;
       if (rand < 0.02) drop = rollGachaSpecific('LR');
       else if (rand < 0.22) drop = rollGachaSpecific('UR');
       else if (rand < 0.50) drop = rollGachaSpecific('SR');
@@ -1154,6 +1234,7 @@ const PatrolMiniGame = ({
     }
 
     // 🗝️ 地下の鍵ドロップ判定（約15%の確率で、本日の地下パトロール挑戦権+1！）
+    let foundKey = false;
     if (Math.random() < 0.15) {
       try {
         const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
@@ -1172,6 +1253,7 @@ const PatrolMiniGame = ({
             }
           }).catch(console.error);
         }
+        foundKey = true;
         setBattleLog(prev => [
           ...prev, 
           `🗝️ 【地下の鍵】を発見！本日の「地下パトロール」挑戦回数が +1 回増えた！（本日残り ${newRemaining} 回）`
@@ -1180,6 +1262,26 @@ const PatrolMiniGame = ({
         console.error(e);
       }
     }
+
+    let finalDropLabel = null;
+    if (drop) {
+      finalDropLabel = `[${drop.rarity}] ${drop.name}`;
+      if (foundKey) finalDropLabel += ' + 🗝️地下の鍵';
+    } else if (foundKey) {
+      finalDropLabel = '🗝️ 地下の鍵';
+    }
+
+    addPatrolHistoryRecord({
+      enemyName: defeatedEnemy.name,
+      enemyIcon: defeatedEnemy.icon || '👾',
+      enemyType: defeatedEnemy.type,
+      level: defeatedEnemy.level || userLevel,
+      isHardMode,
+      result: 'won',
+      exp: earnedExp,
+      tickets: earnedTickets,
+      dropItem: finalDropLabel
+    });
   };
 
   const rollGachaSpecific = (rarity) => {
@@ -1315,6 +1417,114 @@ const PatrolMiniGame = ({
               ☕ 本日のパトロールはお疲れ様でした！日付が変わるとまた出撃できます🐰
             </div>
           )}
+
+          {/* 📜 本日のパトロール記録（直近5回） */}
+          <div style={{
+            marginTop: '10px',
+            background: '#ffffff',
+            borderRadius: '10px',
+            border: '1px solid #e2e8f0',
+            padding: '10px 12px'
+          }}>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '8px',
+              borderBottom: '1px solid #f1f5f9',
+              paddingBottom: '4px'
+            }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.8rem', fontWeight: 'bold', color: '#1e293b' }}>
+                <span>📜</span>
+                <span>パトロール記録</span>
+              </span>
+              <span style={{ fontSize: '0.7rem', color: '#64748b' }}>
+                {patrolHistory.length > 0 ? `本日 直近${patrolHistory.length}回` : '本日 未記録'}
+              </span>
+            </div>
+
+            {patrolHistory.length === 0 ? (
+              <div style={{
+                fontSize: '0.72rem',
+                color: '#94a3b8',
+                textAlign: 'center',
+                padding: '10px 4px',
+                lineHeight: 1.5,
+                background: '#f8fafc',
+                borderRadius: '6px'
+              }}>
+                まだ本日のパトロール記録がありません。<br />
+                広場を見回りに出発するとここに記録が残ります🌸
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                {patrolHistory.map((h, idx) => (
+                  <div key={idx} style={{
+                    fontSize: '0.73rem',
+                    lineHeight: 1.45,
+                    padding: '6px 8px',
+                    borderRadius: '6px',
+                    background: '#f8fafc',
+                    border: '1px solid #f1f5f9',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '2px'
+                  }}>
+                    {/* 1行目: [時間] 敵アイコン 敵名 (Lv)　結末 */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '5px', minWidth: 0, overflow: 'hidden' }}>
+                        <span style={{ color: '#94a3b8', fontFamily: 'monospace', fontSize: '0.7rem', flexShrink: 0 }}>[{h.time}]</span>
+                        <span style={{ fontSize: '0.9rem', flexShrink: 0 }}>{h.enemyIcon || '👾'}</span>
+                        <span style={{ fontWeight: 'bold', color: '#1e293b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                          {h.enemyName}
+                        </span>
+                        {h.level && (
+                          <span style={{ color: '#64748b', fontSize: '0.68rem', flexShrink: 0 }}>(Lv.{h.level})</span>
+                        )}
+                        {h.isHardMode && (
+                          <span style={{ fontSize: '0.65rem', background: '#fee2e2', color: '#dc2626', padding: '1px 4px', borderRadius: '4px', fontWeight: 'bold', flexShrink: 0 }}>深層</span>
+                        )}
+                      </div>
+                      <span style={{
+                        fontWeight: 'bold',
+                        fontSize: '0.72rem',
+                        flexShrink: 0,
+                        color: h.result === 'won' ? '#16a34a' : '#ef4444'
+                      }}>
+                        {h.result === 'won' ? '撃退 🎉' : '逃げられた 💀'}
+                      </span>
+                    </div>
+
+                    {/* 2行目: ⭐ EXP +◯　🎫 チケット ◯枚 */}
+                    {(h.exp > 0 || h.tickets > 0) && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.7rem' }}>
+                        {h.exp > 0 && <span style={{ color: '#d97706', fontWeight: 'bold' }}>⭐ EXP +{h.exp}</span>}
+                        {h.tickets > 0 && <span style={{ color: '#2563eb', fontWeight: 'bold' }}>🎫 チケット {h.tickets}枚</span>}
+                      </div>
+                    )}
+
+                    {/* 3行目: 🎁 戦利品（ドロップ品がある場合） */}
+                    {h.dropItem && (
+                      <div style={{ fontSize: '0.68rem', marginTop: '1px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <span style={{ color: '#ec4899', fontWeight: 'bold', flexShrink: 0 }}>🎁 獲得:</span>
+                        <span style={{
+                          fontSize: '0.65rem',
+                          padding: '1px 6px',
+                          borderRadius: '4px',
+                          background: '#fdf2f8',
+                          border: '1px solid #fbcfe8',
+                          color: '#db2777',
+                          fontWeight: 'bold'
+                        }}>
+                          {h.dropItem}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </>
       )}
 

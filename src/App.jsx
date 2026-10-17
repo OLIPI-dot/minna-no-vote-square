@@ -1652,7 +1652,7 @@ function App() {
       const email = user?.email || user?.user_metadata?.email || '';
       const isActuallyAdmin = user && ADMIN_EMAILS.includes(email);
       console.log("🛡️ isAdmin Check (fetchSurveys):", { email, isActuallyAdmin });
-      const ITEMS_PER_PAGE = viewMode === 'grid' ? 40 : 15;
+      const ITEMS_PER_PAGE = viewMode === 'grid' ? 40 : 20;
       const start = (page - 1) * ITEMS_PER_PAGE;
       const end = start + ITEMS_PER_PAGE - 1;
 

@@ -54,7 +54,7 @@ const SurveyListView = ({
   globalOnlineCount
 }) => {
   const [brokenImages, setBrokenImages] = React.useState(new Set());
-  const ITEMS_PER_PAGE = viewMode === 'grid' ? 40 : 15;
+  const ITEMS_PER_PAGE = viewMode === 'grid' ? 40 : 20;
   const listRef = React.useRef(null);
   const [copyStatus, setCopyStatus] = React.useState('📜 タイトルをコピー');
 
