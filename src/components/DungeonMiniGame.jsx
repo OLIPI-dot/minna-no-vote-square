@@ -1234,35 +1234,51 @@ const DungeonMiniGame = ({
           </button>
 
           {/* 📜 本日の探索記録（冒険履歴） */}
-          {dungeonHistory.length > 0 && (
+          <div style={{
+            width: '100%',
+            maxWidth: '300px',
+            marginTop: '14px',
+            background: 'rgba(15, 23, 42, 0.75)',
+            border: '1px solid rgba(255, 255, 255, 0.12)',
+            borderRadius: '10px',
+            padding: '10px 12px',
+            textAlign: 'left',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.25)'
+          }}>
             <div style={{
-              width: '100%',
-              maxWidth: '300px',
-              marginTop: '14px',
-              background: 'rgba(15, 23, 42, 0.75)',
-              border: '1px solid rgba(255, 255, 255, 0.12)',
-              borderRadius: '10px',
-              padding: '10px 12px',
-              textAlign: 'left',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.25)'
+              fontSize: '0.78rem',
+              fontWeight: 'bold',
+              color: '#93c5fd',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: '8px',
+              borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+              paddingBottom: '4px'
             }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <span>📜</span>
+                <span>本日の探索記録</span>
+              </span>
+              <span style={{ fontSize: '0.7rem', color: '#64748b' }}>
+                {dungeonHistory.length > 0 ? `直近${dungeonHistory.length}回` : '未記録'}
+              </span>
+            </div>
+
+            {dungeonHistory.length === 0 ? (
               <div style={{
-                fontSize: '0.78rem',
-                fontWeight: 'bold',
-                color: '#93c5fd',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginBottom: '8px',
-                borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-                paddingBottom: '4px'
+                fontSize: '0.72rem',
+                color: '#94a3b8',
+                textAlign: 'center',
+                padding: '10px 4px',
+                lineHeight: 1.5,
+                background: 'rgba(255, 255, 255, 0.02)',
+                borderRadius: '6px'
               }}>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <span>📜</span>
-                  <span>本日の探索記録</span>
-                </span>
-                <span style={{ fontSize: '0.7rem', color: '#64748b' }}>直近{dungeonHistory.length}回</span>
+                まだ本日の記録がありません。<br />
+                地下へ潜るとここに履歴が残ります🔦
               </div>
+            ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 {dungeonHistory.map((h, idx) => (
                   <div key={idx} style={{
@@ -1328,8 +1344,8 @@ const DungeonMiniGame = ({
                   </div>
                 ))}
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       )}
 
