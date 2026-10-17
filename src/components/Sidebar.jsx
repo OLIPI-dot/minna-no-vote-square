@@ -300,36 +300,33 @@ const Sidebar = ({
             <div style={{ fontSize: '0.75rem', color: '#b45309' }}>最大レベル到達！あなたは伝説です✨</div>
           )}
 
-          {/* ⚔️ みんクエ タブメニュー (スライド式で拡張自由・スマホでも快適スクロール) */}
+          {/* ⚔️ みんクエ メニュー (スクロール不要・PC/スマホ両対応の3段グリッド配置) */}
           <div style={{ 
-            display: 'flex', 
+            display: 'grid', 
+            gridTemplateColumns: '1fr 1fr', 
             gap: '6px', 
-            overflowX: 'auto', 
-            padding: '6px 4px', 
+            padding: '8px', 
             margin: '14px 0 10px 0', 
             background: 'rgba(0,0,0,0.04)', 
-            borderRadius: '10px',
-            scrollbarWidth: 'none',
-            WebkitOverflowScrolling: 'touch'
+            borderRadius: '12px'
           }}>
             <button 
               onClick={() => setMiniqueTab('patrol')}
               style={{ 
-                flexShrink: 0,
-                padding: '8px 11px', 
+                padding: '9px 8px', 
                 borderRadius: '8px', 
                 border: 'none', 
                 background: miniqueTab === 'patrol' ? 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)' : 'white', 
                 color: miniqueTab === 'patrol' ? 'white' : '#475569', 
                 fontWeight: 'bold', 
-                fontSize: '0.78rem', 
+                fontSize: '0.8rem', 
                 cursor: 'pointer', 
-                transition: 'all 0.2s', 
+                transition: 'all 0.15s ease', 
                 boxShadow: miniqueTab === 'patrol' ? '0 2px 6px rgba(37, 99, 235, 0.35)' : '0 1px 2px rgba(0,0,0,0.05)',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '5px',
-                whiteSpace: 'nowrap'
+                justifyContent: 'center',
+                gap: '5px'
               }}
             >
               <span>🚓</span>
@@ -338,77 +335,79 @@ const Sidebar = ({
             <button 
               onClick={() => setMiniqueTab('dungeon')}
               style={{ 
-                flexShrink: 0,
-                padding: '8px 11px', 
+                padding: '9px 8px', 
                 borderRadius: '8px', 
                 border: 'none', 
                 background: miniqueTab === 'dungeon' ? 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)' : 'white', 
                 color: miniqueTab === 'dungeon' ? 'white' : '#475569', 
                 fontWeight: 'bold', 
-                fontSize: '0.78rem', 
+                fontSize: '0.8rem', 
                 cursor: 'pointer', 
-                transition: 'all 0.2s', 
+                transition: 'all 0.15s ease', 
                 boxShadow: miniqueTab === 'dungeon' ? '0 2px 6px rgba(79, 70, 229, 0.35)' : '0 1px 2px rgba(0,0,0,0.05)',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '5px',
-                whiteSpace: 'nowrap'
+                justifyContent: 'center',
+                gap: '5px'
               }}
             >
               <span>🔦</span>
               <span>地下パトロール</span>
             </button>
+
+            {/* 🐉 レイドボス (全幅ワイド配置でイベント感 & 最も押しやすい中央に配置) */}
             <button 
               onClick={() => setMiniqueTab('raid')}
               style={{ 
-                flexShrink: 0,
-                padding: '8px 11px', 
+                gridColumn: '1 / span 2',
+                padding: '10px 12px', 
                 borderRadius: '8px', 
-                border: 'none', 
-                background: miniqueTab === 'raid' ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)' : 'white', 
-                color: miniqueTab === 'raid' ? 'white' : '#475569', 
+                border: miniqueTab === 'raid' ? 'none' : '1px dashed #fca5a5', 
+                background: miniqueTab === 'raid' ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)' : '#fff5f5', 
+                color: miniqueTab === 'raid' ? 'white' : '#b91c1c', 
                 fontWeight: 'bold', 
-                fontSize: '0.78rem', 
+                fontSize: '0.84rem', 
                 cursor: 'pointer', 
-                transition: 'all 0.2s', 
-                boxShadow: miniqueTab === 'raid' ? '0 2px 6px rgba(239, 68, 68, 0.35)' : '0 1px 2px rgba(0,0,0,0.05)',
+                transition: 'all 0.15s ease', 
+                boxShadow: miniqueTab === 'raid' ? '0 3px 8px rgba(239, 68, 68, 0.4)' : '0 1px 3px rgba(239, 68, 68, 0.1)',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '5px',
-                whiteSpace: 'nowrap'
+                justifyContent: 'center',
+                gap: '8px'
               }}
             >
               <span>🐉</span>
-              <span>レイドボス</span>
+              <span>レイドボス討伐戦</span>
               <span style={{ 
                 fontSize: '0.62rem', 
                 background: miniqueTab === 'raid' ? 'rgba(0,0,0,0.25)' : '#ef4444', 
                 color: 'white', 
-                padding: '1px 5px', 
-                borderRadius: '8px',
-                fontWeight: '900'
+                padding: '2px 6px', 
+                borderRadius: '6px',
+                fontWeight: '900',
+                letterSpacing: '0.5px'
               }}>
-                LIVE
+                LIVE 🔥
               </span>
             </button>
+
             <button 
               onClick={() => setMiniqueTab('gacha')}
               style={{ 
-                flexShrink: 0,
-                padding: '8px 11px', 
+                padding: '9px 8px', 
                 borderRadius: '8px', 
                 border: 'none', 
                 background: miniqueTab === 'gacha' ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' : 'white', 
                 color: miniqueTab === 'gacha' ? 'white' : '#475569', 
                 fontWeight: 'bold', 
-                fontSize: '0.78rem', 
+                fontSize: '0.8rem', 
                 cursor: 'pointer', 
-                transition: 'all 0.2s', 
+                transition: 'all 0.15s ease', 
                 boxShadow: miniqueTab === 'gacha' ? '0 2px 6px rgba(217, 119, 6, 0.35)' : '0 1px 2px rgba(0,0,0,0.05)',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '5px',
-                whiteSpace: 'nowrap'
+                justifyContent: 'center',
+                gap: '5px'
               }}
             >
               <span>🛡️</span>
@@ -417,21 +416,20 @@ const Sidebar = ({
             <button 
               onClick={() => setIsDictionaryOpen(true)}
               style={{ 
-                flexShrink: 0,
-                padding: '8px 11px', 
+                padding: '9px 8px', 
                 borderRadius: '8px', 
                 border: 'none', 
                 background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)', 
                 color: 'white', 
                 fontWeight: 'bold', 
-                fontSize: '0.78rem', 
+                fontSize: '0.8rem', 
                 cursor: 'pointer', 
-                transition: 'all 0.2s', 
+                transition: 'all 0.15s ease', 
                 boxShadow: '0 2px 6px rgba(124, 58, 237, 0.35)',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '5px',
-                whiteSpace: 'nowrap'
+                justifyContent: 'center',
+                gap: '5px'
               }}
             >
               <span>📖</span>
