@@ -480,22 +480,25 @@ function App() {
         const hasLocalEquip = localEquip && (localEquip.weapon || localEquip.armor || localEquip.accessory || localEquip.partner);
         const hasDbEquip = dbEquipment && (dbEquipment.weapon || dbEquipment.armor || dbEquipment.accessory || dbEquipment.partner);
 
+        let finalEquip = localEquip || {};
+
         if (hasLocalEquip && !hasDbEquip) {
           // PC等でローカルに装備があるがクラウドがまだ空の場合、クラウドへ初バックアップ！
           updates.custom_equipment = localEquip;
+          finalEquip = localEquip;
           shouldUpdate = true;
         } else if (hasDbEquip) {
           // ⚠️ 片方の端末でセットした装備（お供など）が、もう片方のnullで消えないように合成！
-          const mergedEquip = {
+          finalEquip = {
             weapon: syncItemWithMaster(dbEquipment.weapon || localEquip?.weapon || null),
             armor: syncItemWithMaster(dbEquipment.armor || localEquip?.armor || null),
             accessory: syncItemWithMaster(dbEquipment.accessory || localEquip?.accessory || null),
             partner: syncItemWithMaster(dbEquipment.partner || localEquip?.partner || null)
           };
-          setEquipment(mergedEquip);
-          localStorage.setItem('min_ake_equipment', JSON.stringify(mergedEquip));
-          if (JSON.stringify(mergedEquip) !== JSON.stringify(dbEquipment)) {
-            updates.custom_equipment = mergedEquip;
+          setEquipment(finalEquip);
+          localStorage.setItem('min_ake_equipment', JSON.stringify(finalEquip));
+          if (JSON.stringify(finalEquip) !== JSON.stringify(dbEquipment)) {
+            updates.custom_equipment = finalEquip;
             shouldUpdate = true;
           }
         }
@@ -508,7 +511,7 @@ function App() {
 
         if (hasLocalInv && !hasDbInv) {
           const activeEquippedIds = new Set(
-            Object.values(localEquip || {})
+            Object.values(finalEquip || {})
               .filter(Boolean)
               .map(e => e.id)
               .filter(Boolean)
@@ -526,7 +529,7 @@ function App() {
           }
           // ⚠️ 現在装備枠にセットされているアイテムそのものはカバンから除外して二重存在を防止
           const activeEquippedIds = new Set(
-            Object.values(mergedEquip || localEquip || {})
+            Object.values(finalEquip || {})
               .filter(Boolean)
               .map(e => e.id)
               .filter(Boolean)
