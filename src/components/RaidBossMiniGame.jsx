@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import RAID_BOSSES from '../data/raid_bosses.json';
 import { ITEMS, getRarityColor, getRarityTextStyle, getRarityBadgeStyle, RARITY_CONFIG } from '../items';
+import { supabase } from '../supabaseClient';
 
 const RaidBossMiniGame = ({
   userLevel = 1,
@@ -61,6 +62,12 @@ const RaidBossMiniGame = ({
   const [playerHp, setPlayerHp] = useState(pMaxHp);
   const [faintSeconds, setFaintSeconds] = useState(0);
 
+  // 📡 オンライン同期ステート（10秒バッチ＆超軽量WebSocket）
+  const unsyncedDamageRef = useRef(0);
+  const channelRef = useRef(null);
+  const [syncSecondsLeft, setSyncSecondsLeft] = useState(10);
+  const [isOnlineConnected, setIsOnlineConnected] = useState(false);
+
   // 初回ロード時の気絶復帰チェック
   useEffect(() => {
     try {
@@ -103,7 +110,7 @@ const RaidBossMiniGame = ({
   const [bossAttackPopup, setBossAttackPopup] = useState(null);
   const [raidLogs, setRaidLogs] = useState(() => [
     `⚔️ 【${currentBoss.title}】 ${currentBoss.name} が広場に出現中！`,
-    `📢 広場のみんなで力を合わせて巨大ボスを討伐しよう！`
+    `📡 10秒更新のリアルタイム通信で広場のみんなと共闘中！`
   ]);
 
   // クールタイムタイマー
@@ -137,7 +144,106 @@ const RaidBossMiniGame = ({
   // 自分の与ダメージ取得
   const myDamage = rankingList.find(r => r.isMe)?.damage || 0;
 
-  // 攻撃処理（プレイヤー攻撃 ＋ ボス反撃 ＋ 仲間加勢）
+  // ⚡ 10秒バッチ同期のリアルタイムWebSocket購読
+  useEffect(() => {
+    if (!supabase) return;
+
+    const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
+    const channelName = `raid_sync_${currentBoss.id}_${todayStr.replace(/\//g, '-')}`;
+
+    const channel = supabase.channel(channelName, {
+      config: { broadcast: { self: false } }
+    });
+
+    // 📡 他のプレイヤーからの10秒バッチダメージ受信
+    channel.on('broadcast', { event: 'batch_damage' }, ({ payload }) => {
+      if (!payload || !payload.damage) return;
+
+      const allyName = payload.senderName || '広場民';
+      const allyDmg = payload.damage;
+
+      // ボスHP減少
+      setBossHp(prevHp => {
+        const nextHp = Math.max(0, prevHp - allyDmg);
+        try { localStorage.setItem(getTodayKey(), String(nextHp)); } catch (e) {}
+        return nextHp;
+      });
+
+      // 実況ログ追加
+      setRaidLogs(logs => [
+        `🤝 【共闘速報】 『${allyName}』 が ${allyDmg.toLocaleString()} のダメージを叩き込んだ！`,
+        ...logs
+      ].slice(0, 15));
+
+      // ランキング更新
+      setRankingList(prevList => {
+        let found = false;
+        let nextList = prevList.map(item => {
+          if (item.name === allyName && !item.isMe) {
+            found = true;
+            return { ...item, damage: item.damage + allyDmg };
+          }
+          return item;
+        });
+
+        if (!found) {
+          nextList.push({
+            id: `p_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+            name: allyName,
+            damage: payload.totalDamage || allyDmg,
+            isMe: false
+          });
+        }
+
+        nextList.sort((a, b) => b.damage - a.damage);
+        try { localStorage.setItem(getRankingKey(), JSON.stringify(nextList)); } catch (e) {}
+        return nextList;
+      });
+    });
+
+    channel.subscribe((status) => {
+      if (status === 'SUBSCRIBED') {
+        setIsOnlineConnected(true);
+      }
+    });
+
+    channelRef.current = channel;
+
+    // ⏱️ 1秒ごとのタイマー更新 ＆ 10秒ごとのバッチ送信
+    const intervalTimer = setInterval(() => {
+      setSyncSecondsLeft(prev => {
+        if (prev <= 1) {
+          // 10秒到達：溜まったダメージを送信！
+          if (unsyncedDamageRef.current > 0 && channelRef.current) {
+            const dmgToSend = unsyncedDamageRef.current;
+            unsyncedDamageRef.current = 0;
+
+            channelRef.current.send({
+              type: 'broadcast',
+              event: 'batch_damage',
+              payload: {
+                senderName: hn || 'あなた',
+                damage: dmgToSend,
+                totalDamage: myDamage + dmgToSend,
+                timestamp: Date.now()
+              }
+            }).catch(e => console.warn('Broadcast send error:', e));
+          }
+          return 10;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => {
+      clearInterval(intervalTimer);
+      if (channelRef.current) {
+        supabase.removeChannel(channelRef.current);
+      }
+    };
+  }, [currentBoss.id, hn, myDamage]);
+
+  // 攻撃処理（プレイヤー即時反映 ＋ ボス反撃 ＋ 仲間加勢）
   const handleAttack = () => {
     if (cooldown > 0 || isAttacking || faintSeconds > 0 || bossHp <= 0) return;
 
@@ -149,8 +255,11 @@ const RaidBossMiniGame = ({
     const variance = 0.85 + (Math.random() * 0.30);
     const calculatedDmg = Math.max(15, Math.floor(myTotalAtk * variance * critMult));
 
-    // 2. 広場の仲間の加勢ダメージ（共闘感・100〜300）
-    const allyDmg = Math.floor(80 + Math.random() * 200);
+    // 10秒バッチ送信用の未送信ダメージに蓄積
+    unsyncedDamageRef.current += calculatedDmg;
+
+    // 2. 広場の仲間の加勢ダメージ（100〜250）
+    const allyDmg = Math.floor(80 + Math.random() * 180);
     const totalTurnDmg = calculatedDmg + allyDmg;
 
     // 新しいボスHP
@@ -167,18 +276,15 @@ const RaidBossMiniGame = ({
     const logMsg = isCrit
       ? `💥 【会心の一撃！】 『${weaponName}』 で ${calculatedDmg.toLocaleString()} の超大ダメージ！`
       : `⚔️ 『${weaponName}』 で ${calculatedDmg.toLocaleString()} のダメージを与えた！`;
-    const allyMsg = `🤝 広場の仲間たちも加勢し ${allyDmg} の追撃ダメージ！`;
 
-    // 3. ランキング更新（自分と広場民たちも少し加算）
+    // 3. ランキング更新（自分と仲間）
     let updatedRanking = rankingList.map(entry => {
       if (entry.isMe) {
         return { ...entry, name: hn || 'あなた', damage: entry.damage + calculatedDmg };
       }
-      // 仲間もたまに少しダメージを伸ばす
-      const npcBonus = Math.random() < 0.5 ? Math.floor(Math.random() * 80) : 0;
+      const npcBonus = Math.random() < 0.4 ? Math.floor(Math.random() * 60) : 0;
       return { ...entry, damage: entry.damage + npcBonus };
     });
-    // 降順ソート
     updatedRanking.sort((a, b) => b.damage - a.damage);
     setRankingList(updatedRanking);
     try { localStorage.setItem(getRankingKey(), JSON.stringify(updatedRanking)); } catch (e) {}
@@ -187,7 +293,7 @@ const RaidBossMiniGame = ({
     const smallExp = Math.floor(calculatedDmg / 20) + 6;
     if (addExp) addExp(smallExp);
 
-    // 4. ボスの反撃ターン（ボスが生きていれば）
+    // 4. ボスの反撃ターン
     if (nextHp > 0) {
       setTimeout(() => {
         const randomSkill = currentBoss.skills[Math.floor(Math.random() * currentBoss.skills.length)];
@@ -202,7 +308,6 @@ const RaidBossMiniGame = ({
           setTimeout(() => setBossAttackPopup(null), 1200);
 
           if (nextPlayerHp === 0) {
-            // 気絶発生
             const faintTime = 30; // 30秒気絶
             setFaintSeconds(faintTime);
             try {
@@ -227,7 +332,7 @@ const RaidBossMiniGame = ({
     } else {
       // ボス討伐成功！
       const victoryMsg = `🎉🎉 【討伐成功！！】 広場のみんなで 『${currentBoss.name}』 を打ち倒した！！ 🎉🎉`;
-      setRaidLogs(prev => [victoryMsg, allyMsg, logMsg, ...prev].slice(0, 15));
+      setRaidLogs(prev => [victoryMsg, logMsg, ...prev].slice(0, 15));
       if (addTickets) addTickets(currentBoss.rewardTickets);
       if (addExp) addExp(currentBoss.rewardExp);
     }
@@ -265,7 +370,7 @@ const RaidBossMiniGame = ({
         marginBottom: '10px',
         position: 'relative'
       }}>
-        {/* 曜日バッジ ＆ 参加人数 */}
+        {/* 曜日バッジ ＆ 10秒同期インジケーター */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
           <span style={{
             fontSize: '0.7rem',
@@ -278,9 +383,16 @@ const RaidBossMiniGame = ({
           }}>
             {currentBoss.dayName}限定
           </span>
-          <span style={{ fontSize: '0.68rem', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <span style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', background: '#22c55e' }}></span>
-            広場民と共闘中 ({globalOnlineCount || 1}名)
+          <span style={{ fontSize: '0.68rem', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '5px' }}>
+            <span style={{
+              display: 'inline-block',
+              width: '7px',
+              height: '7px',
+              borderRadius: '50%',
+              background: isOnlineConnected ? '#22c55e' : '#f59e0b',
+              boxShadow: isOnlineConnected ? '0 0 6px #22c55e' : 'none'
+            }}></span>
+            <span>共闘同期 {syncSecondsLeft}s</span>
           </span>
         </div>
 
@@ -353,7 +465,7 @@ const RaidBossMiniGame = ({
         {/* 巨大HPバー */}
         <div style={{ marginTop: '8px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.68rem', fontWeight: 'bold', marginBottom: '3px' }}>
-            <span style={{ color: '#ef4444' }}>BOSS HP</span>
+            <span style={{ color: '#ef4444' }}>BOSS HP (全プレイヤー共有)</span>
             <span style={{ color: '#f8fafc', fontFamily: 'monospace' }}>
               {bossHp.toLocaleString()} / {currentBoss.maxHp.toLocaleString()} ({hpPercent.toFixed(1)}%)
             </span>
