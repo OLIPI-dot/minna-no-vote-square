@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../supabaseClient';
 import { rollEnemy } from '../enemies';
-import { ITEMS, getRarityColor, getRarityTextStyle, getRarityBadgeStyle, RARITY_CONFIG } from '../items';
+import { ITEMS, getRarityColor, getRarityTextStyle, getRarityBadgeStyle, RARITY_CONFIG, getReqLevel, getItemEffectDescription, syncItemWithMaster } from '../items';
 
 const RANDOM_EFFECT_MSGS = {
   regen: [
@@ -143,9 +143,77 @@ const PatrolMiniGame = ({
   const [awakenBuff, setAwakenBuff] = useState(false); // 覚醒バフ: 次の攻撃の威力3倍
   const [enemyStatus, setEnemyStatus] = useState(null); // 'virus' など
   const [isHardMode, setIsHardMode] = useState(false);
+  const [previewItem, setPreviewItem] = useState(null); // 🔍 タイムラインでタップしたアイテムの詳細表示用
   const timerRef = useRef(null);
   const botIntervalRef = useRef(null);
   const winProcessedRef = useRef(false);
+
+  // 🎁 タイムラインのドロップ文字列からアイテム情報・地下の鍵を抽出
+  const parseDropItems = (dropStr, dropData) => {
+    if (!dropStr) return [];
+    const items = [];
+
+    const hasKey = typeof dropStr === 'string' && dropStr.includes('地下の鍵');
+    let mainPart = typeof dropStr === 'string'
+      ? dropStr.replace(/\s*\+\s*🗝️.*$/, '').replace(/🗝️\s*地下の鍵/, '').trim()
+      : '';
+
+    if (mainPart) {
+      const cleanName = mainPart.replace(/\[(N|R|SR|UR|LR)\]\s*/i, '').trim();
+      const found = dropData || ITEMS.find(i => i.name === cleanName || cleanName.includes(i.name) || (i.name && i.name.includes(cleanName)));
+      if (found) {
+        const synced = syncItemWithMaster ? syncItemWithMaster(found) : found;
+        items.push({
+          label: mainPart,
+          item: synced,
+          rarity: synced.rarity || 'N'
+        });
+      } else {
+        items.push({
+          label: mainPart,
+          item: {
+            name: cleanName,
+            rarity: 'N',
+            icon: '🎁',
+            type: 'item',
+            desc: '広場パトロールで獲得した貴重なアイテム。',
+            atk: 0,
+            def: 0,
+            hp: 0
+          },
+          rarity: 'N'
+        });
+      }
+    } else if (dropData) {
+      const synced = syncItemWithMaster ? syncItemWithMaster(dropData) : dropData;
+      items.push({
+        label: `[${synced.rarity}] ${synced.name}`,
+        item: synced,
+        rarity: synced.rarity || 'N'
+      });
+    }
+
+    if (hasKey) {
+      items.push({
+        label: '🗝️ 地下の鍵',
+        item: {
+          name: '地下の鍵',
+          icon: '🗝️',
+          rarity: 'SPECIAL',
+          type: 'special',
+          desc: '深層の地下パトロールに挑むための特別な鍵。本日の挑戦回数が +1 回回復し、さらに強力な敵や貴重な宝箱が眠る深層エリアへ潜入できます！',
+          effect: '地下パトロール挑戦権 +1',
+          effectMsg: '本日の地下パトロール挑戦回数が +1 回増えた！',
+          atk: 0,
+          def: 0,
+          hp: 0
+        },
+        rarity: 'SPECIAL'
+      });
+    }
+
+    return items;
+  };
 
   // 1日のパトロール回数制限 (最大20回 - クラウドおよびローカルで同期)
   const getTodayPatrols = () => {
@@ -1276,7 +1344,8 @@ const PatrolMiniGame = ({
         result: 'won',
         exp: earnedExp,
         tickets: earnedTickets,
-        dropItem: drop ? `[${drop.rarity}] ${drop.name}` : null
+        dropItem: drop ? `[${drop.rarity}] ${drop.name}` : null,
+        dropItemData: drop || null
       });
       return;
     }
@@ -1345,7 +1414,8 @@ const PatrolMiniGame = ({
       result: 'won',
       exp: earnedExp,
       tickets: earnedTickets,
-      dropItem: finalDropLabel
+      dropItem: finalDropLabel,
+      dropItemData: drop || null
     });
   };
 
@@ -1583,21 +1653,50 @@ const PatrolMiniGame = ({
                       </div>
                     )}
 
-                    {/* 4行目: 🎁 戦利品（ドロップ品がある場合） */}
+                    {/* 4行目: 🎁 戦利品（ドロップ品がある場合・タップで詳細が開く！） */}
                     {h.dropItem && (
-                      <div style={{ fontSize: '0.7rem', display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
+                      <div style={{ fontSize: '0.7rem', display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap', marginTop: '2px' }}>
                         <span style={{ color: '#ec4899', fontWeight: 'bold', flexShrink: 0 }}>🎁 獲得:</span>
-                        <span style={{
-                          fontSize: '0.68rem',
-                          padding: '1px 7px',
-                          borderRadius: '4px',
-                          background: '#fdf2f8',
-                          border: '1px solid #fbcfe8',
-                          color: '#db2777',
-                          fontWeight: 'bold'
-                        }}>
-                          {h.dropItem}
-                        </span>
+                        {parseDropItems(h.dropItem, h.dropItemData).map((d, dIdx) => {
+                          const isKey = d.rarity === 'SPECIAL';
+                          return (
+                            <button
+                              key={dIdx}
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setPreviewItem(d.item);
+                              }}
+                              title="タップで詳細を見る"
+                              style={{
+                                fontSize: '0.68rem',
+                                padding: '2px 8px',
+                                borderRadius: '6px',
+                                background: isKey ? '#fef3c7' : '#fdf2f8',
+                                border: `1px solid ${isKey ? '#fde68a' : '#fbcfe8'}`,
+                                color: isKey ? '#b45309' : '#db2777',
+                                fontWeight: 'bold',
+                                cursor: 'pointer',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '3px',
+                                transition: 'all 0.15s ease',
+                                boxShadow: '0 1px 2px rgba(0,0,0,0.04)'
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.transform = 'translateY(-1px)';
+                                e.currentTarget.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.transform = 'none';
+                                e.currentTarget.style.boxShadow = '0 1px 2px rgba(0,0,0,0.04)';
+                              }}
+                            >
+                              <span>{d.label}</span>
+                              <span style={{ fontSize: '0.62rem', opacity: 0.75 }}>🔍</span>
+                            </button>
+                          );
+                        })}
                       </div>
                     )}
                   </div>
@@ -1858,6 +1957,215 @@ const PatrolMiniGame = ({
           >
             広場に逃げ帰る
           </button>
+        </div>
+      )}
+
+      {/* 🔍 タイムライン アイテム詳細プレビューモーダル */}
+      {previewItem && (
+        <div 
+          onClick={() => setPreviewItem(null)}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(15, 23, 42, 0.65)',
+            backdropFilter: 'blur(3px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 9999,
+            padding: '16px',
+            animation: 'fadeIn 0.15s ease-out'
+          }}
+        >
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: '#ffffff',
+              borderRadius: '16px',
+              width: '100%',
+              maxWidth: '360px',
+              padding: '20px',
+              boxShadow: '0 20px 25px -5px rgba(0,0,0,0.25), 0 10px 10px -5px rgba(0,0,0,0.1)',
+              border: '1px solid #e2e8f0',
+              textAlign: 'center',
+              position: 'relative',
+              animation: 'scaleUp 0.2s ease-out',
+              maxHeight: '90vh',
+              overflowY: 'auto'
+            }}
+          >
+            {/* 閉じるボタン */}
+            <button
+              onClick={() => setPreviewItem(null)}
+              style={{
+                position: 'absolute',
+                top: '12px',
+                right: '12px',
+                background: '#f1f5f9',
+                border: 'none',
+                borderRadius: '50%',
+                width: '30px',
+                height: '30px',
+                fontSize: '1rem',
+                color: '#64748b',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.15s ease'
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = '#e2e8f0'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = '#f1f5f9'; }}
+            >
+              ✕
+            </button>
+
+            {/* アイテムアイコン */}
+            <div style={{
+              fontSize: '4.2rem',
+              marginTop: '4px',
+              marginBottom: '10px',
+              lineHeight: 1,
+              filter: ['LR', 'UR', 'SR'].includes(previewItem.rarity)
+                ? `drop-shadow(0 0 16px ${RARITY_CONFIG[previewItem.rarity]?.color || '#f59e0b'}88)`
+                : 'drop-shadow(0 4px 6px rgba(0,0,0,0.15))'
+            }}>
+              {previewItem.icon || '🎁'}
+            </div>
+
+            {/* アイテム名 */}
+            <div style={{
+              fontSize: '1.25rem',
+              fontWeight: '900',
+              marginBottom: '6px',
+              wordBreak: 'break-word',
+              ...getRarityTextStyle(previewItem.rarity || 'N')
+            }}>
+              {previewItem.name}
+            </div>
+
+            {/* レアリティ ＆ 種別バッジ */}
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '4px 14px',
+              borderRadius: '20px',
+              fontSize: '0.78rem',
+              marginBottom: '14px',
+              ...(previewItem.rarity === 'SPECIAL'
+                ? { background: '#fef3c7', color: '#b45309', border: '1px solid #fde68a', fontWeight: 'bold' }
+                : getRarityBadgeStyle(previewItem.rarity || 'N'))
+            }}>
+              <span>{previewItem.rarity || 'N'}</span>
+              <span>•</span>
+              <span>
+                {previewItem.type === 'weapon' ? '🗡️ 武器'
+                  : previewItem.type === 'armor' ? '🛡️ 防具'
+                  : previewItem.type === 'accessory' ? '💍 装飾品'
+                  : previewItem.type === 'partner' ? '👤 お供'
+                  : previewItem.type === 'special' ? '🗝️ 特殊アイテム'
+                  : 'アイテム'}
+              </span>
+            </div>
+
+            {/* ステータス表（武器/防具などの場合） */}
+            {previewItem.rarity !== 'SPECIAL' && (previewItem.atk > 0 || previewItem.def > 0 || previewItem.hp > 0) && (
+              <div style={{
+                background: '#f8fafc',
+                border: '1px solid #e2e8f0',
+                borderRadius: '10px',
+                padding: '10px',
+                marginBottom: '12px',
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr 1fr 1fr',
+                gap: '4px',
+                textAlign: 'center'
+              }}>
+                <div>
+                  <div style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 'bold' }}>ATK</div>
+                  <div style={{ fontSize: '0.95rem', fontWeight: 'bold', color: '#dc2626' }}>+{previewItem.atk || 0}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 'bold' }}>DEF</div>
+                  <div style={{ fontSize: '0.95rem', fontWeight: 'bold', color: '#2563eb' }}>+{previewItem.def || 0}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 'bold' }}>HP</div>
+                  <div style={{ fontSize: '0.95rem', fontWeight: 'bold', color: '#16a34a' }}>+{previewItem.hp || 0}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 'bold' }}>必要Lv</div>
+                  <div style={{ fontSize: '0.95rem', fontWeight: 'bold', color: '#059669' }}>Lv.{getReqLevel(previewItem)}</div>
+                </div>
+              </div>
+            )}
+
+            {/* 特殊効果 */}
+            {previewItem.effect && (
+              <div style={{
+                background: '#fffbeb',
+                border: '1px solid #fde68a',
+                borderRadius: '8px',
+                padding: '8px 10px',
+                marginBottom: '12px',
+                textAlign: 'left'
+              }}>
+                <div style={{ fontSize: '0.72rem', color: '#d97706', fontWeight: 'bold', marginBottom: '2px' }}>
+                  ✨ 特殊能力
+                </div>
+                <div style={{ fontSize: '0.8rem', color: '#92400e', fontWeight: 'bold' }}>
+                  {getItemEffectDescription(previewItem) || previewItem.effect}
+                </div>
+                {previewItem.effectMsg && (
+                  <div style={{ fontSize: '0.72rem', color: '#b45309', fontStyle: 'italic', marginTop: '3px' }}>
+                    発動時: {previewItem.effectMsg}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* フレーバーテキスト（説明文） */}
+            {previewItem.desc && (
+              <div style={{
+                background: '#f8fafc',
+                borderRadius: '8px',
+                padding: '10px 12px',
+                fontSize: '0.78rem',
+                color: '#475569',
+                lineHeight: '1.55',
+                textAlign: 'left',
+                marginBottom: '16px',
+                border: '1px solid #f1f5f9'
+              }}>
+                {previewItem.desc}
+              </div>
+            )}
+
+            {/* 閉じるボタン */}
+            <button
+              onClick={() => setPreviewItem(null)}
+              style={{
+                width: '100%',
+                padding: '10px 0',
+                borderRadius: '8px',
+                background: '#1e293b',
+                color: 'white',
+                border: 'none',
+                fontWeight: 'bold',
+                fontSize: '0.85rem',
+                cursor: 'pointer',
+                transition: 'background 0.15s ease'
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = '#0f172a'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = '#1e293b'; }}
+            >
+              とじる
+            </button>
+          </div>
         </div>
       )}
     </div>
