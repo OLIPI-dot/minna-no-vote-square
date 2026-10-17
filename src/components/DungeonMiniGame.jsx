@@ -1258,10 +1258,10 @@ const DungeonMiniGame = ({
             }}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                 <span>📜</span>
-                <span>本日の探索記録</span>
+                <span>パトロール記録</span>
               </span>
               <span style={{ fontSize: '0.7rem', color: '#64748b' }}>
-                {dungeonHistory.length > 0 ? `直近${dungeonHistory.length}回` : '未記録'}
+                {dungeonHistory.length > 0 ? `本日 直近${dungeonHistory.length}回` : '本日 未記録'}
               </span>
             </div>
 
@@ -1275,8 +1275,8 @@ const DungeonMiniGame = ({
                 background: 'rgba(255, 255, 255, 0.02)',
                 borderRadius: '6px'
               }}>
-                まだ本日の記録がありません。<br />
-                地下へ潜るとここに履歴が残ります🔦
+                まだ本日のパトロール記録がありません。<br />
+                地下へ出発するとここに記録が残ります🔦
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>

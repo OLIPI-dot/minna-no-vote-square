@@ -300,31 +300,103 @@ const Sidebar = ({
             <div style={{ fontSize: '0.75rem', color: '#b45309' }}>最大レベル到達！あなたは伝説です✨</div>
           )}
 
-          {/* ⚔️ みんクエ タブメニュー */}
-          <div style={{ display: 'flex', gap: '3px', margin: '16px 0 12px 0', background: 'rgba(0,0,0,0.05)', padding: '4px', borderRadius: '8px' }}>
+          {/* ⚔️ みんクエ タブメニュー (2段グリッドで押しやすくゆったり配置) */}
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: '1fr 1fr', 
+            gap: '6px', 
+            margin: '16px 0 12px 0', 
+            background: 'rgba(0,0,0,0.04)', 
+            padding: '6px', 
+            borderRadius: '10px' 
+          }}>
             <button 
               onClick={() => setMiniqueTab('patrol')}
-              style={{ flex: 1, padding: '8px 1px', borderRadius: '6px', border: 'none', background: miniqueTab === 'patrol' ? '#3b82f6' : 'transparent', color: miniqueTab === 'patrol' ? 'white' : '#64748b', fontWeight: 'bold', fontSize: '0.72rem', cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap' }}
+              style={{ 
+                padding: '9px 6px', 
+                borderRadius: '8px', 
+                border: 'none', 
+                background: miniqueTab === 'patrol' ? 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)' : 'white', 
+                color: miniqueTab === 'patrol' ? 'white' : '#475569', 
+                fontWeight: 'bold', 
+                fontSize: '0.8rem', 
+                cursor: 'pointer', 
+                transition: 'all 0.2s', 
+                boxShadow: miniqueTab === 'patrol' ? '0 2px 6px rgba(37, 99, 235, 0.35)' : '0 1px 2px rgba(0,0,0,0.05)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '5px'
+              }}
             >
-              🚓 パトロール
+              <span>🚓</span>
+              <span>パトロール</span>
             </button>
             <button 
               onClick={() => setMiniqueTab('dungeon')}
-              style={{ flex: 1, padding: '8px 1px', borderRadius: '6px', border: 'none', background: miniqueTab === 'dungeon' ? '#4f46e5' : 'transparent', color: miniqueTab === 'dungeon' ? 'white' : '#64748b', fontWeight: 'bold', fontSize: '0.72rem', cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap' }}
+              style={{ 
+                padding: '9px 6px', 
+                borderRadius: '8px', 
+                border: 'none', 
+                background: miniqueTab === 'dungeon' ? 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)' : 'white', 
+                color: miniqueTab === 'dungeon' ? 'white' : '#475569', 
+                fontWeight: 'bold', 
+                fontSize: '0.8rem', 
+                cursor: 'pointer', 
+                transition: 'all 0.2s', 
+                boxShadow: miniqueTab === 'dungeon' ? '0 2px 6px rgba(79, 70, 229, 0.35)' : '0 1px 2px rgba(0,0,0,0.05)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '5px'
+              }}
             >
-              🔦 地下
+              <span>🔦</span>
+              <span>地下パトロール</span>
             </button>
             <button 
               onClick={() => setMiniqueTab('gacha')}
-              style={{ flex: 1.1, padding: '8px 1px', borderRadius: '6px', border: 'none', background: miniqueTab === 'gacha' ? '#f59e0b' : 'transparent', color: miniqueTab === 'gacha' ? 'white' : '#64748b', fontWeight: 'bold', fontSize: '0.70rem', cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap' }}
+              style={{ 
+                padding: '9px 6px', 
+                borderRadius: '8px', 
+                border: 'none', 
+                background: miniqueTab === 'gacha' ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' : 'white', 
+                color: miniqueTab === 'gacha' ? 'white' : '#475569', 
+                fontWeight: 'bold', 
+                fontSize: '0.8rem', 
+                cursor: 'pointer', 
+                transition: 'all 0.2s', 
+                boxShadow: miniqueTab === 'gacha' ? '0 2px 6px rgba(217, 119, 6, 0.35)' : '0 1px 2px rgba(0,0,0,0.05)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '5px'
+              }}
             >
-              🛡️ 装備・ガチャ
+              <span>🛡️</span>
+              <span>装備・ガチャ</span>
             </button>
             <button 
               onClick={() => setIsDictionaryOpen(true)}
-              style={{ flex: 1, padding: '8px 1px', borderRadius: '6px', border: 'none', background: '#8b5cf6', color: 'white', fontWeight: 'bold', fontSize: '0.72rem', cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap' }}
+              style={{ 
+                padding: '9px 6px', 
+                borderRadius: '8px', 
+                border: 'none', 
+                background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)', 
+                color: 'white', 
+                fontWeight: 'bold', 
+                fontSize: '0.8rem', 
+                cursor: 'pointer', 
+                transition: 'all 0.2s', 
+                boxShadow: '0 2px 6px rgba(124, 58, 237, 0.35)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '5px'
+              }}
             >
-              📖 図鑑
+              <span>📖</span>
+              <span>図鑑</span>
             </button>
           </div>
 
