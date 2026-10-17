@@ -152,15 +152,15 @@ const PatrolMiniGame = ({
     const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
     let localCount = 0;
     try {
-      const data = JSON.parse(localStorage.getItem('daily_patrols_v2') || '{}');
+      const data = JSON.parse(localStorage.getItem('daily_patrols_v3') || '{}');
       if (data.date === todayStr) localCount = data.count || 0;
     } catch { localCount = 0; }
 
     // ☁️ ログイン中の場合はクラウド（Supabase）の値をマスターとして優先同期
-    if (user && user.user_metadata?.daily_patrol_date === todayStr) {
-      const cloudCount = user.user_metadata?.daily_patrol_count ?? 0;
+    if (user && user.user_metadata?.daily_patrol_date_v3 === todayStr) {
+      const cloudCount = user.user_metadata?.daily_patrol_count_v3 ?? 0;
       try {
-        localStorage.setItem('daily_patrols_v2', JSON.stringify({ date: todayStr, count: cloudCount }));
+        localStorage.setItem('daily_patrols_v3', JSON.stringify({ date: todayStr, count: cloudCount }));
       } catch (e) {}
       return { date: todayStr, count: cloudCount };
     }
@@ -174,7 +174,7 @@ const PatrolMiniGame = ({
   useEffect(() => {
     const current = getTodayPatrols();
     setPatrolsToday(current.count);
-    localStorage.setItem('daily_patrols_v2', JSON.stringify(current));
+    localStorage.setItem('daily_patrols_v3', JSON.stringify(current));
   }, [user]);
 
   // プレイヤーステータス計算（StatusModal / Dungeonと完全同一）
@@ -193,14 +193,14 @@ const PatrolMiniGame = ({
     
     // 回数消費
     const newCount = currentData.count + 1;
-    localStorage.setItem('daily_patrols_v2', JSON.stringify({ date: todayStr, count: newCount }));
+    localStorage.setItem('daily_patrols_v3', JSON.stringify({ date: todayStr, count: newCount }));
     setPatrolsToday(newCount);
 
     if (user) {
       supabase.auth.updateUser({
         data: {
-          daily_patrol_date: todayStr,
-          daily_patrol_count: newCount
+          daily_patrol_date_v3: todayStr,
+          daily_patrol_count_v3: newCount
         }
       });
     }

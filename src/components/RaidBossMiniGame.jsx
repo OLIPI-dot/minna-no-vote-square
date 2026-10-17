@@ -498,19 +498,19 @@ const RaidBossMiniGame = ({
         </div>
       </div>
 
-      {/* 📢 【新配置】リアルタイム実況ログ（上部に配置して一目でわかる！） */}
+      {/* 📢 【新配置】リアルタイム実況ログ（ゆったり広げて見やすさ大幅UP！） */}
       <div style={{
-        background: 'rgba(0, 0, 0, 0.45)',
+        background: 'rgba(0, 0, 0, 0.55)',
         borderRadius: '8px',
-        padding: '6px 8px',
+        padding: '8px 10px',
         marginBottom: '8px',
-        border: '1px solid rgba(255, 255, 255, 0.08)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
         textAlign: 'left',
-        maxHeight: '68px',
+        maxHeight: '105px',
         overflowY: 'auto',
-        scrollbarWidth: 'none'
+        scrollbarWidth: 'thin'
       }}>
-        {raidLogs.slice(0, 3).map((log, idx) => {
+        {raidLogs.slice(0, 5).map((log, idx) => {
           const isLatest = idx === 0;
           const isFaint = log.includes('気絶') || log.includes('戦闘不能');
           const isHeal = log.includes('回復薬');
@@ -527,14 +527,14 @@ const RaidBossMiniGame = ({
             <div
               key={idx}
               style={{
-                fontSize: isLatest ? '0.74rem' : '0.68rem',
+                fontSize: isLatest ? '0.76rem' : '0.7rem',
                 fontWeight: isLatest ? 'bold' : 'normal',
                 color,
-                lineHeight: 1.4,
-                marginBottom: '2px',
+                lineHeight: 1.45,
+                marginBottom: '3px',
                 display: 'flex',
                 alignItems: 'flex-start',
-                gap: '4px'
+                gap: '5px'
               }}
             >
               {isLatest && <span style={{ color: '#fbbf24', fontSize: '0.65rem' }}>▶</span>}
