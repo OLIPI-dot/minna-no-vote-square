@@ -41,6 +41,57 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
   const [isRolling, setIsRolling] = useState(false);
   const COST = 1; // 1回1チケット
 
+  // 🌟 ガチャ専用演出ステート ('none' | 'charging' | 'blackout' | 'cutin' | 'reveal')
+  const [animStep, setAnimStep] = useState('none');
+  const [animItem, setAnimItem] = useState(null);
+  const animTimeouts = React.useRef([]);
+
+  const clearAnimTimers = () => {
+    animTimeouts.current.forEach(t => clearTimeout(t));
+    animTimeouts.current = [];
+  };
+
+  const triggerConfettiForRarity = (rarity) => {
+    if (rarity === 'LR') {
+      confetti({
+        particleCount: 350,
+        spread: 100,
+        origin: { y: 0.5 },
+        colors: ['#ef4444', '#ec4899', '#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ffd700'],
+        zIndex: 9999999
+      });
+      setTimeout(() => {
+        confetti({ particleCount: 150, angle: 60, spread: 55, origin: { x: 0, y: 0.6 }, zIndex: 9999999 });
+        confetti({ particleCount: 150, angle: 120, spread: 55, origin: { x: 1, y: 0.6 }, zIndex: 9999999 });
+      }, 250);
+    } else if (rarity === 'UR') {
+      confetti({
+        particleCount: 220,
+        spread: 80,
+        origin: { y: 0.55 },
+        colors: ['#f59e0b', '#fbbf24', '#ec4899', '#c084fc', '#ffffff'],
+        zIndex: 9999999
+      });
+    } else if (rarity === 'SR') {
+      confetti({
+        particleCount: 120,
+        spread: 70,
+        origin: { y: 0.55 },
+        colors: ['#fbbf24', '#f59e0b', '#d97706', '#fef08a'],
+        zIndex: 9999999
+      });
+    }
+  };
+
+  const fastForwardReveal = (item) => {
+    if (!item) return;
+    clearAnimTimers();
+    setAnimStep('reveal');
+    setGachaResult(item);
+    setIsRolling(false);
+    triggerConfettiForRarity(item.rarity);
+  };
+
   const handleRoll = () => {
     if (gachaTickets < COST || isRolling) return;
 
@@ -53,32 +104,64 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
       }
     }
     
+    clearAnimTimers();
     setIsRolling(true);
     addTickets(-COST); // チケット消費
     setGachaResult(null);
 
-    // ガチャ演出
-    setTimeout(() => {
-      const item = rollGacha();
-      setGachaResult(item);
-      
-      // LR, UR, SRなら派手なエフェクト
-      if (item.rarity === 'LR' || item.rarity === 'UR' || item.rarity === 'SR') {
-        confetti({
-          particleCount: item.rarity === 'LR' ? 300 : item.rarity === 'UR' ? 200 : 100,
-          spread: 80,
-          colors: item.rarity === 'LR' 
-            ? ['#ef4444', '#ec4899', '#8b5cf6', '#3b82f6', '#10b981', '#f59e0b'] 
-            : item.rarity === 'UR' ? ['#f59e0b', '#fbbf24', '#fffbeb'] : ['#ec4899', '#fbcfe8'],
-          zIndex: 9999
-        });
-      }
+    const item = rollGacha();
+    setAnimItem(item);
+    setAnimStep('charging');
 
-      setIsRolling(false);
-    }, 800);
+    // 🎬 レアリティ別の演出タイムライン
+    if (item.rarity === 'LR') {
+      // LR: 神話級暗転演出！ charging(800ms) -> blackout(450ms) -> cutin(800ms) -> reveal
+      animTimeouts.current.push(setTimeout(() => {
+        setAnimStep('blackout');
+      }, 800));
+      animTimeouts.current.push(setTimeout(() => {
+        setAnimStep('cutin');
+      }, 1250));
+      animTimeouts.current.push(setTimeout(() => {
+        setAnimStep('reveal');
+        setGachaResult(item);
+        setIsRolling(false);
+        triggerConfettiForRarity('LR');
+      }, 2050));
+    } else if (item.rarity === 'UR') {
+      // UR: 極光レインボー演出！ charging(700ms) -> cutin(750ms) -> reveal
+      animTimeouts.current.push(setTimeout(() => {
+        setAnimStep('cutin');
+      }, 700));
+      animTimeouts.current.push(setTimeout(() => {
+        setAnimStep('reveal');
+        setGachaResult(item);
+        setIsRolling(false);
+        triggerConfettiForRarity('UR');
+      }, 1450));
+    } else if (item.rarity === 'SR') {
+      // SR: 黄金の閃光演出！ charging(600ms) -> cutin(650ms) -> reveal
+      animTimeouts.current.push(setTimeout(() => {
+        setAnimStep('cutin');
+      }, 600));
+      animTimeouts.current.push(setTimeout(() => {
+        setAnimStep('reveal');
+        setGachaResult(item);
+        setIsRolling(false);
+        triggerConfettiForRarity('SR');
+      }, 1250));
+    } else {
+      // N / R: charging(600ms) -> reveal
+      animTimeouts.current.push(setTimeout(() => {
+        setAnimStep('reveal');
+        setGachaResult(item);
+        setIsRolling(false);
+      }, 600));
+    }
   };
 
   const handleEquipFromGacha = () => {
+    if (!gachaResult) return;
     const newItem = { ...gachaResult, id: `${gachaResult.id}_${Date.now()}` };
     const oldItem = equipment[newItem.type];
     
@@ -89,15 +172,35 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
     }
     
     setGachaResult(null);
+    setAnimStep('none');
+    setAnimItem(null);
   };
 
   const handleStoreInInventory = () => {
+    if (!gachaResult) return;
     const newItem = { ...gachaResult, id: `${gachaResult.id}_${Date.now()}` };
     setInventory(prev => [...prev, newItem]);
     if (setAcquiredItems && !acquiredItems.includes(gachaResult.id)) {
       setAcquiredItems(prev => [...prev, gachaResult.id]);
     }
     setGachaResult(null);
+    setAnimStep('none');
+    setAnimItem(null);
+  };
+
+  const closeGachaModal = () => {
+    if (gachaResult) {
+      const newItem = { ...gachaResult, id: `${gachaResult.id}_${Date.now()}` };
+      setInventory(prev => [...prev, newItem]);
+      if (setAcquiredItems && !acquiredItems.includes(gachaResult.id)) {
+        setAcquiredItems(prev => [...prev, gachaResult.id]);
+      }
+    }
+    clearAnimTimers();
+    setGachaResult(null);
+    setAnimStep('none');
+    setAnimItem(null);
+    setIsRolling(false);
   };
 
   const equipFromInventory = (invItem) => {
@@ -186,9 +289,12 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
   };
 
   const handleRecycle = () => {
+    if (!gachaResult) return;
     const expBack = getRecycleExp(gachaResult.rarity);
     addExp(expBack); // 売却時は少量のEXPにする
     setGachaResult(null);
+    setAnimStep('none');
+    setAnimItem(null);
   };
 
   return (
@@ -549,6 +655,432 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
           👜 鞄
         </button>
       </div>
+
+      {/* 🎬 豪華ガチャ演出モーダル (SR / UR / LR レアリティ別演出) */}
+      {animStep !== 'none' && animItem && createPortal(
+        <div 
+          onClick={() => {
+            if (animStep !== 'reveal') {
+              fastForwardReveal(animItem);
+            }
+          }}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            zIndex: 999999,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '16px',
+            boxSizing: 'border-box',
+            background: animStep === 'blackout' 
+              ? '#000000' 
+              : 'radial-gradient(circle at center, rgba(15, 23, 42, 0.96) 0%, rgba(2, 6, 23, 0.98) 100%)',
+            backdropFilter: animStep === 'blackout' ? 'none' : 'blur(8px)',
+            transition: 'background 0.2s ease',
+            cursor: animStep !== 'reveal' ? 'pointer' : 'default'
+          }}
+        >
+          <style>{`
+            @keyframes gachaShake {
+              0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+              20% { transform: translate(-3px, 2px) rotate(-4deg) scale(1.04); }
+              40% { transform: translate(3px, -2px) rotate(4deg) scale(1.06); }
+              60% { transform: translate(-4px, -1px) rotate(-3deg) scale(1.08); }
+              80% { transform: translate(4px, 2px) rotate(3deg) scale(1.1); }
+              100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            }
+            @keyframes gachaPulseGold {
+              0%, 100% { box-shadow: 0 0 25px rgba(245, 158, 11, 0.6), inset 0 0 15px rgba(251, 191, 36, 0.8); }
+              50% { box-shadow: 0 0 60px rgba(245, 158, 11, 0.95), inset 0 0 30px rgba(255, 255, 255, 0.9); }
+            }
+            @keyframes gachaPulseRainbow {
+              0% { filter: drop-shadow(0 0 20px #ef4444) hue-rotate(0deg); }
+              50% { filter: drop-shadow(0 0 50px #8b5cf6) hue-rotate(180deg); }
+              100% { filter: drop-shadow(0 0 20px #ef4444) hue-rotate(360deg); }
+            }
+            @keyframes gachaCutinPop {
+              0% { transform: scale(0.3) rotate(-8deg); opacity: 0; }
+              60% { transform: scale(1.15) rotate(2deg); opacity: 1; }
+              100% { transform: scale(1) rotate(0deg); opacity: 1; }
+            }
+            @keyframes gachaHeartbeat {
+              0%, 100% { transform: scale(1); opacity: 0.3; }
+              50% { transform: scale(1.4); opacity: 1; }
+            }
+            @keyframes gachaCardZoomIn {
+              0% { transform: scale(0.7) translateY(20px); opacity: 0; }
+              100% { transform: scale(1) translateY(0); opacity: 1; }
+            }
+            @keyframes gachaShineSweep {
+              0% { background-position: -200% 0; }
+              100% { background-position: 200% 0; }
+            }
+          `}</style>
+
+          {/* 1. チャージ中演出 (カプセルが震えて光を放つ) */}
+          {animStep === 'charging' && (
+            <div style={{ textAlign: 'center', pointerEvents: 'none' }}>
+              <div style={{
+                fontSize: '5rem',
+                margin: '0 auto 20px auto',
+                width: '120px',
+                height: '120px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: '50%',
+                background: animItem.rarity === 'LR' 
+                  ? 'radial-gradient(circle, rgba(239, 68, 68, 0.3) 0%, rgba(139, 92, 246, 0.3) 70%, transparent 100%)'
+                  : animItem.rarity === 'UR'
+                  ? 'radial-gradient(circle, rgba(236, 72, 153, 0.3) 0%, rgba(245, 158, 11, 0.3) 70%, transparent 100%)'
+                  : animItem.rarity === 'SR'
+                  ? 'radial-gradient(circle, rgba(245, 158, 11, 0.35) 0%, transparent 70%)'
+                  : 'radial-gradient(circle, rgba(59, 130, 246, 0.25) 0%, transparent 70%)',
+                animation: animItem.rarity === 'LR' || animItem.rarity === 'UR'
+                  ? 'gachaShake 0.08s infinite, gachaPulseRainbow 1.2s infinite'
+                  : animItem.rarity === 'SR'
+                  ? 'gachaShake 0.1s infinite, gachaPulseGold 0.8s infinite'
+                  : 'gachaShake 0.12s infinite'
+              }}>
+                🔮
+              </div>
+              <div style={{
+                color: animItem.rarity === 'LR' ? '#f43f5e' : animItem.rarity === 'UR' ? '#fbbf24' : animItem.rarity === 'SR' ? '#f59e0b' : '#38bdf8',
+                fontSize: '1.1rem',
+                fontWeight: '900',
+                letterSpacing: '1px',
+                textShadow: '0 0 15px rgba(255,255,255,0.6)'
+              }}>
+                {animItem.rarity === 'LR' ? '⚡ 異次元の波動を感知……！' :
+                 animItem.rarity === 'UR' ? '✨ 神秘的な極光が集結中…！' :
+                 animItem.rarity === 'SR' ? '⭐ 黄金の輝きが溢れ出す…！' :
+                 '💫 ガチャ召喚中…'}
+              </div>
+              <div style={{ marginTop: '14px', fontSize: '0.75rem', color: '#64748b' }}>
+                画面タップでスキップ
+              </div>
+            </div>
+          )}
+
+          {/* 2. LR専用！神話級暗転フリーズ演出 (0.45秒間の静寂) */}
+          {animStep === 'blackout' && (
+            <div style={{ textAlign: 'center', pointerEvents: 'none' }}>
+              <div style={{
+                width: '18px',
+                height: '18px',
+                borderRadius: '50%',
+                background: '#ef4444',
+                boxShadow: '0 0 25px #ef4444, 0 0 50px #dc2626',
+                margin: '0 auto 16px auto',
+                animation: 'gachaHeartbeat 0.3s infinite ease-in-out'
+              }}></div>
+              <div style={{ color: '#fda4af', fontSize: '1.2rem', fontWeight: '900', letterSpacing: '4px', textShadow: '0 0 20px #ef4444' }}>
+                ……！？？
+              </div>
+            </div>
+          )}
+
+          {/* 3. SR / UR / LR カットイン演出 */}
+          {animStep === 'cutin' && (
+            <div style={{ textAlign: 'center', pointerEvents: 'none', animation: 'gachaCutinPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)' }}>
+              {animItem.rarity === 'LR' && (
+                <div>
+                  <div style={{ fontSize: '4.5rem', marginBottom: '8px', filter: 'drop-shadow(0 0 35px #f43f5e)' }}>🌌✨</div>
+                  <div style={{
+                    fontSize: '2.1rem',
+                    fontWeight: '900',
+                    lineHeight: 1.2,
+                    background: 'linear-gradient(90deg, #ff007a, #9d00ff, #00d4ff, #ffd700, #ff007a)',
+                    backgroundSize: '200% auto',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    animation: 'gachaShineSweep 1.5s linear infinite',
+                    filter: 'drop-shadow(0 0 20px rgba(255, 0, 122, 0.9))'
+                  }}>
+                    🌈 神話級 LEGEND RARE 降臨！！！！
+                  </div>
+                  <div style={{ color: '#fef08a', fontSize: '1rem', fontWeight: 'bold', marginTop: '8px', textShadow: '0 0 10px rgba(254, 240, 138, 0.8)' }}>
+                    神々の祝福を受けた伝説の逸品！
+                  </div>
+                </div>
+              )}
+
+              {animItem.rarity === 'UR' && (
+                <div>
+                  <div style={{ fontSize: '4rem', marginBottom: '8px', filter: 'drop-shadow(0 0 30px #ec4899)' }}>💖✨</div>
+                  <div style={{
+                    fontSize: '2rem',
+                    fontWeight: '900',
+                    lineHeight: 1.2,
+                    background: 'linear-gradient(135deg, #f43f5e, #fbbf24, #a855f7)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    filter: 'drop-shadow(0 0 18px rgba(244, 63, 94, 0.8))'
+                  }}>
+                    ✨ ULTRA RARE 確定！！ ✨
+                  </div>
+                  <div style={{ color: '#fbcfe8', fontSize: '0.95rem', fontWeight: 'bold', marginTop: '6px' }}>
+                    時空を超えた超絶なる奇跡を感知！
+                  </div>
+                </div>
+              )}
+
+              {animItem.rarity === 'SR' && (
+                <div>
+                  <div style={{ fontSize: '3.8rem', marginBottom: '8px', filter: 'drop-shadow(0 0 25px #f59e0b)' }}>⭐👑</div>
+                  <div style={{
+                    fontSize: '1.9rem',
+                    fontWeight: '900',
+                    lineHeight: 1.2,
+                    background: 'linear-gradient(135deg, #fbbf24, #f59e0b, #fffbeb)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    filter: 'drop-shadow(0 0 15px rgba(245, 158, 11, 0.8))'
+                  }}>
+                    ⭐ SUPER RARE 確定！！ ⭐
+                  </div>
+                  <div style={{ color: '#fef08a', fontSize: '0.95rem', fontWeight: 'bold', marginTop: '6px' }}>
+                    黄金の輝きを放つお宝を召喚！
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* 4. 結果カード発表 (Reveal) */}
+          {animStep === 'reveal' && gachaResult && (
+            <div 
+              onClick={e => e.stopPropagation()}
+              style={{
+                width: '100%',
+                maxWidth: '420px',
+                borderRadius: '16px',
+                padding: '20px 18px',
+                boxSizing: 'border-box',
+                textAlign: 'center',
+                position: 'relative',
+                animation: 'gachaCardZoomIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                background: gachaResult.rarity === 'LR'
+                  ? 'linear-gradient(135deg, #1e112a 0%, #2b123d 50%, #15102a 100%)'
+                  : gachaResult.rarity === 'UR'
+                  ? 'linear-gradient(135deg, #2a1120 0%, #36172d 50%, #1a102b 100%)'
+                  : gachaResult.rarity === 'SR'
+                  ? 'linear-gradient(135deg, #2b1f0d 0%, #3b2a10 50%, #1c150a 100%)'
+                  : 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
+                border: gachaResult.rarity === 'LR'
+                  ? '2.5px solid #ec4899'
+                  : gachaResult.rarity === 'UR'
+                  ? '2px solid #f43f5e'
+                  : gachaResult.rarity === 'SR'
+                  ? '2px solid #fbbf24'
+                  : '1.5px solid #64748b',
+                boxShadow: gachaResult.rarity === 'LR'
+                  ? '0 0 45px rgba(236, 72, 153, 0.7), inset 0 0 25px rgba(139, 92, 246, 0.5)'
+                  : gachaResult.rarity === 'UR'
+                  ? '0 0 35px rgba(244, 63, 94, 0.6), inset 0 0 20px rgba(245, 158, 11, 0.4)'
+                  : gachaResult.rarity === 'SR'
+                  ? '0 0 30px rgba(251, 191, 36, 0.6), inset 0 0 15px rgba(245, 158, 11, 0.3)'
+                  : '0 10px 25px rgba(0, 0, 0, 0.5)'
+              }}
+            >
+              {/* 閉じる✕ボタン */}
+              <button 
+                onClick={closeGachaModal}
+                style={{
+                  position: 'absolute',
+                  top: '10px',
+                  right: '12px',
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  border: 'none',
+                  color: '#94a3b8',
+                  fontSize: '1.2rem',
+                  borderRadius: '50%',
+                  width: '32px',
+                  height: '32px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  lineHeight: 1
+                }}
+              >
+                ✕
+              </button>
+
+              {/* 上部タイトル */}
+              <div style={{
+                fontSize: '0.85rem',
+                fontWeight: '900',
+                letterSpacing: '1px',
+                marginBottom: '10px',
+                color: gachaResult.rarity === 'LR' ? '#f43f5e' : gachaResult.rarity === 'UR' ? '#fbbf24' : gachaResult.rarity === 'SR' ? '#f59e0b' : '#38bdf8'
+              }}>
+                {gachaResult.rarity === 'LR' ? '🌈 LEGEND RARE 降臨！' :
+                 gachaResult.rarity === 'UR' ? '✨ ULTRA RARE 獲得！' :
+                 gachaResult.rarity === 'SR' ? '⭐ SUPER RARE 獲得！' :
+                 '🎁 ガチャ結果'}
+              </div>
+
+              {/* アイコン */}
+              <div style={{
+                fontSize: '4.2rem',
+                margin: '6px 0 10px 0',
+                lineHeight: 1,
+                filter: gachaResult.rarity === 'LR'
+                  ? 'drop-shadow(0 0 20px rgba(236, 72, 153, 0.9))'
+                  : gachaResult.rarity === 'UR'
+                  ? 'drop-shadow(0 0 16px rgba(244, 63, 94, 0.8))'
+                  : gachaResult.rarity === 'SR'
+                  ? 'drop-shadow(0 0 14px rgba(251, 191, 36, 0.8))'
+                  : 'drop-shadow(0 0 8px rgba(255, 255, 255, 0.3))'
+              }}>
+                {gachaResult.icon}
+              </div>
+
+              {/* レアリティバッジ＆アイテム名＆部位 */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', flexWrap: 'wrap', marginBottom: '8px' }}>
+                <span style={getRarityBadgeStyle(gachaResult.rarity)}>
+                  {RARITY_CONFIG[gachaResult.rarity]?.sparkle && <span>{RARITY_CONFIG[gachaResult.rarity]?.sparkle}</span>}
+                  <span>{gachaResult.rarity}</span>
+                </span>
+                <span style={{ fontSize: '1.15rem', fontWeight: '900', color: '#ffffff', ...getRarityTextStyle(gachaResult.rarity) }}>
+                  {gachaResult.name}
+                </span>
+                <span style={{ fontSize: '0.72rem', background: 'rgba(255, 255, 255, 0.12)', color: '#cbd5e1', padding: '2px 7px', borderRadius: '4px' }}>
+                  {{ weapon: '🗡️ 武器', armor: '🛡️ 防具', accessory: '💍 アクセ', partner: '👤 お供' }[gachaResult.type] || gachaResult.type}
+                </span>
+              </div>
+
+              {/* ステータス */}
+              <div style={{
+                background: 'rgba(0, 0, 0, 0.35)',
+                borderRadius: '8px',
+                padding: '8px 10px',
+                marginBottom: '10px',
+                border: '1px solid rgba(255, 255, 255, 0.08)'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', fontSize: '0.85rem', fontWeight: 'bold' }}>
+                  {gachaResult.atk > 0 && <span style={{ color: '#f87171' }}>ATK +{gachaResult.atk}</span>}
+                  {gachaResult.def > 0 && <span style={{ color: '#60a5fa' }}>DEF +{gachaResult.def}</span>}
+                  {gachaResult.hp > 0 && <span style={{ color: '#4ade80' }}>HP +{gachaResult.hp}</span>}
+                </div>
+                <div style={{ fontSize: '0.72rem', marginTop: '3px', color: userLevel >= getReqLevel(gachaResult) ? '#34d399' : '#f87171', fontWeight: 'bold' }}>
+                  必要Lv: {getReqLevel(gachaResult)} {userLevel >= getReqLevel(gachaResult) ? '（装備可能）' : '（Lv不足）'}
+                </div>
+              </div>
+
+              {/* 特殊効果 */}
+              {gachaResult.effect && (
+                <div style={{
+                  fontSize: '0.82rem',
+                  color: '#fef08a',
+                  background: 'rgba(245, 158, 11, 0.15)',
+                  border: '1px dashed #fbbf24',
+                  borderRadius: '6px',
+                  padding: '7px 10px',
+                  marginBottom: '10px',
+                  fontWeight: 'bold',
+                  lineHeight: 1.4
+                }}>
+                  ✨ {getItemEffectDescription(gachaResult)}
+                </div>
+              )}
+
+              {/* 説明文 */}
+              <div style={{ fontSize: '0.76rem', color: '#cbd5e1', fontStyle: 'italic', marginBottom: '16px', lineHeight: 1.45 }}>
+                「{gachaResult.desc}」
+              </div>
+
+              {/* 操作ボタン */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button 
+                    onClick={handleEquipFromGacha}
+                    disabled={userLevel < getReqLevel(gachaResult)}
+                    style={{
+                      flex: 1,
+                      padding: '10px 8px',
+                      background: userLevel >= getReqLevel(gachaResult) 
+                        ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' 
+                        : '#475569',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '8px',
+                      cursor: userLevel >= getReqLevel(gachaResult) ? 'pointer' : 'not-allowed',
+                      fontWeight: 'bold',
+                      fontSize: '0.85rem',
+                      boxShadow: userLevel >= getReqLevel(gachaResult) ? '0 4px 10px rgba(16, 185, 129, 0.4)' : 'none'
+                    }}
+                  >
+                    {userLevel >= getReqLevel(gachaResult) ? '⚔️ すぐ装備する' : `Lv.${getReqLevel(gachaResult)}で装備可能`}
+                  </button>
+                  <button 
+                    onClick={handleStoreInInventory}
+                    style={{
+                      flex: 1,
+                      padding: '10px 8px',
+                      background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '8px',
+                      cursor: 'pointer',
+                      fontWeight: 'bold',
+                      fontSize: '0.85rem',
+                      boxShadow: '0 4px 10px rgba(59, 130, 246, 0.4)'
+                    }}
+                  >
+                    👜 鞄にしまう
+                  </button>
+                </div>
+
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  {gachaTickets >= COST && (
+                    <button
+                      onClick={handleRoll}
+                      disabled={isRolling}
+                      style={{
+                        flex: 1,
+                        padding: '9px 8px',
+                        background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '8px',
+                        cursor: 'pointer',
+                        fontWeight: 'bold',
+                        fontSize: '0.82rem',
+                        boxShadow: '0 3px 8px rgba(245, 158, 11, 0.4)'
+                      }}
+                    >
+                      🎫 もう1回引く (残り{gachaTickets}枚)
+                    </button>
+                  )}
+                  <button 
+                    onClick={handleRecycle}
+                    style={{
+                      padding: '9px 12px',
+                      background: 'rgba(255, 255, 255, 0.1)',
+                      color: '#cbd5e1',
+                      border: '1px solid rgba(255, 255, 255, 0.2)',
+                      borderRadius: '8px',
+                      cursor: 'pointer',
+                      fontWeight: 'bold',
+                      fontSize: '0.78rem'
+                    }}
+                  >
+                    売却 (+{getRecycleExp(gachaResult.rarity)} EXP)
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>,
+        document.body
+      )}
     </div>
   );
 };

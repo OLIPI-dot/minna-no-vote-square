@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import confetti from 'canvas-confetti';
 import { supabase } from '../supabaseClient';
 import { rollEnemy } from '../enemies';
 import { ITEMS, getRarityColor, getRarityTextStyle, getRarityBadgeStyle, RARITY_CONFIG, getReqLevel, getItemEffectDescription, syncItemWithMaster } from '../items';
@@ -134,6 +135,7 @@ const PatrolMiniGame = ({
   const [enemyHp, setEnemyHp] = useState(0);
   const [battleLog, setBattleLog] = useState([]);
   const [dropItem, setDropItem] = useState(null);
+  const [hasFoundKey, setHasFoundKey] = useState(false);
   const [lastEarnedExp, setLastEarnedExp] = useState(0);
   const [healCount, setHealCount] = useState(0); // 何回回復したか
   const [usedSos, setUsedSos] = useState(false); // 救援を呼んだか
@@ -404,6 +406,7 @@ const PatrolMiniGame = ({
     winProcessedRef.current = false;
     setLastEarnedExp(0);
     setDropItem(null);
+    setHasFoundKey(false);
     setHealCount(0);
     setUsedSos(false);
     setSosState('idle');
@@ -1330,6 +1333,7 @@ const PatrolMiniGame = ({
       const drop = (rabiSinPartner && Math.random() < 0.6) ? rabiSinPartner : rollGachaSpecific('LR');
       if (drop) {
         setDropItem(drop);
+        triggerDropCelebration('LR');
         setBattleLog(prev => [
           ...prev, 
           `🌈 ✨ 奇跡降臨！！！！伝説のUSAGI【らび -sin -】から最高峰の【虹箱（LR確定）】がドロップした！！！！`
@@ -1361,6 +1365,7 @@ const PatrolMiniGame = ({
       
       if (drop) {
         setDropItem(drop);
+        triggerDropCelebration(drop.rarity);
         setBattleLog(prev => [...prev, `🎁 激レアな【赤箱】をドロップした！！！`]);
       } else {
         setBattleLog(prev => [...prev, `💨 しかし何もドロップしなかった...`]);
@@ -1388,6 +1393,8 @@ const PatrolMiniGame = ({
           }).catch(console.error);
         }
         foundKey = true;
+        setHasFoundKey(true);
+        if (!drop) triggerDropCelebration(null, true);
         setBattleLog(prev => [
           ...prev, 
           `🗝️ 【地下の鍵】を発見！本日の「地下パトロール」挑戦回数が +1 回増えた！（本日残り ${newRemaining} 回）`
@@ -1419,19 +1426,64 @@ const PatrolMiniGame = ({
     });
   };
 
+  // 🎉 レアリティに応じたドロップ祝福紙吹雪
+  const triggerDropCelebration = (rarity, isKey = false) => {
+    if (rarity === 'LR') {
+      confetti({
+        particleCount: 260,
+        spread: 95,
+        origin: { y: 0.6 },
+        colors: ['#ef4444', '#ec4899', '#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ffd700'],
+        zIndex: 999999
+      });
+    } else if (rarity === 'UR') {
+      confetti({
+        particleCount: 160,
+        spread: 80,
+        origin: { y: 0.6 },
+        colors: ['#f59e0b', '#fbbf24', '#ec4899', '#c084fc'],
+        zIndex: 999999
+      });
+    } else if (rarity === 'SR') {
+      confetti({
+        particleCount: 90,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#fbbf24', '#f59e0b', '#fef08a'],
+        zIndex: 999999
+      });
+    } else if (isKey) {
+      confetti({
+        particleCount: 65,
+        spread: 60,
+        origin: { y: 0.6 },
+        colors: ['#38bdf8', '#0284c7', '#fbbf24'],
+        zIndex: 999999
+      });
+    }
+  };
+
   const rollGachaSpecific = (rarity) => {
     const pool = ITEMS.filter(i => i.rarity === rarity);
     if(pool.length === 0) return null;
     return pool[Math.floor(Math.random() * pool.length)];
   };
 
-  const takeDropItem = () => {
+  const takeDropItem = (equipImmediately = true) => {
     if (dropItem) {
-      setEquipment(prev => ({
-        ...prev,
-        [dropItem.type]: dropItem
-      }));
+      if (equipImmediately) {
+        const oldItem = equipment[dropItem.type];
+        setEquipment(prev => ({
+          ...prev,
+          [dropItem.type]: dropItem
+        }));
+        if (oldItem && setInventory) setInventory(prev => [...prev, oldItem]);
+      } else {
+        if (setInventory) setInventory(prev => [...prev, dropItem]);
+      }
     }
+    setDropItem(null);
+    setEnemy(null);
     setBattleState('idle');
   };
 
@@ -1870,6 +1922,57 @@ const PatrolMiniGame = ({
       {/* 勝利画面UI (ログも残して戦況がしっかり読める) */}
       {battleState === 'won' && (
         <div style={{ animation: 'fadeIn 0.2s' }}>
+          {/* 🌟 レアアイテム（SR / UR / LR）特別ドロップバナー */}
+          {dropItem && ['SR', 'UR', 'LR'].includes(dropItem.rarity) && (
+            <div style={{
+              background: dropItem.rarity === 'LR'
+                ? 'linear-gradient(90deg, #ff007a, #9d00ff, #00d4ff, #ffd700)'
+                : dropItem.rarity === 'UR'
+                ? 'linear-gradient(135deg, #f43f5e 0%, #fbbf24 50%, #a855f7 100%)'
+                : 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+              color: '#ffffff',
+              padding: '8px 12px',
+              borderRadius: '8px',
+              marginBottom: '8px',
+              textAlign: 'center',
+              fontWeight: '900',
+              fontSize: '0.86rem',
+              letterSpacing: '0.5px',
+              boxShadow: dropItem.rarity === 'LR'
+                ? '0 0 18px rgba(255, 0, 122, 0.7)'
+                : dropItem.rarity === 'UR'
+                ? '0 0 14px rgba(244, 63, 94, 0.6)'
+                : '0 0 12px rgba(245, 158, 11, 0.6)',
+              animation: 'pulse 1.4s infinite'
+            }}>
+              {dropItem.rarity === 'LR' ? '🌈 奇跡降臨！神話級【LR】アイテムドロップ！！' :
+               dropItem.rarity === 'UR' ? '✨ 超絶幸運！激レア【UR】アイテムドロップ！！' :
+               '⭐ 大当たり！激レア【SR】アイテムドロップ！！'}
+            </div>
+          )}
+
+          {/* 🗝️ 地下の鍵ドロップバナー */}
+          {hasFoundKey && (
+            <div style={{
+              background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
+              color: '#ffffff',
+              padding: '7px 12px',
+              borderRadius: '8px',
+              marginBottom: '8px',
+              textAlign: 'center',
+              fontWeight: 'bold',
+              fontSize: '0.82rem',
+              boxShadow: '0 0 10px rgba(2, 132, 199, 0.5)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px'
+            }}>
+              <span>🗝️</span>
+              <span>レアドロップ！【地下の鍵】を発見！（地下パトロール挑戦権 +1）</span>
+            </div>
+          )}
+
           {/* 撃退結果ヘッダー */}
           <div style={{ 
             background: '#ecfdf5', border: '1px solid #a7f3d0', borderRadius: '8px', 
@@ -1911,43 +2014,94 @@ const PatrolMiniGame = ({
             )}
           </div>
 
+          {/* ドロップアイテム詳細カード */}
           {dropItem && (
             <div style={{ 
               background: ['SR', 'UR', 'LR'].includes(dropItem.rarity) ? 'linear-gradient(135deg, #fdf2f8, #f5f3ff, #ecfdf5)' : '#fffbeb', 
               border: `2px solid ${getRarityColor(dropItem.rarity)}`,
-              padding: '6px 10px', borderRadius: '8px', marginBottom: '8px', 
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+              padding: '10px 12px', borderRadius: '10px', marginBottom: '10px', 
               boxShadow: ['SR', 'UR', 'LR'].includes(dropItem.rarity) ? RARITY_CONFIG[dropItem.rarity]?.boxGlow : 'none',
-              animation: dropItem.rarity === 'LR' ? 'pulse-purple 1.5s infinite' : 'pulse-orange 1.5s infinite'
+              animation: dropItem.rarity === 'LR' ? 'pulse-purple 1.5s infinite' : dropItem.rarity === 'UR' ? 'pulse-orange 1.5s infinite' : 'none'
             }}>
-              <span style={{ fontSize: '1.4rem' }}>{dropItem.icon}</span>
-              <div style={{ textAlign: 'left' }}>
-                <div style={{ fontSize: '0.65rem', color: getRarityColor(dropItem.rarity), fontWeight: 'bold' }}>
-                  {dropItem.rarity === 'LR' ? '🔥 奇跡の神話級LRドロップ！' : dropItem.rarity === 'UR' ? '✨ 超激レアURドロップ！' : dropItem.rarity === 'SR' ? '⭐ 激レアSRドロップ！' : '🎁 ドロップ獲得！'}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
+                <span style={{ fontSize: '2rem', lineHeight: 1, filter: ['SR', 'UR', 'LR'].includes(dropItem.rarity) ? `drop-shadow(0 0 8px ${getRarityColor(dropItem.rarity)})` : 'none' }}>
+                  {dropItem.icon}
+                </span>
+                <div style={{ textAlign: 'left', flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: '0.68rem', color: getRarityColor(dropItem.rarity), fontWeight: 'bold' }}>
+                    {dropItem.rarity === 'LR' ? '🔥 奇跡の神話級LRドロップ！' : dropItem.rarity === 'UR' ? '✨ 超激レアURドロップ！' : dropItem.rarity === 'SR' ? '⭐ 激レアSRドロップ！' : '🎁 ドロップ獲得！'}
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginTop: '2px', flexWrap: 'wrap' }}>
+                    <span style={getRarityBadgeStyle(dropItem.rarity)}>
+                      {RARITY_CONFIG[dropItem.rarity]?.sparkle && <span>{RARITY_CONFIG[dropItem.rarity]?.sparkle}</span>}
+                      <span>{dropItem.rarity}</span>
+                    </span>
+                    <span style={{ fontSize: '0.9rem', fontWeight: 'bold', ...(['SR', 'UR', 'LR'].includes(dropItem.rarity) ? getRarityTextStyle(dropItem.rarity) : { color: '#1e293b' }) }}>
+                      {dropItem.name}
+                    </span>
+                  </div>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}>
-                  <span style={getRarityBadgeStyle(dropItem.rarity)}>
-                    {RARITY_CONFIG[dropItem.rarity]?.sparkle && <span>{RARITY_CONFIG[dropItem.rarity]?.sparkle}</span>}
-                    <span>{dropItem.rarity}</span>
-                  </span>
-                  <span style={{ fontSize: '0.82rem', fontWeight: 'bold', ...(['SR', 'UR', 'LR'].includes(dropItem.rarity) ? getRarityTextStyle(dropItem.rarity) : { color: '#1e293b' }) }}>
-                    {dropItem.name}
-                  </span>
+              </div>
+
+              {/* 上昇ステータス */}
+              <div style={{ display: 'flex', gap: '8px', fontSize: '0.74rem', fontWeight: 'bold', color: '#475569', marginBottom: '4px', background: 'rgba(255,255,255,0.7)', padding: '3px 8px', borderRadius: '4px', width: 'fit-content' }}>
+                {dropItem.atk > 0 && <span style={{ color: '#ef4444' }}>ATK +{dropItem.atk}</span>}
+                {dropItem.def > 0 && <span style={{ color: '#3b82f6' }}>DEF +{dropItem.def}</span>}
+                {dropItem.hp > 0 && <span style={{ color: '#10b981' }}>HP +{dropItem.hp}</span>}
+                <span style={{ color: userLevel >= getReqLevel(dropItem) ? '#059669' : '#dc2626' }}>
+                  必要Lv: {getReqLevel(dropItem)}
+                </span>
+              </div>
+
+              {/* 特殊効果 */}
+              {dropItem.effect && (
+                <div style={{ fontSize: '0.74rem', color: '#92400e', background: '#fffbeb', border: '1px dashed #f59e0b', borderRadius: '4px', padding: '4px 6px', marginBottom: '8px', fontWeight: 'bold', textAlign: 'left' }}>
+                  ✨ {getItemEffectDescription(dropItem)}
                 </div>
+              )}
+
+              {/* 装備 or カバン選択ボタン */}
+              <div style={{ display: 'flex', gap: '6px', marginTop: '6px' }}>
+                <button
+                  onClick={() => takeDropItem(true)}
+                  disabled={userLevel < getReqLevel(dropItem)}
+                  style={{
+                    flex: 1, padding: '7px 8px', 
+                    background: userLevel >= getReqLevel(dropItem) ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' : '#94a3b8',
+                    color: 'white', border: 'none', borderRadius: '6px',
+                    cursor: userLevel >= getReqLevel(dropItem) ? 'pointer' : 'not-allowed',
+                    fontWeight: 'bold', fontSize: '0.78rem'
+                  }}
+                >
+                  {userLevel >= getReqLevel(dropItem) ? '⚔️ すぐ装備して戻る' : `Lv.${getReqLevel(dropItem)}必要`}
+                </button>
+                <button
+                  onClick={() => takeDropItem(false)}
+                  style={{
+                    flex: 1, padding: '7px 8px', 
+                    background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                    color: 'white', border: 'none', borderRadius: '6px',
+                    cursor: 'pointer', fontWeight: 'bold', fontSize: '0.78rem'
+                  }}
+                >
+                  👜 鞄にしまって戻る
+                </button>
               </div>
             </div>
           )}
 
-          <button 
-            onClick={() => { dropItem ? takeDropItem() : setBattleState('idle'); setDropItem(null); setEnemy(null); }}
-            style={{ 
-              width: '100%', padding: '9px', background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)', 
-              color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', 
-              fontSize: '0.85rem', boxShadow: '0 2px 4px rgba(59, 130, 246, 0.3)' 
-            }}
-          >
-            {dropItem ? '装備して戻る' : '戻る'}
-          </button>
+          {!dropItem && (
+            <button 
+              onClick={() => { setBattleState('idle'); setEnemy(null); }}
+              style={{ 
+                width: '100%', padding: '9px', background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)', 
+                color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', 
+                fontSize: '0.85rem', boxShadow: '0 2px 4px rgba(59, 130, 246, 0.3)' 
+              }}
+            >
+              戻る
+            </button>
+          )}
         </div>
       )}
 
