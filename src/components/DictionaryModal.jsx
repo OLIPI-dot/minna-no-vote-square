@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { ITEMS, EFFECT_DESCRIPTIONS, getReqLevel, getItemEffectDescription } from '../items';
+import { 
+  ITEMS, 
+  EFFECT_DESCRIPTIONS, 
+  getReqLevel, 
+  getItemEffectDescription,
+  getRarityColor,
+  getRarityTextStyle,
+  getRarityBadgeStyle,
+  RARITY_CONFIG
+} from '../items';
 import { ENEMIES } from '../enemies';
 
 const DictionaryModal = ({ isOpen, onClose, acquiredItems = [], encounteredEnemies = [] }) => {
@@ -40,14 +49,27 @@ const DictionaryModal = ({ isOpen, onClose, acquiredItems = [], encounteredEnemi
     return `${pool.filter(i => acquiredItems.includes(i.id)).length}/${pool.length}`;
   };
 
-  const getRarityColor = (rarity) => {
-    const colors = { N: '#94a3b8', R: '#3b82f6', SR: '#eab308', UR: '#ec4899', LR: '#ef4444' };
-    return colors[rarity] || '#333';
+  const getEnemyColor = (type) => {
+    const colors = { normal: '#334155', elite: '#0284c7', rare: '#ef4444' };
+    return colors[type] || '#333';
   };
 
-  const getEnemyColor = (type) => {
-    const colors = { normal: '#334155', elite: '#0ea5e9', rare: '#ef4444' };
-    return colors[type] || '#333';
+  const getEnemyStyle = (type) => {
+    if (type === 'rare') {
+      return {
+        color: '#ef4444',
+        fontWeight: 'bold',
+        textShadow: '0 0 8px rgba(239, 68, 68, 0.7)'
+      };
+    }
+    if (type === 'elite') {
+      return {
+        color: '#0284c7',
+        fontWeight: 'bold',
+        textShadow: '0 0 6px rgba(2, 132, 199, 0.5)'
+      };
+    }
+    return { color: '#64748b', fontWeight: 'bold' };
   };
 
   // 左側ペインのリストレンダリング
@@ -83,17 +105,29 @@ const DictionaryModal = ({ isOpen, onClose, acquiredItems = [], encounteredEnemi
         const isAcquired = acquiredItems.includes(item.id);
         const isSelected = selectedItem === item.id;
         const formattedNo = `No.${String(item.dexNo || 0).padStart(4, '0')}`;
+        const rarityCfg = RARITY_CONFIG[item.rarity] || RARITY_CONFIG.N;
+        const isHighRarity = isAcquired && ['SR', 'UR', 'LR'].includes(item.rarity);
+
         return (
           <div 
             key={item.id} 
             onClick={() => isAcquired && setSelectedItem(item.id)}
             style={{ 
               display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', borderBottom: '1px solid #e2e8f0',
-              background: isSelected ? '#eff6ff' : 'white', cursor: isAcquired ? 'pointer' : 'not-allowed',
-              opacity: isAcquired ? 1 : 0.5, borderLeft: isSelected ? `4px solid ${getRarityColor(item.rarity)}` : '4px solid transparent'
+              background: isSelected ? '#eff6ff' : isHighRarity ? 'rgba(254, 243, 199, 0.15)' : 'white', 
+              cursor: isAcquired ? 'pointer' : 'not-allowed',
+              opacity: isAcquired ? 1 : 0.5, 
+              borderLeft: isSelected 
+                ? `4px solid ${rarityCfg.color}` 
+                : isHighRarity 
+                  ? `3px solid ${rarityCfg.border}` 
+                  : '3px solid transparent'
             }}
           >
-            <div style={{ fontSize: '1.5rem', filter: isAcquired ? 'none' : 'grayscale(100%) brightness(0.5)' }}>
+            <div style={{ 
+              fontSize: '1.5rem', 
+              filter: isAcquired ? (isHighRarity ? `drop-shadow(0 0 6px ${rarityCfg.color}88)` : 'none') : 'grayscale(100%) brightness(0.5)' 
+            }}>
               {isAcquired ? item.icon : '❓'}
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
@@ -101,13 +135,24 @@ const DictionaryModal = ({ isOpen, onClose, acquiredItems = [], encounteredEnemi
                 <span style={{ fontSize: '0.75rem', fontFamily: 'monospace', fontWeight: 'bold', color: '#64748b' }}>
                   {formattedNo}
                 </span>
-                <span style={{ fontWeight: 'bold', color: isAcquired ? '#1e293b' : '#94a3b8', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                <span style={{ 
+                  fontWeight: 'bold', 
+                  whiteSpace: 'nowrap', 
+                  overflow: 'hidden', 
+                  textOverflow: 'ellipsis',
+                  ...(isAcquired 
+                    ? (isHighRarity ? getRarityTextStyle(item.rarity) : { color: '#1e293b' })
+                    : { color: '#94a3b8' })
+                }}>
                   {isAcquired ? item.name : '？？？？？？'}
                 </span>
               </div>
               {isAcquired && (
-                <div style={{ fontSize: '0.75rem', fontWeight: 'bold', color: getRarityColor(item.rarity) }}>
-                  [{item.rarity}]
+                <div style={{ marginTop: '3px' }}>
+                  <span style={getRarityBadgeStyle(item.rarity)}>
+                    {rarityCfg.sparkle && <span>{rarityCfg.sparkle}</span>}
+                    <span>{item.rarity}</span>
+                  </span>
                 </div>
               )}
             </div>
@@ -146,13 +191,37 @@ const DictionaryModal = ({ isOpen, onClose, acquiredItems = [], encounteredEnemi
                 <span style={{ fontSize: '0.75rem', fontFamily: 'monospace', fontWeight: 'bold', color: '#64748b' }}>
                   {formattedNo}
                 </span>
-                <span style={{ fontWeight: 'bold', color: isEncountered ? '#1e293b' : '#94a3b8', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                <span style={{ 
+                  fontWeight: 'bold', 
+                  color: isEncountered ? '#1e293b' : '#94a3b8', 
+                  whiteSpace: 'nowrap', 
+                  overflow: 'hidden', 
+                  textOverflow: 'ellipsis',
+                  ...(isEncountered && enemy.type !== 'normal' ? getEnemyStyle(enemy.type) : {})
+                }}>
                   {isEncountered ? enemy.name : '？？？？？？'}
                 </span>
               </div>
               {isEncountered && (
-                <div style={{ fontSize: '0.75rem', fontWeight: 'bold', color: getEnemyColor(enemy.type) }}>
-                  [{enemy.type.toUpperCase()}]
+                <div style={{ marginTop: '3px' }}>
+                  <span style={{
+                    fontSize: '0.72rem',
+                    fontWeight: 'bold',
+                    padding: '2px 8px',
+                    borderRadius: '12px',
+                    background: enemy.type === 'rare' 
+                      ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)' 
+                      : enemy.type === 'elite' 
+                        ? 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' 
+                        : '#64748b',
+                    color: 'white',
+                    boxShadow: enemy.type === 'rare' ? '0 0 8px rgba(239, 68, 68, 0.4)' : 'none',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '3px'
+                  }}>
+                    {enemy.type === 'rare' ? '🔥 RARE' : enemy.type === 'elite' ? '⚡ ELITE' : 'NORMAL'}
+                  </span>
                 </div>
               )}
             </div>
@@ -167,6 +236,9 @@ const DictionaryModal = ({ isOpen, onClose, acquiredItems = [], encounteredEnemi
     if (tab === 'items' && selectedItem) {
       const item = ITEMS.find(i => i.id === selectedItem);
       if (!item) return null;
+      const rarityCfg = RARITY_CONFIG[item.rarity] || RARITY_CONFIG.N;
+      const isHighRarity = ['SR', 'UR', 'LR'].includes(item.rarity);
+
       return (
         <div style={{ padding: isMobile ? '16px 12px' : '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', animation: 'fadeIn 0.3s' }}>
           {isMobile && (
@@ -193,13 +265,36 @@ const DictionaryModal = ({ isOpen, onClose, acquiredItems = [], encounteredEnemi
               <span>一覧に戻る</span>
             </button>
           )}
-          <div style={{ fontSize: isMobile ? '4rem' : '5rem', marginBottom: '12px', filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.2))' }}>{item.icon}</div>
+          <div style={{ 
+            fontSize: isMobile ? '4rem' : '5rem', 
+            marginBottom: '12px', 
+            filter: isHighRarity 
+              ? `drop-shadow(0 0 16px ${rarityCfg.color}99)` 
+              : 'drop-shadow(0 4px 6px rgba(0,0,0,0.2))' 
+          }}>
+            {item.icon}
+          </div>
           <div style={{ fontSize: '0.9rem', color: '#64748b', fontWeight: 'bold', fontFamily: 'monospace', marginBottom: '2px' }}>
             No.{String(item.dexNo || 0).padStart(4, '0')}
           </div>
-          <div style={{ fontSize: isMobile ? '1.25rem' : '1.5rem', fontWeight: 'bold', color: '#1e293b', marginBottom: '8px', textAlign: 'center' }}>{item.name}</div>
-          <div style={{ background: getRarityColor(item.rarity), color: 'white', padding: '4px 12px', borderRadius: '16px', fontSize: '0.8rem', fontWeight: 'bold', marginBottom: '16px' }}>
-            {item.rarity} {item.type === 'weapon' ? '武器' : item.type === 'armor' ? '防具' : item.type === 'accessory' ? '装飾' : 'お供'}
+          <div style={{ 
+            fontSize: isMobile ? '1.25rem' : '1.5rem', 
+            fontWeight: 'bold', 
+            marginBottom: '8px', 
+            textAlign: 'center',
+            ...getRarityTextStyle(item.rarity)
+          }}>
+            {item.name}
+          </div>
+          <div style={{ 
+            ...getRarityBadgeStyle(item.rarity),
+            padding: '5px 14px', 
+            borderRadius: '16px', 
+            fontSize: '0.85rem', 
+            marginBottom: '16px' 
+          }}>
+            {rarityCfg.sparkle && <span>{rarityCfg.sparkle}</span>}
+            <span>{item.rarity} {item.type === 'weapon' ? '武器' : item.type === 'armor' ? '防具' : item.type === 'accessory' ? '装飾' : 'お供'}</span>
           </div>
           
           <div style={{ width: '100%', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '16px', marginBottom: '16px' }}>
@@ -258,13 +353,44 @@ const DictionaryModal = ({ isOpen, onClose, acquiredItems = [], encounteredEnemi
               <span>一覧に戻る</span>
             </button>
           )}
-          <div style={{ fontSize: isMobile ? '4rem' : '5rem', marginBottom: '12px', filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.2))' }}>{enemy.icon}</div>
+          <div style={{ 
+            fontSize: isMobile ? '4rem' : '5rem', 
+            marginBottom: '12px', 
+            filter: enemy.type === 'rare' 
+              ? 'drop-shadow(0 0 16px rgba(239, 68, 68, 0.7))' 
+              : enemy.type === 'elite' 
+                ? 'drop-shadow(0 0 12px rgba(2, 132, 199, 0.6))' 
+                : 'drop-shadow(0 4px 6px rgba(0,0,0,0.2))' 
+          }}>
+            {enemy.icon}
+          </div>
           <div style={{ fontSize: '0.9rem', color: '#64748b', fontWeight: 'bold', fontFamily: 'monospace', marginBottom: '2px' }}>
             No.{String(enemy.dexNo || 0).padStart(3, '0')}
           </div>
-          <div style={{ fontSize: isMobile ? '1.25rem' : '1.5rem', fontWeight: 'bold', color: '#1e293b', marginBottom: '8px', textAlign: 'center' }}>{enemy.name}</div>
-          <div style={{ background: getEnemyColor(enemy.type), color: 'white', padding: '4px 12px', borderRadius: '16px', fontSize: '0.8rem', fontWeight: 'bold', marginBottom: '16px' }}>
-            {enemy.type.toUpperCase()}
+          <div style={{ 
+            fontSize: isMobile ? '1.25rem' : '1.5rem', 
+            fontWeight: 'bold', 
+            marginBottom: '8px', 
+            textAlign: 'center',
+            ...getEnemyStyle(enemy.type)
+          }}>
+            {enemy.name}
+          </div>
+          <div style={{ 
+            padding: '5px 14px', 
+            borderRadius: '16px', 
+            fontSize: '0.85rem', 
+            fontWeight: 'bold', 
+            marginBottom: '16px',
+            background: enemy.type === 'rare' 
+              ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)' 
+              : enemy.type === 'elite' 
+                ? 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' 
+                : '#64748b',
+            color: 'white',
+            boxShadow: enemy.type === 'rare' ? '0 0 10px rgba(239, 68, 68, 0.5)' : 'none'
+          }}>
+            {enemy.type === 'rare' ? '🔥 RARE ENEMY' : enemy.type === 'elite' ? '⚡ ELITE ENEMY' : 'NORMAL ENEMY'}
           </div>
           
           <div style={{ width: '100%', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '16px', marginBottom: '16px' }}>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../supabaseClient';
 import { rollEnemy } from '../enemies';
-import { ITEMS } from '../items';
+import { ITEMS, getRarityColor, getRarityTextStyle, getRarityBadgeStyle, RARITY_CONFIG } from '../items';
 
 const RANDOM_EFFECT_MSGS = {
   regen: [
@@ -1155,7 +1155,7 @@ const PatrolMiniGame = ({
       try {
         const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
         const dungeonData = JSON.parse(localStorage.getItem('daily_dungeon_attempts_v1') || '{}');
-        const currentRemaining = dungeonData.date === todayStr ? (typeof dungeonData.remaining === 'number' ? dungeonData.remaining : 3) : 3;
+        const currentRemaining = dungeonData.date === todayStr ? (typeof dungeonData.remaining === 'number' ? dungeonData.remaining : 5) : 5;
         const newRemaining = currentRemaining + 1;
         localStorage.setItem('daily_dungeon_attempts_v1', JSON.stringify({
           date: todayStr,
@@ -1503,19 +1503,26 @@ const PatrolMiniGame = ({
 
           {dropItem && (
             <div style={{ 
-              background: dropItem.rarity === 'LR' ? 'linear-gradient(135deg, #fdf2f8, #f5f3ff, #ecfdf5)' : '#fffbeb', 
-              border: dropItem.rarity === 'LR' ? '2px solid #ec4899' : '1px dashed #f59e0b',
-              padding: '5px 8px', borderRadius: '6px', marginBottom: '8px', 
+              background: ['SR', 'UR', 'LR'].includes(dropItem.rarity) ? 'linear-gradient(135deg, #fdf2f8, #f5f3ff, #ecfdf5)' : '#fffbeb', 
+              border: `2px solid ${getRarityColor(dropItem.rarity)}`,
+              padding: '6px 10px', borderRadius: '8px', marginBottom: '8px', 
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+              boxShadow: ['SR', 'UR', 'LR'].includes(dropItem.rarity) ? RARITY_CONFIG[dropItem.rarity]?.boxGlow : 'none',
               animation: dropItem.rarity === 'LR' ? 'pulse-purple 1.5s infinite' : 'pulse-orange 1.5s infinite'
             }}>
-              <span style={{ fontSize: '1.3rem' }}>{dropItem.icon}</span>
+              <span style={{ fontSize: '1.4rem' }}>{dropItem.icon}</span>
               <div style={{ textAlign: 'left' }}>
-                <div style={{ fontSize: '0.65rem', color: dropItem.rarity === 'LR' ? '#ec4899' : '#b45309', fontWeight: 'bold' }}>
-                  {dropItem.rarity === 'LR' ? '🌈 神話級LRドロップ！' : '🎁 ドロップ獲得！'}
+                <div style={{ fontSize: '0.65rem', color: getRarityColor(dropItem.rarity), fontWeight: 'bold' }}>
+                  {dropItem.rarity === 'LR' ? '🔥 奇跡の神話級LRドロップ！' : dropItem.rarity === 'UR' ? '✨ 超激レアURドロップ！' : dropItem.rarity === 'SR' ? '⭐ 激レアSRドロップ！' : '🎁 ドロップ獲得！'}
                 </div>
-                <div style={{ fontSize: '0.8rem', fontWeight: 'bold', color: dropItem.rarity === 'LR' ? '#7c3aed' : '#1e293b' }}>
-                  [{dropItem.rarity}] {dropItem.name}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}>
+                  <span style={getRarityBadgeStyle(dropItem.rarity)}>
+                    {RARITY_CONFIG[dropItem.rarity]?.sparkle && <span>{RARITY_CONFIG[dropItem.rarity]?.sparkle}</span>}
+                    <span>{dropItem.rarity}</span>
+                  </span>
+                  <span style={{ fontSize: '0.82rem', fontWeight: 'bold', ...(['SR', 'UR', 'LR'].includes(dropItem.rarity) ? getRarityTextStyle(dropItem.rarity) : { color: '#1e293b' }) }}>
+                    {dropItem.name}
+                  </span>
                 </div>
               </div>
             </div>

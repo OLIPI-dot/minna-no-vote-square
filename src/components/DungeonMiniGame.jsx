@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../supabaseClient';
 import { ENEMIES, scaleEnemy, rollEnemy } from '../enemies';
 import DUNGEON_ENEMIES from '../data/dungeon_enemies.json';
-import { ITEMS } from '../items';
+import { ITEMS, getRarityColor, getRarityTextStyle, getRarityBadgeStyle, RARITY_CONFIG } from '../items';
 
 const RANDOM_EFFECT_MSGS = {
   regen: [
@@ -167,9 +167,9 @@ const DungeonMiniGame = ({
     }
   };
 
-  // 🗝️ 地下パトロール挑戦回数管理（1日基本3回 ＋ 地上パトロールで鍵ドロップ、クラウド同期）
+  // 🗝️ 地下パトロール挑戦回数管理（1日基本5回、クラウド同期）
   const getTodayStr = () => new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
-  const BASE_DAILY_ATTEMPTS = 3;
+  const BASE_DAILY_ATTEMPTS = 5;
 
   const getDungeonAttempts = () => {
     const todayStr = getTodayStr();
@@ -177,16 +177,18 @@ const DungeonMiniGame = ({
     if (user?.user_metadata?.daily_dungeon_date === todayStr) {
       const cloudRem = user.user_metadata.daily_dungeon_remaining;
       if (typeof cloudRem === 'number') {
+        const adjustedRem = Math.max(cloudRem, BASE_DAILY_ATTEMPTS - (3 - Math.min(3, cloudRem)));
         try {
-          localStorage.setItem('daily_dungeon_attempts_v1', JSON.stringify({ date: todayStr, remaining: cloudRem }));
+          localStorage.setItem('daily_dungeon_attempts_v1', JSON.stringify({ date: todayStr, remaining: adjustedRem }));
         } catch(e) {}
-        return cloudRem;
+        return adjustedRem;
       }
     }
     try {
       const data = JSON.parse(localStorage.getItem('daily_dungeon_attempts_v1') || '{}');
-      if (data.date === todayStr) {
-        return typeof data.remaining === 'number' ? data.remaining : BASE_DAILY_ATTEMPTS;
+      if (data.date === todayStr && typeof data.remaining === 'number') {
+        const adjustedRem = Math.max(data.remaining, BASE_DAILY_ATTEMPTS - (3 - Math.min(3, data.remaining)));
+        return adjustedRem;
       }
     } catch (e) {
       console.error(e);
@@ -196,10 +198,47 @@ const DungeonMiniGame = ({
 
   const [remainingAttempts, setRemainingAttempts] = useState(() => getDungeonAttempts());
 
-  // ロビーに戻った時やユーザー情報更新時に最新の残り回数を同期
+  // 📜 本日の探索記録（冒険履歴）
+  const getDungeonHistory = () => {
+    const todayStr = getTodayStr();
+    try {
+      const data = JSON.parse(localStorage.getItem('daily_dungeon_history_v1') || '{}');
+      if (data.date === todayStr && Array.isArray(data.history)) {
+        return data.history;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    return [];
+  };
+
+  const [dungeonHistory, setDungeonHistory] = useState(() => getDungeonHistory());
+
+  const addDungeonHistoryRecord = (record) => {
+    const todayStr = getTodayStr();
+    const now = new Date();
+    const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    const newRecord = { ...record, time: timeStr };
+
+    setDungeonHistory(prev => {
+      const updated = [newRecord, ...prev].slice(0, 5);
+      try {
+        localStorage.setItem('daily_dungeon_history_v1', JSON.stringify({
+          date: todayStr,
+          history: updated
+        }));
+      } catch (e) {
+        console.error(e);
+      }
+      return updated;
+    });
+  };
+
+  // ロビーに戻った時やユーザー情報更新時に最新の残り回数と履歴を同期
   useEffect(() => {
     if (dungeonState === 'lobby') {
       setRemainingAttempts(getDungeonAttempts());
+      setDungeonHistory(getDungeonHistory());
       if (user?.user_metadata?.dungeon_best_floor) {
         setBestFloor(prev => Math.max(prev, user.user_metadata.dungeon_best_floor));
       }
@@ -477,12 +516,31 @@ const DungeonMiniGame = ({
 
   // 🚪 地上へ帰還する（戦利品確定）
   const handleEscape = () => {
-    // 🎒 探索リュックのEXP・チケットをプレイヤーデータに正式加算
-    if (collectedExp > 0 && addExp) {
-      addExp(collectedExp);
-    }
-    if (collectedTickets > 0 && addTickets) {
-      addTickets(collectedTickets);
+    // 探索を1回も行わずに即帰還した場合は、挑戦回数を消費しない安心仕様
+    const isInstantReturn = floor === 1 && floorSearches === 0 && collectedExp === 0 && collectedItems.length === 0;
+    if (isInstantReturn) {
+      saveRemainingAttempts(Math.min(BASE_DAILY_ATTEMPTS, remainingAttempts + 1));
+      addDungeonHistoryRecord({
+        floor: 1,
+        result: 'canceled',
+        exp: 0,
+        tickets: 0,
+        items: []
+      });
+    } else {
+      if (collectedExp > 0 && addExp) {
+        addExp(collectedExp);
+      }
+      if (collectedTickets > 0 && addTickets) {
+        addTickets(collectedTickets);
+      }
+      addDungeonHistoryRecord({
+        floor,
+        result: 'escaped',
+        exp: collectedExp,
+        tickets: collectedTickets,
+        items: collectedItems
+      });
     }
     setDungeonState('escaped');
     updateBestFloor(floor);
@@ -906,6 +964,13 @@ const DungeonMiniGame = ({
       setPlayerHp(0);
       setEnemyHp(currentEnemyHp);
       setBattleLog(newLogs);
+      addDungeonHistoryRecord({
+        floor,
+        result: 'lost',
+        exp: 0,
+        tickets: 0,
+        items: collectedItems
+      });
       setDungeonState('lost');
       return;
     }
@@ -1167,6 +1232,104 @@ const DungeonMiniGame = ({
               ? '🔦 地下パトロールへ出発（B1F〜）' 
               : '🗝️ 本日の挑戦権終了（地上パトロールで鍵を探そう！）'}
           </button>
+
+          {/* 📜 本日の探索記録（冒険履歴） */}
+          {dungeonHistory.length > 0 && (
+            <div style={{
+              width: '100%',
+              maxWidth: '300px',
+              marginTop: '14px',
+              background: 'rgba(15, 23, 42, 0.75)',
+              border: '1px solid rgba(255, 255, 255, 0.12)',
+              borderRadius: '10px',
+              padding: '10px 12px',
+              textAlign: 'left',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.25)'
+            }}>
+              <div style={{
+                fontSize: '0.78rem',
+                fontWeight: 'bold',
+                color: '#93c5fd',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: '8px',
+                borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+                paddingBottom: '4px'
+              }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <span>📜</span>
+                  <span>本日の探索記録</span>
+                </span>
+                <span style={{ fontSize: '0.7rem', color: '#64748b' }}>直近{dungeonHistory.length}回</span>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                {dungeonHistory.map((h, idx) => (
+                  <div key={idx} style={{
+                    fontSize: '0.73rem',
+                    lineHeight: 1.4,
+                    padding: '5px 8px',
+                    borderRadius: '6px',
+                    background: 'rgba(255, 255, 255, 0.04)',
+                    border: '1px solid rgba(255, 255, 255, 0.04)'
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ color: '#94a3b8', fontFamily: 'monospace' }}>{h.time}</span>
+                      <span style={{ fontWeight: 'bold', color: '#38bdf8' }}>B{h.floor}F 到達</span>
+                      <span style={{
+                        fontWeight: 'bold',
+                        color: h.result === 'escaped' ? '#34d399' : h.result === 'lost' ? '#f87171' : '#94a3b8'
+                      }}>
+                        {h.result === 'escaped' ? '無事帰還 🎉' : h.result === 'lost' ? '力尽きた 💀' : '即時帰還'}
+                      </span>
+                    </div>
+                    {(h.exp > 0 || h.tickets > 0 || (h.items && h.items.length > 0)) && (
+                      <div style={{ marginTop: '3px', fontSize: '0.7rem' }}>
+                        <div style={{ color: '#fcd34d', marginBottom: (h.items && h.items.length > 0) ? '3px' : 0 }}>
+                          {h.exp > 0 && `EXP +${h.exp} `}
+                          {h.tickets > 0 && `🎫 +${h.tickets} `}
+                          {h.items && h.items.length > 0 && (
+                            <span style={{ color: '#93c5fd', fontWeight: 'bold' }}>
+                              🎁 装備×{h.items.length}
+                            </span>
+                          )}
+                        </div>
+                        {h.items && h.items.length > 0 && (
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '3px' }}>
+                            {h.items.map((it, itemIdx) => {
+                              const isHighRarity = ['SR', 'UR', 'LR'].includes(it.rarity);
+                              const rarityCfg = RARITY_CONFIG[it.rarity] || RARITY_CONFIG.N;
+                              return (
+                                <span 
+                                  key={itemIdx} 
+                                  style={{
+                                    fontSize: '0.65rem',
+                                    padding: '1px 5px',
+                                    borderRadius: '6px',
+                                    background: isHighRarity ? 'rgba(0,0,0,0.5)' : 'rgba(255, 255, 255, 0.05)',
+                                    border: isHighRarity ? `1px solid ${rarityCfg.darkColor}` : '1px solid rgba(255, 255, 255, 0.1)',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '2px',
+                                    boxShadow: isHighRarity ? rarityCfg.boxGlow : 'none'
+                                  }}
+                                >
+                                  {rarityCfg.sparkle && <span>{rarityCfg.sparkle}</span>}
+                                  <span style={getRarityTextStyle(it.rarity, true)}>
+                                    [{it.rarity}] {it.name}
+                                  </span>
+                                </span>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -1518,6 +1681,42 @@ const DungeonMiniGame = ({
             <div>⭐ 獲得EXP: <strong style={{ color: '#fbbf24' }}>+{collectedExp}</strong></div>
             <div>🎫 獲得チケット: <strong style={{ color: '#34d399' }}>{collectedTickets}枚</strong></div>
             <div>🎁 獲得アイテム: <strong>{collectedItems.length}個</strong></div>
+
+            {collectedItems.length > 0 && (
+              <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                <div style={{ fontSize: '0.72rem', color: '#94a3b8', marginBottom: '4px' }}>【持ち帰った戦利品】</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  {collectedItems.map((it, idx) => {
+                    const rarityCfg = RARITY_CONFIG[it.rarity] || RARITY_CONFIG.N;
+                    const isHigh = ['SR', 'UR', 'LR'].includes(it.rarity);
+                    return (
+                      <div key={idx} style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        background: isHigh ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.05)',
+                        border: isHigh ? `1px solid ${rarityCfg.darkColor}` : '1px solid rgba(255,255,255,0.08)',
+                        borderRadius: '6px',
+                        padding: '4px 8px',
+                        fontSize: '0.75rem',
+                        boxShadow: isHigh ? rarityCfg.boxGlow : 'none'
+                      }}>
+                        <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <span>{it.icon}</span>
+                          <span style={getRarityTextStyle(it.rarity, true)}>
+                            {it.name}
+                          </span>
+                        </span>
+                        <span style={getRarityBadgeStyle(it.rarity)}>
+                          {rarityCfg.sparkle && <span>{rarityCfg.sparkle}</span>}
+                          <span>{it.rarity}</span>
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
 
           <button
@@ -1554,6 +1753,48 @@ const DungeonMiniGame = ({
                 🛡️ ですが、拾った装備・アイテム（{collectedItems.length}個）はすべて無事に持ち帰れました！✨
               </strong>
             </div>
+
+            {collectedItems.length > 0 && (
+              <div style={{
+                marginTop: '10px',
+                textAlign: 'left',
+                background: 'rgba(0,0,0,0.3)',
+                padding: '10px',
+                borderRadius: '8px'
+              }}>
+                <div style={{ fontSize: '0.72rem', color: '#94a3b8', marginBottom: '4px' }}>【保護された装備】</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  {collectedItems.map((it, idx) => {
+                    const rarityCfg = RARITY_CONFIG[it.rarity] || RARITY_CONFIG.N;
+                    const isHigh = ['SR', 'UR', 'LR'].includes(it.rarity);
+                    return (
+                      <div key={idx} style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        background: isHigh ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.05)',
+                        border: isHigh ? `1px solid ${rarityCfg.darkColor}` : '1px solid rgba(255,255,255,0.08)',
+                        borderRadius: '6px',
+                        padding: '4px 8px',
+                        fontSize: '0.75rem',
+                        boxShadow: isHigh ? rarityCfg.boxGlow : 'none'
+                      }}>
+                        <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <span>{it.icon}</span>
+                          <span style={getRarityTextStyle(it.rarity, true)}>
+                            {it.name}
+                          </span>
+                        </span>
+                        <span style={getRarityBadgeStyle(it.rarity)}>
+                          {rarityCfg.sparkle && <span>{rarityCfg.sparkle}</span>}
+                          <span>{it.rarity}</span>
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
 
           <button

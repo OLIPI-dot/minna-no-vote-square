@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
-import { rollGacha, getReqLevel, EFFECT_DESCRIPTIONS, ITEMS, syncItemWithMaster, getItemEffectDescription } from '../items';
+import { 
+  rollGacha, 
+  getReqLevel, 
+  EFFECT_DESCRIPTIONS, 
+  ITEMS, 
+  syncItemWithMaster, 
+  getItemEffectDescription,
+  getRarityColor,
+  getRarityTextStyle,
+  getRarityBadgeStyle,
+  RARITY_CONFIG
+} from '../items';
 import confetti from 'canvas-confetti';
 
-const rarityColors = {
-  N: '#94a3b8',
-  R: '#3b82f6',
-  SR: '#ec4899',
-  UR: '#f59e0b',
-  LR: '#ef4444' // 真っ赤（PSO赤箱リスペクト）
-};
 
 // 保存データに desc や effect が無い古いアイテムでも、マスターデータ(IDまたは名前)から確実に補完する
 const getItemDetails = (item) => {
@@ -148,7 +152,14 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
         {item ? (
           <div>
             <div style={{ fontSize: '1.2rem' }}>{item.icon}</div>
-            <div style={{ fontSize: '0.7rem', fontWeight: 'bold', color: rarityColors[item.rarity], whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            <div style={{ 
+              fontSize: '0.7rem', 
+              fontWeight: 'bold', 
+              whiteSpace: 'nowrap', 
+              overflow: 'hidden', 
+              textOverflow: 'ellipsis',
+              ...(['SR', 'UR', 'LR'].includes(item.rarity) ? getRarityTextStyle(item.rarity) : { color: getRarityColor(item.rarity) })
+            }}>
               [{item.rarity}] {item.name}
             </div>
             <div style={{ fontSize: '0.65rem', color: '#64748b', marginTop: '2px' }}>
@@ -196,11 +207,32 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
 
       {/* ガチャ結果モーダル風 */}
       {gachaResult && (
-        <div style={{ background: '#fffbeb', border: `2px solid ${rarityColors[gachaResult.rarity]}`, borderRadius: '8px', padding: '12px', textAlign: 'center', marginBottom: '12px', animation: 'fadeIn 0.3s' }}>
+        <div style={{ 
+          background: '#fffbeb', 
+          border: `2px solid ${getRarityColor(gachaResult.rarity)}`, 
+          borderRadius: '8px', 
+          padding: '12px', 
+          textAlign: 'center', 
+          marginBottom: '12px', 
+          animation: 'fadeIn 0.3s',
+          boxShadow: ['SR', 'UR', 'LR'].includes(gachaResult.rarity) ? RARITY_CONFIG[gachaResult.rarity]?.boxGlow : 'none'
+        }}>
           <div style={{ fontSize: '0.8rem', color: '#b45309', fontWeight: 'bold' }}>ガチャ結果！</div>
-          <div style={{ fontSize: '2rem', margin: '8px 0' }}>{gachaResult.icon}</div>
-          <div style={{ fontWeight: 'bold', color: rarityColors[gachaResult.rarity], display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-            <span>[{gachaResult.rarity}] {gachaResult.name}</span>
+          <div style={{ 
+            fontSize: '2.5rem', 
+            margin: '8px 0',
+            filter: ['SR', 'UR', 'LR'].includes(gachaResult.rarity) ? `drop-shadow(0 0 10px ${getRarityColor(gachaResult.rarity)}99)` : 'none'
+          }}>
+            {gachaResult.icon}
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', flexWrap: 'wrap', marginBottom: '4px' }}>
+            <span style={getRarityBadgeStyle(gachaResult.rarity)}>
+              {RARITY_CONFIG[gachaResult.rarity]?.sparkle && <span>{RARITY_CONFIG[gachaResult.rarity]?.sparkle}</span>}
+              <span>{gachaResult.rarity}</span>
+            </span>
+            <span style={{ fontSize: '0.95rem', fontWeight: 'bold', ...getRarityTextStyle(gachaResult.rarity) }}>
+              {gachaResult.name}
+            </span>
             <span style={{ fontSize: '0.7rem', background: '#e2e8f0', color: '#475569', padding: '2px 6px', borderRadius: '4px' }}>
               {{ weapon: '🗡️ 武器', armor: '🛡️ 防具', accessory: '💍 アクセ', partner: '👤 お供' }[gachaResult.type] || gachaResult.type}
             </span>
@@ -249,11 +281,26 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
             <div style={{ marginBottom: '16px' }}>
               <div style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 'bold', marginBottom: '8px' }}>現在の装備</div>
               {equipment[selectedSlot] ? (
-                <div style={{ background: '#f8fafc', border: `2px solid ${rarityColors[equipment[selectedSlot].rarity]}`, borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{ 
+                  background: '#f8fafc', 
+                  border: `2px solid ${getRarityColor(equipment[selectedSlot].rarity)}`, 
+                  borderRadius: '8px', 
+                  padding: '12px', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: '12px',
+                  boxShadow: ['SR', 'UR', 'LR'].includes(equipment[selectedSlot].rarity) ? RARITY_CONFIG[equipment[selectedSlot].rarity]?.boxGlow : 'none'
+                }}>
                   <div style={{ fontSize: '2.5rem', flexShrink: 0 }}>{equipment[selectedSlot].icon}</div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontWeight: 'bold', color: rarityColors[equipment[selectedSlot].rarity] }}>
-                      [{equipment[selectedSlot].rarity}] {equipment[selectedSlot].name}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px' }}>
+                      <span style={getRarityBadgeStyle(equipment[selectedSlot].rarity)}>
+                        {RARITY_CONFIG[equipment[selectedSlot].rarity]?.sparkle && <span>{RARITY_CONFIG[equipment[selectedSlot].rarity]?.sparkle}</span>}
+                        <span>{equipment[selectedSlot].rarity}</span>
+                      </span>
+                      <span style={{ fontWeight: 'bold', ...getRarityTextStyle(equipment[selectedSlot].rarity) }}>
+                        {equipment[selectedSlot].name}
+                      </span>
                     </div>
                     <div style={{ fontSize: '0.75rem', color: '#475569', margin: '4px 0' }}>
                       ATK+{equipment[selectedSlot].atk} / DEF+{equipment[selectedSlot].def} / HP+{equipment[selectedSlot].hp}
@@ -298,11 +345,26 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
                   };
 
                   return (
-                    <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', background: 'white', border: `1px solid ${rarityColors[item.rarity]}`, borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+                    <div key={item.id} style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '12px', 
+                      padding: '12px', 
+                      background: 'white', 
+                      border: `1px solid ${getRarityColor(item.rarity)}`, 
+                      borderRadius: '8px', 
+                      boxShadow: ['SR', 'UR', 'LR'].includes(item.rarity) ? RARITY_CONFIG[item.rarity]?.boxGlow : '0 1px 3px rgba(0,0,0,0.1)' 
+                    }}>
                       <div style={{ fontSize: '1.5rem' }}>{item.icon}</div>
                       <div style={{ flex: 1 }}>
-                        <div style={{ fontWeight: 'bold', color: rarityColors[item.rarity] }}>
-                          [{item.rarity}] {item.name}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <span style={getRarityBadgeStyle(item.rarity)}>
+                            {RARITY_CONFIG[item.rarity]?.sparkle && <span>{RARITY_CONFIG[item.rarity]?.sparkle}</span>}
+                            <span>{item.rarity}</span>
+                          </span>
+                          <span style={{ fontWeight: 'bold', ...getRarityTextStyle(item.rarity) }}>
+                            {item.name}
+                          </span>
                         </div>
                         <div style={{ fontSize: '0.75rem', color: '#475569', display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '4px' }}>
                           <span>ATK: {item.atk}{renderDiff(diffAtk)}</span>
@@ -364,11 +426,26 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
                   const typeLabels = { weapon: '🗡️ 武器', armor: '🛡️ 防具', accessory: '💍 アクセ', partner: '👤 お供' };
 
                   return (
-                    <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', background: '#f8fafc', border: `1px solid ${rarityColors[item.rarity]}`, borderRadius: '8px' }}>
+                    <div key={item.id} style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '12px', 
+                      padding: '12px', 
+                      background: '#f8fafc', 
+                      border: `1px solid ${getRarityColor(item.rarity)}`, 
+                      borderRadius: '8px',
+                      boxShadow: ['SR', 'UR', 'LR'].includes(item.rarity) ? RARITY_CONFIG[item.rarity]?.boxGlow : 'none'
+                    }}>
                       <div style={{ fontSize: '2rem' }}>{item.icon}</div>
                       <div style={{ flex: 1 }}>
-                        <div style={{ fontWeight: 'bold', color: rarityColors[item.rarity], display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <span>[{item.rarity}] {item.name}</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                          <span style={getRarityBadgeStyle(item.rarity)}>
+                            {RARITY_CONFIG[item.rarity]?.sparkle && <span>{RARITY_CONFIG[item.rarity]?.sparkle}</span>}
+                            <span>{item.rarity}</span>
+                          </span>
+                          <span style={{ fontWeight: 'bold', ...getRarityTextStyle(item.rarity) }}>
+                            {item.name}
+                          </span>
                           <span style={{ fontSize: '0.7rem', background: '#e2e8f0', color: '#475569', padding: '2px 6px', borderRadius: '4px' }}>
                             {typeLabels[item.type] || item.type}
                           </span>

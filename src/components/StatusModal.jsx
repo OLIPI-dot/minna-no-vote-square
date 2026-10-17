@@ -1,14 +1,16 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
-import { ITEMS, EFFECT_DESCRIPTIONS, getItemEffectDescription, getCombinedEffectDescription } from '../items';
+import { 
+  ITEMS, 
+  EFFECT_DESCRIPTIONS, 
+  getItemEffectDescription, 
+  getCombinedEffectDescription,
+  getRarityColor,
+  getRarityTextStyle,
+  getRarityBadgeStyle,
+  RARITY_CONFIG
+} from '../items';
 
-const rarityColors = {
-  N: '#94a3b8',
-  R: '#3b82f6',
-  SR: '#ec4899',
-  UR: '#f59e0b',
-  LR: '#ef4444'
-};
 
 const slotLabels = {
   weapon: { name: '武器', icon: '🗡️' },
@@ -221,12 +223,13 @@ const StatusModal = ({ isOpen, onClose, userLevel = 1, userExp = 0, levelInfo, h
                     key={slot}
                     style={{
                       background: item ? '#f8fafc' : '#f1f5f9',
-                      border: item ? `1.5px solid ${rarityColors[item.rarity] || '#cbd5e1'}` : '1px dashed #cbd5e1',
+                      border: item ? `1.5px solid ${getRarityColor(item.rarity)}` : '1px dashed #cbd5e1',
                       borderRadius: '8px',
                       padding: '8px 10px',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '10px'
+                      gap: '10px',
+                      boxShadow: item && ['SR', 'UR', 'LR'].includes(item.rarity) ? RARITY_CONFIG[item.rarity]?.boxGlow : 'none'
                     }}
                   >
                     <div style={{ fontSize: '0.75rem', color: '#64748b', width: '48px', fontWeight: 'bold', flexShrink: 0 }}>
@@ -236,8 +239,28 @@ const StatusModal = ({ isOpen, onClose, userLevel = 1, userExp = 0, levelInfo, h
                       <>
                         <div style={{ fontSize: '1.4rem', flexShrink: 0 }}>{item.icon}</div>
                         <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontSize: '0.78rem', fontWeight: 'bold', color: rarityColors[item.rarity] || '#1e293b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                            [{item.rarity}] {item.name}
+                          <div style={{ 
+                            fontSize: '0.8rem', 
+                            fontWeight: 'bold', 
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            whiteSpace: 'nowrap', 
+                            overflow: 'hidden', 
+                            textOverflow: 'ellipsis' 
+                          }}>
+                            <span style={getRarityBadgeStyle(item.rarity)}>
+                              {RARITY_CONFIG[item.rarity]?.sparkle && <span>{RARITY_CONFIG[item.rarity]?.sparkle}</span>}
+                              <span>{item.rarity}</span>
+                            </span>
+                            <span style={{
+                              whiteSpace: 'nowrap',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              ...(['SR', 'UR', 'LR'].includes(item.rarity) ? getRarityTextStyle(item.rarity) : { color: '#1e293b' })
+                            }}>
+                              {item.name}
+                            </span>
                           </div>
                           <div style={{ fontSize: '0.68rem', color: '#64748b' }}>
                             {item.atk > 0 && `ATK+${item.atk} `}
