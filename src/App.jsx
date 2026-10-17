@@ -580,18 +580,16 @@ function App() {
           }, 1000);
         }
         
+        setUserExp(newTotalExp);
+        setGachaTickets(newTotalTickets);
+        isAuthLoaded.current = true;
+
         if (shouldUpdate) {
           updates.vote_exp = newTotalExp;
           updates.gacha_tickets = newTotalTickets;
-          supabase.auth.updateUser({ data: updates }).then(() => {
-            setUserExp(newTotalExp);
-            setGachaTickets(newTotalTickets);
-            isAuthLoaded.current = true;
+          supabase.auth.updateUser({ data: updates }).catch(err => {
+            console.error('Failed to sync user metadata:', err);
           });
-        } else {
-          setUserExp(dbExp);
-          setGachaTickets(dbTickets);
-          isAuthLoaded.current = true;
         }
       } else {
         // ▼ ゲスト（未ログイン）ユーザーのボーナス処理 ▼
@@ -793,8 +791,11 @@ function App() {
   const addExp = async (amount) => {
     showRewardPopup(`✨ + ${amount} EXP !!`, '#10b981');
     setUserExp(prev => {
-      const oldLevel = getLevelInfo(prev).level;
-      const newExp = prev + amount;
+      // 🛡️ 初期値0での誤爆上書きを完全防止（クラウドの現在値と比較して大きい方を基準にする）
+      const dbExp = user?.user_metadata?.vote_exp || 0;
+      const baseExp = isAuthLoaded.current ? prev : Math.max(prev, dbExp);
+      const oldLevel = getLevelInfo(baseExp).level;
+      const newExp = baseExp + amount;
       const newLevel = getLevelInfo(newExp).level;
       if (newLevel > oldLevel) {
         const diff = newLevel - oldLevel;
@@ -806,7 +807,9 @@ function App() {
         }, 1000);
       }
       if (user) {
-        supabase.auth.updateUser({ data: { vote_exp: newExp } });
+        // 🛡️ クラウドの現在のEXPより小さく巻き戻るような上書きは絶対にブロック！
+        const safeExp = Math.max(newExp, dbExp);
+        supabase.auth.updateUser({ data: { vote_exp: safeExp } });
       } else {
         localStorage.setItem('min_ake_exp', String(newExp));
       }
@@ -817,7 +820,9 @@ function App() {
   const addTickets = async (amount) => {
     if (amount > 0) showRewardPopup(`🎫 + ${amount} チケット !!`, '#f59e0b');
     setGachaTickets(prev => {
-      const newTickets = prev + amount;
+      const dbTickets = user?.user_metadata?.gacha_tickets || 0;
+      const baseTickets = isAuthLoaded.current ? prev : Math.max(prev, dbTickets);
+      const newTickets = Math.max(0, baseTickets + amount);
       if (user) {
         supabase.auth.updateUser({ data: { gacha_tickets: newTickets } });
       } else {
