@@ -568,16 +568,13 @@ function App() {
           shouldUpdate = true;
         }
         
-        // 🎁 1日1回のアクセスボーナス判定！
+        // 🎁 1日1回のアクセスボーナス判定！（タイムライン化に伴いalertは非表示にし、裏で安全に付与）
         if (lastLoginDate !== todayStr && !hasProcessedLoginBonus.current) {
           hasProcessedLoginBonus.current = true;
           newTotalExp += 10;
           newTotalTickets += 1; // ログボでガチャチケ1枚
           updates.last_login_date = todayStr;
           shouldUpdate = true;
-          setTimeout(() => {
-            alert('🎉 今日のアクセスボーナス！\n広場に遊びに来てくれてありがとう！\n＋10 EXP と 【ガチャチケット🎫 x1】 を獲得しました！🐰✨');
-          }, 1000);
         }
         
         setUserExp(newTotalExp);
@@ -598,15 +595,12 @@ function App() {
         let newTotalTickets = localTickets;
         let shouldUpdate = false;
 
-        // 🎁 1日1回のアクセスボーナス判定！
+        // 🎁 1日1回のアクセスボーナス判定！（タイムライン化に伴いalertは非表示にし、裏で安全に付与）
         if (localLastLogin !== todayStr && !hasProcessedLoginBonus.current) {
           hasProcessedLoginBonus.current = true;
           newTotalExp += 10;
           newTotalTickets += 1;
           shouldUpdate = true;
-          setTimeout(() => {
-            alert('🎉 今日のアクセスボーナス！\n広場に遊びに来てくれてありがとう！\n＋10 EXP と 【ガチャチケット🎫 x1】 を獲得しました！🐰✨');
-          }, 1000);
         }
 
         if (shouldUpdate) {
@@ -780,12 +774,10 @@ function App() {
 
   const [rewardPopups, setRewardPopups] = useState([]);
 
+  // タイムラインやステータスで確認できるため、画面中央のポップアップは非表示に設定
   const showRewardPopup = (text, color = '#10b981') => {
-    const id = Date.now() + Math.random();
-    setRewardPopups(prev => [...prev, { id, text, color }]);
-    setTimeout(() => {
-      setRewardPopups(prev => prev.filter(p => p.id !== id));
-    }, 2500);
+    // ポップアップを表示させない
+    return;
   };
 
   const addExp = async (amount) => {
