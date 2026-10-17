@@ -174,10 +174,11 @@ const PatrolMiniGame = ({
     localStorage.setItem('daily_patrols_v2', JSON.stringify(current));
   }, [user]);
 
-  // プレイヤーステータス計算
-  const pMaxHp = (userLevel * 10 + 100) + (equipment?.accessory?.hp || 0) + (equipment?.partner?.hp || 0);
-  const pAtk = (userLevel * 5 + 10) + (equipment?.weapon?.atk || 0) + (equipment?.partner?.atk || 0);
-  const pDef = (userLevel * 2) + (equipment?.armor?.def || 0) + (equipment?.partner?.def || 0);
+  // プレイヤーステータス計算（StatusModal / Dungeonと完全同一）
+  const equipSlots = ['weapon', 'armor', 'accessory', 'partner'];
+  const pMaxHp = (userLevel * 10 + 100) + equipSlots.reduce((sum, s) => sum + (equipment?.[s]?.hp || 0), 0);
+  const pAtk = (userLevel * 5 + 10) + equipSlots.reduce((sum, s) => sum + (equipment?.[s]?.atk || 0), 0);
+  const pDef = (userLevel * 2) + equipSlots.reduce((sum, s) => sum + (equipment?.[s]?.def || 0), 0);
 
   const startPatrol = (hardMode = false) => {
     const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });

@@ -31,17 +31,18 @@ const getItemDetails = (item) => {
 const StatusModal = ({ isOpen, onClose, userLevel = 1, userExp = 0, levelInfo, hn = '広場民', equipment = {} }) => {
   if (!isOpen) return null;
 
-  // プレイヤーの総合ステータス計算（PatrolMiniGameと同じ完全同一式）
+  // プレイヤーの総合ステータス計算（Patrol / Dungeonと完全同一）
+  const slots = ['weapon', 'armor', 'accessory', 'partner'];
   const baseHp = userLevel * 10 + 100;
-  const equipHp = (equipment?.accessory?.hp || 0) + (equipment?.partner?.hp || 0);
+  const equipHp = slots.reduce((sum, s) => sum + (equipment?.[s]?.hp || 0), 0);
   const totalHp = baseHp + equipHp;
 
   const baseAtk = userLevel * 5 + 10;
-  const equipAtk = (equipment?.weapon?.atk || 0) + (equipment?.partner?.atk || 0);
+  const equipAtk = slots.reduce((sum, s) => sum + (equipment?.[s]?.atk || 0), 0);
   const totalAtk = baseAtk + equipAtk;
 
   const baseDef = userLevel * 2;
-  const equipDef = (equipment?.armor?.def || 0) + (equipment?.partner?.def || 0);
+  const equipDef = slots.reduce((sum, s) => sum + (equipment?.[s]?.def || 0), 0);
   const totalDef = baseDef + equipDef;
 
   // 発動中の特殊効果を効果ごとに集約（重複スタック対応）

@@ -143,12 +143,13 @@ const DungeonMiniGame = ({
     }
   });
 
-  // プレイヤー基本ステータス（地上・ステータス画面と完全一致）
+  // プレイヤー基本ステータス（StatusModal / Patrolと完全同一）
+  const equipSlots = ['weapon', 'armor', 'accessory', 'partner'];
   const baseHp = (userLevel * 10) + 100;
-  const equipHp = (equipment?.accessory?.hp || 0) + (equipment?.partner?.hp || 0);
+  const equipHp = equipSlots.reduce((sum, s) => sum + (equipment?.[s]?.hp || 0), 0);
   const pMaxHp = baseHp + equipHp;
-  const pAtk = (userLevel * 5) + 10 + (equipment?.weapon?.atk || 0) + (equipment?.accessory?.atk || 0) + (equipment?.partner?.atk || 0);
-  const pDef = (userLevel * 2) + (equipment?.armor?.def || 0) + (equipment?.partner?.def || 0);
+  const pAtk = (userLevel * 5) + 10 + equipSlots.reduce((sum, s) => sum + (equipment?.[s]?.atk || 0), 0);
+  const pDef = (userLevel * 2) + equipSlots.reduce((sum, s) => sum + (equipment?.[s]?.def || 0), 0);
 
   const updateBestFloor = (newFloor) => {
     if (newFloor > bestFloor) {
