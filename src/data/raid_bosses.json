@@ -7,13 +7,13 @@
     "icon": "📺",
     "title": "【日曜限定レイドボス】",
     "desc": "楽しい休日の終わりを告げる恐怖の支配者。じゃんけんのオーラを纏い、明日への絶望感を煽ってくる。",
-    "maxHp": 1000000,
-    "currentHp": 1000000,
+    "maxHp": 100000,
+    "currentHp": 100000,
     "skills": ["明日へのカウントダウン", "じゃんけん結界", "憂鬱のエンディングテーマ"],
     "bgGradient": "linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)",
     "accentColor": "#818cf8",
-    "rewardExp": 1200,
-    "rewardTickets": 3
+    "rewardExp": 3500,
+    "rewardTickets": 12
   },
   {
     "id": "raid_monday",
@@ -23,13 +23,13 @@
     "icon": "🌧️",
     "title": "【月曜限定レイドボス】",
     "desc": "週明けの憂鬱から生まれた巨大怪獣。深く重いため息で広場を暗雲で覆い、みんなのやる気を削いでいく。",
-    "maxHp": 1000000,
-    "currentHp": 1000000,
+    "maxHp": 100000,
+    "currentHp": 100000,
     "skills": ["重力ため息", "二度寝の誘惑", "現実逃避ミスト"],
     "bgGradient": "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)",
     "accentColor": "#38bdf8",
-    "rewardExp": 1000,
-    "rewardTickets": 3
+    "rewardExp": 3000,
+    "rewardTickets": 10
   },
   {
     "id": "raid_tuesday",
@@ -39,13 +39,13 @@
     "icon": "🔥",
     "title": "【火曜限定レイドボス】",
     "desc": "ネットのトレンドや失言を燃料にして激しく燃え盛る激情竜。不用意な発言には強烈な火炎ブレスで反撃してくる。",
-    "maxHp": 1000000,
-    "currentHp": 1000000,
+    "maxHp": 100000,
+    "currentHp": 100000,
     "skills": ["燃料投下", "大炎上ブレス", "クソリプ拡散"],
     "bgGradient": "linear-gradient(135deg, #450a0a 0%, #7f1d1d 100%)",
     "accentColor": "#f87171",
-    "rewardExp": 1000,
-    "rewardTickets": 3
+    "rewardExp": 3000,
+    "rewardTickets": 10
   },
   {
     "id": "raid_wednesday",
@@ -55,13 +55,13 @@
     "icon": "⏳",
     "title": "【水曜限定レイドボス】",
     "desc": "定時直前の17時55分に突如現れる闇の怪異。「ちょっといいですか？」の一言でみんなの帰宅を阻止しようとする。",
-    "maxHp": 1000000,
-    "currentHp": 1000000,
+    "maxHp": 100000,
+    "currentHp": 100000,
     "skills": ["定時直前の相談", "突発トラブル発生", "終電トラップ"],
     "bgGradient": "linear-gradient(135deg, #1c1917 0%, #292524 100%)",
     "accentColor": "#fbbf24",
-    "rewardExp": 1000,
-    "rewardTickets": 3
+    "rewardExp": 3000,
+    "rewardTickets": 10
   },
   {
     "id": "raid_thursday",
@@ -71,13 +71,13 @@
     "icon": "⚡",
     "title": "【木曜限定レイドボス】",
     "desc": "平日の疲労がピークに達し、カフェインを過剰摂取して暴走した魔獣。翼が生えてギラギラの目で暴れ回る。",
-    "maxHp": 1000000,
-    "currentHp": 1000000,
+    "maxHp": 100000,
+    "currentHp": 100000,
     "skills": ["カフェインバースト", "徹夜ハイテンション", "クラッシュの予兆"],
     "bgGradient": "linear-gradient(135deg, #052e16 0%, #14532d 100%)",
     "accentColor": "#4ade80",
-    "rewardExp": 1000,
-    "rewardTickets": 3
+    "rewardExp": 3000,
+    "rewardTickets": 10
   },
   {
     "id": "raid_friday",
@@ -87,13 +87,13 @@
     "icon": "🍻",
     "title": "【金曜限定レイドボス】",
     "desc": "平日の解放感から生まれた酒豪の大怪獣。巨大なビールジョッキを掲げて大宴会を開き、みんなを飲み会に誘惑する。",
-    "maxHp": 1000000,
-    "currentHp": 1000000,
+    "maxHp": 100000,
+    "currentHp": 100000,
     "skills": ["生中メガジョッキ", "揚げ物タワー", "朝までハシゴ酒"],
     "bgGradient": "linear-gradient(135deg, #3b0764 0%, #581c87 100%)",
     "accentColor": "#c084fc",
-    "rewardExp": 1200,
-    "rewardTickets": 4
+    "rewardExp": 3500,
+    "rewardTickets": 12
   },
   {
     "id": "raid_saturday",
@@ -103,12 +103,12 @@
     "icon": "🐙",
     "title": "【土曜限定レイドボス】",
     "desc": "「あと1本だけ…」の甘い罠で夜更かしの深海へ引きずり込む魔獣。気づいたときには外が明るくなっている。",
-    "maxHp": 1000000,
-    "currentHp": 1000000,
+    "maxHp": 100000,
+    "currentHp": 100000,
     "skills": ["おすすめ無限スワイプ", "午前4時の静寂", "休日消滅トラップ"],
     "bgGradient": "linear-gradient(135deg, #172554 0%, #1e3a8a 100%)",
     "accentColor": "#60a5fa",
-    "rewardExp": 1200,
-    "rewardTickets": 4
+    "rewardExp": 3500,
+    "rewardTickets": 12
   }
 ]

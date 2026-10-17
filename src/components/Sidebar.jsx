@@ -484,6 +484,7 @@ const Sidebar = ({
                 addTickets={addTickets}
                 equipment={equipment}
                 user={user}
+                hn={hn}
                 globalOnlineCount={globalOnlineCount}
               />
             </div>
