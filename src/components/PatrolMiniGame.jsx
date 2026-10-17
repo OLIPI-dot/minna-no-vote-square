@@ -1501,10 +1501,10 @@ const PatrolMiniGame = ({
             }}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.8rem', fontWeight: 'bold', color: '#1e293b' }}>
                 <span>📜</span>
-                <span>パトロール記録</span>
+                <span>冒険タイムライン</span>
               </span>
               <span style={{ fontSize: '0.7rem', color: '#64748b' }}>
-                {patrolHistory.length > 0 ? `本日 直近${patrolHistory.length}回` : '本日 未記録'}
+                {patrolHistory.length > 0 ? `本日 直近${patrolHistory.length}件` : '本日 未記録'}
               </span>
             </div>
 
@@ -1518,7 +1518,7 @@ const PatrolMiniGame = ({
                 background: '#f8fafc',
                 borderRadius: '6px'
               }}>
-                まだ本日のパトロール記録がありません。<br />
+                まだ本日の冒険記録がありません。<br />
                 広場を見回りに出発するとここに記録が残ります🌸
               </div>
             ) : (
@@ -1526,15 +1526,16 @@ const PatrolMiniGame = ({
                 display: 'flex', 
                 flexDirection: 'column', 
                 gap: '6px', 
-                maxHeight: '290px', 
+                maxHeight: '460px', 
                 overflowY: 'auto', 
-                paddingRight: '3px' 
+                paddingRight: '3px',
+                scrollbarWidth: 'thin'
               }}>
                 {sortPatrolHistoryDesc(patrolHistory).map((h, idx) => (
                   <div key={idx} style={{
                     fontSize: '0.74rem',
-                    lineHeight: 1.45,
-                    padding: '8px 10px',
+                    lineHeight: 1.4,
+                    padding: '7px 9px',
                     borderRadius: '8px',
                     background: '#f8fafc',
                     border: '1px solid #e2e8f0',
