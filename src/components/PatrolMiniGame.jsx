@@ -1296,9 +1296,9 @@ const PatrolMiniGame = ({
       }
     }
 
-    // 🗝️ 地下の鍵ドロップ判定（約15%の確率で、本日の地下パトロール挑戦権+1！）
+    // 🗝️ 地下の鍵ドロップ判定（約5%のレア確率で、本日の地下パトロール挑戦権+1！）
     let foundKey = false;
-    if (Math.random() < 0.15) {
+    if (Math.random() < 0.05) {
       try {
         const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
         const dungeonData = JSON.parse(localStorage.getItem('daily_dungeon_attempts_v1') || '{}');
