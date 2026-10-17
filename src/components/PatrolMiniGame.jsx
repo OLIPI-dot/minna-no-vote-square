@@ -1520,7 +1520,14 @@ const PatrolMiniGame = ({
                 広場を見回りに出発するとここに記録が残ります🌸
               </div>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <div style={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                gap: '6px', 
+                maxHeight: '210px', 
+                overflowY: 'auto', 
+                paddingRight: '3px' 
+              }}>
                 {sortPatrolHistoryDesc(patrolHistory).map((h, idx) => (
                   <div key={idx} style={{
                     fontSize: '0.74rem',

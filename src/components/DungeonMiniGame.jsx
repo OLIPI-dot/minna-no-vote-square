@@ -1367,7 +1367,14 @@ const DungeonMiniGame = ({
                 地下へ出発するとここに記録が残ります🔦
               </div>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <div style={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                gap: '8px',
+                maxHeight: '220px',
+                overflowY: 'auto',
+                paddingRight: '3px'
+              }}>
                 {sortDungeonHistoryDesc(dungeonHistory).map((h, idx) => {
                   const monsterCount = h.monsters ? h.monsters.reduce((sum, m) => sum + (m.count || 1), 0) : 0;
                   return (
