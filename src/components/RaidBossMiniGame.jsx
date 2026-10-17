@@ -145,6 +145,36 @@ const RaidBossMiniGame = ({
 
   const myDamage = rankingList.find(r => r.isMe)?.damage || 0;
 
+  // 🎁 レイド参加賞（1回攻撃で毎日ガチャチケ3枚＆800EXP）の受取管理
+  const [hasClaimedParticipation, setHasClaimedParticipation] = useState(() => {
+    try {
+      const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
+      return localStorage.getItem(`minique_raid_participation_${todayStr}`) === 'true';
+    } catch (e) {
+      return false;
+    }
+  });
+
+  const handleClaimParticipation = () => {
+    if (hasClaimedParticipation || myDamage <= 0) return;
+    const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
+    try {
+      localStorage.setItem(`minique_raid_participation_${todayStr}`, 'true');
+    } catch (e) {}
+    setHasClaimedParticipation(true);
+
+    const PARTICIPATION_TICKETS = 3;
+    const PARTICIPATION_EXP = 800;
+
+    if (addTickets) addTickets(PARTICIPATION_TICKETS);
+    if (addExp) addExp(PARTICIPATION_EXP);
+
+    setRaidLogs(prev => [
+      `🎁 【参加賞受取！】 レイドボス参戦報酬として ガチャチケ 3枚 ＆ ${PARTICIPATION_EXP} EXP を獲得した！✨`,
+      ...prev
+    ].slice(0, 15));
+  };
+
   // ⚡ 10秒バッチ同期のリアルタイムWebSocket購読
   useEffect(() => {
     if (!supabase) return;
@@ -681,6 +711,84 @@ const RaidBossMiniGame = ({
             {healsLeft}
           </span>
         </button>
+      </div>
+
+      {/* 🎁 本日のレイド参加賞バナー */}
+      <div style={{
+        marginBottom: '8px',
+        padding: '8px 10px',
+        borderRadius: '8px',
+        background: hasClaimedParticipation
+          ? 'rgba(34, 197, 94, 0.12)'
+          : myDamage > 0
+            ? 'linear-gradient(135deg, rgba(245, 158, 11, 0.22) 0%, rgba(217, 119, 6, 0.18) 100%)'
+            : 'rgba(255, 255, 255, 0.04)',
+        border: hasClaimedParticipation
+          ? '1px solid rgba(34, 197, 94, 0.3)'
+          : myDamage > 0
+            ? '1px solid rgba(245, 158, 11, 0.45)'
+            : '1px solid rgba(255, 255, 255, 0.08)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: '8px'
+      }}>
+        <div style={{ textAlign: 'left', minWidth: 0 }}>
+          <div style={{
+            fontSize: '0.74rem',
+            fontWeight: 'bold',
+            color: hasClaimedParticipation ? '#86efac' : myDamage > 0 ? '#fde047' : '#94a3b8',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '4px'
+          }}>
+            <span>{hasClaimedParticipation ? '✅' : '🎁'}</span>
+            <span>本日の参戦ボーナス (参加賞)</span>
+          </div>
+          <div style={{ fontSize: '0.67rem', color: '#cbd5e1', marginTop: '2px' }}>
+            {hasClaimedParticipation
+              ? '本日受取済み (討伐成功時はさらに12枚！)'
+              : myDamage > 0
+                ? '🎫 チケット3枚 ＋ ⭐ 800 EXP が届いています！'
+                : '1回攻撃すると、🎫 チケット3枚＋⭐ 800 EXP 獲得！'}
+          </div>
+        </div>
+
+        {hasClaimedParticipation ? (
+          <span style={{
+            fontSize: '0.7rem',
+            color: '#86efac',
+            fontWeight: 'bold',
+            background: 'rgba(34, 197, 94, 0.2)',
+            padding: '3px 8px',
+            borderRadius: '6px',
+            flexShrink: 0
+          }}>
+            受取済
+          </span>
+        ) : (
+          <button
+            onClick={handleClaimParticipation}
+            disabled={myDamage <= 0}
+            style={{
+              padding: '6px 12px',
+              borderRadius: '6px',
+              border: 'none',
+              background: myDamage > 0
+                ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)'
+                : '#475569',
+              color: 'white',
+              fontWeight: 'bold',
+              fontSize: '0.74rem',
+              cursor: myDamage > 0 ? 'pointer' : 'not-allowed',
+              boxShadow: myDamage > 0 ? '0 2px 8px rgba(245, 158, 11, 0.4)' : 'none',
+              flexShrink: 0,
+              whiteSpace: 'nowrap'
+            }}
+          >
+            {myDamage > 0 ? '🎁 受け取る' : '未参戦'}
+          </button>
+        )}
       </div>
 
       {/* 🏆 ダメージ貢献ランキングカード */}

@@ -1460,56 +1460,63 @@ const PatrolMiniGame = ({
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 {patrolHistory.map((h, idx) => (
                   <div key={idx} style={{
-                    fontSize: '0.73rem',
+                    fontSize: '0.74rem',
                     lineHeight: 1.45,
-                    padding: '6px 8px',
-                    borderRadius: '6px',
+                    padding: '8px 10px',
+                    borderRadius: '8px',
                     background: '#f8fafc',
-                    border: '1px solid #f1f5f9',
+                    border: '1px solid #e2e8f0',
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: '2px'
+                    gap: '4px'
                   }}>
-                    {/* 1行目: [時間] 敵アイコン 敵名 (Lv)　結末 */}
+                    {/* 1行目: [時間] ＆ 結末バッジ（左右両端にすっきり配置） */}
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '5px', minWidth: 0, overflow: 'hidden' }}>
-                        <span style={{ color: '#94a3b8', fontFamily: 'monospace', fontSize: '0.7rem', flexShrink: 0 }}>[{h.time}]</span>
-                        <span style={{ fontSize: '0.9rem', flexShrink: 0 }}>{h.enemyIcon || '👾'}</span>
-                        <span style={{ fontWeight: 'bold', color: '#1e293b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                          {h.enemyName}
-                        </span>
-                        {h.level && (
-                          <span style={{ color: '#64748b', fontSize: '0.68rem', flexShrink: 0 }}>(Lv.{h.level})</span>
-                        )}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <span style={{ color: '#94a3b8', fontFamily: 'monospace', fontSize: '0.7rem' }}>[{h.time}]</span>
                         {h.isHardMode && (
-                          <span style={{ fontSize: '0.65rem', background: '#fee2e2', color: '#dc2626', padding: '1px 4px', borderRadius: '4px', fontWeight: 'bold', flexShrink: 0 }}>深層</span>
+                          <span style={{ fontSize: '0.65rem', background: '#fee2e2', color: '#dc2626', padding: '1px 5px', borderRadius: '4px', fontWeight: 'bold' }}>深層</span>
                         )}
                       </div>
                       <span style={{
                         fontWeight: 'bold',
                         fontSize: '0.72rem',
-                        flexShrink: 0,
-                        color: h.result === 'won' ? '#16a34a' : '#ef4444'
+                        padding: '1px 7px',
+                        borderRadius: '10px',
+                        background: h.result === 'won' ? '#dcfce7' : '#fee2e2',
+                        color: h.result === 'won' ? '#15803d' : '#b91c1c',
+                        border: `1px solid ${h.result === 'won' ? '#bbf7d0' : '#fecaca'}`
                       }}>
                         {h.result === 'won' ? '撃退 🎉' : '逃げられた 💀'}
                       </span>
                     </div>
 
-                    {/* 2行目: ⭐ EXP +◯　🎫 チケット ◯枚 */}
+                    {/* 2行目: 敵アイコン ＋ 敵フルネーム (Lv.◯)（折り返し可能で絶対に切れない！） */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                      <span style={{ fontSize: '1.05rem', flexShrink: 0, lineHeight: 1 }}>{h.enemyIcon || '👾'}</span>
+                      <span style={{ fontWeight: '900', color: '#1e293b', fontSize: '0.82rem', wordBreak: 'break-word' }}>
+                        {h.enemyName}
+                      </span>
+                      {h.level && (
+                        <span style={{ color: '#64748b', fontSize: '0.7rem', fontWeight: 'bold' }}>(Lv.{h.level})</span>
+                      )}
+                    </div>
+
+                    {/* 3行目: ⭐ EXP +◯　🎫 チケット ◯枚 */}
                     {(h.exp > 0 || h.tickets > 0) && (
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.7rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.72rem', background: '#f1f5f9', padding: '3px 7px', borderRadius: '4px', width: 'fit-content' }}>
                         {h.exp > 0 && <span style={{ color: '#d97706', fontWeight: 'bold' }}>⭐ EXP +{h.exp}</span>}
                         {h.tickets > 0 && <span style={{ color: '#2563eb', fontWeight: 'bold' }}>🎫 チケット {h.tickets}枚</span>}
                       </div>
                     )}
 
-                    {/* 3行目: 🎁 戦利品（ドロップ品がある場合） */}
+                    {/* 4行目: 🎁 戦利品（ドロップ品がある場合） */}
                     {h.dropItem && (
-                      <div style={{ fontSize: '0.68rem', marginTop: '1px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <div style={{ fontSize: '0.7rem', display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
                         <span style={{ color: '#ec4899', fontWeight: 'bold', flexShrink: 0 }}>🎁 獲得:</span>
                         <span style={{
-                          fontSize: '0.65rem',
-                          padding: '1px 6px',
+                          fontSize: '0.68rem',
+                          padding: '1px 7px',
                           borderRadius: '4px',
                           background: '#fdf2f8',
                           border: '1px solid #fbcfe8',
