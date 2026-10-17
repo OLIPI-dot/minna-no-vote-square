@@ -200,6 +200,15 @@ const DungeonMiniGame = ({
   const [remainingAttempts, setRemainingAttempts] = useState(() => getDungeonAttempts());
 
   // 📜 本日の探索記録（冒険履歴 - クラウド ＆ ローカル双方向同期）
+  const sortDungeonHistoryDesc = (list) => {
+    if (!Array.isArray(list)) return [];
+    return [...list].sort((a, b) => {
+      if (a.timestamp && b.timestamp) return b.timestamp - a.timestamp;
+      if (a.time && b.time) return b.time.localeCompare(a.time);
+      return 0;
+    });
+  };
+
   const getDungeonHistory = () => {
     const todayStr = getTodayStr();
     let localHistory = [];
@@ -221,17 +230,18 @@ const DungeonMiniGame = ({
           combined.push(p);
         }
       });
-      const merged = combined.slice(0, 5);
+      // 🌟 必ず新しい時間順（降順）にソートして最新5件を抽出！
+      const sorted = sortDungeonHistoryDesc(combined).slice(0, 5);
       try {
         localStorage.setItem('daily_dungeon_history_v1', JSON.stringify({
           date: todayStr,
-          history: merged
+          history: sorted
         }));
       } catch (e) {}
-      return merged;
+      return sorted;
     }
 
-    return localHistory;
+    return sortDungeonHistoryDesc(localHistory).slice(0, 5);
   };
 
   const [dungeonHistory, setDungeonHistory] = useState(() => getDungeonHistory());
@@ -240,10 +250,10 @@ const DungeonMiniGame = ({
     const todayStr = getTodayStr();
     const now = new Date();
     const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-    const newRecord = { ...record, time: timeStr };
+    const newRecord = { ...record, time: timeStr, timestamp: Date.now() };
 
     setDungeonHistory(prev => {
-      const updated = [newRecord, ...prev].slice(0, 5);
+      const updated = sortDungeonHistoryDesc([newRecord, ...prev]).slice(0, 5);
       const payload = {
         date: todayStr,
         history: updated
@@ -1358,7 +1368,7 @@ const DungeonMiniGame = ({
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                {dungeonHistory.map((h, idx) => {
+                {sortDungeonHistoryDesc(dungeonHistory).map((h, idx) => {
                   const monsterCount = h.monsters ? h.monsters.reduce((sum, m) => sum + (m.count || 1), 0) : 0;
                   return (
                     <div key={idx} style={{

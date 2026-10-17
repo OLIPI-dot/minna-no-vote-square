@@ -178,6 +178,15 @@ const PatrolMiniGame = ({
   }, [user]);
 
   // 📜 パトロール記録の履歴管理（クラウド ＆ ローカル双方向同期）
+  const sortPatrolHistoryDesc = (list) => {
+    if (!Array.isArray(list)) return [];
+    return [...list].sort((a, b) => {
+      if (a.timestamp && b.timestamp) return b.timestamp - a.timestamp;
+      if (a.time && b.time) return b.time.localeCompare(a.time);
+      return 0;
+    });
+  };
+
   const getPatrolHistory = () => {
     const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
     let localHistory = [];
@@ -200,17 +209,18 @@ const PatrolMiniGame = ({
           combined.push(p);
         }
       });
-      const merged = combined.slice(0, 5);
+      // 🌟 必ず新しい時間順（降順）にソートして最新5件を抽出！
+      const sorted = sortPatrolHistoryDesc(combined).slice(0, 5);
       try {
         localStorage.setItem('daily_patrol_history_v1', JSON.stringify({
           date: todayStr,
-          history: merged
+          history: sorted
         }));
       } catch (e) {}
-      return merged;
+      return sorted;
     }
 
-    return localHistory;
+    return sortPatrolHistoryDesc(localHistory).slice(0, 5);
   };
 
   const [patrolHistory, setPatrolHistory] = useState(() => getPatrolHistory());
@@ -219,10 +229,10 @@ const PatrolMiniGame = ({
     const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
     const now = new Date();
     const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-    const newRecord = { ...record, time: timeStr };
+    const newRecord = { ...record, time: timeStr, timestamp: Date.now() };
 
     setPatrolHistory(prev => {
-      const updated = [newRecord, ...prev].slice(0, 5);
+      const updated = sortPatrolHistoryDesc([newRecord, ...prev]).slice(0, 5);
       const payload = {
         date: todayStr,
         history: updated
@@ -1511,7 +1521,7 @@ const PatrolMiniGame = ({
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                {patrolHistory.map((h, idx) => (
+                {sortPatrolHistoryDesc(patrolHistory).map((h, idx) => (
                   <div key={idx} style={{
                     fontSize: '0.74rem',
                     lineHeight: 1.45,
