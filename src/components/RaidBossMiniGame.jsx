@@ -34,17 +34,84 @@ const RaidBossMiniGame = ({
     return `minique_raid_faint_${currentBoss.id}_${todayStr}`;
   };
 
-  // ボスHP
-  const [bossHp, setBossHp] = useState(() => {
+  // ☁️ レイド進捗（ボスHP・自ダメージ・ランキング・回復薬）のクラウド ＆ ローカル双方向同期
+  const getInitialRaidProgress = () => {
+    const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
+    let localBossHp = currentBoss.maxHp;
     try {
       const saved = localStorage.getItem(getTodayKey());
       if (saved) {
         const parsed = parseInt(saved, 10);
-        if (!isNaN(parsed) && parsed >= 0) return Math.min(parsed, currentBoss.maxHp);
+        if (!isNaN(parsed) && parsed >= 0) localBossHp = Math.min(parsed, currentBoss.maxHp);
       }
     } catch (e) {}
-    return currentBoss.maxHp;
-  });
+
+    let localRanking = null;
+    try {
+      const saved = localStorage.getItem(getRankingKey());
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) localRanking = parsed;
+      }
+    } catch (e) {}
+
+    let localHeals = 3;
+    try {
+      const saved = localStorage.getItem(`minique_raid_heals_${currentBoss.id}_${todayStr}`);
+      if (saved !== null) {
+        const parsed = parseInt(saved, 10);
+        if (!isNaN(parsed)) localHeals = Math.max(0, Math.min(3, parsed));
+      }
+    } catch (e) {}
+
+    const defaultRanking = localRanking || [
+      { id: 'npc_1', name: 'ベテラン広場民 🛡️', damage: 8500, isMe: false },
+      { id: 'npc_2', name: '深夜の調査兵 🔦', damage: 5200, isMe: false },
+      { id: 'npc_3', name: 'らびたん親衛隊 🐰', damage: 3400, isMe: false },
+      { id: 'npc_4', name: '週末パトロール隊長 🚓', damage: 1800, isMe: false },
+      { id: 'me', name: hn || 'あなた', damage: 0, isMe: true }
+    ];
+
+    // クラウドデータの統合
+    const cloudProgress = user?.user_metadata?.raid_progress_v1;
+    if (cloudProgress && cloudProgress.date === todayStr && cloudProgress.bossId === currentBoss.id) {
+      const syncedBossHp = typeof cloudProgress.bossHp === 'number'
+        ? Math.min(localBossHp, cloudProgress.bossHp)
+        : localBossHp;
+      const cloudMyDmg = typeof cloudProgress.myDamage === 'number' ? cloudProgress.myDamage : 0;
+      const localMyDmg = defaultRanking.find(r => r.isMe)?.damage || 0;
+      const syncedMyDmg = Math.max(cloudMyDmg, localMyDmg);
+      const syncedHeals = typeof cloudProgress.healsLeft === 'number'
+        ? Math.min(localHeals, cloudProgress.healsLeft)
+        : localHeals;
+
+      const syncedRanking = defaultRanking.map(r => {
+        if (r.isMe) return { ...r, damage: syncedMyDmg, name: hn || 'あなた' };
+        return r;
+      }).sort((a, b) => b.damage - a.damage);
+
+      try {
+        localStorage.setItem(getTodayKey(), String(syncedBossHp));
+        localStorage.setItem(getRankingKey(), JSON.stringify(syncedRanking));
+        localStorage.setItem(`minique_raid_heals_${currentBoss.id}_${todayStr}`, String(syncedHeals));
+      } catch (e) {}
+
+      return {
+        bossHp: syncedBossHp,
+        rankingList: syncedRanking,
+        healsLeft: syncedHeals
+      };
+    }
+
+    return {
+      bossHp: localBossHp,
+      rankingList: defaultRanking,
+      healsLeft: localHeals
+    };
+  };
+
+  const initialProgress = useRef(getInitialRaidProgress());
+  const [bossHp, setBossHp] = useState(() => initialProgress.current.bossHp);
 
   // プレイヤーのステータス計算
   const equipSlots = ['weapon', 'armor', 'accessory', 'partner'];
@@ -63,7 +130,7 @@ const RaidBossMiniGame = ({
   const [faintSeconds, setFaintSeconds] = useState(0);
 
   // 🧪 回復薬（最大3回まで・HP回復＆気絶からの即時復活に使用可能）
-  const [healsLeft, setHealsLeft] = useState(3);
+  const [healsLeft, setHealsLeft] = useState(() => initialProgress.current.healsLeft);
 
   // 📡 オンライン同期ステート（10秒バッチ＆超軽量WebSocket）
   const unsyncedDamageRef = useRef(0);
@@ -125,25 +192,76 @@ const RaidBossMiniGame = ({
   }, [cooldown]);
 
   // 🏆 ダメージ貢献ランキング管理
-  const [rankingList, setRankingList] = useState(() => {
-    try {
-      const saved = localStorage.getItem(getRankingKey());
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-      }
-    } catch (e) {}
-
-    return [
-      { id: 'npc_1', name: 'ベテラン広場民 🛡️', damage: 8500, isMe: false },
-      { id: 'npc_2', name: '深夜の調査兵 🔦', damage: 5200, isMe: false },
-      { id: 'npc_3', name: 'らびたん親衛隊 🐰', damage: 3400, isMe: false },
-      { id: 'npc_4', name: '週末パトロール隊長 🚓', damage: 1800, isMe: false },
-      { id: 'me', name: hn || 'あなた', damage: 0, isMe: true }
-    ];
-  });
-
+  const [rankingList, setRankingList] = useState(() => initialProgress.current.rankingList);
   const myDamage = rankingList.find(r => r.isMe)?.damage || 0;
+
+  // ☁️ ユーザーログイン時・端末切替時にクラウドから最新のレイド進捗を同期
+  useEffect(() => {
+    if (!user) return;
+    const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
+    const cloudProgress = user.user_metadata?.raid_progress_v1;
+
+    if (cloudProgress && cloudProgress.date === todayStr && cloudProgress.bossId === currentBoss.id) {
+      let shouldUpdateCloud = false;
+      const currentMyDmg = rankingList.find(r => r.isMe)?.damage || 0;
+      const cloudMyDmg = typeof cloudProgress.myDamage === 'number' ? cloudProgress.myDamage : 0;
+      const bestMyDmg = Math.max(currentMyDmg, cloudMyDmg);
+      if (currentMyDmg > cloudMyDmg) shouldUpdateCloud = true;
+
+      const currentHp = bossHp;
+      const cloudHp = typeof cloudProgress.bossHp === 'number' ? cloudProgress.bossHp : currentBoss.maxHp;
+      const bestHp = Math.min(currentHp, cloudHp);
+      if (currentHp < cloudHp) shouldUpdateCloud = true;
+
+      const cloudHeals = typeof cloudProgress.healsLeft === 'number' ? cloudProgress.healsLeft : 3;
+      const bestHeals = Math.min(healsLeft, cloudHeals);
+      if (healsLeft < cloudHeals) shouldUpdateCloud = true;
+
+      setBossHp(bestHp);
+      try { localStorage.setItem(getTodayKey(), String(bestHp)); } catch (e) {}
+
+      const updatedRanking = rankingList.map(r => r.isMe ? { ...r, damage: bestMyDmg, name: hn || 'あなた' } : r).sort((a, b) => b.damage - a.damage);
+      setRankingList(updatedRanking);
+      try { localStorage.setItem(getRankingKey(), JSON.stringify(updatedRanking)); } catch (e) {}
+
+      setHealsLeft(bestHeals);
+      try { localStorage.setItem(`minique_raid_heals_${currentBoss.id}_${todayStr}`, String(bestHeals)); } catch (e) {}
+
+      if (shouldUpdateCloud && supabase) {
+        supabase.auth.updateUser({
+          data: {
+            raid_progress_v1: {
+              date: todayStr,
+              bossId: currentBoss.id,
+              myDamage: bestMyDmg,
+              bossHp: bestHp,
+              healsLeft: bestHeals,
+              rankingList: updatedRanking
+            }
+          }
+        }).catch(console.warn);
+      }
+    } else {
+      // 端末ローカルにデータがあってクラウドがまだ空の場合、クラウドへ初バックアップ！
+      const currentMyDmg = rankingList.find(r => r.isMe)?.damage || 0;
+      if (currentMyDmg > 0 || bossHp < currentBoss.maxHp) {
+        if (supabase) {
+          supabase.auth.updateUser({
+            data: {
+              raid_progress_v1: {
+                date: todayStr,
+                bossId: currentBoss.id,
+                myDamage: currentMyDmg,
+                bossHp: bossHp,
+                healsLeft: healsLeft,
+                rankingList: rankingList
+              }
+            }
+          }).catch(console.warn);
+        }
+      }
+    }
+  }, [user, currentBoss.id]);
 
   // 🎁 レイド参加賞（1回攻撃で毎日ガチャチケ3枚＆800EXP）の受取管理（クラウド同期）
   const getParticipationClaimed = () => {
@@ -291,13 +409,37 @@ const RaidBossMiniGame = ({
   const handleHeal = () => {
     if (healsLeft <= 0 || bossHp <= 0) return;
 
+    const nextHeals = healsLeft - 1;
+    const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
+    try {
+      localStorage.setItem(`minique_raid_heals_${currentBoss.id}_${todayStr}`, String(nextHeals));
+    } catch (e) {}
+
+    const saveHealCloud = (newH) => {
+      if (user && supabase) {
+        supabase.auth.updateUser({
+          data: {
+            raid_progress_v1: {
+              date: todayStr,
+              bossId: currentBoss.id,
+              myDamage: myDamage,
+              bossHp: bossHp,
+              healsLeft: newH,
+              rankingList: rankingList
+            }
+          }
+        }).catch(console.warn);
+      }
+    };
+
     if (faintSeconds > 0) {
       try { localStorage.removeItem(getFaintKey()); } catch (e) {}
       setFaintSeconds(0);
       setPlayerHp(pMaxHp);
-      setHealsLeft(prev => prev - 1);
+      setHealsLeft(nextHeals);
+      saveHealCloud(nextHeals);
       setRaidLogs(logs => [
-        `🧪 秘伝の回復薬をグイッと飲んで気絶から即座に復活した！！ (残り${healsLeft - 1}回)`,
+        `🧪 秘伝の回復薬をグイッと飲んで気絶から即座に復活した！！ (残り${nextHeals}回)`,
         ...logs
       ].slice(0, 15));
       return;
@@ -308,9 +450,10 @@ const RaidBossMiniGame = ({
     const healAmt = Math.round(pMaxHp * 0.5);
     const newHp = Math.min(pMaxHp, playerHp + healAmt);
     setPlayerHp(newHp);
-    setHealsLeft(prev => prev - 1);
+    setHealsLeft(nextHeals);
+    saveHealCloud(nextHeals);
     setRaidLogs(logs => [
-      `🧪 回復薬を使用した！ HPが ${healAmt} 回復した！ (残り${healsLeft - 1}回)`,
+      `🧪 回復薬を使用した！ HPが ${healAmt} 回復した！ (残り${nextHeals}回)`,
       ...logs
     ].slice(0, 15));
   };
@@ -353,6 +496,24 @@ const RaidBossMiniGame = ({
     updatedRanking.sort((a, b) => b.damage - a.damage);
     setRankingList(updatedRanking);
     try { localStorage.setItem(getRankingKey(), JSON.stringify(updatedRanking)); } catch (e) {}
+
+    // ☁️ クラウド（Supabase user_metadata）へ即時バックアップ（PC/スマホ双方向反映）
+    if (user && supabase) {
+      const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
+      const currentMyDmg = updatedRanking.find(r => r.isMe)?.damage || 0;
+      supabase.auth.updateUser({
+        data: {
+          raid_progress_v1: {
+            date: todayStr,
+            bossId: currentBoss.id,
+            myDamage: currentMyDmg,
+            bossHp: nextHp,
+            healsLeft: healsLeft,
+            rankingList: updatedRanking
+          }
+        }
+      }).catch(err => console.warn('Raid cloud sync error:', err));
+    }
 
     const smallExp = Math.floor(calculatedDmg / 20) + 6;
     if (addExp) addExp(smallExp);
