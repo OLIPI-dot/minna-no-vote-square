@@ -515,8 +515,7 @@ const RaidBossMiniGame = ({
       }).catch(err => console.warn('Raid cloud sync error:', err));
     }
 
-    const smallExp = Math.floor(calculatedDmg / 20) + 6;
-    if (addExp) addExp(smallExp);
+    // ⚖️ レイドボスは「参加賞(800 EXP)」や「討伐成功報酬(3500 EXP)」でまとまって獲得するため、毎回の攻撃EXPは付与しない
 
     if (nextHp > 0) {
       setTimeout(() => {
