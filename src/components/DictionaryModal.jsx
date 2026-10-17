@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ITEMS, EFFECT_DESCRIPTIONS, getReqLevel, getItemEffectDescription } from '../items';
 import { ENEMIES } from '../enemies';
 
@@ -9,6 +9,15 @@ const DictionaryModal = ({ isOpen, onClose, acquiredItems = [], encounteredEnemi
   const [sortOrder, setSortOrder] = useState('default'); // 'default' | 'rarityDesc' | 'rarityAsc'
   const [typeFilter, setTypeFilter] = useState('all'); // 'all' | 'weapon' | 'armor' | 'accessory' | 'partner'
   const [ownedOnly, setOwnedOnly] = useState(false); // 入手済み(エネミーは遭遇済み)のみ表示
+  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 640);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 640);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   if (!isOpen) return null;
 
@@ -159,13 +168,37 @@ const DictionaryModal = ({ isOpen, onClose, acquiredItems = [], encounteredEnemi
       const item = ITEMS.find(i => i.id === selectedItem);
       if (!item) return null;
       return (
-        <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', animation: 'fadeIn 0.3s' }}>
-          <div style={{ fontSize: '5rem', marginBottom: '16px', filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.2))' }}>{item.icon}</div>
+        <div style={{ padding: isMobile ? '16px 12px' : '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', animation: 'fadeIn 0.3s' }}>
+          {isMobile && (
+            <button
+              onClick={() => { setSelectedItem(null); setSelectedEnemy(null); }}
+              style={{
+                alignSelf: 'flex-start',
+                background: '#e2e8f0',
+                border: 'none',
+                borderRadius: '8px',
+                padding: '6px 12px',
+                fontSize: '0.8rem',
+                fontWeight: 'bold',
+                color: '#334155',
+                cursor: 'pointer',
+                marginBottom: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
+              }}
+            >
+              <span>←</span>
+              <span>一覧に戻る</span>
+            </button>
+          )}
+          <div style={{ fontSize: isMobile ? '4rem' : '5rem', marginBottom: '12px', filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.2))' }}>{item.icon}</div>
           <div style={{ fontSize: '0.9rem', color: '#64748b', fontWeight: 'bold', fontFamily: 'monospace', marginBottom: '2px' }}>
             No.{String(item.dexNo || 0).padStart(4, '0')}
           </div>
-          <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#1e293b', marginBottom: '8px', textAlign: 'center' }}>{item.name}</div>
-          <div style={{ background: getRarityColor(item.rarity), color: 'white', padding: '4px 12px', borderRadius: '16px', fontSize: '0.8rem', fontWeight: 'bold', marginBottom: '24px' }}>
+          <div style={{ fontSize: isMobile ? '1.25rem' : '1.5rem', fontWeight: 'bold', color: '#1e293b', marginBottom: '8px', textAlign: 'center' }}>{item.name}</div>
+          <div style={{ background: getRarityColor(item.rarity), color: 'white', padding: '4px 12px', borderRadius: '16px', fontSize: '0.8rem', fontWeight: 'bold', marginBottom: '16px' }}>
             {item.rarity} {item.type === 'weapon' ? '武器' : item.type === 'armor' ? '防具' : item.type === 'accessory' ? '装飾' : 'お供'}
           </div>
           
@@ -200,13 +233,37 @@ const DictionaryModal = ({ isOpen, onClose, acquiredItems = [], encounteredEnemi
       const enemy = ENEMIES.find(e => e.id === selectedEnemy);
       if (!enemy) return null;
       return (
-        <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', animation: 'fadeIn 0.3s' }}>
-          <div style={{ fontSize: '5rem', marginBottom: '16px', filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.2))' }}>{enemy.icon}</div>
+        <div style={{ padding: isMobile ? '16px 12px' : '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', animation: 'fadeIn 0.3s' }}>
+          {isMobile && (
+            <button
+              onClick={() => { setSelectedItem(null); setSelectedEnemy(null); }}
+              style={{
+                alignSelf: 'flex-start',
+                background: '#e2e8f0',
+                border: 'none',
+                borderRadius: '8px',
+                padding: '6px 12px',
+                fontSize: '0.8rem',
+                fontWeight: 'bold',
+                color: '#334155',
+                cursor: 'pointer',
+                marginBottom: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
+              }}
+            >
+              <span>←</span>
+              <span>一覧に戻る</span>
+            </button>
+          )}
+          <div style={{ fontSize: isMobile ? '4rem' : '5rem', marginBottom: '12px', filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.2))' }}>{enemy.icon}</div>
           <div style={{ fontSize: '0.9rem', color: '#64748b', fontWeight: 'bold', fontFamily: 'monospace', marginBottom: '2px' }}>
             No.{String(enemy.dexNo || 0).padStart(3, '0')}
           </div>
-          <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#1e293b', marginBottom: '8px', textAlign: 'center' }}>{enemy.name}</div>
-          <div style={{ background: getEnemyColor(enemy.type), color: 'white', padding: '4px 12px', borderRadius: '16px', fontSize: '0.8rem', fontWeight: 'bold', marginBottom: '24px' }}>
+          <div style={{ fontSize: isMobile ? '1.25rem' : '1.5rem', fontWeight: 'bold', color: '#1e293b', marginBottom: '8px', textAlign: 'center' }}>{enemy.name}</div>
+          <div style={{ background: getEnemyColor(enemy.type), color: 'white', padding: '4px 12px', borderRadius: '16px', fontSize: '0.8rem', fontWeight: 'bold', marginBottom: '16px' }}>
             {enemy.type.toUpperCase()}
           </div>
           
@@ -248,48 +305,54 @@ const DictionaryModal = ({ isOpen, onClose, acquiredItems = [], encounteredEnemi
   };
 
   return (
-    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.6)', zIndex: 10000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
-      <div style={{ background: '#f8fafc', width: '100%', maxWidth: '800px', height: '85vh', borderRadius: '12px', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.5)' }}>
+    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.6)', zIndex: 10000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: isMobile ? '8px 4px' : '16px' }}>
+      <div style={{ background: '#f8fafc', width: '100%', maxWidth: '800px', height: isMobile ? '92vh' : '85vh', borderRadius: '12px', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.5)' }}>
         
         {/* ヘッダー */}
-        <div style={{ background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', color: 'white', padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h2 style={{ margin: 0, fontSize: '1.25rem', display: 'flex', gap: '8px', alignItems: 'center' }}>
+        <div style={{ background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', color: 'white', padding: isMobile ? '12px 16px' : '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h2 style={{ margin: 0, fontSize: isMobile ? '1.1rem' : '1.25rem', display: 'flex', gap: '8px', alignItems: 'center' }}>
             📖 みんクエ大図鑑
           </h2>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'white', fontSize: '1.5rem', cursor: 'pointer' }}>×</button>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'white', fontSize: '1.5rem', cursor: 'pointer', padding: '0 4px' }}>×</button>
         </div>
 
         {/* タブ */}
         <div style={{ display: 'flex', borderBottom: '2px solid #e2e8f0', background: '#f1f5f9' }}>
           <button 
-            onClick={() => { setTab('items'); setSelectedEnemy(null); }}
-            style={{ flex: 1, padding: '12px', background: tab === 'items' ? 'white' : 'transparent', border: 'none', fontWeight: 'bold', borderBottom: tab === 'items' ? '3px solid #3b82f6' : '3px solid transparent', cursor: 'pointer', transition: 'all 0.2s' }}
+            onClick={() => { setTab('items'); setSelectedItem(null); setSelectedEnemy(null); }}
+            style={{ flex: 1, padding: isMobile ? '10px 6px' : '12px', background: tab === 'items' ? 'white' : 'transparent', border: 'none', fontWeight: 'bold', fontSize: isMobile ? '0.78rem' : '0.9rem', borderBottom: tab === 'items' ? '3px solid #3b82f6' : '3px solid transparent', cursor: 'pointer', transition: 'all 0.2s' }}
           >
             🎁 収集アイテム ({collectedItems} / {totalItems})
           </button>
           <button 
-            onClick={() => { setTab('enemies'); setSelectedItem(null); }}
-            style={{ flex: 1, padding: '12px', background: tab === 'enemies' ? 'white' : 'transparent', border: 'none', fontWeight: 'bold', borderBottom: tab === 'enemies' ? '3px solid #ef4444' : '3px solid transparent', cursor: 'pointer', transition: 'all 0.2s' }}
+            onClick={() => { setTab('enemies'); setSelectedItem(null); setSelectedEnemy(null); }}
+            style={{ flex: 1, padding: isMobile ? '10px 6px' : '12px', background: tab === 'enemies' ? 'white' : 'transparent', border: 'none', fontWeight: 'bold', fontSize: isMobile ? '0.78rem' : '0.9rem', borderBottom: tab === 'enemies' ? '3px solid #ef4444' : '3px solid transparent', cursor: 'pointer', transition: 'all 0.2s' }}
           >
             👾 エネミー ({collectedEnemies} / {totalEnemies})
           </button>
         </div>
 
-        {/* メインコンテンツ (左右2ペイン) */}
-        <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
+        {/* メインコンテンツ (PC: 左右2ペイン / スマホ: リスト ⇔ 詳細 切り替え) */}
+        <div style={{ flex: 1, display: 'flex', overflow: 'hidden', position: 'relative' }}>
           {/* 左ペイン: リスト */}
-          <div style={{ width: '40%', borderRight: '1px solid #e2e8f0', background: 'white', display: 'flex', flexDirection: 'column' }}>
-            {/* 絞り込みUI（種類チップ＋入手済みトグル＋並び順） */}
-            <div style={{ padding: '8px', borderBottom: '1px solid #e2e8f0', background: '#f8fafc', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div style={{
+            width: isMobile ? '100%' : '42%',
+            display: isMobile && (selectedItem || selectedEnemy) ? 'none' : 'flex',
+            borderRight: isMobile ? 'none' : '1px solid #e2e8f0',
+            background: 'white',
+            flexDirection: 'column'
+          }}>
+            {/* 絞り込みUI */}
+            <div style={{ padding: '8px 12px', borderBottom: '1px solid #e2e8f0', background: '#f8fafc', display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {tab === 'items' && (
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+                <div style={{ display: 'flex', gap: '6px', overflowX: 'auto', paddingBottom: '4px', WebkitOverflowScrolling: 'touch' }}>
                   {TYPE_FILTERS.map(t => (
                     <button
                       key={t.key}
                       onClick={() => setTypeFilter(t.key)}
                       style={{
-                        padding: '4px 8px', borderRadius: '14px', fontSize: '0.72rem', fontWeight: 'bold', cursor: 'pointer', whiteSpace: 'nowrap',
-                        border: typeFilter === t.key ? '1px solid #3b82f6' : '1px solid #cbd5e1',
+                        padding: '4px 10px', borderRadius: '16px', fontSize: '0.75rem', fontWeight: 'bold', cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0,
+                        border: typeFilter === t.key ? '1.5px solid #3b82f6' : '1px solid #cbd5e1',
                         background: typeFilter === t.key ? '#3b82f6' : 'white',
                         color: typeFilter === t.key ? 'white' : '#475569'
                       }}
@@ -299,26 +362,28 @@ const DictionaryModal = ({ isOpen, onClose, acquiredItems = [], encounteredEnemi
                   ))}
                 </div>
               )}
-              <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', fontWeight: 'bold', color: '#475569', cursor: 'pointer' }}>
-                <input type="checkbox" checked={ownedOnly} onChange={(e) => setOwnedOnly(e.target.checked)} style={{ cursor: 'pointer' }} />
-                {tab === 'items' ? '入手済みだけ表示' : '遭遇済みだけ表示'}
-              </label>
-              {tab === 'items' && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 'bold' }}>並び順:</span>
-                  <select 
-                    value={sortOrder} 
-                    onChange={(e) => setSortOrder(e.target.value)}
-                    style={{ flex: 1, padding: '4px', borderRadius: '4px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: 'white' }}
-                  >
-                    <option value="default">図鑑番号順</option>
-                    <option value="rarityDesc">レアリティ順 (高い順)</option>
-                    <option value="rarityAsc">レアリティ順 (低い順)</option>
-                    <option value="reqLevelAsc">必要Lv順 (低い順)</option>
-                    <option value="reqLevelDesc">必要Lv順 (高い順)</option>
-                  </select>
-                </div>
-              )}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexWrap: 'wrap' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', fontWeight: 'bold', color: '#475569', cursor: 'pointer' }}>
+                  <input type="checkbox" checked={ownedOnly} onChange={(e) => setOwnedOnly(e.target.checked)} style={{ cursor: 'pointer' }} />
+                  {tab === 'items' ? '入手済みだけ表示' : '遭遇済みだけ表示'}
+                </label>
+                {tab === 'items' && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <span style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 'bold', whiteSpace: 'nowrap' }}>並び順:</span>
+                    <select 
+                      value={sortOrder} 
+                      onChange={(e) => setSortOrder(e.target.value)}
+                      style={{ padding: '3px 6px', borderRadius: '4px', border: '1px solid #cbd5e1', fontSize: '0.72rem', background: 'white' }}
+                    >
+                      <option value="default">図鑑番号順</option>
+                      <option value="rarityDesc">レア順 (高)</option>
+                      <option value="rarityAsc">レア順 (低)</option>
+                      <option value="reqLevelAsc">必要Lv順 (低)</option>
+                      <option value="reqLevelDesc">必要Lv順 (高)</option>
+                    </select>
+                  </div>
+                )}
+              </div>
             </div>
             <div style={{ flex: 1, overflowY: 'auto' }}>
               {renderList()}
@@ -326,7 +391,13 @@ const DictionaryModal = ({ isOpen, onClose, acquiredItems = [], encounteredEnemi
           </div>
           
           {/* 右ペイン: 詳細 */}
-          <div style={{ width: '60%', background: '#f8fafc', overflowY: 'auto', position: 'relative' }}>
+          <div style={{
+            width: isMobile ? '100%' : '58%',
+            display: isMobile && !selectedItem && !selectedEnemy ? 'none' : 'block',
+            background: '#f8fafc',
+            overflowY: 'auto',
+            position: 'relative'
+          }}>
             {renderDetail()}
           </div>
         </div>

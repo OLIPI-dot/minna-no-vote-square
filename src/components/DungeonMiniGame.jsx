@@ -143,8 +143,10 @@ const DungeonMiniGame = ({
     }
   });
 
-  // プレイヤー基本ステータス
-  const pMaxHp = (userLevel * 20) + 100 + (equipment?.armor?.hp || 0) + (equipment?.accessory?.hp || 0) + (equipment?.partner?.hp || 0);
+  // プレイヤー基本ステータス（地上・ステータス画面と完全一致）
+  const baseHp = (userLevel * 10) + 100;
+  const equipHp = (equipment?.accessory?.hp || 0) + (equipment?.partner?.hp || 0);
+  const pMaxHp = baseHp + equipHp;
   const pAtk = (userLevel * 5) + 10 + (equipment?.weapon?.atk || 0) + (equipment?.accessory?.atk || 0) + (equipment?.partner?.atk || 0);
   const pDef = (userLevel * 2) + (equipment?.armor?.def || 0) + (equipment?.partner?.def || 0);
 
