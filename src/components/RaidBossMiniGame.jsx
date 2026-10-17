@@ -760,61 +760,6 @@ const RaidBossMiniGame = ({
         </div>
       </div>
 
-      {/* 📢 【レイド専用】リアルタイム実況ログ（最新15件をしっかり永続保存＆スクロール可能） */}
-      <div style={{
-        background: 'rgba(0, 0, 0, 0.55)',
-        borderRadius: '8px',
-        padding: '8px 10px',
-        marginBottom: '8px',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-        textAlign: 'left'
-      }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px', fontSize: '0.68rem', color: '#94a3b8', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '3px' }}>
-          <span style={{ fontWeight: 'bold', color: '#cbd5e1' }}>📢 レイド戦闘ログ</span>
-          <span>直近 {Math.min(raidLogs.length, 15)} 件</span>
-        </div>
-        <div style={{
-          maxHeight: '135px',
-          overflowY: 'auto',
-          scrollbarWidth: 'thin',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '3px'
-        }}>
-          {raidLogs.slice(0, 15).map((log, idx) => {
-            const isLatest = idx === 0;
-            const isFaint = log.includes('気絶') || log.includes('戦闘不能');
-            const isHeal = log.includes('回復薬');
-            const isCrit = log.includes('会心');
-            const isAlly = log.includes('共闘速報');
-
-            let color = '#cbd5e1';
-            if (isFaint) color = '#fca5a5';
-            else if (isHeal) color = '#86efac';
-            else if (isCrit) color = '#fef08a';
-            else if (isAlly) color = '#38bdf8';
-
-            return (
-              <div
-                key={idx}
-                style={{
-                  fontSize: isLatest ? '0.76rem' : '0.7rem',
-                  fontWeight: isLatest ? 'bold' : 'normal',
-                  color,
-                  lineHeight: 1.45,
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: '5px'
-                }}
-              >
-                {isLatest && <span style={{ color: '#fbbf24', fontSize: '0.65rem' }}>▶</span>}
-                <span>{log}</span>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
       {/* プレイヤーのHP & 戦闘力ステータス */}
       <div style={{
         background: 'rgba(255, 255, 255, 0.05)',
@@ -952,6 +897,61 @@ const RaidBossMiniGame = ({
             {healsLeft}
           </span>
         </button>
+      </div>
+
+      {/* 📢 【レイド専用】リアルタイム実況ログ（最新15件をしっかり永続保存＆スクロール可能） */}
+      <div style={{
+        background: 'rgba(0, 0, 0, 0.55)',
+        borderRadius: '8px',
+        padding: '8px 10px',
+        marginBottom: '8px',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        textAlign: 'left'
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px', fontSize: '0.68rem', color: '#94a3b8', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '3px' }}>
+          <span style={{ fontWeight: 'bold', color: '#cbd5e1' }}>📢 レイド戦闘ログ</span>
+          <span>直近 {Math.min(raidLogs.length, 15)} 件</span>
+        </div>
+        <div style={{
+          maxHeight: '135px',
+          overflowY: 'auto',
+          scrollbarWidth: 'thin',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '3px'
+        }}>
+          {raidLogs.slice(0, 15).map((log, idx) => {
+            const isLatest = idx === 0;
+            const isFaint = log.includes('気絶') || log.includes('戦闘不能');
+            const isHeal = log.includes('回復薬');
+            const isCrit = log.includes('会心');
+            const isAlly = log.includes('共闘速報');
+
+            let color = '#cbd5e1';
+            if (isFaint) color = '#fca5a5';
+            else if (isHeal) color = '#86efac';
+            else if (isCrit) color = '#fef08a';
+            else if (isAlly) color = '#38bdf8';
+
+            return (
+              <div
+                key={idx}
+                style={{
+                  fontSize: isLatest ? '0.76rem' : '0.7rem',
+                  fontWeight: isLatest ? 'bold' : 'normal',
+                  color,
+                  lineHeight: 1.45,
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: '5px'
+                }}
+              >
+                {isLatest && <span style={{ color: '#fbbf24', fontSize: '0.65rem' }}>▶</span>}
+                <span>{log}</span>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       {/* 🎁 本日のレイド参加賞バナー */}
