@@ -4,11 +4,73 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-17T07:45:19.604Z</updated>
+  <updated>2026-10-17T12:51:52.254Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>ソニー生命 50人を営業活動停止に</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23463"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23463</id>
+    <updated>2026-10-17T12:51:50.481Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;ソニー生命で50人が関与疑い&quot;,
+  &quot;point1_desc&quot;: &quot;ソニー生命保険において金銭詐取などの不祥事に関わった疑いのある社員が約50人に上ることが判明した。同社は全顧客279万人を対象に調査を進めており、疑いのある社員の営業活動を停止させた。&quot;,
+  &quot;point2_title&quot;...</summary>
+  </entry>
+  <entry>
+    <title>母親を蹴り死なせた疑い 男を逮捕</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23462"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23462</id>
+    <updated>2026-10-17T12:51:32.694Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;70代母親への傷害致死容疑&quot;,
+  &quot;point1_desc&quot;: &quot;自宅で70代の母親に対して暴行を加え死亡させたとして、警備員の男が傷害致死の疑いで逮捕された。日常的なトラブルがあった可能性も含め、警察は事件の詳しい経緯や動機について捜査を進めている。&quot;,
+  &quot;point2_title&quot;...</summary>
+  </entry>
+  <entry>
+    <title>「簗前農相の圧力」の検証 困難に</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23461"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23461</id>
+    <updated>2026-10-17T12:51:12.278Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;前農相の道路予算発言&quot;,
+  &quot;point1_desc&quot;: &quot;更迭された簗和生前農水相が自治体向けの道路予算削減を示唆した発言を巡り、実際に国交省への削減圧力があったのかどうかの検証作業が難航していることが明らかになった。&quot;,
+  &quot;point2_title&quot;: &quot;国交省に照会記録なし&quot;,
+...</summary>
+  </entry>
+  <entry>
+    <title>靖国に首相が真榊奉納 韓国は遺憾</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23460"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23460</id>
+    <updated>2026-10-17T12:50:54.403Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;高市首相が真榊を奉納&quot;,
+  &quot;point1_desc&quot;: &quot;高市首相は靖国神社の秋の例大祭に合わせて真榊と呼ばれる供え物を奉納した。今回の例大祭期間中の神社への直接参拝は見送る方針であることが明らかになっている。&quot;,
+  &quot;point2_title&quot;: &quot;韓国政府が反発を表明&quot;,
+  &quot;p...</summary>
+  </entry>
+  <entry>
+    <title>情報漏えい 識者は「氷山の一角」</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23459"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23459</id>
+    <updated>2026-10-17T12:50:36.295Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;大規模な情報漏洩&quot;,
+  &quot;point1_desc&quot;: &quot;JR東日本のえきねっとやブックオフなど大企業で相次いで大規模な個人情報漏洩の可能性が発覚した。合計で1200万件を超えるメールアドレス等の情報が外部に流出した恐れがあり社会的な不安が高まっている。&quot;,
+  &quot;point2_title&quot;...</summary>
+  </entry>
   <entry>
     <title>子ども食堂巡る投稿賛否 店主真意</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23458"/>
@@ -552,65 +614,5 @@
   &quot;point1_title&quot;: &quot;移動販売で年商20億円&quot;,
   &quot;point1_desc&quot;: &quot;昔ながらのラッパを鳴らして移動販売を行う老舗豆腐店が、ネット通販全盛の時代に年間20億円もの売上を記録。独自の地域密着型ビジネスモデルで大成功を収めており、大きな注目を集めています。&quot;,
   &quot;point2_title&quot;: &quot;徹底し...</summary>
-  </entry>
-  <entry>
-    <title>金塊1.4億円相当 82歳が詐欺被害</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23413"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23413</id>
-    <updated>2026-10-15T02:16:30.816Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;82歳男性が金塊詐欺の被害&quot;,
-  &quot;point1_desc&quot;: &quot;福岡県糸島市に住む82歳の無職男性が、警察官などを装う人物らに騙され、計6.1キログラムにおよぶ金塊を奪われる特殊詐欺被害に遭ったことが判明した。被害総額は1億4000万円以上に上る。&quot;,
-  &quot;point2_title&quot;:...</summary>
-  </entry>
-  <entry>
-    <title>ネトフリ 従業員約1000人を削減へ</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23412"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23412</id>
-    <updated>2026-10-14T21:46:05.940Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;1000人の人員削減実施&quot;,
-  &quot;point1_desc&quot;: &quot;米動画配信大手ネットフリックスが、全従業員の約6％に相当する1000人規模の人員削減を実施することが判明した。ロイターが入手した社内メモにより判明したものである。&quot;,
-  &quot;point2_title&quot;: &quot;組織構造の最適化狙う...</summary>
-  </entry>
-  <entry>
-    <title>海峡で機雷接触の貨物船沈没 報道</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23411"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23411</id>
-    <updated>2026-10-14T21:45:46.632Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;ホルムズ海峡で貨物船沈没&quot;,
-  &quot;point1_desc&quot;: &quot;イラン革命防衛隊はホルムズ海峡において貨物船が機雷に接触して沈没したと発表した。米国との戦闘が始まって以降、イラン側が船舶沈没を公式に明らかにしたのは初の事例となる。&quot;,
-  &quot;point2_title&quot;: &quot;米国との戦闘下で...</summary>
-  </entry>
-  <entry>
-    <title>農相辞表 内閣改造後わずか1カ月</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23410"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23410</id>
-    <updated>2026-10-14T21:45:27.420Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;簗農水相が辞任&quot;,
-  &quot;point1_desc&quot;: &quot;高市早苗首相は、衆院選で支持者をシャトルバスで無料送迎した公職選挙法違反疑惑などが浮上していた簗和生農林水産相と面会し、提出された辞表を受理した。政権発足後初の閣僚辞任となる。&quot;,
-  &quot;point2_title&quot;: &quot;公選法違反の疑惑...</summary>
-  </entry>
-  <entry>
-    <title>警察官がひき逃げ疑い 書類送検</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23409"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23409</id>
-    <updated>2026-10-14T12:51:21.911Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;警察官がひき逃げ疑い&quot;,
-  &quot;point1_desc&quot;: &quot;新潟県警の30代女性巡査長が、自転車に乗っていた高校生に車で接触して軽傷を負わせたにもかかわらず、救護せず立ち去ったとして道路交通法違反などの疑いで書類送検されていたことが判明した。&quot;,
-  &quot;point2_title&quot;: &quot;事故...</summary>
   </entry>
 </feed>
