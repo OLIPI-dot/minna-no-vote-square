@@ -630,6 +630,17 @@ function App() {
 
         if (errorDesc) {
           console.error('🚨 Auth Error from redirect URL:', errorDesc);
+          // 🛡️ 既にセッションが確立されているか確認（直前の通信で成功していた場合）
+          const { data: { session: existingSession } } = await supabase.auth.getSession();
+          if (existingSession?.user) {
+            console.log('✅ セッションが既に有効なためログインを維持します:', existingSession.user.email);
+            isResolvingAuth = false;
+            setUser(existingSession.user);
+            handleAuthExp(existingSession.user);
+            window.history.replaceState({}, document.title, window.location.pathname);
+            return;
+          }
+
           alert('⚠️ ログインに失敗しました:\n' + decodeURIComponent(errorDesc.replace(/\+/g, ' ')));
           isResolvingAuth = false;
           window.history.replaceState({}, document.title, window.location.pathname);

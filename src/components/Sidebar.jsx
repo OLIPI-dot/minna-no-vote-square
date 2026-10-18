@@ -215,7 +215,11 @@ const Sidebar = ({
               </div>
               <div style={{ marginTop: '6px' }}>
                 <button 
-                  onClick={async () => {
+                  onClick={async (e) => {
+                    const btn = e.currentTarget;
+                    if (btn.disabled) return;
+                    btn.disabled = true;
+                    btn.innerText = '🔄 Googleへ接続中...';
                     try {
                       const { data: { session } } = await supabase.auth.getSession();
                       if (session?.user) {
@@ -225,10 +229,17 @@ const Sidebar = ({
                       const redirectUrl = window.location.origin;
                       await supabase.auth.signInWithOAuth({
                         provider: 'google',
-                        options: { redirectTo: redirectUrl }
+                        options: {
+                          redirectTo: redirectUrl,
+                          queryParams: {
+                            prompt: 'select_account'
+                          }
+                        }
                       });
                     } catch (e) {
                       console.error(e);
+                      btn.disabled = false;
+                      btn.innerText = '☁️ Googleログインして同期する';
                     }
                   }}
                   style={{ 
