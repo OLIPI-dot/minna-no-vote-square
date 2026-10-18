@@ -634,13 +634,15 @@ function App() {
             access_token: accessToken,
             refresh_token: refreshToken || ''
           }).then(({ data, error }) => {
+            // 🛡️ 成否に関わらず、一度使ったURLハッシュは綺麗に消去する
+            const cleanUrl = window.location.pathname + window.location.search;
+            window.history.replaceState({}, document.title, cleanUrl);
+
             if (error) {
-              console.error('🚨 Failed to set session from URL hash:', error);
+              console.warn('🚨 URLハッシュのトークンは失効または使用済みでした:', error.message);
             } else if (data?.session?.user) {
               console.log('✅ URLハッシュからログインセッション確立成功！', data.session.user.email);
               handleAuthExp(data.session.user);
-              const cleanUrl = window.location.pathname + window.location.search;
-              window.history.replaceState({}, document.title, cleanUrl);
             }
           });
         }
