@@ -221,9 +221,7 @@ const Sidebar = ({
                     if (isSidebarLoggingIn) return;
                     setIsSidebarLoggingIn(true);
                     try {
-                      const redirectUrl = window.location.origin.includes('localhost')
-                        ? window.location.origin
-                        : 'https://www.minna-no-vote-square.com';
+                      const redirectUrl = window.location.origin;
                       const { error } = await supabase.auth.signInWithOAuth({
                         provider: 'google',
                         options: { redirectTo: redirectUrl }
