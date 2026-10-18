@@ -615,68 +615,143 @@ function App() {
     };
 
     // 🛡️ URLに含まれるOAuthトークン・認証コード・エラーを検知してセッションを確実に確立！
-    try {
-      const hashParams = new URLSearchParams(window.location.hash.substring(1));
-      const searchParams = new URLSearchParams(window.location.search);
-      const errorDesc = hashParams.get('error_description') || searchParams.get('error_description') || hashParams.get('error');
+    let isResolvingAuth = false;
+    const hashStr = window.location.hash.startsWith('#') ? window.location.hash.substring(1) : window.location.hash;
+    const hasOAuthInUrl = hashStr.includes('access_token=') || window.location.search.includes('code=');
+    if (hasOAuthInUrl) {
+      isResolvingAuth = true;
+    }
 
-      if (errorDesc) {
-        console.error('🚨 Auth Error from redirect URL:', errorDesc);
-        alert('⚠️ ログインに失敗しました:\n' + decodeURIComponent(errorDesc.replace(/\+/g, ' ')));
-        const cleanUrl = window.location.pathname;
-        window.history.replaceState({}, document.title, cleanUrl);
-      } else {
+    const resolveUrlAuth = async () => {
+      try {
+        const hashParams = new URLSearchParams(hashStr);
+        const searchParams = new URLSearchParams(window.location.search);
+        const errorDesc = hashParams.get('error_description') || searchParams.get('error_description') || hashParams.get('error');
+
+        if (errorDesc) {
+          console.error('🚨 Auth Error from redirect URL:', errorDesc);
+          alert('⚠️ ログインに失敗しました:\n' + decodeURIComponent(errorDesc.replace(/\+/g, ' ')));
+          isResolvingAuth = false;
+          window.history.replaceState({}, document.title, window.location.pathname);
+          handleAuthExp(null);
+          return;
+        }
+
         const accessToken = hashParams.get('access_token');
         const refreshToken = hashParams.get('refresh_token');
         const code = searchParams.get('code');
 
         if (accessToken) {
           console.log('🔑 URLハッシュからaccess_tokenを検知！セッションを確立します...');
-          supabase.auth.setSession({
-            access_token: accessToken,
-            refresh_token: refreshToken || ''
-          }).then(({ data, error }) => {
-            if (error) {
-              console.warn('⚠️ URLハッシュの手動setSession結果:', error.message);
-            } else if (data?.session?.user) {
-              console.log('✅ URLハッシュからログインセッション確立成功！', data.session.user.email);
-              setUser(data.session.user);
-              handleAuthExp(data.session.user);
+          let authenticatedUser = null;
+
+          // 1. refresh_tokenがある場合は標準のsetSessionを試みる
+          if (refreshToken) {
+            try {
+              const { data, error } = await supabase.auth.setSession({
+                access_token: accessToken,
+                refresh_token: refreshToken
+              });
+              if (!error && data?.session?.user) {
+                authenticatedUser = data.session.user;
+                console.log('✅ setSession 成功:', authenticatedUser.email);
+              } else if (error) {
+                console.warn('⚠️ setSession 結果:', error.message);
+              }
+            } catch (e) {
+              console.warn('⚠️ setSession 例外:', e);
             }
-          });
+          }
+
+          // 2. setSessionで取得できなかった場合、access_tokenから直接ユーザー情報を検証取得！
+          if (!authenticatedUser) {
+            console.log('🔍 access_token から直接ユーザー情報を検証・取得します...');
+            try {
+              const { data: { user: directUser }, error: userError } = await supabase.auth.getUser(accessToken);
+              if (directUser && !userError) {
+                authenticatedUser = directUser;
+                console.log('✅ getUser(accessToken) 成功:', directUser.email);
+                // 次回以降もセッションが維持されるようLocalStorageに保存
+                try {
+                  const storageKey = 'sb-ssmkasmtdnojdicdpdfg-auth-token';
+                  const syntheticSession = {
+                    access_token: accessToken,
+                    refresh_token: refreshToken || '',
+                    expires_in: 3600,
+                    expires_at: Math.floor(Date.now() / 1000) + 3600,
+                    token_type: 'bearer',
+                    user: directUser
+                  };
+                  localStorage.setItem(storageKey, JSON.stringify(syntheticSession));
+                } catch (e) {}
+              } else if (userError) {
+                console.warn('⚠️ getUser(accessToken) エラー:', userError.message);
+              }
+            } catch (e) {
+              console.warn('⚠️ getUser(accessToken) 例外:', e);
+            }
+          }
+
+          if (authenticatedUser) {
+            console.log('🎉 ユーザー認証完了！クラウドデータを同期します:', authenticatedUser.email);
+            isResolvingAuth = false;
+            setUser(authenticatedUser);
+            handleAuthExp(authenticatedUser);
+            // URLを綺麗にする
+            window.history.replaceState({}, document.title, window.location.pathname);
+          } else {
+            console.warn('🚨 URLのトークンからユーザーを復元できませんでした');
+            isResolvingAuth = false;
+            handleAuthExp(null);
+          }
         } else if (code) {
           console.log('🔑 URLクエリからPKCE認証codeを検知！セッションを交換します...');
-          supabase.auth.exchangeCodeForSession(code).then(({ data, error }) => {
-            if (error) {
-              console.warn('⚠️ exchangeCodeForSession結果:', error.message);
-            } else if (data?.session?.user) {
+          try {
+            const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+            if (!error && data?.session?.user) {
               console.log('✅ PKCEコードからログインセッション確立成功！', data.session.user.email);
+              isResolvingAuth = false;
               setUser(data.session.user);
               handleAuthExp(data.session.user);
+              window.history.replaceState({}, document.title, window.location.pathname);
+            } else {
+              console.warn('⚠️ exchangeCodeForSession結果:', error?.message);
+              isResolvingAuth = false;
+              handleAuthExp(null);
             }
-          });
+          } catch (e) {
+            console.error('exchangeCodeForSession 例外:', e);
+            isResolvingAuth = false;
+            handleAuthExp(null);
+          }
         }
+      } catch (e) {
+        console.error('Error parsing auth redirect:', e);
+        isResolvingAuth = false;
       }
-    } catch (e) {
-      console.error('Error parsing auth redirect:', e);
-    }
+    };
+
+    resolveUrlAuth();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       console.log('🔔 onAuthStateChange event:', event, session?.user?.email);
       const currentUser = session?.user ?? null;
-      setUser(currentUser);
 
-      // ⚠️ USER_UPDATEDなどの内部更新でhandleAuthExpを呼ぶと、
-      // 自身のupdateUser完了通知でローカルの最新Stateが巻き戻ってしまうため、
-      // ログイン時・初期セッション復元時・ログアウト時のみEXP/インベントリ同期を実行する！
-      if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION' || event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED') {
-        handleAuthExp(currentUser);
-      }
-
-      // 🛡️ ログインが正常に確認できたら、URLに残ったOAuthのハッシュやcodeパラメータを綺麗にする！
-      if (currentUser && (window.location.hash.includes('access_token') || window.location.search.includes('code='))) {
-        const cleanUrl = window.location.pathname;
-        window.history.replaceState({}, document.title, cleanUrl);
+      if (currentUser) {
+        isResolvingAuth = false;
+        setUser(currentUser);
+        // ログイン時・初期セッション復元時・ログアウト時のみEXP/インベントリ同期を実行する！
+        if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION' || event === 'TOKEN_REFRESHED') {
+          handleAuthExp(currentUser);
+        }
+        if (window.location.hash.includes('access_token') || window.location.search.includes('code=')) {
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+      } else if (!isResolvingAuth) {
+        setUser(null);
+        if (event === 'SIGNED_OUT') {
+          handleAuthExp(null);
+        }
       }
     });
 
@@ -684,6 +759,7 @@ function App() {
       if (error) console.error('getSession error:', error);
       if (session?.user) {
         console.log('✅ getSession でログイン確認:', session.user.email);
+        isResolvingAuth = false;
         setUser(session.user);
         handleAuthExp(session.user);
 
@@ -694,11 +770,12 @@ function App() {
             handleAuthExp(latestUser);
           }
         }).catch(e => console.warn('getUser warning:', e));
-      } else {
+      } else if (!isResolvingAuth) {
         handleAuthExp(null);
       }
     }).catch(err => {
       console.error('getSession catch:', err);
+      if (!isResolvingAuth) handleAuthExp(null);
     });
 
     // 🔄 タブ復帰時（スマホ画面を開いた時やタブを切り替えた時）に最新データを自動同期！
