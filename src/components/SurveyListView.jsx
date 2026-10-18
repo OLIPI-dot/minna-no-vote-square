@@ -193,9 +193,22 @@ const SurveyListView = ({
             )}
             <button
               className="logout-button"
-              onClick={() => {
+              onClick={async () => {
                 if (window.confirm('ログアウトしますか？')) {
-                  supabase.auth.signOut();
+                  try {
+                    await supabase.auth.signOut();
+                  } catch (e) {
+                    console.warn('signOut error:', e);
+                  }
+                  // 🛡️ トークン失効時でも100%確実にログアウトできるよう、ローカルストレージのセッションキーを強制クリア
+                  try {
+                    Object.keys(localStorage).forEach(key => {
+                      if (key.startsWith('sb-') && key.endsWith('-auth-token')) {
+                        localStorage.removeItem(key);
+                      }
+                    });
+                  } catch (e) {}
+                  window.location.reload();
                 }
               }}
             >

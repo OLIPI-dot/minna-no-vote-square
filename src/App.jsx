@@ -1785,11 +1785,19 @@ function App() {
 
       if (sError) {
         console.error("❌ fetchSurveys: PUBLIC FETCH ERROR:", sError);
-        // 🛡️ JWT破損（PGRST301）や認証失効の場合、壊れたトークンを破棄して自動再取得
+        // 🛡️ JWT破損（PGRST301）や認証失効の場合、壊れたトークンを強制破棄して自動再取得
         if (sError.code === 'PGRST301' || sError.message?.includes('JWT') || sError.status === 401) {
           console.warn("🚨 JWT error detected, clearing bad token and refetching anonymously...");
-          supabase.auth.signOut().then(() => {
+          try {
+            Object.keys(localStorage).forEach(key => {
+              if (key.startsWith('sb-') && key.endsWith('-auth-token')) {
+                localStorage.removeItem(key);
+              }
+            });
+          } catch (e) {}
+          supabase.auth.signOut().finally(() => {
             fetchSurveys(null, silent, page, category, query, currentTab, sort, pop, tag);
+            fetchSidebarData();
           });
           return;
         }
