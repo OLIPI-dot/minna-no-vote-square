@@ -49,7 +49,82 @@ const formatWithDay = (dateStr) => {
 
 
 
+const IS_MAINTENANCE_MODE = true; // 🚨 緊急メンテナンスモードフラグ
+
 function App() {
+  if (IS_MAINTENANCE_MODE) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #fef3c7 0%, #fdf2f8 50%, #eff6ff 100%)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '20px',
+        fontFamily: "'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'BIZ UDPGothic', sans-serif"
+      }}>
+        <div style={{
+          maxWidth: '540px',
+          width: '100%',
+          background: 'rgba(255, 255, 255, 0.95)',
+          backdropFilter: 'blur(10px)',
+          borderRadius: '28px',
+          padding: '48px 32px',
+          textAlign: 'center',
+          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.08)',
+          border: '2px solid #fde68a'
+        }}>
+          <div style={{ fontSize: '4rem', marginBottom: '16px', animation: 'bounce 2s infinite' }}>
+            🐰🥕
+          </div>
+          <h1 style={{
+            fontSize: '1.6rem',
+            fontWeight: '900',
+            color: '#b45309',
+            marginBottom: '16px',
+            lineHeight: '1.4'
+          }}>
+            ただいまメンテナンス中らび！
+          </h1>
+          <p style={{
+            fontSize: '1rem',
+            color: '#4b5563',
+            lineHeight: '1.8',
+            marginBottom: '28px'
+          }}>
+            いつも「みんアケ」をご利用いただきありがとうございます。<br />
+            現在、らびたんと一緒に広場の安全点検・メンテナンス作業を行っています🛠️✨<br />
+            完了までいましばらくお待ちください🥕
+          </p>
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            background: '#fef3c7',
+            padding: '10px 20px',
+            borderRadius: '50px',
+            color: '#92400e',
+            fontSize: '0.88rem',
+            fontWeight: 'bold',
+            marginBottom: '16px'
+          }}>
+            <span style={{
+              width: '8px',
+              height: '8px',
+              borderRadius: '50%',
+              background: '#f59e0b',
+              display: 'inline-block'
+            }}></span>
+            メンテナンス作業中
+          </div>
+          <div style={{ fontSize: '0.8rem', color: '#9ca3af', marginTop: '24px' }}>
+            みんなのアンケート広場「みんアケ」
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const [view, setView] = useState(() => {
     return (new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '').has('id') || window.location.pathname.startsWith('/s/')) ? 'details' : 'list';
   }); // 🏷️ 'list' or 'details' or 'create'
