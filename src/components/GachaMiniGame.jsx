@@ -39,8 +39,6 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
   const [showInventory, setShowInventory] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [isRolling, setIsRolling] = useState(false);
-  const [invFilterType, setInvFilterType] = useState('all'); // 'all' | 'weapon' | 'armor' | 'accessory' | 'partner'
-  const [invSortKey, setInvSortKey] = useState('rarity'); // 'rarity' | 'newest' | 'atk' | 'def' | 'hp' | 'reqLevel'
   const COST = 1; // 1回1チケット
 
   // 🌟 ガチャ専用演出ステート ('none' | 'charging' | 'blackout' | 'cutin' | 'reveal')
@@ -531,113 +529,17 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
       {showInventory && createPortal(
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.65)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100000, padding: '10px' }}>
           <div style={{ background: '#fff', padding: '14px 16px', borderRadius: '14px', width: '100%', maxWidth: '480px', maxHeight: '90vh', display: 'flex', flexDirection: 'column', boxShadow: '0 10px 25px rgba(0,0,0,0.3)' }}>
-            <h3 style={{ margin: '0 0 8px 0', color: '#1e293b', fontSize: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h3 style={{ margin: '0 0 10px 0', color: '#1e293b', fontSize: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span>👜 インベントリ ({inventory.length}個)</span>
               <button onClick={() => setShowInventory(false)} style={{ background: 'none', border: 'none', fontSize: '1.4rem', cursor: 'pointer', lineHeight: 1, color: '#64748b' }}>×</button>
             </h3>
-
-            {/* 🏷️ 部位別切り替えタブ */}
-            <div style={{ display: 'flex', gap: '4px', marginBottom: '8px', overflowX: 'auto', paddingBottom: '2px', scrollbarWidth: 'none' }}>
-              {[
-                { key: 'all', label: 'すべて', count: inventory.length },
-                { key: 'weapon', label: '🗡️ 武器', count: inventory.filter(i => i.type === 'weapon').length },
-                { key: 'armor', label: '🛡️ 防具', count: inventory.filter(i => i.type === 'armor').length },
-                { key: 'accessory', label: '💍 アクセ', count: inventory.filter(i => i.type === 'accessory').length },
-                { key: 'partner', label: '👤 お供', count: inventory.filter(i => i.type === 'partner').length }
-              ].map(tab => (
-                <button
-                  key={tab.key}
-                  onClick={() => setInvFilterType(tab.key)}
-                  style={{
-                    padding: '4px 8px',
-                    borderRadius: '6px',
-                    border: 'none',
-                    fontSize: '0.72rem',
-                    fontWeight: 'bold',
-                    cursor: 'pointer',
-                    whiteSpace: 'nowrap',
-                    background: invFilterType === tab.key ? '#3b82f6' : '#f1f5f9',
-                    color: invFilterType === tab.key ? '#ffffff' : '#64748b',
-                    boxShadow: invFilterType === tab.key ? '0 1px 3px rgba(59, 130, 246, 0.3)' : 'none',
-                    transition: 'all 0.15s'
-                  }}
-                >
-                  {tab.label} ({tab.count})
-                </button>
-              ))}
-            </div>
-
-            {/* 🔄 ソート切り替えバー */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px', background: '#f8fafc', padding: '4px 8px', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
-              <span style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 'bold' }}>並び順:</span>
-              <select
-                value={invSortKey}
-                onChange={(e) => setInvSortKey(e.target.value)}
-                style={{
-                  fontSize: '0.75rem',
-                  padding: '3px 6px',
-                  borderRadius: '4px',
-                  border: '1px solid #cbd5e1',
-                  background: '#ffffff',
-                  color: '#1e293b',
-                  fontWeight: 'bold',
-                  cursor: 'pointer',
-                  outline: 'none'
-                }}
-              >
-                <option value="rarity">🌟 レア度順 (LR → N)</option>
-                <option value="newest">🕒 新着・入手順</option>
-                <option value="atk">⚔️ ATK (攻撃力) 順</option>
-                <option value="def">🛡️ DEF (防御力) 順</option>
-                <option value="hp">💚 HP (体力) 順</option>
-                <option value="reqLevel">🔰 必要Lv順 (低い順)</option>
-              </select>
-            </div>
             
             <div style={{ overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: '6px', paddingRight: '2px' }}>
-              {(() => {
-                const RARITY_ORDER = { LR: 5, UR: 4, SR: 3, R: 2, N: 1 };
-                let itemsList = inventory.map(raw => syncItemWithMaster(raw));
-
-                // フィルター
-                if (invFilterType !== 'all') {
-                  itemsList = itemsList.filter(item => item.type === invFilterType);
-                }
-
-                // ソート
-                const sortedList = [...itemsList].sort((a, b) => {
-                  if (invSortKey === 'rarity') {
-                    const diffRarity = (RARITY_ORDER[b.rarity] || 0) - (RARITY_ORDER[a.rarity] || 0);
-                    if (diffRarity !== 0) return diffRarity;
-                    return (b.atk + b.def + b.hp) - (a.atk + a.def + a.hp);
-                  }
-                  if (invSortKey === 'newest') {
-                    return (b.timestamp || 0) - (a.timestamp || 0);
-                  }
-                  if (invSortKey === 'atk') {
-                    return (b.atk || 0) - (a.atk || 0);
-                  }
-                  if (invSortKey === 'def') {
-                    return (b.def || 0) - (a.def || 0);
-                  }
-                  if (invSortKey === 'hp') {
-                    return (b.hp || 0) - (a.hp || 0);
-                  }
-                  if (invSortKey === 'reqLevel') {
-                    return (getReqLevel(a) || 1) - (getReqLevel(b) || 1);
-                  }
-                  return 0;
-                });
-
-                if (sortedList.length === 0) {
-                  return (
-                    <div style={{ textAlign: 'center', color: '#94a3b8', padding: '30px 0', fontSize: '0.8rem' }}>
-                      該当するアイテムがありません
-                    </div>
-                  );
-                }
-
-                return sortedList.map(item => {
+              {inventory.length === 0 ? (
+                <div style={{ textAlign: 'center', color: '#94a3b8', padding: '30px 0', fontSize: '0.8rem' }}>アイテムがありません</div>
+              ) : (
+                inventory.map(rawItem => {
+                  const item = syncItemWithMaster(rawItem);
                   const currentEquip = syncItemWithMaster(equipment[item.type]);
                   const diffAtk = item.atk - (currentEquip ? currentEquip.atk : 0);
                   const diffDef = item.def - (currentEquip ? currentEquip.def : 0);
@@ -718,8 +620,8 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
                       </div>
                     </div>
                   );
-                });
-              })()}
+                })
+              )}
             </div>
           </div>
         </div>,

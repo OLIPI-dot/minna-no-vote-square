@@ -280,8 +280,8 @@ const PatrolMiniGame = ({
           combined.push(p);
         }
       });
-      // 🌟 必ず新しい時間順（降順）にソートして最新50件を抽出！
-      const sorted = sortPatrolHistoryDesc(combined).slice(0, 50);
+      // 🌟 必ず新しい時間順（降順）にソートして最新15件を抽出！
+      const sorted = sortPatrolHistoryDesc(combined).slice(0, 15);
       try {
         localStorage.setItem('daily_patrol_history_v1', JSON.stringify({
           date: todayStr,
@@ -291,7 +291,7 @@ const PatrolMiniGame = ({
       return sorted;
     }
 
-    return sortPatrolHistoryDesc(localHistory).slice(0, 50);
+    return sortPatrolHistoryDesc(localHistory).slice(0, 15);
   };
 
   const [patrolHistory, setPatrolHistory] = useState(() => getPatrolHistory());
@@ -304,7 +304,7 @@ const PatrolMiniGame = ({
 
     setPatrolHistory(prev => {
       const filtered = prev.filter(p => !p.type || p.type === 'patrol');
-      const updated = sortPatrolHistoryDesc([newRecord, ...filtered]).slice(0, 50);
+      const updated = sortPatrolHistoryDesc([newRecord, ...filtered]).slice(0, 15);
       const payload = {
         date: todayStr,
         history: updated
@@ -588,7 +588,7 @@ const PatrolMiniGame = ({
       }
     }
 
-    // 🎲 お互いの命中率と会心判定（レアリティ別ボーナス合算・上限キャップ付き）
+    // 🎲 お互いの命中率とクリティカル判定（レアリティ別ボーナス合算・上限キャップ付き）
     const critBonus = getEffectRarityTotal('crit_up', { N: 0.05, R: 0.10, SR: 0.20, UR: 0.25 }, 0.10, 0.50);
     let basePCrit = 0.10 + critBonus;
     let pMiss = Math.random() < 0.05; // 5% ミス
@@ -1712,104 +1712,72 @@ const PatrolMiniGame = ({
                 display: 'flex', 
                 flexDirection: 'column', 
                 gap: '6px', 
-                maxHeight: '620px', 
+                maxHeight: '460px', 
                 overflowY: 'auto', 
                 paddingRight: '3px',
                 scrollbarWidth: 'thin'
               }}>
-                {sortPatrolHistoryDesc(patrolHistory).map((h, idx) => {
-                  // 🏷️ エネミーのレアリティ判定（神話級 / メタル / 激レア / エリート / 通常）
-                  const getEnemyBadge = () => {
-                    if (h.enemyId === 'e_rabi_sin' || (h.enemyName && h.enemyName.includes('らび -sin -'))) {
-                      return { label: '神話級', bg: 'linear-gradient(135deg, #f43f5e, #a855f7)', color: '#fff', border: '#ec4899' };
-                    }
-                    if (h.enemyId === 'el4' || h.enemyId === 'el4_2' || (h.enemyName && h.enemyName.includes('らびたん'))) {
-                      return { label: 'メタル', bg: '#0284c7', color: '#fff', border: '#0369a1' };
-                    }
-                    if (h.enemyType === 'rare' || (h.enemyName && h.enemyName.includes('激レア'))) {
-                      return { label: '激レア', bg: '#f59e0b', color: '#fff', border: '#d97706' };
-                    }
-                    if (h.enemyType === 'elite' || (h.enemyName && (h.enemyName.includes('エリート') || h.enemyName.includes('魔性の姫')))) {
-                      return { label: 'エリート', bg: '#8b5cf6', color: '#fff', border: '#7c3aed' };
-                    }
-                    return { label: '通常', bg: '#e2e8f0', color: '#475569', border: '#cbd5e1' };
-                  };
-                  const badge = getEnemyBadge();
-
-                  return (
-                    <div key={idx} style={{
-                      fontSize: '0.74rem',
-                      lineHeight: 1.4,
-                      padding: '7px 9px',
-                      borderRadius: '8px',
-                      background: idx === 0 ? '#f0fdf4' : '#f8fafc',
-                      border: idx === 0 ? '1px solid #86efac' : '1px solid #e2e8f0',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '4px',
-                      boxShadow: idx === 0 ? '0 1px 3px rgba(16, 185, 129, 0.12)' : 'none'
-                    }}>
-                      {/* 1行目: [時間] ＆ 結末バッジ（左右両端にすっきり配置） */}
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          {idx === 0 && (
-                            <span style={{
-                              background: 'linear-gradient(135deg, #ef4444, #f97316)',
-                              color: '#ffffff',
-                              fontSize: '0.62rem',
-                              fontWeight: '900',
-                              padding: '1px 5px',
-                              borderRadius: '4px',
-                              letterSpacing: '0.5px',
-                              boxShadow: '0 1px 3px rgba(239, 68, 68, 0.35)',
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              lineHeight: 1.2
-                            }}>
-                              New!
-                            </span>
-                          )}
-                          <span style={{ color: '#94a3b8', fontFamily: 'monospace', fontSize: '0.7rem' }}>[{h.time}]</span>
-                          {h.isHardMode && (
-                            <span style={{ fontSize: '0.65rem', background: '#fee2e2', color: '#dc2626', padding: '1px 5px', borderRadius: '4px', fontWeight: 'bold' }}>深層</span>
-                          )}
-                        </div>
-                        <span style={{
-                          fontWeight: 'bold',
-                          fontSize: '0.72rem',
-                          padding: '1px 7px',
-                          borderRadius: '10px',
-                          background: h.result === 'won' ? '#dcfce7' : '#fee2e2',
-                          color: h.result === 'won' ? '#15803d' : '#b91c1c',
-                          border: `1px solid ${h.result === 'won' ? '#bbf7d0' : '#fecaca'}`
-                        }}>
-                          {h.result === 'won' ? '撃退 🎉' : '逃げられた 💀'}
-                        </span>
-                      </div>
-
-                      {/* 2行目: 敵アイコン ＋ レアリティバッジ ＋ 敵フルネーム (Lv.◯) */}
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                        <span style={{ fontSize: '1.05rem', flexShrink: 0, lineHeight: 1 }}>{h.enemyIcon || '👾'}</span>
-                        <span style={{
-                          fontSize: '0.62rem',
-                          fontWeight: '900',
-                          padding: '1px 5px',
-                          borderRadius: '4px',
-                          background: badge.bg,
-                          color: badge.color,
-                          border: `1px solid ${badge.border}`,
-                          flexShrink: 0,
-                          lineHeight: 1.2
-                        }}>
-                          {badge.label}
-                        </span>
-                        <span style={{ fontWeight: '900', color: '#1e293b', fontSize: '0.82rem', wordBreak: 'break-word' }}>
-                          {h.enemyName}
-                        </span>
-                        {h.level && (
-                          <span style={{ color: '#64748b', fontSize: '0.7rem', fontWeight: 'bold' }}>(Lv.{h.level})</span>
+                {sortPatrolHistoryDesc(patrolHistory).map((h, idx) => (
+                  <div key={idx} style={{
+                    fontSize: '0.74rem',
+                    lineHeight: 1.4,
+                    padding: '7px 9px',
+                    borderRadius: '8px',
+                    background: idx === 0 ? '#f0fdf4' : '#f8fafc',
+                    border: idx === 0 ? '1px solid #86efac' : '1px solid #e2e8f0',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '4px',
+                    boxShadow: idx === 0 ? '0 1px 3px rgba(16, 185, 129, 0.12)' : 'none'
+                  }}>
+                    {/* 1行目: [時間] ＆ 結末バッジ（左右両端にすっきり配置） */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        {idx === 0 && (
+                          <span style={{
+                            background: 'linear-gradient(135deg, #ef4444, #f97316)',
+                            color: '#ffffff',
+                            fontSize: '0.62rem',
+                            fontWeight: '900',
+                            padding: '1px 5px',
+                            borderRadius: '4px',
+                            letterSpacing: '0.5px',
+                            boxShadow: '0 1px 3px rgba(239, 68, 68, 0.35)',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            lineHeight: 1.2
+                          }}>
+                            New!
+                          </span>
+                        )}
+                        <span style={{ color: '#94a3b8', fontFamily: 'monospace', fontSize: '0.7rem' }}>[{h.time}]</span>
+                        {h.isHardMode && (
+                          <span style={{ fontSize: '0.65rem', background: '#fee2e2', color: '#dc2626', padding: '1px 5px', borderRadius: '4px', fontWeight: 'bold' }}>深層</span>
                         )}
                       </div>
+                      <span style={{
+                        fontWeight: 'bold',
+                        fontSize: '0.72rem',
+                        padding: '1px 7px',
+                        borderRadius: '10px',
+                        background: h.result === 'won' ? '#dcfce7' : '#fee2e2',
+                        color: h.result === 'won' ? '#15803d' : '#b91c1c',
+                        border: `1px solid ${h.result === 'won' ? '#bbf7d0' : '#fecaca'}`
+                      }}>
+                        {h.result === 'won' ? '撃退 🎉' : '逃げられた 💀'}
+                      </span>
+                    </div>
+
+                    {/* 2行目: 敵アイコン ＋ 敵フルネーム (Lv.◯)（折り返し可能で絶対に切れない！） */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                      <span style={{ fontSize: '1.05rem', flexShrink: 0, lineHeight: 1 }}>{h.enemyIcon || '👾'}</span>
+                      <span style={{ fontWeight: '900', color: '#1e293b', fontSize: '0.82rem', wordBreak: 'break-word' }}>
+                        {h.enemyName}
+                      </span>
+                      {h.level && (
+                        <span style={{ color: '#64748b', fontSize: '0.7rem', fontWeight: 'bold' }}>(Lv.{h.level})</span>
+                      )}
+                    </div>
 
                     {/* 3行目: ⭐ EXP +◯　🎫 チケット ◯枚 */}
                     {(h.exp > 0 || h.tickets > 0) && (
@@ -1866,9 +1834,8 @@ const PatrolMiniGame = ({
                       </div>
                     )}
                   </div>
-                );
-              })}
-            </div>
+                ))}
+              </div>
             )}
           </div>
         </>

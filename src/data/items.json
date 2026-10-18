@@ -2057,7 +2057,8 @@
     "def": 10,
     "hp": 10,
     "icon": "🔄",
-    "desc": "承認欲求が満たされ、全ステータスが少し上がる。"
+    "desc": "承認欲求が満たされ、全ステータスが少し上がる。",
+    "effect": "viral_hit"
   },
   {
     "id": "ac503",
@@ -3656,7 +3657,7 @@
     "hp": 5,
     "icon": "🤖",
     "desc": "無心で拡散し続ける。たまに敵の気を引く。",
-    "effect": "partner_stare"
+    "effect": "viral_hit"
   },
   {
     "id": "p2003",
@@ -3668,7 +3669,7 @@
     "def": 5,
     "hp": 15,
     "icon": "🎮",
-    "desc": "口だけは達者。たまにまぐれで会心の一撃を出す。",
+    "desc": "口だけは達者。たまにまぐれでクリティカルを出す。",
     "effect": "partner_cheer"
   },
   {
@@ -4368,7 +4369,8 @@
     "def": 0,
     "hp": 5,
     "icon": "💬",
-    "desc": "無残に流れていった悲しき課金メッセージ。"
+    "desc": "無残に流れていった悲しき課金メッセージ。",
+    "effect": "money_slap"
   },
   {
     "id": "w6003",
@@ -4458,7 +4460,7 @@
     "hp": 15,
     "icon": "👘",
     "desc": "暖かくて外に出られなくなる呪いの装備。",
-    "effect": "stealth"
+    "effect": "cursed_power"
   },
   {
     "id": "a6002",
@@ -5067,7 +5069,7 @@
     "hp": 5,
     "icon": "📢",
     "desc": "「せーのっ！」と大声で叫んで周囲の一体感を作る。",
-    "effect": "partner_stare"
+    "effect": "partner_cheer"
   },
   {
     "id": "p7002",
@@ -5473,7 +5475,7 @@
     "hp": 5,
     "icon": "👤",
     "desc": "配信者が何を言っても「草」「すこ」と全肯定する。",
-    "effect": "partner_stare"
+    "effect": "partner_cheer"
   },
   {
     "id": "p8002",
@@ -6592,7 +6594,7 @@
     "hp": 0,
     "icon": "🔨",
     "desc": "条件反射で叩き込む伝統芸能。",
-    "effect": "mental_damage"
+    "effect": "double_attack"
   },
   {
     "id": "ac11002",
@@ -6694,7 +6696,7 @@
     "hp": 5,
     "icon": "🫡",
     "desc": "どんな無茶振りにもノリで応えてくれる頼もしい名無し。",
-    "effect": "partner_stare"
+    "effect": "partner_cheer"
   },
   {
     "id": "p11002",
