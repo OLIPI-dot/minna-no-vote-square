@@ -49,7 +49,7 @@ const formatWithDay = (dateStr) => {
 
 
 
-const IS_MAINTENANCE_MODE = true; // 🚨 緊急メンテナンスモードフラグ
+const IS_MAINTENANCE_MODE = false; // 🚨 緊急メンテナンスモードフラグ解除！広場再開らび！
 
 function App() {
   if (IS_MAINTENANCE_MODE) {
@@ -689,21 +689,54 @@ function App() {
       }
     };
 
-    // 🛡️ URLに含まれるOAuthエラー（GoogleやSupabaseからの失敗通知）を検知して通知
-    try {
-      const hashParams = new URLSearchParams(window.location.hash.substring(1));
-      const searchParams = new URLSearchParams(window.location.search);
-      const errorDesc = hashParams.get('error_description') || searchParams.get('error_description') || hashParams.get('error');
-      if (errorDesc) {
-        console.error('🚨 Auth Error from redirect URL:', errorDesc);
-        alert('⚠️ ログインに失敗しました:\n' + decodeURIComponent(errorDesc.replace(/\+/g, ' ')));
-        // URLのハッシュエラーを綺麗にする
-        const cleanUrl = window.location.pathname + window.location.search;
-        window.history.replaceState({}, document.title, cleanUrl);
+    // 🛡️ URLに含まれるOAuthエラー（GoogleやSupabaseからの失敗通知）を検知した際の救出処理
+    const checkAuthErrorsAndSession = async () => {
+      try {
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const searchParams = new URLSearchParams(window.location.search);
+        const errorDesc = hashParams.get('error_description') || searchParams.get('error_description') || hashParams.get('error');
+
+        if (errorDesc) {
+          console.warn('⚠️ Auth Error in redirect URL detected:', errorDesc);
+
+          // 🛡️ 二重リクエスト（1回目成功・2回目state無効）の可能性があるため、
+          // 即座に既存セッション（1回目で確立されたもの）があるかチェック！
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session?.user) {
+            console.log('🎉 既存セッションが存在するため、エラーを無視してログインを維持します:', session.user.email);
+            handleAuthExp(session.user);
+            const cleanUrl = window.location.pathname + (window.location.search.includes('error') ? '' : window.location.search);
+            window.history.replaceState({}, document.title, cleanUrl);
+            return;
+          }
+
+          // 少し待って（300ms）再確認（ストレージ書き込み完了のラグ対策）
+          await new Promise(r => setTimeout(r, 300));
+          const { data: { session: retrySession } } = await supabase.auth.getSession();
+          if (retrySession?.user) {
+            console.log('🎉 再確認でセッションを検知！ログインを維持します:', retrySession.user.email);
+            handleAuthExp(retrySession.user);
+            const cleanUrl = window.location.pathname + (window.location.search.includes('error') ? '' : window.location.search);
+            window.history.replaceState({}, document.title, cleanUrl);
+            return;
+          }
+
+          // どちらでもセッションが見つからなかった場合のみ、やさしい案内を表示
+          const decoded = decodeURIComponent(errorDesc.replace(/\+/g, ' '));
+          if (decoded.includes('OAuth state') || decoded.includes('bad_oauth_state')) {
+            alert('🐰 通信が一時的に混み合いました。\nお手数ですが、もう一度「Googleでログイン」を押してみてくださいね✨');
+          } else {
+            alert('⚠️ ログインに失敗しました:\n' + decoded);
+          }
+
+          const cleanUrl = window.location.pathname + (window.location.search.includes('error') ? '' : window.location.search);
+          window.history.replaceState({}, document.title, cleanUrl);
+        }
+      } catch (e) {
+        console.error('Error handling auth redirect error:', e);
       }
-    } catch (e) {
-      console.error('Error parsing auth redirect error:', e);
-    }
+    };
+    checkAuthErrorsAndSession();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       // ⚠️ USER_UPDATEDなどの内部更新でhandleAuthExpを呼ぶと、

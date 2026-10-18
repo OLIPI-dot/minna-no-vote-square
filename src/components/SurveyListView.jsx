@@ -54,6 +54,7 @@ const SurveyListView = ({
   globalOnlineCount
 }) => {
   const [brokenImages, setBrokenImages] = React.useState(new Set());
+  const [isLoggingIn, setIsLoggingIn] = React.useState(false);
   const ITEMS_PER_PAGE = viewMode === 'grid' ? 40 : 20;
   const listRef = React.useRef(null);
   const [copyStatus, setCopyStatus] = React.useState('📜 タイトルをコピー');
@@ -156,6 +157,8 @@ const SurveyListView = ({
   }, [surveys, debouncedSearchQuery, filterTag, activeTab, sortMode, popularMode]);
 
   const handleGoogleLogin = async () => {
+    if (isLoggingIn) return;
+    setIsLoggingIn(true);
     try {
       const redirectUrl = window.location.origin.includes('localhost')
         ? window.location.origin
@@ -170,10 +173,12 @@ const SurveyListView = ({
       if (error) {
         console.error('Google login error:', error);
         alert('ログイン開始エラーが発生しました:\n' + error.message);
+        setIsLoggingIn(false);
       }
     } catch (err) {
       console.error('Google login exception:', err);
       alert('エラーが発生しました:\n' + (err.message || String(err)));
+      setIsLoggingIn(false);
     }
   };
 
@@ -207,6 +212,8 @@ const SurveyListView = ({
             type="button"
             className="google-login-btn"
             onClick={handleGoogleLogin}
+            disabled={isLoggingIn}
+            style={isLoggingIn ? { opacity: 0.7, cursor: 'not-allowed' } : {}}
           >
             <div className="google-icon-wrapper">
               <svg viewBox="0 0 24 24">
@@ -216,7 +223,7 @@ const SurveyListView = ({
                 <path fill="#FBBC05" d="M5.266 14.235A7.065 7.065 0 0 1 4.909 12c0-.795.131-1.559.357-2.235L1.24 6.65c-.792 1.636-1.24 3.46-1.24 5.35 0 1.89.448 3.714 1.24 5.35l4.026-3.115z" />
               </svg>
             </div>
-            <span>Googleでログイン</span>
+            <span>{isLoggingIn ? '🔄 Googleへ接続中...' : 'Googleでログイン'}</span>
           </button>
         )}
       </div>

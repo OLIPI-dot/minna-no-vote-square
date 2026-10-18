@@ -42,6 +42,7 @@ const Sidebar = ({
   setEncounteredEnemies
 }) => {
   const [hn, setHn] = useState('');
+  const [isSidebarLoggingIn, setIsSidebarLoggingIn] = useState(false);
   const [miniqueTab, setMiniqueTab] = useState('patrol');
   const [isEditingHn, setIsEditingHn] = useState(false);
   const [tempHn, setTempHn] = useState('');
@@ -215,28 +216,38 @@ const Sidebar = ({
               </div>
               <div style={{ marginTop: '6px' }}>
                 <button 
+                  disabled={isSidebarLoggingIn}
                   onClick={async () => {
+                    if (isSidebarLoggingIn) return;
+                    setIsSidebarLoggingIn(true);
                     try {
                       const redirectUrl = window.location.origin.includes('localhost')
                         ? window.location.origin
                         : 'https://www.minna-no-vote-square.com';
-                      await supabase.auth.signInWithOAuth({
+                      const { error } = await supabase.auth.signInWithOAuth({
                         provider: 'google',
                         options: { redirectTo: redirectUrl }
                       });
+                      if (error) {
+                        console.error('Sidebar login error:', error);
+                        setIsSidebarLoggingIn(false);
+                      }
                     } catch (e) {
-                      console.error(e);
+                      console.error('Sidebar login exception:', e);
+                      setIsSidebarLoggingIn(false);
                     }
                   }}
                   style={{ 
-                    background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)', 
+                    background: isSidebarLoggingIn ? '#9ca3af' : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)', 
                     color: 'white', border: 'none', borderRadius: '6px', 
                     padding: '6px 14px', fontSize: '0.75rem', fontWeight: 'bold', 
-                    cursor: 'pointer', boxShadow: '0 2px 6px rgba(239, 68, 68, 0.3)',
-                    display: 'inline-flex', alignItems: 'center', gap: '6px'
+                    cursor: isSidebarLoggingIn ? 'not-allowed' : 'pointer', 
+                    boxShadow: '0 2px 6px rgba(239, 68, 68, 0.3)',
+                    display: 'inline-flex', alignItems: 'center', gap: '6px',
+                    opacity: isSidebarLoggingIn ? 0.7 : 1
                   }}
                 >
-                  <span>☁️</span> Googleログインして同期する
+                  <span>{isSidebarLoggingIn ? '🔄' : '☁️'}</span> {isSidebarLoggingIn ? 'Googleへ接続中...' : 'Googleログインして同期する'}
                 </button>
               </div>
             </div>
