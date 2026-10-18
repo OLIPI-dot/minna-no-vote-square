@@ -732,14 +732,26 @@ function App() {
           const cleanSearch = cleanParams.toString() ? `?${cleanParams.toString()}` : '';
           window.history.replaceState({}, document.title, window.location.pathname + cleanSearch);
 
-          const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-          if (error) {
-            console.warn('exchangeCodeForSession warning:', error);
-          } else if (data?.session?.user) {
-            console.log('🎉 PKCEコードからログインセッション確立成功:', data.session.user.email);
-            setUser(data.session.user);
-            handleAuthExp(data.session.user);
+          // 🛡️ まずSupabaseが自動でセッションを交換したか確認
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session?.user) {
+            console.log('🎉 自動セッション交換成功:', session.user.email);
+            setUser(session.user);
+            handleAuthExp(session.user);
             return;
+          }
+
+          // まだなら手動で交換
+          try {
+            const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+            if (!error && data?.session?.user) {
+              console.log('🎉 PKCEコードからログインセッション確立成功:', data.session.user.email);
+              setUser(data.session.user);
+              handleAuthExp(data.session.user);
+              return;
+            }
+          } catch (e) {
+            console.warn('exchangeCodeForSession handled:', e);
           }
         }
 
