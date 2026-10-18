@@ -328,19 +328,30 @@ const RaidBossMiniGame = ({
     } catch (e) {}
     setHasClaimedParticipation(true);
 
+    const PARTICIPATION_TICKETS = 3;
+    const PARTICIPATION_EXP = 200;
+
+    // 🛡️ クラウド同期：別々に複数回updateUserを呼ぶと競合して受取日フラグが消えるため、1回にまとめて送信
     if (user && supabase) {
+      const dbTickets = user?.user_metadata?.gacha_tickets || 0;
+      const baseTickets = Math.max(gachaTickets || 0, dbTickets);
+      const nextTickets = baseTickets + PARTICIPATION_TICKETS;
+
+      const dbExp = user?.user_metadata?.vote_exp || 0;
+      const baseExp = Math.max(userExp || 0, dbExp);
+      const nextExp = baseExp + PARTICIPATION_EXP;
+
       supabase.auth.updateUser({
         data: {
-          raid_participation_claimed_date: todayStr
+          raid_participation_claimed_date: todayStr,
+          gacha_tickets: nextTickets,
+          vote_exp: nextExp
         }
       }).catch(err => console.warn('Cloud sync error for raid participation:', err));
     }
 
-    const PARTICIPATION_TICKETS = 3;
-    const PARTICIPATION_EXP = 200;
-
-    if (addTickets) addTickets(PARTICIPATION_TICKETS);
-    if (addExp) addExp(PARTICIPATION_EXP);
+    if (addTickets) addTickets(PARTICIPATION_TICKETS, { skipDb: true });
+    if (addExp) addExp(PARTICIPATION_EXP, { skipDb: true });
 
     setRaidLogs(prev => [
       `🎁 【参加賞受取！】 レイドボス参戦報酬として ガチャチケ 3枚 ＆ ${PARTICIPATION_EXP} EXP を獲得した！✨`,
@@ -609,8 +620,23 @@ const RaidBossMiniGame = ({
     } else {
       const victoryMsg = `🎉🎉 【討伐成功！！】 広場のみんなで 『${currentBoss.name}』 を打ち倒した！！ 🎉🎉`;
       setRaidLogs(prev => [victoryMsg, logMsg, ...prev].slice(0, 20));
-      if (addTickets) addTickets(currentBoss.rewardTickets);
-      if (addExp) addExp(currentBoss.rewardExp);
+      if (user && supabase) {
+        const dbTickets = user?.user_metadata?.gacha_tickets || 0;
+        const nextTickets = Math.max(gachaTickets || 0, dbTickets) + currentBoss.rewardTickets;
+        const dbExp = user?.user_metadata?.vote_exp || 0;
+        const nextExp = Math.max(userExp || 0, dbExp) + currentBoss.rewardExp;
+        supabase.auth.updateUser({
+          data: {
+            gacha_tickets: nextTickets,
+            vote_exp: nextExp
+          }
+        }).catch(err => console.warn('Cloud sync error for raid boss victory:', err));
+        if (addTickets) addTickets(currentBoss.rewardTickets, { skipDb: true });
+        if (addExp) addExp(currentBoss.rewardExp, { skipDb: true });
+      } else {
+        if (addTickets) addTickets(currentBoss.rewardTickets);
+        if (addExp) addExp(currentBoss.rewardExp);
+      }
     }
 
     setCooldown(3);

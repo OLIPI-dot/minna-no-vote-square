@@ -780,7 +780,7 @@ function App() {
     return;
   };
 
-  const addExp = async (amount) => {
+  const addExp = async (amount, { skipDb = false } = {}) => {
     showRewardPopup(`✨ + ${amount} EXP !!`, '#10b981');
     setUserExp(prev => {
       // 🛡️ 初期値0での誤爆上書きを完全防止（クラウドの現在値と比較して大きい方を基準にする）
@@ -798,26 +798,26 @@ function App() {
           showRewardPopup(`💪 HP+${diff * 10} / ATK+${diff * 5} / DEF+${diff * 2} UP!`, '#3b82f6');
         }, 1000);
       }
-      if (user) {
+      if (user && !skipDb) {
         // 🛡️ クラウドの現在のEXPより小さく巻き戻るような上書きは絶対にブロック！
         const safeExp = Math.max(newExp, dbExp);
         supabase.auth.updateUser({ data: { vote_exp: safeExp } });
-      } else {
+      } else if (!user) {
         localStorage.setItem('min_ake_exp', String(newExp));
       }
       return newExp;
     });
   };
 
-  const addTickets = async (amount) => {
+  const addTickets = async (amount, { skipDb = false } = {}) => {
     if (amount > 0) showRewardPopup(`🎫 + ${amount} チケット !!`, '#f59e0b');
     setGachaTickets(prev => {
       const dbTickets = user?.user_metadata?.gacha_tickets || 0;
       const baseTickets = isAuthLoaded.current ? prev : Math.max(prev, dbTickets);
       const newTickets = Math.max(0, baseTickets + amount);
-      if (user) {
+      if (user && !skipDb) {
         supabase.auth.updateUser({ data: { gacha_tickets: newTickets } });
-      } else {
+      } else if (!user) {
         localStorage.setItem('min_ake_tickets', String(newTickets));
       }
       return newTickets;
