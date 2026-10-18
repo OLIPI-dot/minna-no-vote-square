@@ -614,7 +614,7 @@ function App() {
       }
     };
 
-    // 🛡️ URLに含まれるOAuthエラー（GoogleやSupabaseからの失敗通知）を検知して通知
+    // 🛡️ URLに含まれるOAuthトークンまたはエラーを検知してセッションを確実に確立！
     try {
       const hashParams = new URLSearchParams(window.location.hash.substring(1));
       const searchParams = new URLSearchParams(window.location.search);
@@ -625,9 +625,28 @@ function App() {
         // URLのハッシュエラーを綺麗にする
         const cleanUrl = window.location.pathname + window.location.search;
         window.history.replaceState({}, document.title, cleanUrl);
+      } else {
+        const accessToken = hashParams.get('access_token');
+        const refreshToken = hashParams.get('refresh_token');
+        if (accessToken) {
+          console.log('🔑 URLハッシュからaccess_tokenを検知！明示的にセッションを確立します...');
+          supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken || ''
+          }).then(({ data, error }) => {
+            if (error) {
+              console.error('🚨 Failed to set session from URL hash:', error);
+            } else if (data?.session?.user) {
+              console.log('✅ URLハッシュからログインセッション確立成功！', data.session.user.email);
+              handleAuthExp(data.session.user);
+              const cleanUrl = window.location.pathname + window.location.search;
+              window.history.replaceState({}, document.title, cleanUrl);
+            }
+          });
+        }
       }
     } catch (e) {
-      console.error('Error parsing auth redirect error:', e);
+      console.error('Error parsing auth redirect:', e);
     }
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
