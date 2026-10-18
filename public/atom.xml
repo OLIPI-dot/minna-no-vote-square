@@ -4,11 +4,72 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-17T21:46:45.494Z</updated>
+  <updated>2026-10-18T02:17:43.409Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>祭りで副市長が死亡 市長「痛恨」</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23473"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23473</id>
+    <updated>2026-10-18T02:17:40.901Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;副市長が祭りの事故で死亡&quot;,
+  &quot;point1_desc&quot;: &quot;愛媛県西条市の難波江明広副市長が17日夕方、地元の秋祭りにおいて運行されていた山車の下敷きになる事故が発生した。病院へ搬送されたものの、その後死亡が確認された。&quot;,
+  &quot;point2_title&quot;: &quot;現場は重さ数トンの太鼓...</summary>
+  </entry>
+  <entry>
+    <title>シカ衝突し停車 追突され女性死亡</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23472"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23472</id>
+    <updated>2026-10-18T02:17:22.888Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;新東名でシカ衝突事故&quot;,
+  &quot;point1_desc&quot;: &quot;17日深夜、愛知県新城市の新東名高速上り線で乗用車がシカと衝突し停車した。高速道路上での予期せぬ野生動物との遭遇が重大な事故の引き金となった。&quot;,
+  &quot;point2_title&quot;: &quot;追突事故で女性死亡&quot;,
+  &quot;point2_...</summary>
+  </entry>
+  <entry>
+    <title>仏で55万人デモ 市庁舎ほぼ全焼</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23471"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23471</id>
+    <updated>2026-10-18T02:17:04.690Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;仏全土で55万人規模のデモ&quot;,
+  &quot;point1_desc&quot;: &quot;フランス全土で物価高への対策や教育環境の改善を求める大規模なデモが発生した。内相の発表によると参加者は55万人に達し、高校生らによる9月からの抗議運動開始以来で最大規模となった。&quot;,
+  &quot;point2_title&quot;: &quot;高...</summary>
+  </entry>
+  <entry>
+    <title>過激表現の規制 子どもを守るのか</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23470"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23470</id>
+    <updated>2026-10-18T02:16:45.858Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;話題&quot;,
+  &quot;point1_title&quot;: &quot;米公立校で日本の漫画が禁書に&quot;,
+  &quot;point1_desc&quot;: &quot;アメリカの公立学校において、日本の人気漫画を含む特定の書籍を図書館から撤去したり、閲覧を制限したりする禁書の動きが急速に広がっており、現地で議論を呼んでいる。&quot;,
+  &quot;point2_title&quot;: &quot;性描写や暴力表現が問題視...</summary>
+  </entry>
+  <entry>
+    <title>医療機関の倒産 1-9月は過去最多</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23469"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23469</id>
+    <updated>2026-10-18T02:16:27.001Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;医療機関の倒産が過去最多&quot;,
+  &quot;point1_desc&quot;: &quot;2026年1月から9月の医療機関の倒産件数が59件に達し、前年同期比で約3割増加した。病院やクリニック、歯科医院を含め、同期間としては過去最多のペースで急増している。&quot;,
+  &quot;point2_title&quot;: &quot;経営を圧迫するコ...</summary>
+  </entry>
   <entry>
     <title>祭りで太鼓台の下敷き 副市長死亡</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23468"/>
@@ -554,65 +615,5 @@
   &quot;point1_title&quot;: &quot;うるう秒の廃止が決定&quot;,
   &quot;point1_desc&quot;: &quot;国際度量衡総会にて、地球の自転と原子時計の誤差を正すうるう秒の廃止が決定した。ITシステムや社会基盤の誤作動リスクを低減するため、長年の運用に見直しが図られることとなった。&quot;,
   &quot;point2_title&quot;: &quot;新たな調整方法の導...</summary>
-  </entry>
-  <entry>
-    <title>SB連勝 栗原がサヨナラ満塁弾</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23423"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23423</id>
-    <updated>2026-10-15T12:51:57.513Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;話題&quot;,
-  &quot;point1_title&quot;: &quot;ソフトバンクがCS2連勝&quot;,
-  &quot;point1_desc&quot;: &quot;ソフトバンクはみずほPayPayドームで行われた日本ハムとのCSファイナルステージ第2戦に6-2で勝利した。初戦に続いて連勝を飾り、日本シリーズ進出へ向けて大きなアドバンテージを得た。&quot;,
-  &quot;point2_title&quot;: &quot;打...</summary>
-  </entry>
-  <entry>
-    <title>ソースネクスト 2千万件超流出か</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23422"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23422</id>
-    <updated>2026-10-15T12:51:39.390Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;大規模な情報流出の可能性&quot;,
-  &quot;point1_desc&quot;: &quot;ソースネクストは第三者からの不正アクセスを受け、顧客の氏名や電話番号、パスワードなどの個人情報が最大で約2251万件流出した可能性があると発表。多くのユーザーに影響が及ぶ事態となった。&quot;,
-  &quot;point2_title&quot;: ...</summary>
-  </entry>
-  <entry>
-    <title>闘病の22歳 両親に感謝伝えきれず</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23421"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23421</id>
-    <updated>2026-10-15T12:51:21.340Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;話題&quot;,
-  &quot;point1_title&quot;: &quot;医学生の発信と葛藤&quot;,
-  &quot;point1_desc&quot;: &quot;スキルス胃がんステージ4と闘う医学生の小枝俊太さんは、noteやSNSで闘病生活を発信している。多くの人との交流に支えられる一方、心ない言葉が届くこともあり、葛藤を抱えながら発信を継続中だ。&quot;,
-  &quot;point2_title&quot;: &quot;闘...</summary>
-  </entry>
-  <entry>
-    <title>年金だけで暮らせず 毎日働く71歳</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23420"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23420</id>
-    <updated>2026-10-15T12:51:02.721Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;話題&quot;,
-  &quot;point1_title&quot;: &quot;増加する定年後の高齢労働者&quot;,
-  &quot;point1_desc&quot;: &quot;定年退職を迎えた後も働き続ける高齢者が増加傾向にあります。かつて大学を卒業し安定した企業で長年勤め上げた人であっても、高齢期の生活費を維持するためには就労が必要な状況が生じています。&quot;,
-  &quot;point2_title&quot;: &quot;年...</summary>
-  </entry>
-  <entry>
-    <title>米の新報道官 弁護士経歴に疑念</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23419"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23419</id>
-    <updated>2026-10-15T12:50:43.572Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;ホワイトハウス新報道官&quot;,
-  &quot;point1_desc&quot;: &quot;ホワイトハウスの新しい報道官にケイティ・ザカリア氏が就任したことが明らかになった。新報道官の就任により、今後の政府の広報戦略やメディア対応がどのように変化するのか注目が集まっている。&quot;,
-  &quot;point2_title&quot;: &quot;弁...</summary>
   </entry>
 </feed>
