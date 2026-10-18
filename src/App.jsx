@@ -283,7 +283,8 @@ function App() {
       }
 
       if (changed) {
-        window.history.replaceState(window.history.state, '', url.pathname + url.search + url.hash);
+        const safeHash = url.hash.includes('access_token') ? '' : url.hash;
+        window.history.replaceState(window.history.state, '', url.pathname + url.search + safeHash);
       }
     }
   }, [sortMode, currentPage, view]);
@@ -689,32 +690,78 @@ function App() {
       }
     };
 
-    // 🛡️ URLに含まれるOAuthエラー（GoogleやSupabaseからの失敗通知）を検知した際の救出処理
-    const checkAuthErrorsAndSession = async () => {
+    // 🛡️ URLに含まれるOAuthトークン（#access_token）またはコード（?code）、エラーを確実に処理する魔法！
+    const handleUrlAuthParams = async () => {
       try {
-        const hashParams = new URLSearchParams(window.location.hash.substring(1));
-        const searchParams = new URLSearchParams(window.location.search);
-        const errorDesc = hashParams.get('error_description') || searchParams.get('error_description') || hashParams.get('error');
+        const hash = window.location.hash.substring(1);
+        const search = window.location.search;
+        const hashParams = new URLSearchParams(hash);
+        const searchParams = new URLSearchParams(search);
 
+        const errorDesc = hashParams.get('error_description') || searchParams.get('error_description') || hashParams.get('error');
+        const accessToken = hashParams.get('access_token');
+        const refreshToken = hashParams.get('refresh_token') || '';
+        const code = searchParams.get('code');
+
+        // 1. ハッシュに access_token が含まれている場合（Implicit Grant）
+        if (accessToken) {
+          console.log('🔑 URLハッシュからaccess_tokenを検知！即座にセッションを確立します...');
+          // 🚀 巨大なハッシュでブラウザが固まるのを防ぐため、即座にURLハッシュを消去して身軽にする！
+          window.history.replaceState({}, document.title, window.location.pathname + window.location.search);
+
+          const { data, error } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken
+          });
+
+          if (error) {
+            console.error('setSession error:', error);
+          } else if (data?.session?.user) {
+            console.log('🎉 ログインセッション確立成功:', data.session.user.email);
+            setUser(data.session.user);
+            handleAuthExp(data.session.user);
+            return;
+          }
+        }
+
+        // 2. クエリに PKCE code が含まれている場合
+        if (code) {
+          console.log('🔑 URLクエリからPKCE codeを検知！コードを交換します...');
+          const cleanParams = new URLSearchParams(window.location.search);
+          cleanParams.delete('code');
+          const cleanSearch = cleanParams.toString() ? `?${cleanParams.toString()}` : '';
+          window.history.replaceState({}, document.title, window.location.pathname + cleanSearch);
+
+          const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+          if (error) {
+            console.warn('exchangeCodeForSession warning:', error);
+          } else if (data?.session?.user) {
+            console.log('🎉 PKCEコードからログインセッション確立成功:', data.session.user.email);
+            setUser(data.session.user);
+            handleAuthExp(data.session.user);
+            return;
+          }
+        }
+
+        // 3. エラーパラメータが含まれている場合
         if (errorDesc) {
           console.warn('⚠️ Auth Error in redirect URL detected:', errorDesc);
 
-          // 🛡️ 二重リクエスト（1回目成功・2回目state無効）の可能性があるため、
-          // 即座に既存セッション（1回目で確立されたもの）があるかチェック！
+          // 🛡️ すでにセッションが存在しているか確認
           const { data: { session } } = await supabase.auth.getSession();
           if (session?.user) {
-            console.log('🎉 既存セッションが存在するため、エラーを無視してログインを維持します:', session.user.email);
+            console.log('🎉 既存セッションが存在するためエラーを無視してログイン維持:', session.user.email);
             handleAuthExp(session.user);
             const cleanUrl = window.location.pathname + (window.location.search.includes('error') ? '' : window.location.search);
             window.history.replaceState({}, document.title, cleanUrl);
             return;
           }
 
-          // 少し待って（300ms）再確認（ストレージ書き込み完了のラグ対策）
+          // 少し待って再確認
           await new Promise(r => setTimeout(r, 300));
           const { data: { session: retrySession } } = await supabase.auth.getSession();
           if (retrySession?.user) {
-            console.log('🎉 再確認でセッションを検知！ログインを維持します:', retrySession.user.email);
+            console.log('🎉 再確認でセッション検知！ログイン維持:', retrySession.user.email);
             handleAuthExp(retrySession.user);
             const cleanUrl = window.location.pathname + (window.location.search.includes('error') ? '' : window.location.search);
             window.history.replaceState({}, document.title, cleanUrl);
@@ -733,10 +780,10 @@ function App() {
           window.history.replaceState({}, document.title, cleanUrl);
         }
       } catch (e) {
-        console.error('Error handling auth redirect error:', e);
+        console.error('Error handling auth params:', e);
       }
     };
-    checkAuthErrorsAndSession();
+    handleUrlAuthParams();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       // ⚠️ USER_UPDATEDなどの内部更新でhandleAuthExpを呼ぶと、
