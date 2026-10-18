@@ -564,7 +564,18 @@ function App() {
           finalEquip = localEquip;
           shouldUpdate = true;
         } else if (hasDbEquip) {
-          // ⚠️ 片方の端末でセットした装備（お供など）が、もう片方のnullで消えないように合成！
+          // ⚠️ ローカルで装備していたアイテムがクラウド側装備と異なっていた場合、
+          // 装備から外れたアイテムをカバンへ安全に救出する
+          const displacedItems = [];
+          if (localEquip && typeof localEquip === 'object') {
+            Object.keys(localEquip).forEach(slot => {
+              const localItem = localEquip[slot];
+              if (localItem && localItem.id && finalEquip[slot]?.id !== localItem.id) {
+                displacedItems.push(localItem);
+              }
+            });
+          }
+
           finalEquip = {
             weapon: syncItemWithMaster(dbEquipment.weapon || localEquip?.weapon || null),
             armor: syncItemWithMaster(dbEquipment.armor || localEquip?.armor || null),
@@ -601,6 +612,14 @@ function App() {
           if (hasLocalInv) {
             localInv.forEach(it => {
               if (it && it.id && !mergedInv.some(m => m.id === it.id)) mergedInv.push(it);
+            });
+          }
+          // ⚠️ 装備枠から外れたアイテムがあれば確実にカバンに追加救出
+          if (typeof displacedItems !== 'undefined' && Array.isArray(displacedItems)) {
+            displacedItems.forEach(it => {
+              if (it && it.id && !mergedInv.some(m => m.id === it.id)) {
+                mergedInv.push(it);
+              }
             });
           }
           // ⚠️ 現在装備枠にセットされているアイテムそのものはカバンから除外して二重存在を防止
