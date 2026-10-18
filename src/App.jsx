@@ -49,82 +49,7 @@ const formatWithDay = (dateStr) => {
 
 
 
-const IS_MAINTENANCE_MODE = true; // 🚨 緊急メンテナンスモードフラグ
-
 function App() {
-  if (IS_MAINTENANCE_MODE) {
-    return (
-      <div style={{
-        minHeight: '100vh',
-        background: 'linear-gradient(135deg, #fef3c7 0%, #fdf2f8 50%, #eff6ff 100%)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '20px',
-        fontFamily: "'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'BIZ UDPGothic', sans-serif"
-      }}>
-        <div style={{
-          maxWidth: '540px',
-          width: '100%',
-          background: 'rgba(255, 255, 255, 0.95)',
-          backdropFilter: 'blur(10px)',
-          borderRadius: '28px',
-          padding: '48px 32px',
-          textAlign: 'center',
-          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.08)',
-          border: '2px solid #fde68a'
-        }}>
-          <div style={{ fontSize: '4rem', marginBottom: '16px', animation: 'bounce 2s infinite' }}>
-            🐰🥕
-          </div>
-          <h1 style={{
-            fontSize: '1.6rem',
-            fontWeight: '900',
-            color: '#b45309',
-            marginBottom: '16px',
-            lineHeight: '1.4'
-          }}>
-            ただいまメンテナンス中らび！
-          </h1>
-          <p style={{
-            fontSize: '1rem',
-            color: '#4b5563',
-            lineHeight: '1.8',
-            marginBottom: '28px'
-          }}>
-            いつも「みんアケ」をご利用いただきありがとうございます。<br />
-            現在、らびたんと一緒に広場の安全点検・メンテナンス作業を行っています🛠️✨<br />
-            完了までいましばらくお待ちください🥕
-          </p>
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            background: '#fef3c7',
-            padding: '10px 20px',
-            borderRadius: '50px',
-            color: '#92400e',
-            fontSize: '0.88rem',
-            fontWeight: 'bold',
-            marginBottom: '16px'
-          }}>
-            <span style={{
-              width: '8px',
-              height: '8px',
-              borderRadius: '50%',
-              background: '#f59e0b',
-              display: 'inline-block'
-            }}></span>
-            メンテナンス作業中
-          </div>
-          <div style={{ fontSize: '0.8rem', color: '#9ca3af', marginTop: '24px' }}>
-            みんなのアンケート広場「みんアケ」
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   const [view, setView] = useState(() => {
     return (new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '').has('id') || window.location.pathname.startsWith('/s/')) ? 'details' : 'list';
   }); // 🏷️ 'list' or 'details' or 'create'
@@ -689,187 +614,51 @@ function App() {
       }
     };
 
-    // 🛡️ URLに含まれるOAuthトークン・認証コード・エラーを検知してセッションを確実に確立！
-    let isResolvingAuth = false;
-    const hashStr = window.location.hash.startsWith('#') ? window.location.hash.substring(1) : window.location.hash;
-    const hasOAuthInUrl = hashStr.includes('access_token=') || window.location.search.includes('code=');
-    if (hasOAuthInUrl) {
-      isResolvingAuth = true;
+    // 🛡️ URLに含まれるOAuthエラー（GoogleやSupabaseからの失敗通知）を検知して通知
+    try {
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const searchParams = new URLSearchParams(window.location.search);
+      const errorDesc = hashParams.get('error_description') || searchParams.get('error_description') || hashParams.get('error');
+      if (errorDesc) {
+        console.error('🚨 Auth Error from redirect URL:', errorDesc);
+        alert('⚠️ ログインに失敗しました:\n' + decodeURIComponent(errorDesc.replace(/\+/g, ' ')));
+        // URLのハッシュエラーを綺麗にする
+        const cleanUrl = window.location.pathname + window.location.search;
+        window.history.replaceState({}, document.title, cleanUrl);
+      }
+    } catch (e) {
+      console.error('Error parsing auth redirect error:', e);
     }
 
-    const resolveUrlAuth = async () => {
-      try {
-        const hashParams = new URLSearchParams(hashStr);
-        const searchParams = new URLSearchParams(window.location.search);
-        const errorDesc = hashParams.get('error_description') || searchParams.get('error_description') || hashParams.get('error');
-
-        if (errorDesc) {
-          console.error('🚨 Auth Error from redirect URL:', errorDesc);
-          // 🛡️ 既にセッションが確立されているか確認（直前の通信で成功していた場合）
-          const { data: { session: existingSession } } = await supabase.auth.getSession();
-          if (existingSession?.user) {
-            console.log('✅ セッションが既に有効なためログインを維持します:', existingSession.user.email);
-            isResolvingAuth = false;
-            setUser(existingSession.user);
-            handleAuthExp(existingSession.user);
-            window.history.replaceState({}, document.title, window.location.pathname);
-            return;
-          }
-
-          alert('⚠️ ログインに失敗しました:\n' + decodeURIComponent(errorDesc.replace(/\+/g, ' ')));
-          isResolvingAuth = false;
-          window.history.replaceState({}, document.title, window.location.pathname);
-          handleAuthExp(null);
-          return;
-        }
-
-        const accessToken = hashParams.get('access_token');
-        const refreshToken = hashParams.get('refresh_token');
-        const code = searchParams.get('code');
-
-        if (accessToken) {
-          console.log('🔑 URLハッシュからaccess_tokenを検知！セッションを確立します...');
-          let authenticatedUser = null;
-
-          // 1. refresh_tokenがある場合は標準のsetSessionを試みる
-          if (refreshToken) {
-            try {
-              const { data, error } = await supabase.auth.setSession({
-                access_token: accessToken,
-                refresh_token: refreshToken
-              });
-              if (!error && data?.session?.user) {
-                authenticatedUser = data.session.user;
-                console.log('✅ setSession 成功:', authenticatedUser.email);
-              } else if (error) {
-                console.warn('⚠️ setSession 結果:', error.message);
-              }
-            } catch (e) {
-              console.warn('⚠️ setSession 例外:', e);
-            }
-          }
-
-          // 2. setSessionで取得できなかった場合、access_tokenから直接ユーザー情報を検証取得！
-          if (!authenticatedUser) {
-            console.log('🔍 access_token から直接ユーザー情報を検証・取得します...');
-            try {
-              const { data: { user: directUser }, error: userError } = await supabase.auth.getUser(accessToken);
-              if (directUser && !userError) {
-                authenticatedUser = directUser;
-                console.log('✅ getUser(accessToken) 成功:', directUser.email);
-                // 次回以降もセッションが維持されるようLocalStorageに保存
-                try {
-                  const storageKey = 'sb-ssmkasmtdnojdicdpdfg-auth-token';
-                  const syntheticSession = {
-                    access_token: accessToken,
-                    refresh_token: refreshToken || '',
-                    expires_in: 3600,
-                    expires_at: Math.floor(Date.now() / 1000) + 3600,
-                    token_type: 'bearer',
-                    user: directUser
-                  };
-                  localStorage.setItem(storageKey, JSON.stringify(syntheticSession));
-                } catch (e) {}
-              } else if (userError) {
-                console.warn('⚠️ getUser(accessToken) エラー:', userError.message);
-              }
-            } catch (e) {
-              console.warn('⚠️ getUser(accessToken) 例外:', e);
-            }
-          }
-
-          if (authenticatedUser) {
-            console.log('🎉 ユーザー認証完了！クラウドデータを同期します:', authenticatedUser.email);
-            isResolvingAuth = false;
-            setUser(authenticatedUser);
-            handleAuthExp(authenticatedUser);
-            // URLを綺麗にする
-            window.history.replaceState({}, document.title, window.location.pathname);
-          } else {
-            console.warn('🚨 URLのトークンからユーザーを復元できませんでした');
-            isResolvingAuth = false;
-            handleAuthExp(null);
-          }
-        } else if (code) {
-          console.log('🔑 URLクエリからPKCE認証codeを検知！セッションを交換します...');
-          try {
-            const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-            if (!error && data?.session?.user) {
-              console.log('✅ PKCEコードからログインセッション確立成功！', data.session.user.email);
-              isResolvingAuth = false;
-              setUser(data.session.user);
-              handleAuthExp(data.session.user);
-              window.history.replaceState({}, document.title, window.location.pathname);
-            } else {
-              console.warn('⚠️ exchangeCodeForSession結果:', error?.message);
-              isResolvingAuth = false;
-              handleAuthExp(null);
-            }
-          } catch (e) {
-            console.error('exchangeCodeForSession 例外:', e);
-            isResolvingAuth = false;
-            handleAuthExp(null);
-          }
-        }
-      } catch (e) {
-        console.error('Error parsing auth redirect:', e);
-        isResolvingAuth = false;
-      }
-    };
-
-    resolveUrlAuth();
-
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('🔔 onAuthStateChange event:', event, session?.user?.email);
-      const currentUser = session?.user ?? null;
-
-      if (currentUser) {
-        isResolvingAuth = false;
-        setUser(currentUser);
-        // ログイン時・初期セッション復元時・ログアウト時のみEXP/インベントリ同期を実行する！
-        if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION' || event === 'TOKEN_REFRESHED') {
-          handleAuthExp(currentUser);
-        }
-        if (window.location.hash.includes('access_token') || window.location.search.includes('code=')) {
-          window.history.replaceState({}, document.title, window.location.pathname);
-        }
-      } else if (!isResolvingAuth) {
-        setUser(null);
-        if (event === 'SIGNED_OUT') {
-          handleAuthExp(null);
-        }
+      // ⚠️ USER_UPDATEDなどの内部更新でhandleAuthExpを呼ぶと、
+      // 自身のupdateUser完了通知でローカルの最新Stateが巻き戻ってしまうため、
+      // SIGNED_IN（ログイン時）やSIGNED_OUT（ログアウト時）のみ実行する！
+      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
+        handleAuthExp(session?.user ?? null);
       }
     });
 
     supabase.auth.getSession().then(({ data: { session }, error }) => {
       if (error) console.error('getSession error:', error);
-      if (session?.user) {
-        console.log('✅ getSession でログイン確認:', session.user.email);
-        isResolvingAuth = false;
-        setUser(session.user);
-        handleAuthExp(session.user);
+      handleAuthExp(session?.user ?? null);
 
-        // 🔄 サーバーから最新のユーザー情報（他端末で変更された名前やEXPなど）を即座に取得して反映！
-        supabase.auth.getUser().then(({ data: { user: latestUser } = {} }) => {
-          if (latestUser) {
-            setUser(latestUser);
-            handleAuthExp(latestUser);
-          }
-        }).catch(e => console.warn('getUser warning:', e));
-      } else if (!isResolvingAuth) {
-        handleAuthExp(null);
+      // 🔄 サーバーから最新のユーザー情報（他端末で変更された名前やEXPなど）を即座に取得して反映！
+      if (session?.user) {
+        supabase.auth.getUser().then(({ data: { user: latestUser } }) => {
+          if (latestUser) handleAuthExp(latestUser);
+        });
       }
     }).catch(err => {
       console.error('getSession catch:', err);
-      if (!isResolvingAuth) handleAuthExp(null);
     });
 
     // 🔄 タブ復帰時（スマホ画面を開いた時やタブを切り替えた時）に最新データを自動同期！
     const handleVisibilityOrFocus = () => {
       if (document.visibilityState === 'visible') {
-        supabase.auth.getUser().then(({ data: { user: latestUser } = {} }) => {
+        supabase.auth.getUser().then(({ data: { user: latestUser } }) => {
           if (latestUser) handleAuthExp(latestUser);
-        }).catch(e => console.warn('Focus getUser warning:', e));
+        });
       }
     };
     window.addEventListener('focus', handleVisibilityOrFocus);

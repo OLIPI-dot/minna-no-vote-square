@@ -157,23 +157,14 @@ const SurveyListView = ({
 
   const handleGoogleLogin = async () => {
     try {
-      // 🛡️ まず既にブラウザストレージにセッションが存在するか確認（ワンタップ即時復旧）
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
-        console.log('✅ 既存セッションを検知したため即座にログイン状態を復元します');
-        window.location.reload();
-        return;
-      }
-
-      const redirectUrl = window.location.origin;
+      const redirectUrl = window.location.origin.includes('localhost')
+        ? window.location.origin
+        : 'https://www.minna-no-vote-square.com';
 
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo: redirectUrl,
-          queryParams: {
-            prompt: 'select_account'
-          }
         }
       });
       if (error) {
@@ -202,22 +193,9 @@ const SurveyListView = ({
             )}
             <button
               className="logout-button"
-              onClick={async () => {
+              onClick={() => {
                 if (window.confirm('ログアウトしますか？')) {
-                  try {
-                    await supabase.auth.signOut();
-                  } catch (e) {
-                    console.warn('signOut error:', e);
-                  }
-                  // 🛡️ トークン失効時でも100%確実にログアウトできるよう、ローカルストレージのセッションキーを強制クリア
-                  try {
-                    Object.keys(localStorage).forEach(key => {
-                      if (key.startsWith('sb-') && key.endsWith('-auth-token')) {
-                        localStorage.removeItem(key);
-                      }
-                    });
-                  } catch (e) {}
-                  window.location.reload();
+                  supabase.auth.signOut();
                 }
               }}
             >
