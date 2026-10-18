@@ -643,23 +643,11 @@ function App() {
       if (error) console.error('getSession error:', error);
       handleAuthExp(session?.user ?? null);
 
-      // 🔄 サーバーから最新のユーザー情報を即座に取得して反映＆トークンの健全性を確認！
+      // 🔄 サーバーから最新のユーザー情報（他端末で変更された名前やEXPなど）を即座に取得して反映！
       if (session?.user) {
-        supabase.auth.getUser().then(({ data, error: userError }) => {
-          if (userError) {
-            console.warn('⚠️ getUser error (token potentially corrupted/expired):', userError);
-            supabase.auth.refreshSession().then(({ data: refData, error: refError }) => {
-              if (refError) {
-                console.error('🚨 Failed to refresh session, signing out corrupted token:', refError);
-                supabase.auth.signOut();
-              } else if (refData?.user) {
-                handleAuthExp(refData.user);
-              }
-            });
-          } else if (data?.user) {
-            handleAuthExp(data.user);
-          }
-        });
+        supabase.auth.getUser().then(({ data: { user: latestUser } = {} }) => {
+          if (latestUser) handleAuthExp(latestUser);
+        }).catch(e => console.warn('getUser warning:', e));
       }
     }).catch(err => {
       console.error('getSession catch:', err);
@@ -668,14 +656,9 @@ function App() {
     // 🔄 タブ復帰時（スマホ画面を開いた時やタブを切り替えた時）に最新データを自動同期！
     const handleVisibilityOrFocus = () => {
       if (document.visibilityState === 'visible') {
-        supabase.auth.getUser().then(({ data, error: userError }) => {
-          if (userError) {
-            console.warn('⚠️ Focus check: Token corrupted, attempting refresh...', userError);
-            supabase.auth.refreshSession();
-          } else if (data?.user) {
-            handleAuthExp(data.user);
-          }
-        });
+        supabase.auth.getUser().then(({ data: { user: latestUser } = {} }) => {
+          if (latestUser) handleAuthExp(latestUser);
+        }).catch(e => console.warn('Focus getUser warning:', e));
       }
     };
     window.addEventListener('focus', handleVisibilityOrFocus);
@@ -1783,25 +1766,7 @@ function App() {
 
       if (safetyTimeoutId) clearTimeout(safetyTimeoutId);
 
-      if (sError) {
-        console.error("❌ fetchSurveys: PUBLIC FETCH ERROR:", sError);
-        // 🛡️ JWT破損（PGRST301）や認証失効の場合、壊れたトークンを強制破棄して自動再取得
-        if (sError.code === 'PGRST301' || sError.message?.includes('JWT') || sError.status === 401) {
-          console.warn("🚨 JWT error detected, clearing bad token and refetching anonymously...");
-          try {
-            Object.keys(localStorage).forEach(key => {
-              if (key.startsWith('sb-') && key.endsWith('-auth-token')) {
-                localStorage.removeItem(key);
-              }
-            });
-          } catch (e) {}
-          supabase.auth.signOut().finally(() => {
-            fetchSurveys(null, silent, page, category, query, currentTab, sort, pop, tag);
-            fetchSidebarData();
-          });
-          return;
-        }
-      }
+      if (sError) console.error("❌ fetchSurveys: PUBLIC FETCH ERROR:", sError);
       if (sData) {
         console.log(`✅ fetchSurveys: Fetched ${sData.length} surveys for query "${query}". Total matching count: ${count}`);
         if (query && sData.length === 0) {

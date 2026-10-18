@@ -217,9 +217,7 @@ const Sidebar = ({
                 <button 
                   onClick={async () => {
                     try {
-                      const redirectUrl = window.location.origin.includes('localhost')
-                        ? window.location.origin
-                        : 'https://www.minna-no-vote-square.com';
+                      const redirectUrl = window.location.origin;
                       await supabase.auth.signInWithOAuth({
                         provider: 'google',
                         options: { redirectTo: redirectUrl }
