@@ -642,6 +642,7 @@ function App() {
               console.warn('🚨 URLハッシュのトークンは失効または使用済みでした:', error.message);
             } else if (data?.session?.user) {
               console.log('✅ URLハッシュからログインセッション確立成功！', data.session.user.email);
+              setUser(data.session.user);
               handleAuthExp(data.session.user);
             }
           });
@@ -652,11 +653,15 @@ function App() {
     }
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('🔔 onAuthStateChange event:', event, session?.user?.email);
+      const currentUser = session?.user ?? null;
+      setUser(currentUser);
+
       // ⚠️ USER_UPDATEDなどの内部更新でhandleAuthExpを呼ぶと、
       // 自身のupdateUser完了通知でローカルの最新Stateが巻き戻ってしまうため、
-      // SIGNED_IN（ログイン時）やSIGNED_OUT（ログアウト時）のみ実行する！
-      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
-        handleAuthExp(session?.user ?? null);
+      // ログイン時・初期セッション復元時・ログアウト時のみEXP/インベントリ同期を実行する！
+      if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION' || event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED') {
+        handleAuthExp(currentUser);
       }
     });
 
