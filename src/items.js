@@ -92,7 +92,7 @@ export const getItemEffectDescription = (itemOrEffect, customRarity) => {
     }
     case 'crit_up': {
       const pct = { N: 5, R: 10, SR: 20, UR: 25 }[rarity] || 10;
-      return `【会心UP】クリティカル率が+${pct}%上昇`;
+      return `【会心UP】会心率が+${pct}%上昇`;
     }
     case 'kusorep': {
       const pct = { N: 5, R: 10, SR: 20, UR: 30 }[rarity] || 10;
