@@ -614,34 +614,43 @@ function App() {
       }
     };
 
-    // 🛡️ URLに含まれるOAuthトークンまたはエラーを検知してセッションを確実に確立！
+    // 🛡️ URLに含まれるOAuthトークン・認証コード・エラーを検知してセッションを確実に確立！
     try {
       const hashParams = new URLSearchParams(window.location.hash.substring(1));
       const searchParams = new URLSearchParams(window.location.search);
       const errorDesc = hashParams.get('error_description') || searchParams.get('error_description') || hashParams.get('error');
+
       if (errorDesc) {
         console.error('🚨 Auth Error from redirect URL:', errorDesc);
         alert('⚠️ ログインに失敗しました:\n' + decodeURIComponent(errorDesc.replace(/\+/g, ' ')));
-        // URLのハッシュエラーを綺麗にする
-        const cleanUrl = window.location.pathname + window.location.search;
+        const cleanUrl = window.location.pathname;
         window.history.replaceState({}, document.title, cleanUrl);
       } else {
         const accessToken = hashParams.get('access_token');
         const refreshToken = hashParams.get('refresh_token');
+        const code = searchParams.get('code');
+
         if (accessToken) {
-          console.log('🔑 URLハッシュからaccess_tokenを検知！明示的にセッションを確立します...');
+          console.log('🔑 URLハッシュからaccess_tokenを検知！セッションを確立します...');
           supabase.auth.setSession({
             access_token: accessToken,
             refresh_token: refreshToken || ''
           }).then(({ data, error }) => {
-            // 🛡️ 成否に関わらず、一度使ったURLハッシュは綺麗に消去する
-            const cleanUrl = window.location.pathname + window.location.search;
-            window.history.replaceState({}, document.title, cleanUrl);
-
             if (error) {
-              console.warn('🚨 URLハッシュのトークンは失効または使用済みでした:', error.message);
+              console.warn('⚠️ URLハッシュの手動setSession結果:', error.message);
             } else if (data?.session?.user) {
               console.log('✅ URLハッシュからログインセッション確立成功！', data.session.user.email);
+              setUser(data.session.user);
+              handleAuthExp(data.session.user);
+            }
+          });
+        } else if (code) {
+          console.log('🔑 URLクエリからPKCE認証codeを検知！セッションを交換します...');
+          supabase.auth.exchangeCodeForSession(code).then(({ data, error }) => {
+            if (error) {
+              console.warn('⚠️ exchangeCodeForSession結果:', error.message);
+            } else if (data?.session?.user) {
+              console.log('✅ PKCEコードからログインセッション確立成功！', data.session.user.email);
               setUser(data.session.user);
               handleAuthExp(data.session.user);
             }
@@ -663,17 +672,30 @@ function App() {
       if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION' || event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED') {
         handleAuthExp(currentUser);
       }
+
+      // 🛡️ ログインが正常に確認できたら、URLに残ったOAuthのハッシュやcodeパラメータを綺麗にする！
+      if (currentUser && (window.location.hash.includes('access_token') || window.location.search.includes('code='))) {
+        const cleanUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, cleanUrl);
+      }
     });
 
     supabase.auth.getSession().then(({ data: { session }, error }) => {
       if (error) console.error('getSession error:', error);
-      handleAuthExp(session?.user ?? null);
-
-      // 🔄 サーバーから最新のユーザー情報（他端末で変更された名前やEXPなど）を即座に取得して反映！
       if (session?.user) {
+        console.log('✅ getSession でログイン確認:', session.user.email);
+        setUser(session.user);
+        handleAuthExp(session.user);
+
+        // 🔄 サーバーから最新のユーザー情報（他端末で変更された名前やEXPなど）を即座に取得して反映！
         supabase.auth.getUser().then(({ data: { user: latestUser } = {} }) => {
-          if (latestUser) handleAuthExp(latestUser);
+          if (latestUser) {
+            setUser(latestUser);
+            handleAuthExp(latestUser);
+          }
         }).catch(e => console.warn('getUser warning:', e));
+      } else {
+        handleAuthExp(null);
       }
     }).catch(err => {
       console.error('getSession catch:', err);

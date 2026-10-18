@@ -217,6 +217,11 @@ const Sidebar = ({
                 <button 
                   onClick={async () => {
                     try {
+                      const { data: { session } } = await supabase.auth.getSession();
+                      if (session?.user) {
+                        window.location.reload();
+                        return;
+                      }
                       const redirectUrl = window.location.origin;
                       await supabase.auth.signInWithOAuth({
                         provider: 'google',

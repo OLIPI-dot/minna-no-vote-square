@@ -157,6 +157,14 @@ const SurveyListView = ({
 
   const handleGoogleLogin = async () => {
     try {
+      // 🛡️ まず既にブラウザストレージにセッションが存在するか確認（ワンタップ即時復旧）
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        console.log('✅ 既存セッションを検知したため即座にログイン状態を復元します');
+        window.location.reload();
+        return;
+      }
+
       const redirectUrl = window.location.origin;
 
       const { error } = await supabase.auth.signInWithOAuth({
