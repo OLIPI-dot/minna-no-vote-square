@@ -546,6 +546,14 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
                     return false; // 装備中そのものはカバンから非表示！
                   }
                   return true;
+                })
+                .map(rawItem => syncItemWithMaster(rawItem))
+                .sort((a, b) => {
+                  const rDiff = (RARITY_WEIGHT[b.rarity] || 0) - (RARITY_WEIGHT[a.rarity] || 0);
+                  if (rDiff !== 0) return rDiff;
+                  const nameDiff = (a.name || '').localeCompare(b.name || '', 'ja');
+                  if (nameDiff !== 0) return nameDiff;
+                  return 0;
                 });
 
               return (
@@ -561,8 +569,7 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
                         カバンに他の{selectedSlot === 'weapon' ? '武器' : selectedSlot === 'armor' ? '防具' : selectedSlot === 'accessory' ? 'アクセ' : 'お供'}はありません
                       </div>
                     ) : (
-                      displaySlotItems.map(rawItem => {
-                        const item = syncItemWithMaster(rawItem);
+                      displaySlotItems.map((item, idx) => {
                         const diffAtk = item.atk - (currentEquip ? currentEquip.atk : 0);
                         const diffDef = item.def - (currentEquip ? currentEquip.def : 0);
                         const diffHp = item.hp - (currentEquip ? currentEquip.hp : 0);
@@ -575,7 +582,7 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
                         };
 
                         return (
-                          <div key={item.id} style={{ 
+                          <div key={`${item.id}_${idx}`} style={{ 
                             display: 'flex', 
                             alignItems: 'center', 
                             gap: '8px', 
@@ -609,6 +616,11 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
                                   必要Lv: {getReqLevel(item)}
                                 </span>
                               </div>
+                              {item.desc && (
+                                <div style={{ fontSize: '0.7rem', color: '#64748b', wordBreak: 'break-word', marginTop: '3px' }}>
+                                  {item.desc}
+                                </div>
+                              )}
                               {getEffectKey(item) && (
                                 <div style={{ fontSize: '0.68rem', color: '#92400e', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '4px', padding: '3px 6px', marginTop: '3px', fontWeight: 'bold', lineHeight: 1.35, wordBreak: 'break-word' }}>
                                   ✨ {getItemEffectDescription(item)}

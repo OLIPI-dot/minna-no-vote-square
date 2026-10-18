@@ -1849,6 +1849,9 @@ function App() {
         sData = await window.__INITIAL_DATA_PROMISE__;
         window.__INITIAL_DATA_PROMISE__ = null; // 一度使ったらクリア
         count = sData ? sData.length : 0; // 暫定カウント
+        if (sData && sData.length > 0) {
+          setTotalOfficialCount(prev => Math.max(prev, sData.length));
+        }
       }
       const email = user?.email || user?.user_metadata?.email || '';
       const isActuallyAdmin = user && ADMIN_EMAILS.includes(email);
@@ -1962,8 +1965,9 @@ function App() {
         if (!query.trim()) {
           (async () => {
             // 💡 現在のソートやカテゴリの条件を、カウント用クエリにも反映させるらび！
+            // ⚠️ モバイルSafariやCDNで HEAD リクエスト(head:true)のヘッダーが消失しないよう、GET + limit(1) で確実にcountを取得するらび！
             const getCountQuery = (isOff) => {
-              let q = supabase.from('surveys').select('id', { count: 'exact', head: true }).eq('visibility', 'public').eq('is_official', isOff);
+              let q = supabase.from('surveys').select('id', { count: 'exact' }).limit(1).eq('visibility', 'public').eq('is_official', isOff);
               if (category && category !== 'すべて') q = q.eq('category', category);
               if (tag) q = q.contains('tags', [tag]);
 
@@ -1984,13 +1988,19 @@ function App() {
               return q;
             };
 
-            const [{ count: offCount }, { count: uCount }] = await Promise.all([
-              getCountQuery(true),
-              getCountQuery(false)
-            ]);
-            setTotalOfficialCount(offCount || 0);
-            setTotalUserCount(uCount || 0);
-            console.log(`🔢 Filtered Counts Updated: Official(${offCount}), User(${uCount}) [Sort: ${sort}, Cat: ${category}]`);
+            try {
+              const [{ count: offCount }, { count: uCount }] = await Promise.all([
+                getCountQuery(true),
+                getCountQuery(false)
+              ]);
+              const visibleOfficial = sData ? sData.filter(s => s.is_official).length : 0;
+              const visibleUser = sData ? sData.filter(s => !s.is_official).length : 0;
+              setTotalOfficialCount(prev => (offCount != null ? offCount : Math.max(prev, visibleOfficial)));
+              setTotalUserCount(prev => (uCount != null ? uCount : Math.max(prev, visibleUser)));
+              console.log(`🔢 Filtered Counts Updated: Official(${offCount}), User(${uCount}) [Sort: ${sort}, Cat: ${category}]`);
+            } catch (err) {
+              console.error("❌ Failed to fetch tab counts:", err);
+            }
           })();
         }
       }
