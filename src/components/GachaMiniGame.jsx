@@ -41,6 +41,7 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
   const [invFilterType, setInvFilterType] = useState('all'); // 'all' | 'weapon' | 'armor' | 'accessory' | 'partner'
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [isRolling, setIsRolling] = useState(false);
+  const invListRef = React.useRef(null);
   const COST = 1; // 1回1チケット
 
   // 🎒 インベントリのフィルタリング＆ソート（同名まとめ対応）
@@ -143,7 +144,7 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
   ];
 
   const sortOptions = [
-    { key: 'rarity', icon: '🌟', label: 'レア順 (同名まとめ)' },
+    { key: 'rarity', icon: '🌟', label: 'レア順' },
     { key: 'type', icon: '⚔️', label: '種別順' },
     { key: 'power', icon: '⚡', label: '強さ順' },
     { key: 'newest', icon: '🕒', label: '新しい順' },
@@ -638,7 +639,7 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.65)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100000, padding: '10px' }}>
           <div style={{ background: '#fff', padding: '14px 16px', borderRadius: '16px', width: '100%', maxWidth: '480px', maxHeight: '90vh', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 40px rgba(0,0,0,0.3)', border: '1px solid #e2e8f0' }}>
             {/* ヘッダー */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', flexShrink: 0 }}>
               <h3 style={{ margin: 0, color: '#1e293b', fontSize: '1rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <span>👜 インベントリ</span>
                 <span style={{ fontSize: '0.75rem', background: '#f1f5f9', color: '#64748b', padding: '2px 8px', borderRadius: '12px' }}>
@@ -651,14 +652,17 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
             </div>
 
             {/* 種別フィルター (タブ) */}
-            <div style={{ display: 'flex', gap: '4px', marginBottom: '8px', overflowX: 'auto', paddingBottom: '2px', WebkitOverflowScrolling: 'touch' }}>
+            <div style={{ display: 'flex', gap: '4px', marginBottom: '8px', overflowX: 'auto', paddingBottom: '4px', WebkitOverflowScrolling: 'touch', flexShrink: 0 }}>
               {filterOptions.map(opt => (
                 <button
                   key={opt.key}
-                  onClick={() => setInvFilterType(opt.key)}
+                  onClick={() => {
+                    setInvFilterType(opt.key);
+                    if (invListRef.current) invListRef.current.scrollTop = 0;
+                  }}
                   style={{
-                    padding: '4px 8px',
-                    fontSize: '0.72rem',
+                    padding: '5px 9px',
+                    fontSize: '0.74rem',
                     borderRadius: '8px',
                     border: 'none',
                     cursor: 'pointer',
@@ -666,7 +670,8 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
                     fontWeight: invFilterType === opt.key ? 'bold' : 'normal',
                     background: invFilterType === opt.key ? '#3b82f6' : '#f1f5f9',
                     color: invFilterType === opt.key ? '#ffffff' : '#475569',
-                    transition: 'all 0.15s ease'
+                    transition: 'all 0.15s ease',
+                    flexShrink: 0
                   }}
                 >
                   {opt.label} ({opt.count})
@@ -675,16 +680,19 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
             </div>
 
             {/* ソートバー */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px', background: '#f8fafc', padding: '5px 8px', borderRadius: '8px', border: '1px solid #e2e8f0', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px', background: '#f8fafc', padding: '6px 8px', borderRadius: '8px', border: '1px solid #e2e8f0', flexWrap: 'wrap', flexShrink: 0 }}>
               <span style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: 'bold', whiteSpace: 'nowrap' }}>並び順:</span>
               <div style={{ display: 'flex', gap: '4px', flex: 1, flexWrap: 'wrap' }}>
                 {sortOptions.map(s => (
                   <button
                     key={s.key}
-                    onClick={() => setInvSortType(s.key)}
+                    onClick={() => {
+                      setInvSortType(s.key);
+                      if (invListRef.current) invListRef.current.scrollTop = 0;
+                    }}
                     style={{
-                      padding: '3px 7px',
-                      fontSize: '0.68rem',
+                      padding: '4px 8px',
+                      fontSize: '0.7rem',
                       borderRadius: '6px',
                       border: invSortType === s.key ? '1px solid #3b82f6' : '1px solid #cbd5e1',
                       background: invSortType === s.key ? '#eff6ff' : '#ffffff',
@@ -693,7 +701,7 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '2px',
+                      gap: '3px',
                       transition: 'all 0.15s ease'
                     }}
                   >
@@ -704,11 +712,11 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
               </div>
             </div>
             
-            <div style={{ overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: '6px', paddingRight: '2px' }}>
+            <div ref={invListRef} style={{ overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: '6px', paddingRight: '2px' }}>
               {processedInventory.length === 0 ? (
                 <div style={{ textAlign: 'center', color: '#94a3b8', padding: '30px 0', fontSize: '0.8rem' }}>アイテムがありません</div>
               ) : (
-                processedInventory.map(item => {
+                processedInventory.map((item, idx) => {
                   const currentEquip = syncItemWithMaster(equipment[item.type]);
                   const diffAtk = item.atk - (currentEquip ? currentEquip.atk : 0);
                   const diffDef = item.def - (currentEquip ? currentEquip.def : 0);
@@ -724,7 +732,7 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
                   const typeLabels = { weapon: '🗡️ 武器', armor: '🛡️ 防具', accessory: '💍 アクセ', partner: '👤 お供' };
 
                   return (
-                    <div key={item.id} style={{ 
+                    <div key={`${item.id}_${idx}`} style={{ 
                       display: 'flex', 
                       alignItems: 'center', 
                       gap: '8px', 
