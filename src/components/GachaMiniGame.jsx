@@ -37,9 +37,117 @@ const getItemDesc = (item) => {
 const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, setEquipment, addExp, inventory = [], setInventory, acquiredItems = [], setAcquiredItems }) => {
   const [gachaResult, setGachaResult] = useState(null);
   const [showInventory, setShowInventory] = useState(false);
+  const [invSortType, setInvSortType] = useState('rarity'); // 'rarity' | 'type' | 'power' | 'newest'
+  const [invFilterType, setInvFilterType] = useState('all'); // 'all' | 'weapon' | 'armor' | 'accessory' | 'partner'
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [isRolling, setIsRolling] = useState(false);
   const COST = 1; // 1回1チケット
+
+  // 🎒 インベントリのフィルタリング＆ソート（同名まとめ対応）
+  const RARITY_WEIGHT = { LR: 5, UR: 4, SR: 3, R: 2, N: 1 };
+  const TYPE_ORDER = { weapon: 1, armor: 2, accessory: 3, partner: 4 };
+
+  const processedInventory = React.useMemo(() => {
+    let list = (inventory || []).map(raw => syncItemWithMaster(raw));
+
+    if (invFilterType !== 'all') {
+      list = list.filter(item => item && item.type === invFilterType);
+    }
+
+    return [...list].sort((a, b) => {
+      if (!a || !b) return 0;
+
+      if (invSortType === 'rarity') {
+        // 1. レアリティ降順 (LR -> UR -> SR -> R -> N)
+        const rDiff = (RARITY_WEIGHT[b.rarity] || 0) - (RARITY_WEIGHT[a.rarity] || 0);
+        if (rDiff !== 0) return rDiff;
+
+        // 2. 同一レアリティ内: 同姓同名のアイテムを一緒にする（名前順）
+        const nameDiff = (a.name || '').localeCompare(b.name || '', 'ja');
+        if (nameDiff !== 0) return nameDiff;
+
+        // 3. 同名アイテム内: タイムスタンプの新しい順
+        const getTime = (it) => {
+          const parts = (it.id || '').split('_');
+          const ts = parseInt(parts[parts.length - 1], 10);
+          return isNaN(ts) ? 0 : ts;
+        };
+        const tDiff = getTime(b) - getTime(a);
+        if (tDiff !== 0) return tDiff;
+
+        return (a.id || '').localeCompare(b.id || '');
+      }
+
+      if (invSortType === 'type') {
+        // 種別順 (武器 -> 防具 -> アクセ -> お供)
+        const tDiff = (TYPE_ORDER[a.type] || 0) - (TYPE_ORDER[b.type] || 0);
+        if (tDiff !== 0) return tDiff;
+
+        // 同種別内: レアリティ降順
+        const rDiff = (RARITY_WEIGHT[b.rarity] || 0) - (RARITY_WEIGHT[a.rarity] || 0);
+        if (rDiff !== 0) return rDiff;
+
+        // 同名まとめ
+        const nameDiff = (a.name || '').localeCompare(b.name || '', 'ja');
+        if (nameDiff !== 0) return nameDiff;
+
+        return (a.id || '').localeCompare(b.id || '');
+      }
+
+      if (invSortType === 'power') {
+        // 戦闘力（ATK + DEF + HP）降順
+        const pA = (a.atk || 0) + (a.def || 0) + (a.hp || 0);
+        const pB = (b.atk || 0) + (b.def || 0) + (b.hp || 0);
+        const pDiff = pB - pA;
+        if (pDiff !== 0) return pDiff;
+
+        const rDiff = (RARITY_WEIGHT[b.rarity] || 0) - (RARITY_WEIGHT[a.rarity] || 0);
+        if (rDiff !== 0) return rDiff;
+
+        return (a.name || '').localeCompare(b.name || '', 'ja');
+      }
+
+      if (invSortType === 'newest') {
+        // 新しい順（タイムスタンプ降順）
+        const getTime = (it) => {
+          const parts = (it.id || '').split('_');
+          const ts = parseInt(parts[parts.length - 1], 10);
+          return isNaN(ts) ? 0 : ts;
+        };
+        const tDiff = getTime(b) - getTime(a);
+        if (tDiff !== 0) return tDiff;
+        return (a.id || '').localeCompare(b.id || '');
+      }
+
+      return 0;
+    });
+  }, [inventory, invFilterType, invSortType]);
+
+  const filterCounts = React.useMemo(() => {
+    const counts = { all: (inventory || []).length, weapon: 0, armor: 0, accessory: 0, partner: 0 };
+    (inventory || []).forEach(raw => {
+      const it = syncItemWithMaster(raw);
+      if (it && counts[it.type] !== undefined) {
+        counts[it.type]++;
+      }
+    });
+    return counts;
+  }, [inventory]);
+
+  const filterOptions = [
+    { key: 'all', label: 'すべて', count: filterCounts.all },
+    { key: 'weapon', label: '🗡️ 武器', count: filterCounts.weapon },
+    { key: 'armor', label: '🛡️ 防具', count: filterCounts.armor },
+    { key: 'accessory', label: '💍 アクセ', count: filterCounts.accessory },
+    { key: 'partner', label: '👤 お供', count: filterCounts.partner },
+  ];
+
+  const sortOptions = [
+    { key: 'rarity', icon: '🌟', label: 'レア順 (同名まとめ)' },
+    { key: 'type', icon: '⚔️', label: '種別順' },
+    { key: 'power', icon: '⚡', label: '強さ順' },
+    { key: 'newest', icon: '🕒', label: '新しい順' },
+  ];
 
   // 🌟 ガチャ専用演出ステート ('none' | 'charging' | 'blackout' | 'cutin' | 'reveal')
   const [animStep, setAnimStep] = useState('none');
@@ -528,18 +636,79 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
       {/* インベントリモーダル */}
       {showInventory && createPortal(
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.65)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100000, padding: '10px' }}>
-          <div style={{ background: '#fff', padding: '14px 16px', borderRadius: '14px', width: '100%', maxWidth: '480px', maxHeight: '90vh', display: 'flex', flexDirection: 'column', boxShadow: '0 10px 25px rgba(0,0,0,0.3)' }}>
-            <h3 style={{ margin: '0 0 10px 0', color: '#1e293b', fontSize: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span>👜 インベントリ ({inventory.length}個)</span>
-              <button onClick={() => setShowInventory(false)} style={{ background: 'none', border: 'none', fontSize: '1.4rem', cursor: 'pointer', lineHeight: 1, color: '#64748b' }}>×</button>
-            </h3>
+          <div style={{ background: '#fff', padding: '14px 16px', borderRadius: '16px', width: '100%', maxWidth: '480px', maxHeight: '90vh', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 40px rgba(0,0,0,0.3)', border: '1px solid #e2e8f0' }}>
+            {/* ヘッダー */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+              <h3 style={{ margin: 0, color: '#1e293b', fontSize: '1rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span>👜 インベントリ</span>
+                <span style={{ fontSize: '0.75rem', background: '#f1f5f9', color: '#64748b', padding: '2px 8px', borderRadius: '12px' }}>
+                  {processedInventory.length !== inventory.length
+                    ? `${processedInventory.length} / ${inventory.length}個`
+                    : `${inventory.length}個`}
+                </span>
+              </h3>
+              <button onClick={() => setShowInventory(false)} style={{ background: 'none', border: 'none', fontSize: '1.4rem', cursor: 'pointer', lineHeight: 1, color: '#64748b', padding: '2px 6px' }}>×</button>
+            </div>
+
+            {/* 種別フィルター (タブ) */}
+            <div style={{ display: 'flex', gap: '4px', marginBottom: '8px', overflowX: 'auto', paddingBottom: '2px', WebkitOverflowScrolling: 'touch' }}>
+              {filterOptions.map(opt => (
+                <button
+                  key={opt.key}
+                  onClick={() => setInvFilterType(opt.key)}
+                  style={{
+                    padding: '4px 8px',
+                    fontSize: '0.72rem',
+                    borderRadius: '8px',
+                    border: 'none',
+                    cursor: 'pointer',
+                    whiteSpace: 'nowrap',
+                    fontWeight: invFilterType === opt.key ? 'bold' : 'normal',
+                    background: invFilterType === opt.key ? '#3b82f6' : '#f1f5f9',
+                    color: invFilterType === opt.key ? '#ffffff' : '#475569',
+                    transition: 'all 0.15s ease'
+                  }}
+                >
+                  {opt.label} ({opt.count})
+                </button>
+              ))}
+            </div>
+
+            {/* ソートバー */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px', background: '#f8fafc', padding: '5px 8px', borderRadius: '8px', border: '1px solid #e2e8f0', flexWrap: 'wrap' }}>
+              <span style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: 'bold', whiteSpace: 'nowrap' }}>並び順:</span>
+              <div style={{ display: 'flex', gap: '4px', flex: 1, flexWrap: 'wrap' }}>
+                {sortOptions.map(s => (
+                  <button
+                    key={s.key}
+                    onClick={() => setInvSortType(s.key)}
+                    style={{
+                      padding: '3px 7px',
+                      fontSize: '0.68rem',
+                      borderRadius: '6px',
+                      border: invSortType === s.key ? '1px solid #3b82f6' : '1px solid #cbd5e1',
+                      background: invSortType === s.key ? '#eff6ff' : '#ffffff',
+                      color: invSortType === s.key ? '#1d4ed8' : '#475569',
+                      fontWeight: invSortType === s.key ? 'bold' : 'normal',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '2px',
+                      transition: 'all 0.15s ease'
+                    }}
+                  >
+                    <span>{s.icon}</span>
+                    <span>{s.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
             
             <div style={{ overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: '6px', paddingRight: '2px' }}>
-              {inventory.length === 0 ? (
+              {processedInventory.length === 0 ? (
                 <div style={{ textAlign: 'center', color: '#94a3b8', padding: '30px 0', fontSize: '0.8rem' }}>アイテムがありません</div>
               ) : (
-                inventory.map(rawItem => {
-                  const item = syncItemWithMaster(rawItem);
+                processedInventory.map(item => {
                   const currentEquip = syncItemWithMaster(equipment[item.type]);
                   const diffAtk = item.atk - (currentEquip ? currentEquip.atk : 0);
                   const diffDef = item.def - (currentEquip ? currentEquip.def : 0);
