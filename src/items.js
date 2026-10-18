@@ -32,7 +32,8 @@ export const rollGacha = () => {
 // ユーザーの所持アイテムを最新のマスターデータ（atk, def, hp等）で自動同期・補正する
 export const syncItemWithMaster = (item) => {
   if (!item || !item.id) return item;
-  const master = ITEMS.find(i => i.id === item.id || (i.name && i.name === item.name));
+  const baseId = typeof item.id === 'string' ? item.id.split('_')[0] : item.id;
+  const master = ITEMS.find(i => i.id === item.id || i.id === baseId || (i.name && i.name === item.name));
   if (!master) return item;
   return {
     ...item,
