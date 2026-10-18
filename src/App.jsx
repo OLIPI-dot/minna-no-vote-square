@@ -1846,12 +1846,17 @@ function App() {
       // 🚀 Early Fetch (index.htmlで開始したリクエスト) を活用するらび！
       if (isFirstLoad && window.__INITIAL_DATA_PROMISE__) {
         console.log("⚡ fetchSurveys: Using EARLY FETCH data from window.__INITIAL_DATA_PROMISE__");
-        sData = await window.__INITIAL_DATA_PROMISE__;
-        window.__INITIAL_DATA_PROMISE__ = null; // 一度使ったらクリア
-        count = sData ? sData.length : 0; // 暫定カウント
-        if (sData && sData.length > 0) {
-          setTotalOfficialCount(prev => Math.max(prev, sData.length));
+        try {
+          const earlyResult = await window.__INITIAL_DATA_PROMISE__;
+          if (Array.isArray(earlyResult) && earlyResult.length > 0) {
+            sData = earlyResult;
+            count = earlyResult.length;
+            setTotalOfficialCount(prev => Math.max(prev, earlyResult.length));
+          }
+        } catch (e) {
+          console.warn("Early fetch failed, fallback to standard query:", e);
         }
+        window.__INITIAL_DATA_PROMISE__ = null; // 一度使ったらクリア
       }
       const email = user?.email || user?.user_metadata?.email || '';
       const isActuallyAdmin = user && ADMIN_EMAILS.includes(email);
@@ -1993,8 +1998,8 @@ function App() {
                 getCountQuery(true),
                 getCountQuery(false)
               ]);
-              const visibleOfficial = sData ? sData.filter(s => s.is_official).length : 0;
-              const visibleUser = sData ? sData.filter(s => !s.is_official).length : 0;
+              const visibleOfficial = Array.isArray(sData) ? sData.filter(s => s && s.is_official).length : 0;
+              const visibleUser = Array.isArray(sData) ? sData.filter(s => s && !s.is_official).length : 0;
               setTotalOfficialCount(prev => (offCount != null ? offCount : Math.max(prev, visibleOfficial)));
               setTotalUserCount(prev => (uCount != null ? uCount : Math.max(prev, visibleUser)));
               console.log(`🔢 Filtered Counts Updated: Official(${offCount}), User(${uCount}) [Sort: ${sort}, Cat: ${category}]`);
