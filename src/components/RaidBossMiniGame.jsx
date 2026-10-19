@@ -42,6 +42,21 @@ const RaidBossMiniGame = ({
   // ☁️ レイド進捗（ボスHP・自ダメージ・ランキング・回復薬・実況ログ）のクラウド ＆ ローカル双方向同期
   const getInitialRaidProgress = () => {
     const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
+
+    // 🧹 過去テストデータ（ゾンビデータ）の確実な強制クリーンアップ
+    const RAID_RESET_VERSION = '20261019_clean_v1';
+    try {
+      if (localStorage.getItem('minique_raid_reset_version') !== RAID_RESET_VERSION) {
+        localStorage.removeItem(getTodayKey());
+        localStorage.removeItem(getRankingKey());
+        localStorage.removeItem(getFaintKey());
+        localStorage.removeItem(getLogsKey());
+        localStorage.removeItem(`minique_raid_heals_${currentBoss.id}_${todayStr}`);
+        localStorage.removeItem(`minique_raid_participation_${todayStr}`);
+        localStorage.setItem('minique_raid_reset_version', RAID_RESET_VERSION);
+      }
+    } catch (e) {}
+
     let localBossHp = currentBoss.maxHp;
     try {
       const saved = localStorage.getItem(getTodayKey());
@@ -268,6 +283,19 @@ const RaidBossMiniGame = ({
     }
 
     const cloudProgress = user.user_metadata?.raid_progress_v1;
+
+    // 🛑 過去のテストデータ（78907ダメージやHP 0のゾンビデータ）を検知した場合は破棄してクラウドをクリア
+    if (cloudProgress && (cloudProgress.myDamage === 78907 || cloudProgress.bossHp === 0)) {
+      if (supabase) {
+        supabase.auth.updateUser({
+          data: {
+            raid_progress_v1: null,
+            raid_participation_claimed_date: null
+          }
+        }).catch(console.warn);
+      }
+      return;
+    }
 
     if (cloudProgress && cloudProgress.date === todayStr && cloudProgress.bossId === currentBoss.id) {
       let shouldUpdateCloud = false;
