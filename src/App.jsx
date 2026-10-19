@@ -396,10 +396,25 @@ function App() {
 
   const isAuthLoaded = useRef(false);
 
+  // 🪶 クラウド保存用スリム化（JWTサイズ肥大化・400 Bad Request防止）
+  const toSlimInventory = (items) => {
+    if (!Array.isArray(items)) return [];
+    return items.map(item => ({ id: item.id }));
+  };
+
+  const toSlimEquipment = (equip) => {
+    if (!equip || typeof equip !== 'object') return {};
+    const slim = {};
+    ['weapon', 'armor', 'accessory', 'partner'].forEach(slot => {
+      slim[slot] = equip[slot] && equip[slot].id ? { id: equip[slot].id } : null;
+    });
+    return slim;
+  };
+
   useEffect(() => {
     localStorage.setItem('min_ake_equipment', JSON.stringify(equipment));
     if (user && isAuthLoaded.current) {
-      supabase.auth.updateUser({ data: { custom_equipment: equipment } });
+      supabase.auth.updateUser({ data: { custom_equipment: toSlimEquipment(equipment) } });
     }
   }, [equipment, user?.id]);
 
@@ -456,7 +471,7 @@ function App() {
   useEffect(() => {
     localStorage.setItem('min_ake_inventory', JSON.stringify(inventory));
     if (user && isAuthLoaded.current) {
-      supabase.auth.updateUser({ data: { custom_inventory: inventory } });
+      supabase.auth.updateUser({ data: { custom_inventory: toSlimInventory(inventory) } });
     }
   }, [inventory, user?.id]);
 
@@ -560,7 +575,7 @@ function App() {
 
         if (hasLocalEquip && !hasDbEquip) {
           // PC等でローカルに装備があるがクラウドがまだ空の場合、クラウドへ初バックアップ！
-          updates.custom_equipment = localEquip;
+          updates.custom_equipment = toSlimEquipment(localEquip);
           finalEquip = localEquip;
           shouldUpdate = true;
         } else if (hasDbEquip) {
@@ -570,7 +585,7 @@ function App() {
           if (localEquip && typeof localEquip === 'object') {
             Object.keys(localEquip).forEach(slot => {
               const localItem = localEquip[slot];
-              if (localItem && localItem.id && finalEquip[slot]?.id !== localItem.id) {
+              if (localItem && localItem.id && dbEquipment?.[slot]?.id !== localItem.id) {
                 displacedItems.push(localItem);
               }
             });
@@ -585,7 +600,7 @@ function App() {
           setEquipment(finalEquip);
           localStorage.setItem('min_ake_equipment', JSON.stringify(finalEquip));
           if (JSON.stringify(finalEquip) !== JSON.stringify(dbEquipment)) {
-            updates.custom_equipment = finalEquip;
+            updates.custom_equipment = toSlimEquipment(finalEquip);
             shouldUpdate = true;
           }
         }
@@ -604,7 +619,7 @@ function App() {
               .filter(Boolean)
           );
           const cleanedInv = localInv.filter(it => !activeEquippedIds.has(it.id));
-          updates.custom_inventory = cleanedInv;
+          updates.custom_inventory = toSlimInventory(cleanedInv);
           shouldUpdate = true;
         } else if (hasDbInv) {
           // 端末間で入手したアイテムが消えないよう合成
@@ -634,7 +649,7 @@ function App() {
           setInventory(syncedInv);
           localStorage.setItem('min_ake_inventory', JSON.stringify(syncedInv));
           if (syncedInv.length !== dbInventory.length) {
-            updates.custom_inventory = syncedInv;
+            updates.custom_inventory = toSlimInventory(syncedInv);
             shouldUpdate = true;
           }
         }
