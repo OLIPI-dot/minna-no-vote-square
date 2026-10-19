@@ -209,11 +209,13 @@ export const RARITY_CONFIG = {
   LR: {
     label: 'LR',
     name: 'Legend Rare',
-    color: '#ef4444',
+    color: '#dc2626',
     darkColor: '#ff4d4f',
     bg: 'linear-gradient(135deg, #ef4444 0%, #ec4899 50%, #8b5cf6 100%)',
     border: '#ef4444',
     glow: '0 0 10px rgba(239, 68, 68, 0.9), 0 0 20px rgba(236, 72, 153, 0.6)',
+    textGlow: 'none',
+    textGlowDark: '0 0 10px rgba(239, 68, 68, 0.9), 0 0 20px rgba(236, 72, 153, 0.6)',
     boxGlow: '0 0 12px rgba(239, 68, 68, 0.65)',
     sparkle: '🔥',
     badgeTextColor: '#ffffff'
@@ -221,11 +223,13 @@ export const RARITY_CONFIG = {
   UR: {
     label: 'UR',
     name: 'Ultra Rare',
-    color: '#e11d48',
+    color: '#be123c',
     darkColor: '#fb7185',
     bg: 'linear-gradient(135deg, #f43f5e 0%, #d946ef 100%)',
     border: '#f43f5e',
     glow: '0 0 8px rgba(244, 63, 94, 0.85), 0 0 15px rgba(217, 70, 239, 0.5)',
+    textGlow: 'none',
+    textGlowDark: '0 0 8px rgba(244, 63, 94, 0.85), 0 0 15px rgba(217, 70, 239, 0.5)',
     boxGlow: '0 0 10px rgba(244, 63, 94, 0.5)',
     sparkle: '✨',
     badgeTextColor: '#ffffff'
@@ -233,11 +237,13 @@ export const RARITY_CONFIG = {
   SR: {
     label: 'SR',
     name: 'Super Rare',
-    color: '#d97706',
+    color: '#b45309',
     darkColor: '#fbbf24',
     bg: 'linear-gradient(135deg, #f59e0b 0%, #eab308 100%)',
     border: '#f59e0b',
     glow: '0 0 8px rgba(245, 158, 11, 0.85), 0 0 12px rgba(234, 179, 8, 0.4)',
+    textGlow: 'none',
+    textGlowDark: '0 0 8px rgba(245, 158, 11, 0.85), 0 0 12px rgba(234, 179, 8, 0.4)',
     boxGlow: '0 0 8px rgba(245, 158, 11, 0.45)',
     sparkle: '⭐',
     badgeTextColor: '#ffffff'
@@ -245,11 +251,13 @@ export const RARITY_CONFIG = {
   R: {
     label: 'R',
     name: 'Rare',
-    color: '#0284c7',
+    color: '#0369a1',
     darkColor: '#38bdf8',
     bg: 'linear-gradient(135deg, #0284c7 0%, #38bdf8 100%)',
     border: '#0284c7',
     glow: '0 0 6px rgba(56, 189, 248, 0.6)',
+    textGlow: 'none',
+    textGlowDark: '0 0 6px rgba(56, 189, 248, 0.6)',
     boxGlow: '0 0 6px rgba(56, 189, 248, 0.3)',
     sparkle: '🔷',
     badgeTextColor: '#ffffff'
@@ -262,6 +270,8 @@ export const RARITY_CONFIG = {
     bg: '#64748b',
     border: '#94a3b8',
     glow: 'none',
+    textGlow: 'none',
+    textGlowDark: 'none',
     boxGlow: 'none',
     sparkle: '',
     badgeTextColor: '#ffffff'
@@ -276,10 +286,11 @@ export const getRarityColor = (rarity, isDark = false) => {
 export const getRarityTextStyle = (rarity, isDark = false) => {
   const cfg = RARITY_CONFIG[rarity] || RARITY_CONFIG.N;
   const color = isDark ? cfg.darkColor : cfg.color;
+  const shadow = isDark ? (cfg.textGlowDark || cfg.glow) : (cfg.textGlow || undefined);
   return {
     color,
     fontWeight: rarity === 'N' ? 'normal' : 'bold',
-    textShadow: cfg.glow !== 'none' ? cfg.glow : undefined
+    textShadow: shadow && shadow !== 'none' ? shadow : undefined
   };
 };
 
