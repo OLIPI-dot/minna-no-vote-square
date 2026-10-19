@@ -4,11 +4,73 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-19T07:45:17.924Z</updated>
+  <updated>2026-10-19T12:52:06.742Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>タイムズカーの画像巡る懸念 回答</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23503"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23503</id>
+    <updated>2026-10-19T12:52:02.056Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;話題&quot;,
+  &quot;point1_title&quot;: &quot;画像保有期間の見直し&quot;,
+  &quot;point1_desc&quot;: &quot;パーク24は運営するカーシェアサービス「タイムズカー」において、会員登録時に提出される本人確認書類画像の保有期間ルールを見直すことを発表し、管理体制の強化を図っています。&quot;,
+  &quot;point2_title&quot;: &quot;保有画像の削除対応&quot;...</summary>
+  </entry>
+  <entry>
+    <title>「小泉総理」高市氏が言い間違え</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23502"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23502</id>
+    <updated>2026-10-19T12:51:41.929Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;話題&quot;,
+  &quot;point1_title&quot;: &quot;高市総理の言い間違い&quot;,
+  &quot;point1_desc&quot;: &quot;19日の参議院予算委員会で高市総理大臣が答弁中、小泉防衛大臣を誤って「小泉総理」と呼ぶハプニングが発生した。一瞬の言い間違いが場内の雰囲気を大きく和らげることとなった。&quot;,
+  &quot;point2_title&quot;: &quot;機転の効いたツッコミ&quot;...</summary>
+  </entry>
+  <entry>
+    <title>男児に花火当てた疑い 支援員逮捕</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23501"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23501</id>
+    <updated>2026-10-19T12:51:21.657Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;学童支援員の男を逮捕&quot;,
+  &quot;point1_desc&quot;: &quot;三重県津市の小学校で小学生の男の子に打ち上げ花火を当てて首にやけどを負わせたとして、56歳の放課後児童支援員の男が傷害の疑いで警察に逮捕された事件が発生しました。&quot;,
+  &quot;point2_title&quot;: &quot;校脈で花火を発射&quot;,
+ ...</summary>
+  </entry>
+  <entry>
+    <title>台風30号が猛烈な勢力に 進路は</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23500"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23500</id>
+    <updated>2026-10-19T12:51:01.682Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;台風30号が猛烈な勢力へ&quot;,
+  &quot;point1_desc&quot;: &quot;大型の台風30号は19日午後に猛烈な勢力となり、中心気圧910hPaまで発達する見込みです。今後の動向に厳重な警戒が必要とされています。&quot;,
+  &quot;point2_title&quot;: &quot;先島諸島は21日から高波&quot;,
+  &quot;point...</summary>
+  </entry>
+  <entry>
+    <title>海自の中東派遣 1年間延長の方針</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23499"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23499</id>
+    <updated>2026-10-19T12:50:42.115Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;自衛隊の中東派遣を1年延長へ&quot;,
+  &quot;point1_desc&quot;: &quot;政府は中東海域で海賊対処と情報収集を行う海上自衛隊の派遣期間を来年11月まで1年間延長する方針を固めた。ソマリア沖などでの海賊事案の増加傾向や緊迫する中東情勢を受けた措置である。&quot;,
+  &quot;point2_title&quot;: &quot;...</summary>
+  </entry>
   <entry>
     <title>ウマ娘 ビザ下りずも米公演日迫る</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23498"/>
@@ -558,65 +620,5 @@
   &quot;point1_title&quot;: &quot;APEC首脳会議が開催へ&quot;,
   &quot;point1_desc&quot;: &quot;中国広東省深センで11月中旬にAPEC首脳会議が開催される。習近平国家主席の威信がかかる大規模な政治イベントであり、開催まで残り約1か月となり準備が大詰めを迎えている。&quot;,
   &quot;point2_title&quot;: &quot;厳重な警備体制...</summary>
-  </entry>
-  <entry>
-    <title>県議「ばか」発言巡り朝まで審議</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23453"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23453</id>
-    <updated>2026-10-17T02:17:41.009Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;「ばか」発言で県議会が空転&quot;,
-  &quot;point1_desc&quot;: &quot;埼玉県議会にて自民党議員による「ばか」という発言をきっかけに抗議が相次ぎ、会期最終日に予定されていた閉会が遅れるなど議会運営が激しく混乱する事態となった。&quot;,
-  &quot;point2_title&quot;: &quot;最大会派と小会派が相互懲罰...</summary>
-  </entry>
-  <entry>
-    <title>東北道でトラックが追突 1人死亡</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23452"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23452</id>
-    <updated>2026-10-17T02:17:22.114Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;東北道でトラックが追突&quot;,
-  &quot;point1_desc&quot;: &quot;17日未明、福島市の東北自動車道下り線にて、走行中のトラックが道路上に停車していた軽乗用車に追突する重大な事故が発生しました。現場は一時騒然となり警察による救助と捜査が行われました。&quot;,
-  &quot;point2_title&quot;: &quot;事...</summary>
-  </entry>
-  <entry>
-    <title>タイムズカー 免許画像すぐ削除へ</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23451"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23451</id>
-    <updated>2026-10-17T02:17:02.899Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;話題&quot;,
-  &quot;point1_title&quot;: &quot;本人確認画像の誤登録が発生&quot;,
-  &quot;point1_desc&quot;: &quot;パーク24傘下のタイムズモビリティは、カーシェアサービス「タイムズカー」にて会員登録時の本人確認書類画像が別の会員アカウントへ誤って登録される事態が発生したと発表した。&quot;,
-  &quot;point2_title&quot;: &quot;誤登録の原因と判...</summary>
-  </entry>
-  <entry>
-    <title>高市首相 靖国神社に真榊を奉納</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23450"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23450</id>
-    <updated>2026-10-17T02:16:44.376Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;高市首相が靖国神社へ真榊奉納&quot;,
-  &quot;point1_desc&quot;: &quot;高市早苗首相は17日、東京・九段北の靖国神社で執り行われた秋季例大祭に合わせて、「内閣総理大臣 高市早苗」名義で祭具である真榊を奉納したことが明らかになった。&quot;,
-  &quot;point2_title&quot;: &quot;秋季例大祭に合わせた...</summary>
-  </entry>
-  <entry>
-    <title>避難所に補助犬「想定」全国で1割</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23449"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23449</id>
-    <updated>2026-10-17T02:16:25.427Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;避難所の補助犬想定は1割&quot;,
-  &quot;point1_desc&quot;: &quot;厚生労働省が全国の市町村を対象に調査を行った結果、災害時の避難所における補助犬の受け入れについて、具体的な対応を事前に想定している自治体が約1割にとどまることが明らかになった。&quot;,
-  &quot;point2_title&quot;: &quot;受け入...</summary>
   </entry>
 </feed>
