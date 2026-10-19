@@ -501,29 +501,21 @@ function App() {
         // JSTでの今日の日付を取得
         const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
         
-        let newTotalExp = Math.max(dbExp, 0);
-        let newTotalTickets = Math.max(dbTickets, 0);
+        let newTotalExp = Math.max(dbExp, localExp, 0);
+        let newTotalTickets = Math.max(dbTickets, localTickets, 0);
         const updates = {};
         let shouldUpdate = false;
         
-        if (dbExp > 0) {
-          // 既存アカウント: クラウドのセーブデータが基本の正本
-          // バトル勝利直後の未同期チケットがあれば救済
-          if (localTickets > dbTickets) {
-            newTotalTickets = localTickets;
-            updates.gacha_tickets = localTickets;
-            shouldUpdate = true;
-          }
-          localStorage.removeItem('min_ake_exp');
-          localStorage.removeItem('min_ake_tickets');
-        } else if (localExp > 0 || localTickets > 0) {
-          // 🐣 初回アカウント連携（クラウドが未プレイでローカルにゲストデータがある場合のみ引き継ぎ）
-          newTotalExp = localExp;
-          newTotalTickets = localTickets;
-          localStorage.removeItem('min_ake_exp');
-          localStorage.removeItem('min_ake_tickets');
+        if (localTickets > dbTickets) {
+          updates.gacha_tickets = localTickets;
           shouldUpdate = true;
         }
+        if (localExp > dbExp) {
+          updates.vote_exp = localExp;
+          shouldUpdate = true;
+        }
+        localStorage.setItem('min_ake_tickets', String(newTotalTickets));
+        localStorage.setItem('min_ake_exp', String(newTotalExp));
 
         // 🛡️ パトロール回数のアカウント同期（無限周回・ゲスト周回対策）
         const dbPatrolDate = currentUser.user_metadata?.daily_patrol_date || '';
@@ -688,6 +680,8 @@ function App() {
           newTotalExp += 10;
           newTotalTickets += 1; // ログボでガチャチケ1枚
           updates.last_login_date = todayStr;
+          updates.vote_exp = newTotalExp;
+          updates.gacha_tickets = newTotalTickets;
           shouldUpdate = true;
         }
         
@@ -696,8 +690,6 @@ function App() {
         isAuthLoaded.current = true;
 
         if (shouldUpdate) {
-          updates.vote_exp = newTotalExp;
-          updates.gacha_tickets = newTotalTickets;
           supabase.auth.updateUser({ data: updates }).catch(err => {
             console.error('Failed to sync user metadata:', err);
           });
@@ -1018,12 +1010,11 @@ function App() {
     if (amount > 0) showRewardPopup(`🎫 + ${amount} チケット !!`, '#f59e0b');
     setGachaTickets(prev => {
       const dbTickets = user?.user_metadata?.gacha_tickets || 0;
-      const baseTickets = isAuthLoaded.current ? prev : Math.max(prev, dbTickets);
+      const baseTickets = Math.max(prev, dbTickets);
       const newTickets = Math.max(0, baseTickets + amount);
+      localStorage.setItem('min_ake_tickets', String(newTickets));
       if (user) {
         supabase.auth.updateUser({ data: { gacha_tickets: newTickets } });
-      } else {
-        localStorage.setItem('min_ake_tickets', String(newTickets));
       }
       return newTickets;
     });
