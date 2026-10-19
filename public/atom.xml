@@ -4,11 +4,73 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-18T21:46:50.383Z</updated>
+  <updated>2026-10-19T02:18:21.049Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>ダンプカーが穴に転落 心肺停止</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23493"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23493</id>
+    <updated>2026-10-19T02:18:16.742Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;10tダンプが穴に転落&quot;,
+  &quot;point1_desc&quot;: &quot;北海道白老町の工事現場において、10トンダンプカーが掘削された穴に転落する事故が発生しました。運転していた70代の男性作業員が運転席に取り残される事態となっています。&quot;,
+  &quot;point2_title&quot;: &quot;70代男性が運転席...</summary>
+  </entry>
+  <entry>
+    <title>バスやタクシー3台事故 13人搬送</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23492"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23492</id>
+    <updated>2026-10-19T02:17:56.320Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;藤沢市でタクシーとバス衝突&quot;,
+  &quot;point1_desc&quot;: &quot;神奈川県藤沢市の交差点において、タクシーとバスが衝突する交通事故が発生した。消防に通報が寄せられ現場の状況確認と対応が進められているが、事故の原因や詳細な被害状況の調査が待たれる。&quot;,
+  &quot;point2_title&quot;: &quot;...</summary>
+  </entry>
+  <entry>
+    <title>イタリアでもデモ 一部が暴徒化</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23491"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23491</id>
+    <updated>2026-10-19T02:17:36.411Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;ミラノでデモ暴徒化&quot;,
+  &quot;point1_desc&quot;: &quot;イタリアのミラノにて、公共サービスの低下や生活費の高騰に抗議するデモが行われた。しかし、デモ隊の一部が暴徒化し、警察と衝突する事態に発展してしまった。&quot;,
+  &quot;point2_title&quot;: &quot;投石や店舗での略奪&quot;,
+  &quot;poin...</summary>
+  </entry>
+  <entry>
+    <title>タイアップ広告炎上 厚労省が指針</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23490"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23490</id>
+    <updated>2026-10-19T02:17:16.616Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;厚労省が広告ガイドライン策定&quot;,
+  &quot;point1_desc&quot;: &quot;厚生労働省は映画やドラマなどの作品とタイアップして政策を広報する広告の作成時における注意点をまとめた新たなガイドラインを策定した。作品のイメージや内容に配慮した適切な周知を目指す。&quot;,
+  &quot;point2_title&quot;: ...</summary>
+  </entry>
+  <entry>
+    <title>首相 靖国神社に私費で玉串料奉納</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23489"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23489</id>
+    <updated>2026-10-19T02:16:57.269Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;靖国神社へ玉串料納入&quot;,
+  &quot;point1_desc&quot;: &quot;高市早苗首相は靖国神社の秋季例大祭に合わせ、自民党の梶山弘志総務会長を通じて私費で玉串料を奉納した。自身による参拝は見送る方向で調整が進められている。&quot;,
+  &quot;point2_title&quot;: &quot;中韓両国への配慮が背景&quot;,
+  &quot;p...</summary>
+  </entry>
   <entry>
     <title>久保建英ついに復活 今季初ゴール</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23488"/>
@@ -555,66 +617,5 @@
   &quot;point1_title&quot;: &quot;緊急地震速報の取り消し&quot;,
   &quot;point1_desc&quot;: &quot;広範囲に発表された緊急地震速報が直後に取り消される事態が発生した。北海道から中部地方にかけて対象となったが、大きな揺れは観測されず、混乱を招いたとして気象庁が緊急で説明に追われた。&quot;,
   &quot;point2_title&quot;: &quot;気象...</summary>
-  </entry>
-  <entry>
-    <title>日本郵便のメアドから迷惑メール</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23443"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23443</id>
-    <updated>2026-10-16T12:51:51.101Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;サーバーに不正アクセス&quot;,
-  &quot;point1_desc&quot;: &quot;日本郵便のサーバーが外部からの不正アクセスを受け、保有するメールアドレスから約52万通におよぶ大量の迷惑メールが送信されていたことが16日に判明した。&quot;,
-  &quot;point2_title&quot;: &quot;詐欺被害は未確認&quot;,
-  &quot;poi...</summary>
-  </entry>
-  <entry>
-    <title>トヨタ 30年までに全車種をSDVに</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23442"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23442</id>
-    <updated>2026-10-16T12:51:33.117Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;話題&quot;,
-  &quot;point1_title&quot;: &quot;全車種をソフト車化へ&quot;,
-  &quot;point1_desc&quot;: &quot;トヨタ自動車は2030年までに、世界展開する約50車種の全車両をソフトウェアで機能や性能を高める仕様に変更する方針を発表した。定額課金モデルの拡大など新たな収益源の確保を狙う。&quot;,
-  &quot;point2_title&quot;: &quot;独自ソフトで機...</summary>
-  </entry>
-  <entry>
-    <title>緊急地震速報 ドコモで配信されず</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23441"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23441</id>
-    <updated>2026-10-16T12:51:13.235Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;緊急地震速報の不具合&quot;,
-  &quot;point1_desc&quot;: &quot;NTTドコモは、気象庁から発表された緊急地震速報が同社の端末で正常に通知されなかった件について、システム内部に不具合が発生していたことが原因であると公式に発表し謝罪した。&quot;,
-  &quot;point2_title&quot;: &quot;気象庁の誤報と取...</summary>
-  </entry>
-  <entry>
-    <title>簗氏巡り 自民鶴保氏が首相に苦言</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23440"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23440</id>
-    <updated>2026-10-16T12:50:55.521Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;高市首相が参院予算委で陳謝&quot;,
-  &quot;point1_desc&quot;: &quot;高市早苗首相は16日の参院予算委員会において、簗和生前農林水産相が辞任した件について深く頭を下げ、「大変申し訳ない」と陳謝した。自民党の鶴保庸介氏からの質問に対して答弁したものである。&quot;,
-  &quot;point2_title&quot;:...</summary>
-  </entry>
-  <entry>
-    <title>自公再連立巡り 斉藤元代表が含み</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23439"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23439</id>
-    <updated>2026-10-16T12:50:36.660Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;自民との再連立を明確に否定&quot;,
-  &quot;point1_desc&quot;: &quot;公明党の斉藤鉄夫元代表は、自民党との連立政権離脱から1年が経過した件についてのインタビューで、現時点での自民党との再連立の可能性を完全に否定する考えを明確に示しました。&quot;,
-  &quot;point2_title&quot;: &quot;連立離脱の背...</summary>
   </entry>
 </feed>
