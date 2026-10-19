@@ -43,7 +43,7 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
   const [isRolling, setIsRolling] = useState(false);
   const invListRef = React.useRef(null);
   const COST = 1; // 1回1チケット
-  const MAX_INVENTORY = 100; // インベントリ上限枠数
+  const MAX_INVENTORY = 300; // インベントリ上限枠数
 
   // 🎒 インベントリのフィルタリング＆ソート（同名まとめ対応）
   const RARITY_WEIGHT = { LR: 5, UR: 4, SR: 3, R: 2, N: 1 };
