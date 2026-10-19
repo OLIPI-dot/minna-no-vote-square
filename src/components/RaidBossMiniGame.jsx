@@ -235,6 +235,38 @@ const RaidBossMiniGame = ({
   useEffect(() => {
     if (!user) return;
     const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
+
+    // 🔄 クラウド側でレイド進捗のリセットフラグが立っている場合、端末の古いローカルデータも綺麗に初期化
+    const resetFlag = user.user_metadata?.raid_reset_flag;
+    const localResetFlag = localStorage.getItem('minique_raid_last_reset_flag');
+    if (resetFlag && String(resetFlag) !== localResetFlag) {
+      try {
+        localStorage.removeItem(getTodayKey());
+        localStorage.removeItem(getRankingKey());
+        localStorage.removeItem(getFaintKey());
+        localStorage.removeItem(getLogsKey());
+        localStorage.removeItem(`minique_raid_heals_${currentBoss.id}_${todayStr}`);
+        localStorage.removeItem(`minique_raid_participation_${todayStr}`);
+        localStorage.setItem('minique_raid_last_reset_flag', String(resetFlag));
+      } catch (e) {}
+
+      setBossHp(currentBoss.maxHp);
+      setRankingList([
+        { id: 'npc_1', name: 'ベテラン広場民 🛡️', damage: 8500, isMe: false },
+        { id: 'npc_2', name: '深夜の調査兵 🔦', damage: 5200, isMe: false },
+        { id: 'npc_3', name: 'らびたん親衛隊 🐰', damage: 3400, isMe: false },
+        { id: 'npc_4', name: '週末パトロール隊長 🚓', damage: 1800, isMe: false },
+        { id: 'me', name: hn || 'あなた', damage: 0, isMe: true }
+      ]);
+      setHealsLeft(3);
+      setHasClaimedParticipation(false);
+      setRaidLogs([
+        `⚔️ 【${currentBoss.title}】 ${currentBoss.name} が広場に出現中！`,
+        `📡 10秒更新のリアルタイム通信で広場のみんなと共闘中！`
+      ]);
+      return;
+    }
+
     const cloudProgress = user.user_metadata?.raid_progress_v1;
 
     if (cloudProgress && cloudProgress.date === todayStr && cloudProgress.bossId === currentBoss.id) {
