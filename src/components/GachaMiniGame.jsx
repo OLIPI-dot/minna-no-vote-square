@@ -340,9 +340,22 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
   };
   
   const handleSellFromInventory = (invItem) => {
+    if (invItem.locked) {
+      alert('このアイテムはロックされているため売却できません🔒');
+      return;
+    }
     const expBack = getRecycleExp(invItem.rarity);
     addExp(expBack);
     setInventory(prev => prev.filter(i => i.id !== invItem.id));
+  };
+
+  const toggleLockItem = (targetItem) => {
+    setInventory(prev => prev.map(it => {
+      if (it.id === targetItem.id) {
+        return { ...it, locked: !it.locked };
+      }
+      return it;
+    }));
   };
 
   const handleBulkSell = (targetRarity) => {
@@ -356,6 +369,7 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
     const targetItems = inventory.filter(item => {
       if (!item || !item.id) return false;
       if (equippedIds.has(item.id)) return false;
+      if (item.locked) return false; // 🔒 ロックアイテムは売却から確実に保護
       if (targetRarity === 'N') return item.rarity === 'N';
       if (targetRarity === 'R_BELOW') return item.rarity === 'N' || item.rarity === 'R';
       return false;
@@ -367,10 +381,10 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
     }
 
     const totalExp = targetItems.reduce((sum, item) => sum + getRecycleExp(item.rarity), 0);
-    const label = targetRarity === 'N' ? '未装備の「N 装備」' : '未装備の「R 以下の装備」';
+    const label = targetRarity === 'N' ? '未装備・未ロックの「N 装備」' : '未装備・未ロックの「R 以下の装備」';
 
     const confirmed = window.confirm(
-      `【まとめて売却】\n${label} ${targetItems.length}個 を売却して、\n合計 +${totalExp} EXP を獲得しますか？\n\n※装備中のアイテムや高レア（SR以上）は売却されません。`
+      `【まとめて売却】\n${label} ${targetItems.length}個 を売却して、\n合計 +${totalExp} EXP を獲得しますか？\n\n※装備中およびロック中のアイテム、高レア（SR以上）は売却されません。`
     );
     if (!confirmed) return;
 
@@ -778,8 +792,8 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
                   .map(eq => eq.id)
                   .filter(Boolean)
               );
-              const unequippedN = inventory.filter(i => !equippedIds.has(i.id) && i.rarity === 'N');
-              const unequippedRBelow = inventory.filter(i => !equippedIds.has(i.id) && (i.rarity === 'N' || i.rarity === 'R'));
+              const unequippedN = inventory.filter(i => !equippedIds.has(i.id) && !i.locked && i.rarity === 'N');
+              const unequippedRBelow = inventory.filter(i => !equippedIds.has(i.id) && !i.locked && (i.rarity === 'N' || i.rarity === 'R'));
               const nExp = unequippedN.reduce((sum, i) => sum + getRecycleExp(i.rarity), 0);
               const rExp = unequippedRBelow.reduce((sum, i) => sum + getRecycleExp(i.rarity), 0);
 
@@ -882,6 +896,11 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
                           <span style={{ fontWeight: 'bold', wordBreak: 'break-word', ...getRarityTextStyle(item.rarity) }}>
                             {item.name}
                           </span>
+                          {item.locked && (
+                            <span style={{ fontSize: '0.65rem', background: '#fef3c7', color: '#b45309', border: '1px solid #fde68a', padding: '1px 5px', borderRadius: '4px', fontWeight: 'bold' }}>
+                              🔒 ロック
+                            </span>
+                          )}
                           {isEquipped && (
                             <span style={{ fontSize: '0.65rem', background: '#dcfce7', color: '#15803d', border: '1px solid #86efac', padding: '1px 5px', borderRadius: '4px', fontWeight: 'bold' }}>
                               ⚔️ 装備中
@@ -906,7 +925,7 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
                           </div>
                         )}
                       </div>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', flexShrink: 0 }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', flexShrink: 0 }}>
                         {isEquipped ? (
                           <div style={{ background: '#10b981', color: 'white', padding: '5px 8px', borderRadius: '4px', fontWeight: 'bold', fontSize: '0.75rem', textAlign: 'center' }}>
                             装備中
@@ -919,11 +938,43 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
                               style={{ background: userLevel >= getReqLevel(item) ? '#10b981' : '#94a3b8', color: 'white', border: 'none', padding: '4px 8px', borderRadius: '4px', cursor: userLevel >= getReqLevel(item) ? 'pointer' : 'not-allowed', fontWeight: 'bold', fontSize: '0.8rem' }}>
                               {userLevel >= getReqLevel(item) ? '装備' : `Lv${getReqLevel(item)}`}
                             </button>
-                            <button onClick={() => handleSellFromInventory(item)} style={{ background: '#f59e0b', color: 'white', border: 'none', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem' }}>
-                              売却
+                            <button 
+                              onClick={() => handleSellFromInventory(item)} 
+                              disabled={item.locked}
+                              title={item.locked ? 'ロック中のため売却できません' : '売却して経験値に変換'}
+                              style={{ 
+                                background: item.locked ? '#e2e8f0' : '#f59e0b', 
+                                color: item.locked ? '#94a3b8' : 'white', 
+                                border: 'none', padding: '4px 8px', borderRadius: '4px', 
+                                cursor: item.locked ? 'not-allowed' : 'pointer', 
+                                fontSize: '0.8rem' 
+                              }}>
+                              {item.locked ? '🔒' : '売却'}
                             </button>
                           </>
                         )}
+                        {/* 🔒 お気に入りロックボタン */}
+                        <button
+                          onClick={() => toggleLockItem(item)}
+                          title={item.locked ? 'ロックを解除する' : 'ロックして誤売却を防止する'}
+                          style={{
+                            background: item.locked ? '#fef3c7' : '#f8fafc',
+                            color: item.locked ? '#b45309' : '#64748b',
+                            border: item.locked ? '1px solid #f59e0b' : '1px solid #cbd5e1',
+                            padding: '3px 6px',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            fontSize: '0.72rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '2px',
+                            fontWeight: item.locked ? 'bold' : 'normal',
+                            transition: 'all 0.15s ease'
+                          }}
+                        >
+                          {item.locked ? '🔒 保護中' : '🔓 ロック'}
+                        </button>
                       </div>
                     </div>
                   );

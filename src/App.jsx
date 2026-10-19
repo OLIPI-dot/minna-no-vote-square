@@ -399,7 +399,11 @@ function App() {
   // 🪶 クラウド保存用スリム化（JWTサイズ肥大化・400 Bad Request防止）
   const toSlimInventory = (items) => {
     if (!Array.isArray(items)) return [];
-    return items.map(item => ({ id: item.id }));
+    return items.map(item => {
+      const slim = { id: item.id };
+      if (item.locked) slim.locked = true;
+      return slim;
+    });
   };
 
   const toSlimEquipment = (equip) => {
