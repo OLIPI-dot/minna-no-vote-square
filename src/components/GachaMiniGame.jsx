@@ -384,7 +384,7 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
     const label = targetRarity === 'N' ? '未装備・未ロックの「N 装備」' : '未装備・未ロックの「R 以下の装備」';
 
     const confirmed = window.confirm(
-      `【まとめて売却】\n${label} ${targetItems.length}個 を売却して、\n合計 +${totalExp} EXP を獲得しますか？\n\n※装備中およびロック中のアイテム、高レア（SR以上）は売却されません。`
+      `【一括売却】\n${label} ${targetItems.length}個 を売却して、\n合計 +${totalExp} EXP を獲得しますか？\n\n※装備中およびロック中のアイテム、高レア（SR以上）は売却されません。`
     );
     if (!confirmed) return;
 
@@ -812,7 +812,7 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
                   flexWrap: 'wrap'
                 }}>
                   <span style={{ fontSize: '0.72rem', color: '#b45309', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '3px' }}>
-                    <span>🧹 まとめて売却:</span>
+                    <span>🧹 一括売却:</span>
                   </span>
                   <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                     <button
