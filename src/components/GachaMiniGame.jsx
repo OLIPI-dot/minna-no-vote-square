@@ -43,6 +43,7 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
   const [isRolling, setIsRolling] = useState(false);
   const invListRef = React.useRef(null);
   const COST = 1; // 1回1チケット
+  const MAX_INVENTORY = 100; // インベントリ上限枠数
 
   // 🎒 インベントリのフィルタリング＆ソート（同名まとめ対応）
   const RARITY_WEIGHT = { LR: 5, UR: 4, SR: 3, R: 2, N: 1 };
@@ -204,6 +205,12 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
   const handleRoll = () => {
     if (gachaTickets < COST || isRolling) return;
 
+    if (inventory.length >= MAX_INVENTORY) {
+      alert(`鞄がいっぱいです（${inventory.length}/${MAX_INVENTORY}個）！\n不要な装備を売却して空きを作ってください🎒`);
+      setShowInventory(true);
+      return;
+    }
+
     // 前回の結果が表示されたままなら、自動で鞄にしまう
     if (gachaResult) {
       const prevItem = { ...gachaResult, id: `${gachaResult.id}_${Date.now()}` };
@@ -336,6 +343,40 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
     const expBack = getRecycleExp(invItem.rarity);
     addExp(expBack);
     setInventory(prev => prev.filter(i => i.id !== invItem.id));
+  };
+
+  const handleBulkSell = (targetRarity) => {
+    const equippedIds = new Set(
+      Object.values(equipment || {})
+        .filter(Boolean)
+        .map(eq => eq.id)
+        .filter(Boolean)
+    );
+
+    const targetItems = inventory.filter(item => {
+      if (!item || !item.id) return false;
+      if (equippedIds.has(item.id)) return false;
+      if (targetRarity === 'N') return item.rarity === 'N';
+      if (targetRarity === 'R_BELOW') return item.rarity === 'N' || item.rarity === 'R';
+      return false;
+    });
+
+    if (targetItems.length === 0) {
+      alert(targetRarity === 'N' ? '売却可能な N 装備はありません' : '売却可能な R 以下の装備はありません');
+      return;
+    }
+
+    const totalExp = targetItems.reduce((sum, item) => sum + getRecycleExp(item.rarity), 0);
+    const label = targetRarity === 'N' ? '未装備の「N 装備」' : '未装備の「R 以下の装備」';
+
+    const confirmed = window.confirm(
+      `【まとめて売却】\n${label} ${targetItems.length}個 を売却して、\n合計 +${totalExp} EXP を獲得しますか？\n\n※装備中のアイテムや高レア（SR以上）は売却されません。`
+    );
+    if (!confirmed) return;
+
+    const targetIds = new Set(targetItems.map(i => i.id));
+    setInventory(prev => prev.filter(i => !targetIds.has(i.id)));
+    addExp(totalExp);
   };
 
   const renderEquipSlot = (type, label) => {
@@ -654,10 +695,15 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', flexShrink: 0 }}>
               <h3 style={{ margin: 0, color: '#1e293b', fontSize: '1rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <span>👜 インベントリ</span>
-                <span style={{ fontSize: '0.75rem', background: '#f1f5f9', color: '#64748b', padding: '2px 8px', borderRadius: '12px' }}>
-                  {processedInventory.length !== inventory.length
-                    ? `${processedInventory.length} / ${inventory.length}個`
-                    : `${inventory.length}個`}
+                <span style={{ 
+                  fontSize: '0.75rem', 
+                  background: inventory.length >= MAX_INVENTORY ? '#fee2e2' : '#f1f5f9', 
+                  color: inventory.length >= MAX_INVENTORY ? '#dc2626' : '#64748b', 
+                  fontWeight: inventory.length >= MAX_INVENTORY ? 'bold' : 'normal',
+                  padding: '2px 8px', 
+                  borderRadius: '12px' 
+                }}>
+                  {inventory.length} / {MAX_INVENTORY}個 {inventory.length >= MAX_INVENTORY && '(満杯!)'}
                 </span>
               </h3>
               <button onClick={() => setShowInventory(false)} style={{ background: 'none', border: 'none', fontSize: '1.4rem', cursor: 'pointer', lineHeight: 1, color: '#64748b', padding: '2px 6px' }}>×</button>
@@ -723,6 +769,78 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
                 ))}
               </div>
             </div>
+            
+            {/* 🧹 まとめて売却バー */}
+            {(() => {
+              const equippedIds = new Set(
+                Object.values(equipment || {})
+                  .filter(Boolean)
+                  .map(eq => eq.id)
+                  .filter(Boolean)
+              );
+              const unequippedN = inventory.filter(i => !equippedIds.has(i.id) && i.rarity === 'N');
+              const unequippedRBelow = inventory.filter(i => !equippedIds.has(i.id) && (i.rarity === 'N' || i.rarity === 'R'));
+              const nExp = unequippedN.reduce((sum, i) => sum + getRecycleExp(i.rarity), 0);
+              const rExp = unequippedRBelow.reduce((sum, i) => sum + getRecycleExp(i.rarity), 0);
+
+              return (
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: '6px',
+                  marginBottom: '10px',
+                  background: '#fffbeb',
+                  padding: '6px 10px',
+                  borderRadius: '8px',
+                  border: '1px solid #fef3c7',
+                  flexShrink: 0,
+                  flexWrap: 'wrap'
+                }}>
+                  <span style={{ fontSize: '0.72rem', color: '#b45309', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                    <span>🧹 まとめて売却:</span>
+                  </span>
+                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                    <button
+                      onClick={() => handleBulkSell('N')}
+                      disabled={unequippedN.length === 0}
+                      style={{
+                        padding: '4px 8px',
+                        fontSize: '0.7rem',
+                        fontWeight: 'bold',
+                        borderRadius: '6px',
+                        border: 'none',
+                        cursor: unequippedN.length > 0 ? 'pointer' : 'not-allowed',
+                        background: unequippedN.length > 0 ? '#f59e0b' : '#e2e8f0',
+                        color: unequippedN.length > 0 ? '#ffffff' : '#94a3b8',
+                        transition: 'all 0.15s ease'
+                      }}
+                      title="未装備のN装備を一括売却して経験値に変換します"
+                    >
+                      N一括 ({unequippedN.length}個/+{nExp}EXP)
+                    </button>
+                    <button
+                      onClick={() => handleBulkSell('R_BELOW')}
+                      disabled={unequippedRBelow.length === 0}
+                      style={{
+                        padding: '4px 8px',
+                        fontSize: '0.7rem',
+                        fontWeight: 'bold',
+                        borderRadius: '6px',
+                        border: 'none',
+                        cursor: unequippedRBelow.length > 0 ? 'pointer' : 'not-allowed',
+                        background: unequippedRBelow.length > 0 ? '#d97706' : '#e2e8f0',
+                        color: unequippedRBelow.length > 0 ? '#ffffff' : '#94a3b8',
+                        transition: 'all 0.15s ease'
+                      }}
+                      title="未装備のRおよびN装備を一括売却して経験値に変換します"
+                    >
+                      R以下一括 ({unequippedRBelow.length}個/+{rExp}EXP)
+                    </button>
+                  </div>
+                </div>
+              );
+            })()}
             
             <div ref={invListRef} style={{ overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: '6px', paddingRight: '2px' }}>
               {processedInventory.length === 0 ? (
@@ -821,27 +939,34 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
       <div style={{ display: 'flex', gap: '8px' }}>
         <button 
           onClick={handleRoll}
-          disabled={gachaTickets < COST || isRolling}
+          disabled={gachaTickets < COST || isRolling || inventory.length >= MAX_INVENTORY}
           style={{
             flex: 1, padding: '10px', borderRadius: '8px', border: 'none',
-            background: gachaTickets >= COST && !isRolling ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' : '#e2e8f0',
-            color: gachaTickets >= COST && !isRolling ? 'white' : '#94a3b8',
-            fontWeight: 'bold', cursor: gachaTickets >= COST && !isRolling ? 'pointer' : 'not-allowed',
-            boxShadow: gachaTickets >= COST && !isRolling ? '0 4px 6px -1px rgba(245, 158, 11, 0.4)' : 'none'
+            background: (gachaTickets >= COST && !isRolling && inventory.length < MAX_INVENTORY) 
+              ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' 
+              : '#e2e8f0',
+            color: (gachaTickets >= COST && !isRolling && inventory.length < MAX_INVENTORY) ? 'white' : '#94a3b8',
+            fontWeight: 'bold', 
+            cursor: (gachaTickets >= COST && !isRolling && inventory.length < MAX_INVENTORY) ? 'pointer' : 'not-allowed',
+            boxShadow: (gachaTickets >= COST && !isRolling && inventory.length < MAX_INVENTORY) ? '0 4px 6px -1px rgba(245, 158, 11, 0.4)' : 'none'
           }}
         >
-          {isRolling ? '...' : `🎫 回す(1枚)`}
+          {inventory.length >= MAX_INVENTORY ? '👜 鞄満杯 (整理が必要)' : isRolling ? '...' : `🎫 回す(1枚)`}
         </button>
         <button 
           onClick={() => setShowInventory(true)}
           style={{
-            padding: '10px 16px', borderRadius: '8px', border: 'none',
-            background: '#3b82f6', color: 'white',
+            padding: '10px 14px', borderRadius: '8px', 
+            border: inventory.length >= MAX_INVENTORY ? '2px solid #ef4444' : 'none',
+            background: inventory.length >= MAX_INVENTORY ? '#fee2e2' : '#3b82f6', 
+            color: inventory.length >= MAX_INVENTORY ? '#dc2626' : 'white',
             fontWeight: 'bold', cursor: 'pointer',
-            boxShadow: '0 4px 6px -1px rgba(59, 130, 246, 0.4)'
+            boxShadow: inventory.length >= MAX_INVENTORY ? '0 4px 6px -1px rgba(239, 68, 68, 0.3)' : '0 4px 6px -1px rgba(59, 130, 246, 0.4)',
+            whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '4px'
           }}
         >
-          👜 鞄
+          <span>👜 鞄</span>
+          <span style={{ fontSize: '0.8rem', opacity: 0.9 }}>({inventory.length}/{MAX_INVENTORY})</span>
         </button>
       </div>
 
