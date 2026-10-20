@@ -4,11 +4,72 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://minna-no-vote-square.vercel.app/atom.xml" rel="self"/>
   <link href="https://minna-no-vote-square.vercel.app/"/>
-  <updated>2026-10-19T21:47:11.241Z</updated>
+  <updated>2026-10-20T02:17:50.773Z</updated>
   <id>https://minna-no-vote-square.vercel.app/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>水筒から腐敗臭「ぬめり」の正体</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23513"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23513</id>
+    <updated>2026-10-20T02:17:48.500Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;話題&quot;,
+  &quot;point1_title&quot;: &quot;水筒のぬめり発生リスク&quot;,
+  &quot;point1_desc&quot;: &quot;毎日使う子どもの水筒は、きれいに洗っているつもりでも内側やパッキンにぬめりが発生しやすい。パーツが細かく洗いにくいため手入れが行き届かず、衛生上の課題となっている。&quot;,
+  &quot;point2_title&quot;: &quot;衛生管理の手間と悩み&quot;,...</summary>
+  </entry>
+  <entry>
+    <title>増える訪日客 ポイ捨て被害深刻</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23512"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23512</id>
+    <updated>2026-10-20T02:17:30.467Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;話題&quot;,
+  &quot;point1_title&quot;: &quot;東京都がポイ捨て防止条例を検討&quot;,
+  &quot;point1_desc&quot;: &quot;コロナ禍が終息しインバウンドが回復する中、観光地や繁華街でゴミのポイ捨て被害が深刻化している。東京都は実態を改善するため、違反者に過料を科す新条例の制定に向けた議論を本格的に開始した。&quot;,
+  &quot;point2_title&quot;:...</summary>
+  </entry>
+  <entry>
+    <title>大阪地裁前で男性刺される 男逮捕</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23511"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23511</id>
+    <updated>2026-10-20T02:17:12.391Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;大阪地裁前で重傷事件&quot;,
+  &quot;point1_desc&quot;: &quot;20日午前に大阪地裁前の路上において男性が何者かに刺される事件が発生した。被害者の男性は首付近を刺されて重傷とみられるが搬送時は意識があったという。&quot;,
+  &quot;point2_title&quot;: &quot;現場周辺は一時騒然&quot;,
+  &quot;poin...</summary>
+  </entry>
+  <entry>
+    <title>スーチー氏に英国王書簡 親軍政権</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23510"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23510</id>
+    <updated>2026-10-20T02:16:52.965Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;スーチー氏の近影公開&quot;,
+  &quot;point1_desc&quot;: &quot;ミャンマーの親軍政権は、軟禁状態にある民主派指導者アウンサンスーチー氏の最新の写真とみられる画像を公開した。政権側は国際的な孤立を回避し、正当性をアピールする狙いがあると見られる。&quot;,
+  &quot;point2_title&quot;: &quot;英国王...</summary>
+  </entry>
+  <entry>
+    <title>自維連立合意1年 関係深化は途上</title>
+    <link href="https://minna-no-vote-square.vercel.app/s/23509"/>
+    <id>https://minna-no-vote-square.vercel.app/s/23509</id>
+    <updated>2026-10-20T02:16:34.179Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;自民・維新の連立合意1年&quot;,
+  &quot;point1_desc&quot;: &quot;自民党と日本維新の会が連立政権の合意書を交わしてから1年が経過した。合意内容の5割を超える項目で達成の目処が立っているものの、残された課題の早期実現に向けて調整が続いている。&quot;,
+  &quot;point2_title&quot;: &quot;残る項目...</summary>
+  </entry>
   <entry>
     <title>JAL便に小動物 サイズは猫以下か</title>
     <link href="https://minna-no-vote-square.vercel.app/s/23508"/>
@@ -558,67 +619,5 @@
   &quot;point1_title&quot;: &quot;空自の無人機事故&quot;,
   &quot;point1_desc&quot;: &quot;航空自衛隊が運用する大型無人偵察機「グローバルホーク」1機が墜落した事故が発生。自衛隊は機体捜索や回収作業を継続して進めており、事故原因の究明に向けた現場調査が行われている。&quot;,
   &quot;point2_title&quot;: &quot;胴体の一部を回収...</summary>
-  </entry>
-  <entry>
-    <title>ソニー生命 50人を営業活動停止に</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23463"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23463</id>
-    <updated>2026-10-17T12:51:50.481Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;ソニー生命で50人が関与疑い&quot;,
-  &quot;point1_desc&quot;: &quot;ソニー生命保険において金銭詐取などの不祥事に関わった疑いのある社員が約50人に上ることが判明した。同社は全顧客279万人を対象に調査を進めており、疑いのある社員の営業活動を停止させた。&quot;,
-  &quot;point2_title&quot;...</summary>
-  </entry>
-  <entry>
-    <title>母親を蹴り死なせた疑い 男を逮捕</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23462"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23462</id>
-    <updated>2026-10-17T12:51:32.694Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;70代母親への傷害致死容疑&quot;,
-  &quot;point1_desc&quot;: &quot;自宅で70代の母親に対して暴行を加え死亡させたとして、警備員の男が傷害致死の疑いで逮捕された。日常的なトラブルがあった可能性も含め、警察は事件の詳しい経緯や動機について捜査を進めている。&quot;,
-  &quot;point2_title&quot;...</summary>
-  </entry>
-  <entry>
-    <title>「簗前農相の圧力」の検証 困難に</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23461"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23461</id>
-    <updated>2026-10-17T12:51:12.278Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;前農相の道路予算発言&quot;,
-  &quot;point1_desc&quot;: &quot;更迭された簗和生前農水相が自治体向けの道路予算削減を示唆した発言を巡り、実際に国交省への削減圧力があったのかどうかの検証作業が難航していることが明らかになった。&quot;,
-  &quot;point2_title&quot;: &quot;国交省に照会記録なし&quot;,
-...</summary>
-  </entry>
-  <entry>
-    <title>靖国に首相が真榊奉納 韓国は遺憾</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23460"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23460</id>
-    <updated>2026-10-17T12:50:54.403Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;高市首相が真榊を奉納&quot;,
-  &quot;point1_desc&quot;: &quot;高市首相は靖国神社の秋の例大祭に合わせて真榊と呼ばれる供え物を奉納した。今回の例大祭期間中の神社への直接参拝は見送る方針であることが明らかになっている。&quot;,
-  &quot;point2_title&quot;: &quot;韓国政府が反発を表明&quot;,
-  &quot;p...</summary>
-  </entry>
-  <entry>
-    <title>情報漏えい 識者は「氷山の一角」</title>
-    <link href="https://minna-no-vote-square.vercel.app/s/23459"/>
-    <id>https://minna-no-vote-square.vercel.app/s/23459</id>
-    <updated>2026-10-17T12:50:36.295Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;大規模な情報漏洩&quot;,
-  &quot;point1_desc&quot;: &quot;JR東日本のえきねっとやブックオフなど大企業で相次いで大規模な個人情報漏洩の可能性が発覚した。合計で1200万件を超えるメールアドレス等の情報が外部に流出した恐れがあり社会的な不安が高まっている。&quot;,
-  &quot;point2_title&quot;...</summary>
   </entry>
 </feed>
