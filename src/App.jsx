@@ -1543,7 +1543,7 @@ function App() {
     }
 
     // 🔍 SEOメタタグとタイトルの更新（undefined対策・堅牢化！）
-    const SITE_BASE_URL = 'https://minna-no-vote-square.com';
+    const SITE_BASE_URL = 'https://www.minna-no-vote-square.com';
     const pageTitle = (currentSurvey && currentSurvey.title)
       ? `${currentSurvey.title} - みんアケ🐰🥕 | みんなのアンケート広場`
       : (view === 'details'
