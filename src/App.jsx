@@ -51,6 +51,19 @@ const formatWithDay = (dateStr) => {
 
 const IS_MAINTENANCE_MODE = false; // 🚨 緊急メンテナンスモードフラグ解除！広場再開らび！
 
+// 📍 一覧に戻ったとき、以前見ていたスクロール位置を復元する（一覧の描画が遅れても、届くまで少し待ってリトライ）
+const restoreListScroll = (targetY) => {
+  let tries = 0;
+  const attempt = () => {
+    window.scrollTo(0, targetY);
+    tries += 1;
+    if (Math.abs(window.pageYOffset - targetY) > 4 && tries < 30) {
+      setTimeout(attempt, 50);
+    }
+  };
+  setTimeout(attempt, 20);
+};
+
 function App() {
   if (IS_MAINTENANCE_MODE) {
     return (
@@ -395,6 +408,7 @@ function App() {
   });
 
   const isAuthLoaded = useRef(false);
+  const listScrollRef = useRef(0); // 記事を開く直前の一覧のスクロール位置
 
   // 🪶 クラウド保存用スリム化（JWTサイズ肥大化・400 Bad Request防止）
   const toSlimInventory = (items) => {
@@ -2224,7 +2238,7 @@ function App() {
         setCurrentPage(!isNaN(p) && p > 0 ? p : 1);
 
         if (e.state && e.state.scrollY !== undefined) {
-          setTimeout(() => window.scrollTo(0, e.state.scrollY), 20);
+          restoreListScroll(e.state.scrollY);
         } else {
           setTimeout(() => window.scrollTo(0, 0), 20);
         }
@@ -2235,7 +2249,7 @@ function App() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, [user]); // userが変わった時も再チェック
 
-  const navigateTo = async (nextView, survey = null) => {
+  const navigateTo = async (nextView, survey = null, navOptions = {}) => {
     // 現在のスクロール位置を「しおり」として保存らび！
     const currentScroll = window.pageYOffset;
 
@@ -2246,6 +2260,7 @@ function App() {
 
       if (view !== 'details') {
         // 📍 リストから詳細に入る時のみ、今の位置(リスト)を履歴に刻む
+        listScrollRef.current = currentScroll;
         const listUrl = new URL(window.location.href);
         listUrl.searchParams.delete('id');
         if (listUrl.pathname.startsWith('/s/')) listUrl.pathname = '/';
@@ -2326,7 +2341,12 @@ function App() {
       setCurrentSurvey(null);
       setAdjacentSurveys({ prev: null, next: null });
       setView('list');
-      window.scrollTo(0, 0);
+      // 📍 「一覧に戻る」ボタンの場合は、記事を開いた直前の位置に戻す。それ以外(ロゴ・タグ・フッター等)はTOPの一番上へ
+      if (navOptions.restoreScroll && listScrollRef.current > 0) {
+        restoreListScroll(listScrollRef.current);
+      } else {
+        window.scrollTo(0, 0);
+      }
       return;
     }
     setView(nextView);
