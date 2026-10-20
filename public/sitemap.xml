@@ -1103,12 +1103,6 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://www.minna-no-vote-square.com/s/23511</loc>
-    <lastmod>2026-10-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://www.minna-no-vote-square.com/s/23512</loc>
     <lastmod>2026-10-20</lastmod>
     <changefreq>weekly</changefreq>
@@ -1163,6 +1157,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.minna-no-vote-square.com/s/23511</loc>
+    <lastmod>2026-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://www.minna-no-vote-square.com/s/23423</loc>
     <lastmod>2026-10-15</lastmod>
     <changefreq>weekly</changefreq>
@@ -1171,6 +1171,12 @@
   <url>
     <loc>https://www.minna-no-vote-square.com/s/23482</loc>
     <lastmod>2026-10-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.minna-no-vote-square.com/s/23514</loc>
+    <lastmod>2026-10-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -1187,8 +1193,32 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.minna-no-vote-square.com/s/23515</loc>
+    <lastmod>2026-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://www.minna-no-vote-square.com/s/23276</loc>
     <lastmod>2026-10-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.minna-no-vote-square.com/s/23516</loc>
+    <lastmod>2026-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.minna-no-vote-square.com/s/23517</loc>
+    <lastmod>2026-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.minna-no-vote-square.com/s/23518</loc>
+    <lastmod>2026-10-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
