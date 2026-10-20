@@ -116,7 +116,7 @@ export default async function handler(req, res) {
   <title>${title}</title>
   <link rel="canonical" href="${siteUrl}" />
   <meta name="description" content="${cleanDesc}" />
-  <meta property="og:site_name" content="みんアケ | みんなのアンケート広場" />
+  <meta property="og:site_name" content="みんなのアンケート広場" />
   <meta property="og:title" content="${title}" />
   <meta property="og:description" content="${cleanDesc}" />
   <meta property="og:type" content="article" />
