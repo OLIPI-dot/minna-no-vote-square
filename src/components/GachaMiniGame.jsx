@@ -13,6 +13,7 @@ import {
   RARITY_CONFIG
 } from '../items';
 import confetti from 'canvas-confetti';
+import { supabase } from '../supabaseClient';
 
 
 // 保存データに desc や effect が無い古いアイテムでも、マスターデータ(IDまたは名前)から確実に補完する
@@ -34,7 +35,7 @@ const getItemDesc = (item) => {
   return getItemDetails(item).desc;
 };
 
-const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, setEquipment, addExp, inventory = [], setInventory, acquiredItems = [], setAcquiredItems }) => {
+const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, setEquipment, addExp, inventory = [], setInventory, acquiredItems = [], setAcquiredItems, hn = '' }) => {
   const [gachaResult, setGachaResult] = useState(null);
   const [showInventory, setShowInventory] = useState(false);
   const [invSortType, setInvSortType] = useState('rarity'); // 'rarity' | 'type' | 'power' | 'newest'
@@ -202,6 +203,19 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
     triggerConfettiForRarity(item.rarity);
   };
 
+  // 📢 UR以上のレアアイテムを引いたら、広場のタイムラインで名前を公表する
+  const announceRareDrop = async (item) => {
+    if (!item || (item.rarity !== 'UR' && item.rarity !== 'LR')) return;
+    const rawName = (hn || '').split('◆')[0].trim();
+    const playerName = rawName && rawName !== '匿名広場民' ? rawName : '名無しの広場民';
+    const { error } = await supabase.from('timeline_posts').insert([{
+      name: '🎰 ガチャ速報',
+      avatar: item.rarity === 'LR' ? '🌈' : '✨',
+      content: `【ガチャ速報】${playerName}さんが [${item.rarity}] ${item.name} を引き当てました！🎉`
+    }]);
+    if (error) console.error('Gacha announce error:', error);
+  };
+
   const handleRoll = () => {
     if (gachaTickets < COST || isRolling) return;
 
@@ -228,6 +242,10 @@ const GachaMiniGame = ({ userLevel = 1, gachaTickets, addTickets, equipment, set
     const item = rollGacha();
     setAnimItem(item);
     setAnimStep('charging');
+
+    // 演出スキップでも投稿されるよう、animTimeoutsとは別管理で演出終了後に告知
+    if (item.rarity === 'LR') setTimeout(() => announceRareDrop(item), 2100);
+    else if (item.rarity === 'UR') setTimeout(() => announceRareDrop(item), 1500);
 
     // 🎬 レアリティ別の演出タイムライン
     if (item.rarity === 'LR') {

@@ -463,6 +463,7 @@ const Sidebar = ({
                 setInventory={setInventory}
                 acquiredItems={acquiredItems}
                 setAcquiredItems={setAcquiredItems}
+                hn={hn}
               />
             </div>
           </div>

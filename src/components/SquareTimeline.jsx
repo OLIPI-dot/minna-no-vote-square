@@ -241,11 +241,17 @@ const SquareTimeline = () => {
             minHeight: 'fit-content',
             ...(p.is_official
               ? officialCardStyle
-              : {
-                  background: '#ffffff',
-                  border: '1px solid #edf2f7',
-                  boxShadow: '0 2px 5px rgba(0,0,0,0.02)'
-                }
+              : (typeof p.content === 'string' && p.content.startsWith('【ガチャ速報】'))
+                ? {
+                    background: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)',
+                    border: '1.5px solid #fbbf24',
+                    boxShadow: '0 3px 10px rgba(245,158,11,0.18)'
+                  }
+                : {
+                    background: '#ffffff',
+                    border: '1px solid #edf2f7',
+                    boxShadow: '0 2px 5px rgba(0,0,0,0.02)'
+                  }
             )
           }}>
             {/* アバター */}
