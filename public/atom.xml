@@ -4,11 +4,71 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://www.minna-no-vote-square.com/atom.xml" rel="self"/>
   <link href="https://www.minna-no-vote-square.com/"/>
-  <updated>2026-10-21T12:52:16.070Z</updated>
+  <updated>2026-10-21T21:46:51.696Z</updated>
   <id>https://www.minna-no-vote-square.com/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>大谷は手術回避へ 編成本部長明言</title>
+    <link href="https://www.minna-no-vote-square.com/s/23548"/>
+    <id>https://www.minna-no-vote-square.com/s/23548</id>
+    <updated>2026-10-21T21:46:48.130Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;話題&quot;,
+  &quot;point1_title&quot;: &quot;ドジャース経営陣が会見&quot;,
+  &quot;point1_desc&quot;: &quot;ドジャースのフリードマン編成本部長とゴームズGMが本拠地でシーズン総括会見を行いました。今季のチームパフォーマンスを振り返り、来期に向けた補強やチーム作りの基本方針について語っています。&quot;,
+  &quot;point2_title&quot;: &quot;今...</summary>
+  </entry>
+  <entry>
+    <title>「MMX」探査機 機能正常を確認</title>
+    <link href="https://www.minna-no-vote-square.com/s/23547"/>
+    <id>https://www.minna-no-vote-square.com/s/23547</id>
+    <updated>2026-10-21T21:46:27.890Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;探査機の正常動作を確認&quot;,
+  &quot;point1_desc&quot;: &quot;JAXAはH3ロケット10号機により打ち上げられた火星衛星探査計画「MMX」の探査機について、太陽電池での発電や姿勢制御などの動作が正常に行われていることを確認したと正式に発表しました。&quot;,
+  &quot;point2_title&quot;: ...</summary>
+  </entry>
+  <entry>
+    <title>コミックシーモア最大420万件流出</title>
+    <link href="https://www.minna-no-vote-square.com/s/23546"/>
+    <id>https://www.minna-no-vote-square.com/s/23546</id>
+    <updated>2026-10-21T21:46:06.173Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;420万件の漏洩懸念&quot;,
+  &quot;point1_desc&quot;: &quot;NTTソルマーレは電子書籍ストア「コミックシーモア」への不正アクセス調査結果を公表した。流出した可能性のある個人情報は最大で約420万件に上ると見られており影響が拡大している。&quot;,
+  &quot;point2_title&quot;: &quot;不正アクセ...</summary>
+  </entry>
+  <entry>
+    <title>PHPに重大欠陥 Webの7割で使用</title>
+    <link href="https://www.minna-no-vote-square.com/s/23545"/>
+    <id>https://www.minna-no-vote-square.com/s/23545</id>
+    <updated>2026-10-21T21:45:46.167Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;PHPに重大な脆弱性&quot;,
+  &quot;point1_desc&quot;: &quot;情報処理推進機構（IPA）は、Web開発で広く利用されているプログラミング言語PHPにおいて、システムの安全性を脅かす重大な欠陥が発見されたことを発表し注意を呼びかけている。&quot;,
+  &quot;point2_title&quot;: &quot;深夜に情報公...</summary>
+  </entry>
+  <entry>
+    <title>自民 衆院定数の削減幅を31で調整</title>
+    <link href="https://www.minna-no-vote-square.com/s/23544"/>
+    <id>https://www.minna-no-vote-square.com/s/23544</id>
+    <updated>2026-10-21T21:45:24.611Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;定数31減の折衷案提示へ&quot;,
+  &quot;point1_desc&quot;: &quot;自民党は衆議院の選挙制度改革に向けた定数削減について、従来の主張を歩み寄らせて31議席削減とする折衷案の調整に入った。各野党との協議において合意形成を目指す構えだ。&quot;,
+  &quot;point2_title&quot;: &quot;与野党間協議で提示...</summary>
+  </entry>
   <entry>
     <title>復興相の事務所数 公選法違反疑い</title>
     <link href="https://www.minna-no-vote-square.com/s/23543"/>
@@ -558,66 +618,5 @@
   &quot;point1_title&quot;: &quot;自衛隊の中東派遣を1年延長へ&quot;,
   &quot;point1_desc&quot;: &quot;政府は中東海域で海賊対処と情報収集を行う海上自衛隊の派遣期間を来年11月まで1年間延長する方針を固めた。ソマリア沖などでの海賊事案の増加傾向や緊迫する中東情勢を受けた措置である。&quot;,
   &quot;point2_title&quot;: &quot;...</summary>
-  </entry>
-  <entry>
-    <title>ウマ娘 ビザ下りずも米公演日迫る</title>
-    <link href="https://www.minna-no-vote-square.com/s/23498"/>
-    <id>https://www.minna-no-vote-square.com/s/23498</id>
-    <updated>2026-10-19T07:45:14.859Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ゲーム&quot;,
-  &quot;point1_title&quot;: &quot;ロスで7thイベント開催&quot;,
-  &quot;point1_desc&quot;: &quot;Cygamesは『ウマ娘 プリティーダービー』の7thイベントワールドツアー「THE STAGE」をロサンゼルスにて2026年10月に開催することを発表。海外ファンに向けて本格展開を開始する。&quot;,
-  &quot;point2_title...</summary>
-  </entry>
-  <entry>
-    <title>印旛沼決壊 カミツキガメはどこに</title>
-    <link href="https://www.minna-no-vote-square.com/s/23497"/>
-    <id>https://www.minna-no-vote-square.com/s/23497</id>
-    <updated>2026-10-19T07:44:54.485Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;印旛沼の堤防が決壊&quot;,
-  &quot;point1_desc&quot;: &quot;台風25号の影響による被害から約1カ月が経過しようとする中、千葉県に位置する印旛沼の堤防の一部が決壊する事態が発生し、現地では警戒感が高まっています。&quot;,
-  &quot;point2_title&quot;: &quot;カミツキガメ流出の懸念&quot;,
-  &quot;po...</summary>
-  </entry>
-  <entry>
-    <title>個別指導トレーニング トラブル増</title>
-    <link href="https://www.minna-no-vote-square.com/s/23496"/>
-    <id>https://www.minna-no-vote-square.com/s/23496</id>
-    <updated>2026-10-19T07:44:35.217Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;話題&quot;,
-  &quot;point1_title&quot;: &quot;パーソナルジム契約トラブル増加&quot;,
-  &quot;point1_desc&quot;: &quot;トレーナーからマンツーマンで指導を受けるパーソナルトレーニングに関する契約トラブルが急増中だ。割安なキャンペーンに惹かれて加入したものの思わぬトラブルに見舞われる消費者が増えている。&quot;,
-  &quot;point2_title&quot;: ...</summary>
-  </entry>
-  <entry>
-    <title>こどもNISA 知っておきたい注意点</title>
-    <link href="https://www.minna-no-vote-square.com/s/23495"/>
-    <id>https://www.minna-no-vote-square.com/s/23495</id>
-    <updated>2026-10-19T07:44:16.546Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;話題&quot;,
-  &quot;point1_title&quot;: &quot;こどもNISAの管理体制&quot;,
-  &quot;point1_desc&quot;: &quot;未成年の間は親権者等が運用管理を担当します。12歳となる年以降に教育費などで払い出す際も、子どもの同意と親権者等による手続きが必要となり、親が自由に使えるわけではありません。&quot;,
-  &quot;point2_title&quot;: &quot;トラブル防止...</summary>
-  </entry>
-  <entry>
-    <title>パーティ問題巡り 関氏に厳重注意</title>
-    <link href="https://www.minna-no-vote-square.com/s/23494"/>
-    <id>https://www.minna-no-vote-square.com/s/23494</id>
-    <updated>2026-10-19T07:43:57.076Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;議員会館で政治資金パーティ&quot;,
-  &quot;point1_desc&quot;: &quot;関芳弘文部科学相が衆議院の内部規程に違反し、衆議院議員会館内で政治資金パーティーを開催していた問題が発覚。国会内外で規範意識の欠如に対する批判の声が急速に高まっている。&quot;,
-  &quot;point2_title&quot;: &quot;議運委員長か...</summary>
   </entry>
 </feed>
