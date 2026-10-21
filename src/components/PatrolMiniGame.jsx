@@ -127,8 +127,21 @@ const PatrolMiniGame = ({
   globalOnlineCount, 
   encounteredEnemies = [], 
   setEncounteredEnemies,
-  user
+  user,
+  hn = ''
 }) => {
+  // 📢 UR以上のエネミードロップを広場のタイムラインで公表する
+  const announceRareDrop = async (item, enemyName) => {
+    if (!item || (item.rarity !== 'UR' && item.rarity !== 'LR')) return;
+    const rawName = (hn || '').split('◆')[0].trim();
+    const playerName = rawName && rawName !== '匿名広場民' ? rawName : '名無しの広場民';
+    const { error } = await supabase.from('timeline_posts').insert([{
+      name: '🎰 ドロップ速報',
+      avatar: item.rarity === 'LR' ? '🌈' : '✨',
+      content: `【ドロップ速報】${playerName}さんが ${enemyName ? `【${enemyName}】から ` : ''}[${item.rarity}] ${item.name} をドロップしました！🎉`
+    }]);
+    if (error) console.error('Drop announce error:', error);
+  };
   const [battleState, setBattleState] = useState('idle'); // idle, battling, won, lost
   const [enemy, setEnemy] = useState(null);
   const [playerHp, setPlayerHp] = useState(0);
@@ -1334,6 +1347,7 @@ const PatrolMiniGame = ({
       if (drop) {
         setDropItem(drop);
         triggerDropCelebration('LR');
+        announceRareDrop(drop, defeatedEnemy.name);
         setBattleLog(prev => [
           ...prev, 
           `🌈 ✨ 奇跡降臨！！！！伝説のUSAGI【らび -sin -】から最高峰の【虹箱（LR確定）】がドロップした！！！！`
@@ -1366,6 +1380,7 @@ const PatrolMiniGame = ({
       if (drop) {
         setDropItem(drop);
         triggerDropCelebration(drop.rarity);
+        announceRareDrop(drop, defeatedEnemy.name);
         setBattleLog(prev => [...prev, `🎁 激レアな【赤箱】をドロップした！！！`]);
       } else {
         setBattleLog(prev => [...prev, `💨 しかし何もドロップしなかった...`]);

@@ -241,7 +241,7 @@ const SquareTimeline = () => {
             minHeight: 'fit-content',
             ...(p.is_official
               ? officialCardStyle
-              : (typeof p.content === 'string' && p.content.startsWith('【ガチャ速報】'))
+              : (typeof p.content === 'string' && (p.content.startsWith('【ガチャ速報】') || p.content.startsWith('【ドロップ速報】')))
                 ? {
                     background: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)',
                     border: '1.5px solid #fbbf24',
