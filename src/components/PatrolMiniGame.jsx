@@ -239,16 +239,18 @@ const PatrolMiniGame = ({
       if (data.date === todayStr) localCount = data.count || 0;
     } catch { localCount = 0; }
 
-    // ☁️ ログイン中の場合はクラウド（Supabase）の値をマスターとして優先同期
+    let cloudCount = 0;
     if (user && user.user_metadata?.daily_patrol_date_v3 === todayStr) {
-      const cloudCount = user.user_metadata?.daily_patrol_count_v3 ?? 0;
-      try {
-        localStorage.setItem('daily_patrols_v3', JSON.stringify({ date: todayStr, count: cloudCount }));
-      } catch (e) {}
-      return { date: todayStr, count: cloudCount };
+      cloudCount = user.user_metadata?.daily_patrol_count_v3 ?? 0;
     }
 
-    return { date: todayStr, count: localCount };
+    // 🛡️ クラウドとローカルで進んでいる方（大きい方）を採用！古いキャッシュ値で巻き戻さない
+    const maxCount = Math.max(localCount, cloudCount);
+    try {
+      localStorage.setItem('daily_patrols_v3', JSON.stringify({ date: todayStr, count: maxCount }));
+    } catch (e) {}
+
+    return { date: todayStr, count: maxCount };
   };
   const [patrolsToday, setPatrolsToday] = useState(() => getTodayPatrols().count);
   const MAX_PATROLS = 20; // 1日20回まで（たっぷり冒険！）
@@ -386,6 +388,10 @@ const PatrolMiniGame = ({
     setPatrolsToday(newCount);
 
     if (user) {
+      if (user.user_metadata) {
+        user.user_metadata.daily_patrol_date_v3 = todayStr;
+        user.user_metadata.daily_patrol_count_v3 = newCount;
+      }
       supabase.auth.updateUser({
         data: {
           daily_patrol_date_v3: todayStr,

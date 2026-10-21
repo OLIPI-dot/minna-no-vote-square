@@ -1023,11 +1023,13 @@ function App() {
   const addTickets = async (amount) => {
     if (amount > 0) showRewardPopup(`🎫 + ${amount} チケット !!`, '#f59e0b');
     setGachaTickets(prev => {
-      const dbTickets = user?.user_metadata?.gacha_tickets || 0;
-      const baseTickets = Math.max(prev, dbTickets);
-      const newTickets = Math.max(0, baseTickets + amount);
+      // 🛡️ チケット消費(amount < 0)の際に、古いキャッシュ値で巻き戻らないよう prev を直接加減算
+      const newTickets = Math.max(0, prev + amount);
       localStorage.setItem('min_ake_tickets', String(newTickets));
       if (user) {
+        if (user.user_metadata) {
+          user.user_metadata.gacha_tickets = newTickets;
+        }
         supabase.auth.updateUser({ data: { gacha_tickets: newTickets } });
       }
       return newTickets;

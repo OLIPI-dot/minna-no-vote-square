@@ -187,27 +187,27 @@ const DungeonMiniGame = ({
 
   const getDungeonAttempts = () => {
     const todayStr = getTodayStr();
-    // ☁️ クラウドのアカウントデータがあれば最優先で参照
-    if (user?.user_metadata?.daily_dungeon_date === todayStr) {
-      const cloudRem = user.user_metadata.daily_dungeon_remaining;
-      if (typeof cloudRem === 'number') {
-        const adjustedRem = Math.max(cloudRem, BASE_DAILY_ATTEMPTS - (3 - Math.min(3, cloudRem)));
-        try {
-          localStorage.setItem('daily_dungeon_attempts_v1', JSON.stringify({ date: todayStr, remaining: adjustedRem }));
-        } catch(e) {}
-        return adjustedRem;
-      }
-    }
+    let localRem = BASE_DAILY_ATTEMPTS;
     try {
       const data = JSON.parse(localStorage.getItem('daily_dungeon_attempts_v1') || '{}');
       if (data.date === todayStr && typeof data.remaining === 'number') {
-        const adjustedRem = Math.max(data.remaining, BASE_DAILY_ATTEMPTS - (3 - Math.min(3, data.remaining)));
-        return adjustedRem;
+        localRem = data.remaining;
       }
-    } catch (e) {
-      console.error(e);
+    } catch (e) {}
+
+    let cloudRem = null;
+    if (user?.user_metadata?.daily_dungeon_date === todayStr) {
+      if (typeof user.user_metadata.daily_dungeon_remaining === 'number') {
+        cloudRem = user.user_metadata.daily_dungeon_remaining;
+      }
     }
-    return BASE_DAILY_ATTEMPTS;
+
+    // どちらか一方のみある場合はそれを採用、両方ある場合は消費が進んでいる方（小さい方）を基本採用
+    const effectiveRem = cloudRem !== null ? Math.min(localRem, cloudRem) : localRem;
+    try {
+      localStorage.setItem('daily_dungeon_attempts_v1', JSON.stringify({ date: todayStr, remaining: effectiveRem }));
+    } catch(e) {}
+    return effectiveRem;
   };
 
   const [remainingAttempts, setRemainingAttempts] = useState(() => getDungeonAttempts());
@@ -335,13 +335,19 @@ const DungeonMiniGame = ({
       console.error(e);
     }
     // ☁️ クラウドに即時同期
-    if (user && supabase) {
-      supabase.auth.updateUser({
-        data: {
-          daily_dungeon_date: todayStr,
-          daily_dungeon_remaining: newRemaining
-        }
-      }).catch(console.error);
+    if (user) {
+      if (user.user_metadata) {
+        user.user_metadata.daily_dungeon_date = todayStr;
+        user.user_metadata.daily_dungeon_remaining = newRemaining;
+      }
+      if (supabase) {
+        supabase.auth.updateUser({
+          data: {
+            daily_dungeon_date: todayStr,
+            daily_dungeon_remaining: newRemaining
+          }
+        }).catch(console.error);
+      }
     }
   };
 
