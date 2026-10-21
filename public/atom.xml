@@ -4,11 +4,72 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://www.minna-no-vote-square.com/atom.xml" rel="self"/>
   <link href="https://www.minna-no-vote-square.com/"/>
-  <updated>2026-10-21T07:45:22.281Z</updated>
+  <updated>2026-10-21T12:52:16.070Z</updated>
   <id>https://www.minna-no-vote-square.com/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>復興相の事務所数 公選法違反疑い</title>
+    <link href="https://www.minna-no-vote-square.com/s/23543"/>
+    <id>https://www.minna-no-vote-square.com/s/23543</id>
+    <updated>2026-10-21T12:52:08.090Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;細野氏に公選法違反の疑い&quot;,
+  &quot;point1_desc&quot;: &quot;細野豪志元環境相が、2024年10月に行われた衆議院議員選挙において、公職選挙法で定められている上限を超えた数の選挙事務所を設置していた疑いがあることが文春の取材で判明した。&quot;,
+  &quot;point2_title&quot;: &quot;上限超え...</summary>
+  </entry>
+  <entry>
+    <title>秋田県 夜遅くにかけ激しい雨恐れ</title>
+    <link href="https://www.minna-no-vote-square.com/s/23542"/>
+    <id>https://www.minna-no-vote-square.com/s/23542</id>
+    <updated>2026-10-21T12:51:48.886Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;秋田県内で激しい雷雨と強風&quot;,
+  &quot;point1_desc&quot;: &quot;21日の秋田県内は雷を伴う激しい雨に見舞われ、各所で強い風が吹き荒れた。悪天候の影響により、地域住民の生活やインフラへの重大な影響が懸念される状況となっている。&quot;,
+  &quot;point2_title&quot;: &quot;倒木による電線の被害...</summary>
+  </entry>
+  <entry>
+    <title>氾濫巡り気象庁 直ちに安全確保を</title>
+    <link href="https://www.minna-no-vote-square.com/s/23541"/>
+    <id>https://www.minna-no-vote-square.com/s/23541</id>
+    <updated>2026-10-21T12:51:29.163Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;子吉川に氾濫特別警報&quot;,
+  &quot;point1_desc&quot;: &quot;気象庁は秋田県を流れる子吉川に対し、警戒レベル最高となるレベル5の氾濫特別警報を発表した。周辺地域では重大な災害がすでに発生している可能性が高く極めて危険な状況だ。&quot;,
+  &quot;point2_title&quot;: &quot;緊急会見で避難呼びかけ...</summary>
+  </entry>
+  <entry>
+    <title>秋田の子吉川・石沢川で氾濫発生</title>
+    <link href="https://www.minna-no-vote-square.com/s/23540"/>
+    <id>https://www.minna-no-vote-square.com/s/23540</id>
+    <updated>2026-10-21T12:51:10.338Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;秋田県2河川で氾濫発生&quot;,
+  &quot;point1_desc&quot;: &quot;秋田県由利本荘市を流れる子吉川と石沢川で氾濫が発生しました。大雨の影響により河川の水位が急激に上昇しており、周辺地域への甚大な被害が懸念されるため厳重な警戒が呼びかけられています。&quot;,
+  &quot;point2_title&quot;: &quot;森子...</summary>
+  </entry>
+  <entry>
+    <title>避難＝避難所ではない 垂直避難を</title>
+    <link href="https://www.minna-no-vote-square.com/s/23539"/>
+    <id>https://www.minna-no-vote-square.com/s/23539</id>
+    <updated>2026-10-21T12:50:51.948Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;PHPの重大な脆弱性修正&quot;,
+  &quot;point1_desc&quot;: &quot;PHP開発プロジェクトのセキュリティチームが、2件の重大な脆弱性を修正するための緊急アップデートを予告した。影響範囲が広いため早期の対応が求められている。&quot;,
+  &quot;point2_title&quot;: &quot;修正版は今夜公開予定&quot;,
+ ...</summary>
+  </entry>
   <entry>
     <title>元timelesz猪俣周杜氏 不起訴処分</title>
     <link href="https://www.minna-no-vote-square.com/s/23538"/>
@@ -558,67 +619,5 @@
   &quot;point1_title&quot;: &quot;議員会館で政治資金パーティ&quot;,
   &quot;point1_desc&quot;: &quot;関芳弘文部科学相が衆議院の内部規程に違反し、衆議院議員会館内で政治資金パーティーを開催していた問題が発覚。国会内外で規範意識の欠如に対する批判の声が急速に高まっている。&quot;,
   &quot;point2_title&quot;: &quot;議運委員長か...</summary>
-  </entry>
-  <entry>
-    <title>ダンプカーが穴に転落 心肺停止</title>
-    <link href="https://www.minna-no-vote-square.com/s/23493"/>
-    <id>https://www.minna-no-vote-square.com/s/23493</id>
-    <updated>2026-10-19T02:18:16.742Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;10tダンプが穴に転落&quot;,
-  &quot;point1_desc&quot;: &quot;北海道白老町の工事現場において、10トンダンプカーが掘削された穴に転落する事故が発生しました。運転していた70代の男性作業員が運転席に取り残される事態となっています。&quot;,
-  &quot;point2_title&quot;: &quot;70代男性が運転席...</summary>
-  </entry>
-  <entry>
-    <title>バスやタクシー3台事故 13人搬送</title>
-    <link href="https://www.minna-no-vote-square.com/s/23492"/>
-    <id>https://www.minna-no-vote-square.com/s/23492</id>
-    <updated>2026-10-19T02:17:56.320Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;藤沢市でタクシーとバス衝突&quot;,
-  &quot;point1_desc&quot;: &quot;神奈川県藤沢市の交差点において、タクシーとバスが衝突する交通事故が発生した。消防に通報が寄せられ現場の状況確認と対応が進められているが、事故の原因や詳細な被害状況の調査が待たれる。&quot;,
-  &quot;point2_title&quot;: &quot;...</summary>
-  </entry>
-  <entry>
-    <title>イタリアでもデモ 一部が暴徒化</title>
-    <link href="https://www.minna-no-vote-square.com/s/23491"/>
-    <id>https://www.minna-no-vote-square.com/s/23491</id>
-    <updated>2026-10-19T02:17:36.411Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;ミラノでデモ暴徒化&quot;,
-  &quot;point1_desc&quot;: &quot;イタリアのミラノにて、公共サービスの低下や生活費の高騰に抗議するデモが行われた。しかし、デモ隊の一部が暴徒化し、警察と衝突する事態に発展してしまった。&quot;,
-  &quot;point2_title&quot;: &quot;投石や店舗での略奪&quot;,
-  &quot;poin...</summary>
-  </entry>
-  <entry>
-    <title>タイアップ広告炎上 厚労省が指針</title>
-    <link href="https://www.minna-no-vote-square.com/s/23490"/>
-    <id>https://www.minna-no-vote-square.com/s/23490</id>
-    <updated>2026-10-19T02:17:16.616Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;厚労省が広告ガイドライン策定&quot;,
-  &quot;point1_desc&quot;: &quot;厚生労働省は映画やドラマなどの作品とタイアップして政策を広報する広告の作成時における注意点をまとめた新たなガイドラインを策定した。作品のイメージや内容に配慮した適切な周知を目指す。&quot;,
-  &quot;point2_title&quot;: ...</summary>
-  </entry>
-  <entry>
-    <title>首相 靖国神社に私費で玉串料奉納</title>
-    <link href="https://www.minna-no-vote-square.com/s/23489"/>
-    <id>https://www.minna-no-vote-square.com/s/23489</id>
-    <updated>2026-10-19T02:16:57.269Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;靖国神社へ玉串料納入&quot;,
-  &quot;point1_desc&quot;: &quot;高市早苗首相は靖国神社の秋季例大祭に合わせ、自民党の梶山弘志総務会長を通じて私費で玉串料を奉納した。自身による参拝は見送る方向で調整が進められている。&quot;,
-  &quot;point2_title&quot;: &quot;中韓両国への配慮が背景&quot;,
-  &quot;p...</summary>
   </entry>
 </feed>
