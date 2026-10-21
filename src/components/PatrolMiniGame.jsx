@@ -62,6 +62,11 @@ const RANDOM_EFFECT_MSGS = {
     "{item}のオーラに圧倒され、敵が急に土下座した！",
     "敵は{item}を見て自分が間違っていたと悟り、謝罪を始めた！"
   ],
+  money_slap: [
+    "{item}で相手の顔面を思い切りビンタした！",
+    "{item}の圧倒的な財力で敵を殴りつけた！",
+    "「これで黙りな！」{item}による札束の暴力が炸裂！"
+  ],
   kusorep: [
     "{item}による長文クソリプが敵の思考を停止させた！",
     "{item}の「FF外から失礼します」で敵の攻撃の勢いが完全に死んだ！"
@@ -755,6 +760,21 @@ const PatrolMiniGame = ({
         newLogs.push(`📝 【改変】 ${getEffectMsg('rewrite_reality', rewriteItem)}`);
       }
 
+      // 💴 【札束ビンタ: money_slap】 説明文通りのランダム追加大ダメージ！
+      const moneySlapItem = getEffectSource('money_slap');
+      if (moneySlapItem) {
+        const rarityBonus = {
+          LR: { min: 100, max: 250 },
+          UR: { min: 60, max: 160 },
+          SR: { min: 35, max: 95 },
+          R:  { min: 20, max: 60 },
+          N:  { min: 10, max: 35 }
+        }[moneySlapItem.rarity] || { min: 30, max: 100 };
+        const extraDmg = Math.floor(Math.random() * (rarityBonus.max - rarityBonus.min + 1)) + rarityBonus.min;
+        dmgToEnemy += extraDmg;
+        newLogs.push(`💸 ${getStackLabel('money_slap', '札束ビンタ')} ${getEffectMsg('money_slap', moneySlapItem)} (+${extraDmg} 追加ダメージ！)`);
+      }
+
       currentEnemyHp = Math.max(0, currentEnemyHp - dmgToEnemy);
       
       if (doubleEdgedItem || overworkItem || collabItem) {
@@ -781,12 +801,11 @@ const PatrolMiniGame = ({
           : `🗡️ あなたの攻撃！ ${dmgToEnemy} のダメージ！`);
       }
 
-      // 💴 【札束ビンタ: money_slap】 20%で確定スタン付与（重複で+20%、最大50%）
-      const moneySlapItem = getEffectSource('money_slap');
+      // 💴 【札束ビンタ: money_slap】 20%で戦意喪失スタンも追加付与！
       const moneySlapChance = getEffectChance('money_slap', 0.20, 0.50);
       if (currentEnemyHp > 0 && moneySlapItem && Math.random() < moneySlapChance) {
         isEnemyStunned = true;
-        newLogs.push(`💴 ${getStackLabel('money_slap', '札束')} ${getEffectMsg('money_slap', moneySlapItem)}`);
+        newLogs.push(`💫 【戦意喪失】 札束の衝撃で相手は放心状態になり、行動不能になった！`);
       }
 
       // 🩸 【吸血: lifesteal】（N:10%/15%, R:15%/25%, SR:25%/40%, UR:35%/50%）

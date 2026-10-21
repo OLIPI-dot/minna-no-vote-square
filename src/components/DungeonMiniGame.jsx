@@ -58,6 +58,11 @@ const RANDOM_EFFECT_MSGS = {
   buyout: [
     "{item}の潤沢な資金力により、敵を買収することに成功した！"
   ],
+  money_slap: [
+    "{item}で相手の顔面を思い切りビンタした！",
+    "{item}の圧倒的な財力で敵を殴りつけた！",
+    "「これで黙りな！」{item}による札束の暴力が炸裂！"
+  ],
   partner_cheer: [
     "{item}が熱烈に応援している！ (会心率+20%)",
     "{item}の熱いエールが背中を押す！ (会心率+20%)",
@@ -813,9 +818,16 @@ const DungeonMiniGame = ({
     // 💴 【札束ビンタ: money_slap】
     const moneySlapItem = getEffectSource('money_slap');
     if (moneySlapItem) {
-      const extraDmg = Math.floor(Math.random() * 80) + 20;
+      const rarityBonus = {
+        LR: { min: 100, max: 250 },
+        UR: { min: 60, max: 160 },
+        SR: { min: 35, max: 95 },
+        R:  { min: 20, max: 60 },
+        N:  { min: 10, max: 35 }
+      }[moneySlapItem.rarity] || { min: 30, max: 100 };
+      const extraDmg = Math.floor(Math.random() * (rarityBonus.max - rarityBonus.min + 1)) + rarityBonus.min;
       dmgToEnemy += extraDmg;
-      newLogs.push(`💸 【札束ビンタ】 ${getEffectMsg('money_slap', moneySlapItem)} (+${extraDmg} ダメージ！)`);
+      newLogs.push(`💸 【札束ビンタ】 ${getEffectMsg('money_slap', moneySlapItem)} (+${extraDmg} 追加ダメージ！)`);
     }
 
     if (dmgToEnemy < 1) dmgToEnemy = 1;
