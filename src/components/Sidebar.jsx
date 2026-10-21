@@ -434,6 +434,7 @@ const Sidebar = ({
                 encounteredEnemies={encounteredEnemies}
                 setEncounteredEnemies={setEncounteredEnemies}
                 user={user}
+                hn={hn}
               />
             </div>
 

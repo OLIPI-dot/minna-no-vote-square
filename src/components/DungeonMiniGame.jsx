@@ -111,8 +111,21 @@ const DungeonMiniGame = ({
   setInventory,
   encounteredEnemies = [],
   setEncounteredEnemies,
-  user
+  user,
+  hn = ''
 }) => {
+  // 📢 UR以上のドロップを広場のタイムラインで公表する
+  const announceRareDrop = async (item, fromName) => {
+    if (!item || (item.rarity !== 'UR' && item.rarity !== 'LR')) return;
+    const rawName = (hn || '').split('◆')[0].trim();
+    const playerName = rawName && rawName !== '匿名広場民' ? rawName : '名無しの広場民';
+    const { error } = await supabase.from('timeline_posts').insert([{
+      name: '🎰 ドロップ速報',
+      avatar: item.rarity === 'LR' ? '🌈' : '✨',
+      content: `【ドロップ速報】${playerName}さんが 地下の${fromName ? `【${fromName}】` : '宝箱'}から [${item.rarity}] ${item.name} を手に入れました！🎉`
+    }]);
+    if (error) console.error('Drop announce error:', error);
+  };
   // ダンジョン全体の状態: 'lobby' | 'exploring' | 'battling' | 'escaped' | 'lost'
   const [dungeonState, setDungeonState] = useState('lobby');
   const [floor, setFloor] = useState(1);
@@ -517,6 +530,7 @@ const DungeonMiniGame = ({
         const dropped = pool[Math.floor(Math.random() * pool.length)] || ITEMS[0];
         setCollectedItems(prev => [...prev, dropped]);
         if (setInventory) setInventory(prev => [...prev, dropped]);
+        announceRareDrop(dropped, null);
         setDungeonLog(prev => [
           `🎁 【宝箱発見！】 箱を開けると 【${dropped.name} (${dropped.rarity})】 が入っていた！`,
           ...prev
@@ -1149,6 +1163,7 @@ const DungeonMiniGame = ({
         if (darkCarrot && Math.random() < 0.05) {
           setCollectedItems(prev => [...prev, darkCarrot]);
           if (setInventory) setInventory(prev => [...prev, darkCarrot]);
+          announceRareDrop(darkCarrot, enemy.name);
           logs.push(`🐰👿 「浄化される…！温かい光を…ありがとう…！」と元の白い姿に戻って光の中へ消えていった！`);
           logs.push(`🎁✨ 奇跡の激レアドロップ！！ 闇が結晶化した 【漆黒の呪われしにんじん (UR)】 を手に入れた！`);
           setDungeonLog(prev => [`🐰👿 悪に堕ちたらびたんを救済し、URにんじんを獲得！`, ...prev]);
@@ -1161,6 +1176,7 @@ const DungeonMiniGame = ({
         if (crown && Math.random() < 0.03) {
           setCollectedItems(prev => [...prev, crown]);
           if (setInventory) setInventory(prev => [...prev, crown]);
+          announceRareDrop(crown, enemy.name);
           logs.push(`🐰👑 「見事だ、地上の旅人よ。この大地の加護をそなたに託そう…」`);
           logs.push(`🏆✨ 神話の超幻ドロップ！！ 【地底王の古代参冠 (LR)】 を授かった！！`);
           setDungeonLog(prev => [`👑 伝説の地底兎から神話の古代冠を授かった！`, ...prev]);
@@ -1174,6 +1190,7 @@ const DungeonMiniGame = ({
         if (specialItem) {
           setCollectedItems(prev => [...prev, specialItem]);
           if (setInventory) setInventory(prev => [...prev, specialItem]);
+          announceRareDrop(specialItem, enemy.name);
           logs.push(`🎁✨ 奇跡の激レアドロップ！！`);
           logs.push(`🎧 【${enemy.name}】 は首から下げていた 【${specialItem.name} (${specialItem.rarity})】 を落としていった！！`);
         }
@@ -1187,6 +1204,7 @@ const DungeonMiniGame = ({
         const dropped = pool[Math.floor(Math.random() * pool.length)] || ITEMS[0];
         setCollectedItems(prev => [...prev, dropped]);
         if (setInventory) setInventory(prev => [...prev, dropped]);
+        announceRareDrop(dropped, enemy.name);
         logs.push(`🎁 敵が 【${dropped.name} (${dropped.rarity})】 を落とした！`);
       }
       setDungeonLog(prev => [
