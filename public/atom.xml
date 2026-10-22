@@ -4,11 +4,72 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://www.minna-no-vote-square.com/atom.xml" rel="self"/>
   <link href="https://www.minna-no-vote-square.com/"/>
-  <updated>2026-10-22T02:17:48.298Z</updated>
+  <updated>2026-10-22T07:45:16.518Z</updated>
   <id>https://www.minna-no-vote-square.com/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>70cmのジュラ紀恐竜足跡 化石発見</title>
+    <link href="https://www.minna-no-vote-square.com/s/23558"/>
+    <id>https://www.minna-no-vote-square.com/s/23558</id>
+    <updated>2026-10-22T07:45:15.220Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;話題&quot;,
+  &quot;point1_title&quot;: &quot;ジュラ紀後期の足跡化石&quot;,
+  &quot;point1_desc&quot;: &quot;福島県南相馬市の約1億6千万年前のジュラ紀後期の地層から、恐竜の足跡とみられる約70センチの化石が発見された。この時期の竜脚類のものとしては国内初の貴重な発見だ。&quot;,
+  &quot;point2_title&quot;: &quot;竜脚類の可能性が高い発見&quot;...</summary>
+  </entry>
+  <entry>
+    <title>川崎競馬の厩務員自殺 労災認定</title>
+    <link href="https://www.minna-no-vote-square.com/s/23557"/>
+    <id>https://www.minna-no-vote-square.com/s/23557</id>
+    <updated>2026-10-22T07:44:57.062Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;川崎競馬の厩務員が自殺&quot;,
+  &quot;point1_desc&quot;: &quot;川崎競馬に所属していた43歳の男性厩務員が2024年に自殺していたことが判明。遺族側は調教師からの日常的なパワーハラスメントが大きな原因であるとして労災申請を行った。&quot;,
+  &quot;point2_title&quot;: &quot;過酷な労働とパワハ...</summary>
+  </entry>
+  <entry>
+    <title>マンジャロを不正販売の疑い 逮捕</title>
+    <link href="https://www.minna-no-vote-square.com/s/23556"/>
+    <id>https://www.minna-no-vote-square.com/s/23556</id>
+    <updated>2026-10-22T07:44:38.600Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;マンジャロ不正販売で逮捕&quot;,
+  &quot;point1_desc&quot;: &quot;東京・新宿の薬局責任者ら2人が、糖尿病治療薬である「マンジャロ」などを処方箋なしで不正に販売したとして、医薬品医療機器等法違反の疑いで警視庁に逮捕された。&quot;,
+  &quot;point2_title&quot;: &quot;処方箋なしで医薬品を譲渡&quot;,...</summary>
+  </entry>
+  <entry>
+    <title>米 サウジの大使館員らに退避命令</title>
+    <link href="https://www.minna-no-vote-square.com/s/23555"/>
+    <id>https://www.minna-no-vote-square.com/s/23555</id>
+    <updated>2026-10-22T07:44:20.565Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;米大使館職員に退避命令&quot;,
+  &quot;point1_desc&quot;: &quot;米国務省のピゴット報道官は、サウジアラビアに所在する米大使館の部内職員およびその家族に対して退避命令を発令したことをXにて公表し、現地での警戒感を強めている。&quot;,
+  &quot;point2_title&quot;: &quot;フーシ派の脅威増大&quot;,
+ ...</summary>
+  </entry>
+  <entry>
+    <title>高市氏 自民内から再選支持相次ぐ</title>
+    <link href="https://www.minna-no-vote-square.com/s/23554"/>
+    <id>https://www.minna-no-vote-square.com/s/23554</id>
+    <updated>2026-10-22T07:44:01.936Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;高市内閣が発足1年を迎える&quot;,
+  &quot;point1_desc&quot;: &quot;高市内閣が発足から1年を迎え、自民党内では来年秋の総裁選に向けた動きが早くも本格化している。党内では高市首相の再選出馬が既定路線とされ、今後の政権運営に注目が集まっている。&quot;,
+  &quot;point2_title&quot;: &quot;小林氏の...</summary>
+  </entry>
   <entry>
     <title>仕事探し困難「通信困窮」の実態</title>
     <link href="https://www.minna-no-vote-square.com/s/23553"/>
@@ -555,66 +616,5 @@
   &quot;point1_title&quot;: &quot;自民・維新の連立合意1年&quot;,
   &quot;point1_desc&quot;: &quot;自民党と日本維新の会が連立政権の合意書を交わしてから1年が経過した。合意内容の5割を超える項目で達成の目処が立っているものの、残された課題の早期実現に向けて調整が続いている。&quot;,
   &quot;point2_title&quot;: &quot;残る項目...</summary>
-  </entry>
-  <entry>
-    <title>JAL便に小動物 サイズは猫以下か</title>
-    <link href="https://www.minna-no-vote-square.com/s/23508"/>
-    <id>https://www.minna-no-vote-square.com/s/23508</id>
-    <updated>2026-10-19T21:47:08.944Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;JAL福岡発鹿児島行きが欠航&quot;,
-  &quot;point1_desc&quot;: &quot;19日午後、福岡空港から鹿児島空港に向かう予定だった日本航空の便が欠航となった。出発前の機内でトラブルが発生したため、運航会社は安全を最優先にして運休の対応をとった。&quot;,
-  &quot;point2_title&quot;: &quot;操縦席に小動...</summary>
-  </entry>
-  <entry>
-    <title>ユニクロ ソックス3点990円終了へ</title>
-    <link href="https://www.minna-no-vote-square.com/s/23507"/>
-    <id>https://www.minna-no-vote-square.com/s/23507</id>
-    <updated>2026-10-19T21:46:51.215Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;話題&quot;,
-  &quot;point1_title&quot;: &quot;一部商品で約4％の値上げ&quot;,
-  &quot;point1_desc&quot;: &quot;ユニクロは公式サイトにて11月10日からの価格改定を発表した。一部の商品およびサービスを対象に平均販売価格が約4％引き上げられることになり、消費者へ影響を与える見通しだ。&quot;,
-  &quot;point2_title&quot;: &quot;定番の感動ジャケ...</summary>
-  </entry>
-  <entry>
-    <title>H3ロケット10号機 打ち上げ成功</title>
-    <link href="https://www.minna-no-vote-square.com/s/23506"/>
-    <id>https://www.minna-no-vote-square.com/s/23506</id>
-    <updated>2026-10-19T21:46:33.148Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;話題&quot;,
-  &quot;point1_title&quot;: &quot;H3ロケット10号機打ち上げ成功&quot;,
-  &quot;point1_desc&quot;: &quot;鹿児島県の種子島宇宙センターからH3ロケット10号機が打ち上げられた。ロケットは順調に飛行を続け、搭載していた探査機を予定されていた軌道へ正確に投入することに成功した。&quot;,
-  &quot;point2_title&quot;: &quot;火星衛星探...</summary>
-  </entry>
-  <entry>
-    <title>特定技能「給食」受け入れ再開へ</title>
-    <link href="https://www.minna-no-vote-square.com/s/23505"/>
-    <id>https://www.minna-no-vote-square.com/s/23505</id>
-    <updated>2026-10-19T21:46:14.489Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;外食業の受け入れ停止&quot;,
-  &quot;point1_desc&quot;: &quot;特定技能1号の外食業分野において新規受け入れが一時停止された問題で、人手不足が深刻な現場への影響が懸念されている。政府は対応策の検討を進めている。&quot;,
-  &quot;point2_title&quot;: &quot;給食調理員は別分野へ&quot;,
-  &quot;poin...</summary>
-  </entry>
-  <entry>
-    <title>仏首相 一部に夜間外出禁止令要請</title>
-    <link href="https://www.minna-no-vote-square.com/s/23504"/>
-    <id>https://www.minna-no-vote-square.com/s/23504</id>
-    <updated>2026-10-19T21:45:56.023Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;生活費高騰デモが暴徒化&quot;,
-  &quot;point1_desc&quot;: &quot;フランスの週末各地で発生した抗議デモは、物価上昇や生活費高騰に対する国民の不満から発展したものだ。しかし一部の参加者が激昂して暴徒化し、各地で破壊活動や略奪行為を引き起こす事態となった。&quot;,
-  &quot;point2_title&quot;: ...</summary>
   </entry>
 </feed>
