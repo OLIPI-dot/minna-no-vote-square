@@ -1412,33 +1412,44 @@ const PatrolMiniGame = ({
       }
     }
 
-    // 🗝️ 地下の鍵ドロップ判定（約5%のレア確率で、本日の地下パトロール挑戦権+1！）
+    // 🗝️ 地下の鍵ドロップ判定（約5%のレア確率で、地下の鍵をストック！最大10個）
+    const MAX_DUNGEON_KEYS = 10;
     let foundKey = false;
     if (Math.random() < 0.05) {
       try {
-        const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
-        const dungeonData = JSON.parse(localStorage.getItem('daily_dungeon_attempts_v1') || '{}');
-        const currentRemaining = dungeonData.date === todayStr ? (typeof dungeonData.remaining === 'number' ? dungeonData.remaining : 5) : 5;
-        const newRemaining = currentRemaining + 1;
-        localStorage.setItem('daily_dungeon_attempts_v1', JSON.stringify({
-          date: todayStr,
-          remaining: newRemaining
-        }));
-        if (user && supabase) {
-          supabase.auth.updateUser({
-            data: {
-              daily_dungeon_date: todayStr,
-              daily_dungeon_remaining: newRemaining
-            }
-          }).catch(console.error);
+        let currentKeys = 0;
+        try {
+          const val = localStorage.getItem('minique_dungeon_keys');
+          if (val !== null) currentKeys = parseInt(val, 10) || 0;
+        } catch (e) {}
+        if (typeof user?.user_metadata?.dungeon_keys === 'number') {
+          currentKeys = Math.max(currentKeys, user.user_metadata.dungeon_keys);
         }
-        foundKey = true;
-        setHasFoundKey(true);
-        if (!drop) triggerDropCelebration(null, true);
-        setBattleLog(prev => [
-          ...prev, 
-          `🗝️ 【地下の鍵】を発見！本日の「地下パトロール」挑戦回数が +1 回増えた！（本日残り ${newRemaining} 回）`
-        ]);
+
+        if (currentKeys < MAX_DUNGEON_KEYS) {
+          const newKeys = currentKeys + 1;
+          localStorage.setItem('minique_dungeon_keys', String(newKeys));
+          if (user) {
+            if (user.user_metadata) user.user_metadata.dungeon_keys = newKeys;
+            if (supabase) {
+              supabase.auth.updateUser({
+                data: { dungeon_keys: newKeys }
+              }).catch(console.error);
+            }
+          }
+          foundKey = true;
+          setHasFoundKey(true);
+          if (!drop) triggerDropCelebration(null, true);
+          setBattleLog(prev => [
+            ...prev, 
+            `🗝️ 【地下の鍵】を発見！ストックに追加された！（所持: ${newKeys} / ${MAX_DUNGEON_KEYS} 個）`
+          ]);
+        } else {
+          setBattleLog(prev => [
+            ...prev, 
+            `🗝️ 【地下の鍵】を発見したが、所持上限（${MAX_DUNGEON_KEYS}個）のため持ちきれなかった！`
+          ]);
+        }
       } catch (e) {
         console.error(e);
       }
@@ -2073,7 +2084,7 @@ const PatrolMiniGame = ({
               gap: '6px'
             }}>
               <span>🗝️</span>
-              <span>レアドロップ！【地下の鍵】を発見！（地下パトロール挑戦権 +1）</span>
+              <span>レアドロップ！【地下の鍵】を発見！（ストックに追加 / 最大10個）</span>
             </div>
           )}
 

@@ -189,6 +189,24 @@ const DungeonMiniGame = ({
   // 🗝️ 地下パトロール挑戦回数管理（1日基本5回、クラウド同期）
   const getTodayStr = () => new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
   const BASE_DAILY_ATTEMPTS = 5;
+  const MAX_DUNGEON_KEYS = 10;
+
+  const getDungeonKeys = () => {
+    let localKeys = 0;
+    try {
+      const val = localStorage.getItem('minique_dungeon_keys');
+      if (val !== null) localKeys = parseInt(val, 10) || 0;
+    } catch (e) {}
+
+    let cloudKeys = null;
+    if (typeof user?.user_metadata?.dungeon_keys === 'number') {
+      cloudKeys = user.user_metadata.dungeon_keys;
+    }
+    const effective = cloudKeys !== null ? Math.max(localKeys, cloudKeys) : localKeys;
+    return Math.min(MAX_DUNGEON_KEYS, Math.max(0, effective));
+  };
+
+  const [dungeonKeys, setDungeonKeys] = useState(() => getDungeonKeys());
 
   const getDungeonAttempts = () => {
     const todayStr = getTodayStr();
@@ -295,10 +313,11 @@ const DungeonMiniGame = ({
     });
   };
 
-  // ロビーに戻った時やユーザー情報更新時に最新の残り回数と履歴を同期
+  // ロビーに戻った時やユーザー情報更新時に最新の残り回数・所持鍵・履歴を同期
   useEffect(() => {
     if (dungeonState === 'lobby') {
       setRemainingAttempts(getDungeonAttempts());
+      setDungeonKeys(getDungeonKeys());
       setDungeonHistory(getDungeonHistory());
       if (user?.user_metadata?.dungeon_best_floor) {
         setBestFloor(prev => Math.max(prev, user.user_metadata.dungeon_best_floor));
@@ -327,6 +346,25 @@ const DungeonMiniGame = ({
       }
     } catch (e) {}
   }, [user]);
+
+  // 🗝️ ストック地下の鍵の消費・保存
+  const saveDungeonKeys = (newKeys) => {
+    const clamped = Math.min(MAX_DUNGEON_KEYS, Math.max(0, newKeys));
+    setDungeonKeys(clamped);
+    try {
+      localStorage.setItem('minique_dungeon_keys', String(clamped));
+    } catch (e) {
+      console.error(e);
+    }
+    if (user) {
+      if (user.user_metadata) user.user_metadata.dungeon_keys = clamped;
+      if (supabase) {
+        supabase.auth.updateUser({
+          data: { dungeon_keys: clamped }
+        }).catch(console.error);
+      }
+    }
+  };
 
   const saveRemainingAttempts = (newRemaining) => {
     const todayStr = getTodayStr();
@@ -424,8 +462,13 @@ const DungeonMiniGame = ({
 
   // ダンジョン入場（B1Fからスタート）
   const enterDungeon = () => {
-    if (remainingAttempts <= 0) return;
-    saveRemainingAttempts(remainingAttempts - 1);
+    if (remainingAttempts > 0) {
+      saveRemainingAttempts(remainingAttempts - 1);
+    } else if (dungeonKeys > 0) {
+      saveDungeonKeys(dungeonKeys - 1);
+    } else {
+      return;
+    }
     setFloor(1);
     setCollectedExp(0);
     setCollectedTickets(0);
@@ -1292,21 +1335,48 @@ const DungeonMiniGame = ({
             <div style={{ fontWeight: 'bold', fontSize: '1.05rem', color: '#f1f5f9', marginBottom: '4px' }}>
               広場の地下を巡回する「地下パトロール」
             </div>
-            {/* 本日の残り挑戦回数バッジ */}
+            {/* 本日の残り挑戦回数＆ストック鍵バッジ */}
             <div style={{
-              display: 'inline-flex',
+              display: 'flex',
               alignItems: 'center',
-              gap: '6px',
-              padding: '4px 12px',
-              borderRadius: '20px',
-              fontSize: '0.8rem',
-              fontWeight: 'bold',
-              background: remainingAttempts > 0 ? 'rgba(99, 102, 241, 0.2)' : 'rgba(239, 68, 68, 0.2)',
-              border: remainingAttempts > 0 ? '1px solid #6366f1' : '1px solid #ef4444',
-              color: remainingAttempts > 0 ? '#a5b4fc' : '#fca5a5',
+              justifyContent: 'center',
+              flexWrap: 'wrap',
+              gap: '8px',
               margin: '6px 0 10px 0'
             }}>
-              🗝️ 本日の挑戦権: <strong>残り {remainingAttempts} 回</strong>
+              {/* 無料枠 */}
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '5px',
+                padding: '4px 10px',
+                borderRadius: '16px',
+                fontSize: '0.78rem',
+                fontWeight: 'bold',
+                background: remainingAttempts > 0 ? 'rgba(99, 102, 241, 0.2)' : 'rgba(148, 163, 184, 0.15)',
+                border: remainingAttempts > 0 ? '1px solid #6366f1' : '1px solid #475569',
+                color: remainingAttempts > 0 ? '#a5b4fc' : '#94a3b8'
+              }}>
+                <span>📅 無料枠:</span>
+                <strong>残り {remainingAttempts} 回</strong>
+              </div>
+
+              {/* ストック鍵 */}
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '5px',
+                padding: '4px 10px',
+                borderRadius: '16px',
+                fontSize: '0.78rem',
+                fontWeight: 'bold',
+                background: dungeonKeys > 0 ? 'rgba(245, 158, 11, 0.2)' : 'rgba(148, 163, 184, 0.15)',
+                border: dungeonKeys > 0 ? '1px solid #f59e0b' : '1px solid #475569',
+                color: dungeonKeys > 0 ? '#fde047' : '#94a3b8'
+              }}>
+                <span>🗝️ 所持鍵:</span>
+                <strong>{dungeonKeys} / {MAX_DUNGEON_KEYS} 個</strong>
+              </div>
             </div>
 
             <div style={{ fontSize: '0.8rem', color: '#94a3b8', lineHeight: 1.6, maxWidth: '280px', margin: '0 auto' }}>
@@ -1335,26 +1405,34 @@ const DungeonMiniGame = ({
 
           <button
             onClick={enterDungeon}
-            disabled={remainingAttempts <= 0}
+            disabled={remainingAttempts <= 0 && dungeonKeys <= 0}
             style={{
               width: '100%',
-              maxWidth: '260px',
+              maxWidth: '280px',
               padding: '12px',
               borderRadius: '8px',
               border: 'none',
-              background: remainingAttempts > 0 
-                ? 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)' 
+              background: (remainingAttempts > 0 || dungeonKeys > 0)
+                ? remainingAttempts > 0
+                  ? 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)'
+                  : 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)'
                 : '#334155',
-              color: remainingAttempts > 0 ? 'white' : '#94a3b8',
+              color: (remainingAttempts > 0 || dungeonKeys > 0) ? 'white' : '#94a3b8',
               fontWeight: 'bold',
               fontSize: '0.92rem',
-              cursor: remainingAttempts > 0 ? 'pointer' : 'not-allowed',
-              boxShadow: remainingAttempts > 0 ? '0 4px 12px rgba(79, 70, 229, 0.4)' : 'none'
+              cursor: (remainingAttempts > 0 || dungeonKeys > 0) ? 'pointer' : 'not-allowed',
+              boxShadow: (remainingAttempts > 0 || dungeonKeys > 0)
+                ? remainingAttempts > 0
+                  ? '0 4px 12px rgba(79, 70, 229, 0.4)'
+                  : '0 4px 12px rgba(245, 158, 11, 0.4)'
+                : 'none'
             }}
           >
             {remainingAttempts > 0 
-              ? '🔦 地下パトロールへ出発（B1F〜）' 
-              : '🗝️ 本日の挑戦権終了（地上パトロールで鍵を探そう！）'}
+              ? `🔦 地下パトロールへ出発（無料枠: 残り${remainingAttempts}回）` 
+              : dungeonKeys > 0
+                ? `🗝️ 地下の鍵を使って出発（所持: 残り${dungeonKeys}個）`
+                : '🗝️ 挑戦権終了（地上パトロールで鍵を探そう！）'}
           </button>
 
           {/* 📜 本日の探索記録（冒険履歴） */}
