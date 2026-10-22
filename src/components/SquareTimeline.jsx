@@ -127,6 +127,188 @@ const SquareTimeline = () => {
     fontSize: '0.88rem'
   };
 
+  // 🎰 速報（ガチャ・ドロップ）のデザイン定義
+  const newsCardStyle = {
+    background: 'linear-gradient(135deg, #fffdf5 0%, #fef9c3 35%, #fffbeb 100%)',
+    border: '1.5px solid #facc15',
+    boxShadow: '0 4px 14px rgba(234, 179, 8, 0.15)',
+    position: 'relative',
+    overflow: 'hidden'
+  };
+
+  const newsAvatarStyle = {
+    background: 'linear-gradient(135deg, #fde047, #f59e0b, #ea580c)',
+    boxShadow: '0 0 0 2px #fff, 0 0 0 3px #f59e0b'
+  };
+
+  const newsNameStyle = {
+    background: 'linear-gradient(90deg, #b45309, #d97706)',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    fontWeight: '900',
+    fontSize: '0.88rem'
+  };
+
+  // タイムライン本文の装飾レンダラー
+  const renderTimelineContent = (content) => {
+    if (typeof content !== 'string') return null;
+
+    // ガチャ速報・ドロップ速報のパース
+    const headerMatch = content.match(/^【(ガチャ|ドロップ)速報】\s*/);
+    if (headerMatch) {
+      const newsType = headerMatch[1]; // 'ガチャ' or 'ドロップ'
+      const rest = content.slice(headerMatch[0].length);
+      const detailMatch = rest.match(/^(.+?)さんが\s*(?:(.*?から)\s*)?\[([^\]]+)\]\s*(.+?)\s*(を(?:引き当てました|ドロップしました|手に入れました|獲得しました)！?.*)$/);
+
+      if (detailMatch) {
+        const [, playerName, fromText, rarity, itemName, actionText] = detailMatch;
+
+        // レアリティに応じたバッジ色
+        let rarityBadgeStyle = {
+          background: 'linear-gradient(135deg, #f59e0b, #d97706)',
+          color: '#ffffff',
+          boxShadow: '0 2px 6px rgba(217, 119, 6, 0.3)'
+        };
+        let rarityIcon = '✨';
+
+        if (rarity === 'LR') {
+          rarityBadgeStyle = {
+            background: 'linear-gradient(135deg, #ec4899, #8b5cf6, #3b82f6)',
+            color: '#ffffff',
+            boxShadow: '0 2px 8px rgba(139, 92, 246, 0.4)'
+          };
+          rarityIcon = '🌈';
+        } else if (rarity === 'UR') {
+          rarityBadgeStyle = {
+            background: 'linear-gradient(135deg, #fbbf24, #f59e0b, #d97706)',
+            color: '#78350f',
+            fontWeight: '900',
+            boxShadow: '0 2px 6px rgba(245, 158, 11, 0.35)'
+          };
+          rarityIcon = '✨';
+        } else if (rarity === 'SR' || rarity === 'SSR') {
+          rarityBadgeStyle = {
+            background: 'linear-gradient(135deg, #a855f7, #6366f1)',
+            color: '#ffffff',
+            boxShadow: '0 2px 6px rgba(168, 85, 247, 0.3)'
+          };
+          rarityIcon = '⭐';
+        }
+
+        return (
+          <div style={{ margin: '4px 0 6px 0', fontSize: '0.85rem' }}>
+            {/* 上段: プレイヤーと獲得経路 */}
+            <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '4px', marginBottom: '6px' }}>
+              <span style={{
+                fontWeight: '800',
+                color: '#78350f',
+                background: 'rgba(254, 240, 138, 0.6)',
+                padding: '1px 7px',
+                borderRadius: '6px',
+                border: '1px solid #fde047',
+                fontSize: '0.82rem'
+              }}>
+                {playerName} さん
+              </span>
+              {fromText && (
+                <span style={{ fontSize: '0.78rem', color: '#854d0e', fontWeight: '700' }}>
+                  {fromText}
+                </span>
+              )}
+            </div>
+
+            {/* 中段: レアリティ＆アイテム名ボックス */}
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '6px 12px',
+              borderRadius: '10px',
+              background: 'linear-gradient(135deg, #ffffff 0%, #fefce8 100%)',
+              border: '1.5px solid #fef08a',
+              boxShadow: '0 2px 8px rgba(234, 179, 8, 0.15)',
+              margin: '2px 0 6px 0',
+              maxWidth: '100%',
+              boxSizing: 'border-box'
+            }}>
+              <span style={{
+                fontSize: '0.72rem',
+                padding: '2px 8px',
+                borderRadius: '8px',
+                fontWeight: '900',
+                letterSpacing: '0.04em',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '3px',
+                flexShrink: 0,
+                ...rarityBadgeStyle
+              }}>
+                <span>{rarityIcon}</span>
+                <span>{rarity}</span>
+              </span>
+              <span style={{
+                fontWeight: '900',
+                fontSize: '0.9rem',
+                color: '#78350f',
+                letterSpacing: '0.01em',
+                wordBreak: 'break-word'
+              }}>
+                {itemName}
+              </span>
+            </div>
+
+            {/* 下段: アクションテキスト */}
+            <div style={{
+              fontSize: '0.8rem',
+              color: '#b45309',
+              fontWeight: '700',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              marginTop: '2px'
+            }}>
+              <span>{newsType === 'ガチャ' ? '🎊' : '⚔️'}</span>
+              <span>{actionText}</span>
+            </div>
+          </div>
+        );
+      }
+
+      // パースできなかった場合のフォールバック（速報タグ付き）
+      return (
+        <div style={{ margin: '4px 0 6px 0', fontSize: '0.85rem' }}>
+          <span style={{
+            display: 'inline-block',
+            fontWeight: '800',
+            color: '#b45309',
+            background: '#fef3c7',
+            padding: '1px 6px',
+            borderRadius: '6px',
+            marginRight: '6px',
+            fontSize: '0.75rem'
+          }}>
+            【{newsType}速報】
+          </span>
+          <span style={{ color: '#451a03', fontWeight: '600' }}>{rest}</span>
+        </div>
+      );
+    }
+
+    // 通常の投稿
+    return (
+      <div style={{
+        whiteSpace: 'pre-wrap',
+        wordBreak: 'break-word',
+        color: '#334155',
+        fontSize: '0.85rem',
+        lineHeight: '1.45',
+        margin: '3px 0 6px 0'
+      }}>
+        {content}
+      </div>
+    );
+  };
+
   // 💖 いいねを押す (トグル式)
   const handleLike = async (post) => {
     const isLiked = likedIds.has(post.id);
@@ -227,7 +409,9 @@ const SquareTimeline = () => {
           <div style={{ textAlign: 'center', padding: '20px', color: '#94a3b8', fontSize: '0.85rem' }}>
             まだつぶやきがないらび…🥕<br />最初の一言を残してみてね！
           </div>
-        ) : posts.filter(p => !p.name.includes('実況')).map(p => (
+        ) : posts.filter(p => !p.name.includes('実況')).map(p => {
+          const isNews = typeof p.content === 'string' && (p.content.startsWith('【ガチャ速報】') || p.content.startsWith('【ドロップ速報】'));
+          return (
           <div key={p.id} style={{
             display: 'flex',
             gap: '10px',
@@ -241,12 +425,8 @@ const SquareTimeline = () => {
             minHeight: 'fit-content',
             ...(p.is_official
               ? officialCardStyle
-              : (typeof p.content === 'string' && (p.content.startsWith('【ガチャ速報】') || p.content.startsWith('【ドロップ速報】')))
-                ? {
-                    background: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)',
-                    border: '1.5px solid #fbbf24',
-                    boxShadow: '0 3px 10px rgba(245,158,11,0.18)'
-                  }
+              : isNews
+                ? newsCardStyle
                 : {
                     background: '#ffffff',
                     border: '1px solid #edf2f7',
@@ -266,7 +446,9 @@ const SquareTimeline = () => {
               flexShrink: 0,
               ...(p.is_official
                 ? officialAvatarStyle
-                : { background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)' }
+                : isNews
+                  ? newsAvatarStyle
+                  : { background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)' }
               )
             }}>
               {p.avatar}
@@ -277,6 +459,8 @@ const SquareTimeline = () => {
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap', marginBottom: '3px' }}>
                 {p.is_official ? (
                   <span style={officialNameStyle}>{p.name}</span>
+                ) : isNews ? (
+                  <span style={newsNameStyle}>{p.name}</span>
                 ) : (
                   <span style={{ fontWeight: '800', fontSize: '0.85rem', color: '#1e293b' }}>{p.name}</span>
                 )}
@@ -292,17 +476,22 @@ const SquareTimeline = () => {
                     flexShrink: 0
                   }}>✦ 公式</span>
                 )}
+                {isNews && (
+                  <span style={{
+                    fontSize: '0.65rem',
+                    background: 'linear-gradient(90deg, #f59e0b, #d97706)',
+                    color: '#fff',
+                    padding: '1px 6px',
+                    borderRadius: '10px',
+                    fontWeight: 'bold',
+                    letterSpacing: '0.02em',
+                    flexShrink: 0,
+                    boxShadow: '0 1px 4px rgba(217, 119, 6, 0.3)'
+                  }}>✦ 速報</span>
+                )}
                 <span style={{ fontSize: '0.72rem', color: '#94a3b8' }}>・{timeAgo(p.created_at)}</span>
               </div>
-              <p style={{
-                margin: '0 0 6px 0',
-                fontSize: '0.85rem',
-                lineHeight: '1.5',
-                color: '#334155',
-                wordBreak: 'break-word'
-              }}>
-                {p.content}
-              </p>
+              {renderTimelineContent(p.content)}
               {/* いいねボタン */}
               <button
                 type="button"
@@ -326,7 +515,8 @@ const SquareTimeline = () => {
               </button>
             </div>
           </div>
-        ))}
+        );
+      })}
       </div>
 
       {/* ✍️ 投稿フォーム */}
