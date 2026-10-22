@@ -1981,6 +1981,16 @@ function App() {
           sError = error;
           count = c;
           if (sort === 'mine') setTotalMineCount(c || 0);
+
+          // 🛡️ 範囲外ページ防止ガード: ページ番号が大きすぎて0件になったが全体件数(count)はある場合、自動で1ページ目を再取得！
+          if (page > 1 && (!data || data.length === 0) && (c || 0) > 0) {
+            console.warn(`⚠️ Page ${page} is empty but total count is ${c}. Auto-fallback to page 1.`);
+            setCurrentPage(1);
+            const { data: fbData } = await baseQuery.range(0, ITEMS_PER_PAGE - 1);
+            if (fbData && fbData.length > 0) {
+              sData = fbData;
+            }
+          }
         }
       }
 

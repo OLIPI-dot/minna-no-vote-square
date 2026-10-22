@@ -257,16 +257,17 @@ const SurveyListView = ({
 
       {/* 📌 タブ切り替え */}
       <div className="tab-switcher">
-        <button className={sortMode === 'today' ? 'active' : ''} onClick={() => setSortMode('today')}>☀️ 今日の話題 {searchQuery && (searchStats?.sortModes?.today || 0) > 0 && <span className="tab-hit-badge">{searchStats.sortModes.today}</span>}</button>
-        <button className={sortMode === 'latest' ? 'active' : ''} onClick={() => setSortMode('latest')}>🆕 新着順 {searchQuery && (searchStats?.sortModes?.latest || 0) > 0 && <span className="tab-hit-badge">{searchStats.sortModes.latest}</span>}</button>
-        <button className={sortMode === 'popular' ? 'active' : ''} onClick={() => setSortMode('popular')}>🔥 人気 {searchQuery && (searchStats?.sortModes?.popular || 0) > 0 && <span className="tab-hit-badge">{searchStats.sortModes.popular}</span>}</button>
-        <button className={sortMode === 'watching' ? 'active' : ''} onClick={() => setSortMode('watching')}>⭐ ウォッチ中</button>
-        <button className={sortMode === 'ended' ? 'active' : ''} onClick={() => setSortMode('ended')}>📁 アーカイブ {searchQuery && (searchStats?.sortModes?.ended || 0) > 0 && <span className="tab-hit-badge">{searchStats.sortModes.ended}</span>}</button>
+        <button className={sortMode === 'today' ? 'active' : ''} onClick={() => { setSortMode('today'); if (typeof setCurrentPage === 'function') setCurrentPage(1); }}>☀️ 今日の話題 {searchQuery && (searchStats?.sortModes?.today || 0) > 0 && <span className="tab-hit-badge">{searchStats.sortModes.today}</span>}</button>
+        <button className={sortMode === 'latest' ? 'active' : ''} onClick={() => { setSortMode('latest'); if (typeof setCurrentPage === 'function') setCurrentPage(1); }}>🆕 新着順 {searchQuery && (searchStats?.sortModes?.latest || 0) > 0 && <span className="tab-hit-badge">{searchStats.sortModes.latest}</span>}</button>
+        <button className={sortMode === 'popular' ? 'active' : ''} onClick={() => { setSortMode('popular'); if (typeof setCurrentPage === 'function') setCurrentPage(1); }}>🔥 人気 {searchQuery && (searchStats?.sortModes?.popular || 0) > 0 && <span className="tab-hit-badge">{searchStats.sortModes.popular}</span>}</button>
+        <button className={sortMode === 'watching' ? 'active' : ''} onClick={() => { setSortMode('watching'); if (typeof setCurrentPage === 'function') setCurrentPage(1); }}>⭐ ウォッチ中</button>
+        <button className={sortMode === 'ended' ? 'active' : ''} onClick={() => { setSortMode('ended'); if (typeof setCurrentPage === 'function') setCurrentPage(1); }}>📁 アーカイブ {searchQuery && (searchStats?.sortModes?.ended || 0) > 0 && <span className="tab-hit-badge">{searchStats.sortModes.ended}</span>}</button>
         <button
           className={sortMode === 'mine' ? 'active' : ''}
           onClick={() => {
             if (!user) return alert("👤 マイページはログインしていないと使えません🙇‍♀️\n上の「Googleでログイン」ボタンからログインしてね！");
             setSortMode('mine');
+            if (typeof setCurrentPage === 'function') setCurrentPage(1);
           }}
         >👤 マイページ</button>
 
@@ -440,7 +441,10 @@ const SurveyListView = ({
         {!['mine', 'watching'].includes(sortMode) ? (
           <>
             <button
-              onClick={() => setActiveTab('official')}
+              onClick={() => {
+                setActiveTab('official');
+                if (typeof setCurrentPage === 'function') setCurrentPage(1);
+              }}
               className={`tab-btn ${activeTab === 'official' ? 'active' : ''}`}
               style={{
                 padding: '4px 5px', fontWeight: 'bold',
@@ -454,7 +458,10 @@ const SurveyListView = ({
               📢 公式・ニュース <span className="tab-count" style={{ fontSize: '0.62rem', opacity: 0.8 }}>({totalOfficialCount})</span>
             </button>
             <button
-              onClick={() => setActiveTab('user')}
+              onClick={() => {
+                setActiveTab('user');
+                if (typeof setCurrentPage === 'function') setCurrentPage(1);
+              }}
               className={`tab-btn ${activeTab === 'user' ? 'active' : ''}`}
               style={{
                 padding: '4px 5px', fontWeight: 'bold',
@@ -546,9 +553,15 @@ const SurveyListView = ({
             : (activeTab === 'official' ? totalOfficialCount : totalUserCount);
           const totalPages = isMineOrWatching || sortMode === 'popular' ? Math.ceil(finalItems.length / ITEMS_PER_PAGE) : Math.ceil(countToUse / ITEMS_PER_PAGE);
           
-          const currentItems = sortMode === 'popular' 
+          let currentItems = sortMode === 'popular' 
             ? finalItems.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE)
             : finalItems;
+
+          // 🛡️ 人気モード等でページ番号が大きすぎて空になった場合、自動で1ページ目を表示する安全ガード
+          if (currentItems.length === 0 && finalItems.length > 0 && currentPage > 1) {
+            if (typeof setCurrentPage === 'function') setCurrentPage(1);
+            currentItems = finalItems.slice(0, ITEMS_PER_PAGE);
+          }
 
           if (currentItems.length === 0) {
             if (activeTab === 'user' && !debouncedSearchQuery && !filterCategory) {
