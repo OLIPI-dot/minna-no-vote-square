@@ -28,6 +28,7 @@ const SquareTimeline = () => {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [lastPostTime, setLastPostTime] = useState(0); // スパム防止
+  const [timelineTab, setTimelineTab] = useState('chat'); // 'chat' | 'news' | 'all'
   const scrollRef = useRef(null);
 
   // 🔄 初回データ取得
@@ -335,6 +336,18 @@ const SquareTimeline = () => {
       .eq('id', post.id);
   };
 
+  // タブに応じた投稿フィルタ
+  const displayedPosts = posts.filter(p => {
+    if (p.name && p.name.includes('実況')) return false;
+    const isNews = typeof p.content === 'string' && (p.content.startsWith('【ガチャ速報】') || p.content.startsWith('【ドロップ速報】'));
+    if (timelineTab === 'chat') return !isNews;
+    if (timelineTab === 'news') return isNews;
+    return true;
+  });
+
+  const newsCount = posts.filter(p => !p.name?.includes('実況') && typeof p.content === 'string' && (p.content.startsWith('【ガチャ速報】') || p.content.startsWith('【ドロップ速報】'))).length;
+  const chatCount = posts.filter(p => !p.name?.includes('実況') && typeof p.content === 'string' && !(p.content.startsWith('【ガチャ速報】') || p.content.startsWith('【ドロップ速報】'))).length;
+
   return (
     <div className="sidebar-section-card" style={{
       marginBottom: '24px',
@@ -350,8 +363,8 @@ const SquareTimeline = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginBottom: '14px',
-        paddingBottom: '10px',
+        marginBottom: '10px',
+        paddingBottom: '8px',
         borderBottom: '1.5px solid #f1f5f9'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -388,6 +401,99 @@ const SquareTimeline = () => {
         </div>
       </div>
 
+      {/* 📑 タブ切り替え（つぶやき / 速報 / すべて） */}
+      <div style={{
+        display: 'flex',
+        gap: '4px',
+        marginBottom: '12px',
+        padding: '3px',
+        background: '#f1f5f9',
+        borderRadius: '10px'
+      }}>
+        <button
+          type="button"
+          onClick={() => setTimelineTab('chat')}
+          style={{
+            flex: 1,
+            padding: '6px 4px',
+            border: 'none',
+            borderRadius: '8px',
+            fontSize: '0.78rem',
+            fontWeight: timelineTab === 'chat' ? '800' : '600',
+            background: timelineTab === 'chat' ? '#ffffff' : 'transparent',
+            color: timelineTab === 'chat' ? '#1e293b' : '#64748b',
+            boxShadow: timelineTab === 'chat' ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
+            cursor: 'pointer',
+            transition: 'all 0.15s ease',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '4px'
+          }}
+        >
+          <span>💬 つぶやき</span>
+          {chatCount > 0 && (
+            <span style={{
+              fontSize: '0.65rem',
+              padding: '1px 5px',
+              borderRadius: '8px',
+              background: timelineTab === 'chat' ? '#e2e8f0' : '#e2e8f0',
+              color: '#475569'
+            }}>{chatCount}</span>
+          )}
+        </button>
+        <button
+          type="button"
+          onClick={() => setTimelineTab('news')}
+          style={{
+            flex: 1,
+            padding: '6px 4px',
+            border: 'none',
+            borderRadius: '8px',
+            fontSize: '0.78rem',
+            fontWeight: timelineTab === 'news' ? '800' : '600',
+            background: timelineTab === 'news' ? '#ffffff' : 'transparent',
+            color: timelineTab === 'news' ? '#b45309' : '#64748b',
+            boxShadow: timelineTab === 'news' ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
+            cursor: 'pointer',
+            transition: 'all 0.15s ease',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '4px'
+          }}
+        >
+          <span>🎰 速報</span>
+          {newsCount > 0 && (
+            <span style={{
+              fontSize: '0.65rem',
+              padding: '1px 5px',
+              borderRadius: '8px',
+              background: timelineTab === 'news' ? '#fef3c7' : '#e2e8f0',
+              color: timelineTab === 'news' ? '#b45309' : '#475569'
+            }}>{newsCount}</span>
+          )}
+        </button>
+        <button
+          type="button"
+          onClick={() => setTimelineTab('all')}
+          style={{
+            padding: '6px 10px',
+            border: 'none',
+            borderRadius: '8px',
+            fontSize: '0.78rem',
+            fontWeight: timelineTab === 'all' ? '800' : '600',
+            background: timelineTab === 'all' ? '#ffffff' : 'transparent',
+            color: timelineTab === 'all' ? '#1e293b' : '#64748b',
+            boxShadow: timelineTab === 'all' ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
+            cursor: 'pointer',
+            transition: 'all 0.15s ease'
+          }}
+        >
+          すべて
+        </button>
+      </div>
+
       {/* 📜 タイムライン一覧 */}
       <div ref={scrollRef} style={{
         maxHeight: '300px',
@@ -405,11 +511,13 @@ const SquareTimeline = () => {
           <div style={{ textAlign: 'center', padding: '20px', color: '#94a3b8', fontSize: '0.85rem' }}>
             読み込み中…🐰
           </div>
-        ) : posts.length === 0 ? (
+        ) : displayedPosts.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '20px', color: '#94a3b8', fontSize: '0.85rem' }}>
-            まだつぶやきがないらび…🥕<br />最初の一言を残してみてね！
+            {timelineTab === 'news'
+              ? 'まだ速報はないらび…🎰\nガチャやパトロールでURを狙ってみてね！'
+              : 'まだつぶやきがないらび…🥕\n最初の一言を残してみてね！'}
           </div>
-        ) : posts.filter(p => !p.name.includes('実況')).map(p => {
+        ) : displayedPosts.map(p => {
           const isNews = typeof p.content === 'string' && (p.content.startsWith('【ガチャ速報】') || p.content.startsWith('【ドロップ速報】'));
           return (
           <div key={p.id} style={{
