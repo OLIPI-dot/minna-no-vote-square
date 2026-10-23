@@ -557,10 +557,12 @@ const SurveyListView = ({
             ? finalItems.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE)
             : finalItems;
 
-          // 🛡️ 人気モード等でページ番号が大きすぎて空になった場合、自動で1ページ目を表示する安全ガード
-          if (currentItems.length === 0 && finalItems.length > 0 && currentPage > 1) {
+          // 🛡️ ページ番号が大きすぎて空になった場合、自動で1ページ目を再要求・安全ガード
+          if (currentItems.length === 0 && currentPage > 1 && (finalItems.length > 0 || countToUse > 0)) {
             if (typeof setCurrentPage === 'function') setCurrentPage(1);
-            currentItems = finalItems.slice(0, ITEMS_PER_PAGE);
+            if (finalItems.length > 0) {
+              currentItems = finalItems.slice(0, ITEMS_PER_PAGE);
+            }
           }
 
           if (currentItems.length === 0) {

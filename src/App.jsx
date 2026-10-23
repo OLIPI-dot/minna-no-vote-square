@@ -1939,7 +1939,7 @@ function App() {
         baseQuery = baseQuery.or(`title.ilike.%${q}%,description.ilike.%${q}%,tags.cs.{"${q}"}`);
       }
 
-      // 🕒 日付・状態フィルタ (今日の話題 / アーカイブ)
+      // 🕒 日付・状態フィルタ (今日の話題 / アーカイブ / 新着)
       const now = new Date();
       if (sort === 'today') {
         // 「今日の話題」は直近24時間に投稿されたアクティブなものを出すらび！
@@ -1951,6 +1951,13 @@ function App() {
         // 30日経過 or 期限切れ
         const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
         baseQuery = baseQuery.or(`deadline.lt.${now.toISOString()},created_at.lt.${thirtyDaysAgo.toISOString()}`);
+      } else if (sort === 'latest') {
+        // 🕒 通常の新着一覧では、終了していないアクティブなアンケート（期限内 かつ 直近30日以内）を取得する！
+        if (!tag && !query.trim()) {
+          const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+          baseQuery = baseQuery.gte('created_at', thirtyDaysAgo.toISOString());
+          baseQuery = baseQuery.or(`deadline.is.null,deadline.gt.${now.toISOString()}`);
+        }
       }
 
       // 📈 ソート順の適用とデータ取得
