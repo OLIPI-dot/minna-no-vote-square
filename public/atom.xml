@@ -4,11 +4,72 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://www.minna-no-vote-square.com/atom.xml" rel="self"/>
   <link href="https://www.minna-no-vote-square.com/"/>
-  <updated>2026-10-23T21:47:00.854Z</updated>
+  <updated>2026-10-24T02:17:41.542Z</updated>
   <id>https://www.minna-no-vote-square.com/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>免許証流出で見舞金3000円 妥当か</title>
+    <link href="https://www.minna-no-vote-square.com/s/23593"/>
+    <id>https://www.minna-no-vote-square.com/s/23593</id>
+    <updated>2026-10-24T02:17:39.327Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;タイムズカーで情報流出&quot;,
+  &quot;point1_desc&quot;: &quot;パーク24は不正アクセスによりタイムズカーの運転免許証画像を含む個人情報が流出したと発表。対象者への謝罪と被害者対応に関する詳細な方針が明らかにされ、今後の安全対策が求められている。&quot;,
+  &quot;point2_title&quot;: &quot;免...</summary>
+  </entry>
+  <entry>
+    <title>サイトでAPIキー丸見え状態 研究</title>
+    <link href="https://www.minna-no-vote-square.com/s/23592"/>
+    <id>https://www.minna-no-vote-square.com/s/23592</id>
+    <updated>2026-10-24T02:17:21.163Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;話題&quot;,
+  &quot;point1_title&quot;: &quot;APIキー露出の実態&quot;,
+  &quot;point1_desc&quot;: &quot;スタンフォード大学等の研究によりWeb上の1000万サイトを調査した結果、多数のサイトでAPIクレデンシャルが外部からアクセス可能な状態に露出しているという深刻な実態が判明しました。&quot;,
+  &quot;point2_title&quot;: &quot;セキュリ...</summary>
+  </entry>
+  <entry>
+    <title>県立高で威圧的指導か 精神疾患に</title>
+    <link href="https://www.minna-no-vote-square.com/s/23591"/>
+    <id>https://www.minna-no-vote-square.com/s/23591</id>
+    <updated>2026-10-24T02:17:02.950Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;名門高校での不適切指導&quot;,
+  &quot;point1_desc&quot;: &quot;高校女子ハンドボールの強豪として有名な水海道二高にて、男性コーチによる過度な指導が行われていたことが発覚。部員に不適切な圧力をかけていた実態が明らかになった。&quot;,
+  &quot;point2_title&quot;: &quot;部員が精神疾患を発症&quot;,
+...</summary>
+  </entry>
+  <entry>
+    <title>英仏 初めて共同で核演習を実施</title>
+    <link href="https://www.minna-no-vote-square.com/s/23590"/>
+    <id>https://www.minna-no-vote-square.com/s/23590</id>
+    <updated>2026-10-24T02:16:44.750Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;英仏軍が初の共同核演習&quot;,
+  &quot;point1_desc&quot;: &quot;フランス国防省は英軍と初めて航空核戦力を用いた共同演習を実施したと発表。両空軍の戦闘機が参加し、核攻撃を想定したシミュレーションを行い両国の防衛協力をアピールした。&quot;,
+  &quot;point2_title&quot;: &quot;ロシアの脅威拡大に対...</summary>
+  </entry>
+  <entry>
+    <title>仏 抗議活動に警官7万人を動員へ</title>
+    <link href="https://www.minna-no-vote-square.com/s/23589"/>
+    <id>https://www.minna-no-vote-square.com/s/23589</id>
+    <updated>2026-10-24T02:16:26.393Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;生活費高騰デモが暴動化&quot;,
+  &quot;point1_desc&quot;: &quot;フランスで生活費の高騰に抗議する大規模なデモが発生し、暴動へと発展してから1週間が経過した。市民の経済的不満が高まる中、事態は長期化の様相を呈しており緊張が続いている。&quot;,
+  &quot;point2_title&quot;: &quot;ニュネス内相の対...</summary>
+  </entry>
   <entry>
     <title>車ドアと路面に首はさまれ 窒息死</title>
     <link href="https://www.minna-no-vote-square.com/s/23588"/>
@@ -553,66 +614,5 @@
   &quot;point1_title&quot;: &quot;定数31減の折衷案提示へ&quot;,
   &quot;point1_desc&quot;: &quot;自民党は衆議院の選挙制度改革に向けた定数削減について、従来の主張を歩み寄らせて31議席削減とする折衷案の調整に入った。各野党との協議において合意形成を目指す構えだ。&quot;,
   &quot;point2_title&quot;: &quot;与野党間協議で提示...</summary>
-  </entry>
-  <entry>
-    <title>復興相の事務所数 公選法違反疑い</title>
-    <link href="https://www.minna-no-vote-square.com/s/23543"/>
-    <id>https://www.minna-no-vote-square.com/s/23543</id>
-    <updated>2026-10-21T12:52:08.090Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;細野氏に公選法違反の疑い&quot;,
-  &quot;point1_desc&quot;: &quot;細野豪志元環境相が、2024年10月に行われた衆議院議員選挙において、公職選挙法で定められている上限を超えた数の選挙事務所を設置していた疑いがあることが文春の取材で判明した。&quot;,
-  &quot;point2_title&quot;: &quot;上限超え...</summary>
-  </entry>
-  <entry>
-    <title>秋田県 夜遅くにかけ激しい雨恐れ</title>
-    <link href="https://www.minna-no-vote-square.com/s/23542"/>
-    <id>https://www.minna-no-vote-square.com/s/23542</id>
-    <updated>2026-10-21T12:51:48.886Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;秋田県内で激しい雷雨と強風&quot;,
-  &quot;point1_desc&quot;: &quot;21日の秋田県内は雷を伴う激しい雨に見舞われ、各所で強い風が吹き荒れた。悪天候の影響により、地域住民の生活やインフラへの重大な影響が懸念される状況となっている。&quot;,
-  &quot;point2_title&quot;: &quot;倒木による電線の被害...</summary>
-  </entry>
-  <entry>
-    <title>氾濫巡り気象庁 直ちに安全確保を</title>
-    <link href="https://www.minna-no-vote-square.com/s/23541"/>
-    <id>https://www.minna-no-vote-square.com/s/23541</id>
-    <updated>2026-10-21T12:51:29.163Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;子吉川に氾濫特別警報&quot;,
-  &quot;point1_desc&quot;: &quot;気象庁は秋田県を流れる子吉川に対し、警戒レベル最高となるレベル5の氾濫特別警報を発表した。周辺地域では重大な災害がすでに発生している可能性が高く極めて危険な状況だ。&quot;,
-  &quot;point2_title&quot;: &quot;緊急会見で避難呼びかけ...</summary>
-  </entry>
-  <entry>
-    <title>秋田の子吉川・石沢川で氾濫発生</title>
-    <link href="https://www.minna-no-vote-square.com/s/23540"/>
-    <id>https://www.minna-no-vote-square.com/s/23540</id>
-    <updated>2026-10-21T12:51:10.338Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;秋田県2河川で氾濫発生&quot;,
-  &quot;point1_desc&quot;: &quot;秋田県由利本荘市を流れる子吉川と石沢川で氾濫が発生しました。大雨の影響により河川の水位が急激に上昇しており、周辺地域への甚大な被害が懸念されるため厳重な警戒が呼びかけられています。&quot;,
-  &quot;point2_title&quot;: &quot;森子...</summary>
-  </entry>
-  <entry>
-    <title>避難＝避難所ではない 垂直避難を</title>
-    <link href="https://www.minna-no-vote-square.com/s/23539"/>
-    <id>https://www.minna-no-vote-square.com/s/23539</id>
-    <updated>2026-10-21T12:50:51.948Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;PHPの重大な脆弱性修正&quot;,
-  &quot;point1_desc&quot;: &quot;PHP開発プロジェクトのセキュリティチームが、2件の重大な脆弱性を修正するための緊急アップデートを予告した。影響範囲が広いため早期の対応が求められている。&quot;,
-  &quot;point2_title&quot;: &quot;修正版は今夜公開予定&quot;,
- ...</summary>
   </entry>
 </feed>
