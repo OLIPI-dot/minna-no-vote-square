@@ -51,13 +51,40 @@ const SurveyListView = ({
   viewMode, setViewMode,
   equipment, setEquipment,
   userExp, addExp, levelInfo,
-  globalOnlineCount
+  globalOnlineCount,
+  onRefresh
 }) => {
   const [brokenImages, setBrokenImages] = React.useState(new Set());
   const [isLoggingIn, setIsLoggingIn] = React.useState(false);
+  const [isRefreshing, setIsRefreshing] = React.useState(false);
   const ITEMS_PER_PAGE = viewMode === 'grid' ? 40 : 20;
   const listRef = React.useRef(null);
   const [copyStatus, setCopyStatus] = React.useState('📜 タイトルをコピー');
+
+  // 🕒 投稿日時の相対表示（○分前／○時間前／月日）
+  const formatCreatedTime = (dateStr) => {
+    if (!dateStr) return '';
+    const now = new Date();
+    const date = new Date(dateStr);
+    const diffMs = now.getTime() - date.getTime();
+    if (diffMs < 0) return 'たった今';
+    const diffM = Math.floor(diffMs / (60 * 1000));
+    const diffH = Math.floor(diffMs / (60 * 60 * 1000));
+
+    if (diffM < 1) return 'たった今';
+    if (diffM < 60) return `${diffM}分前`;
+    if (diffH < 24) return `${diffH}時間前`;
+    return date.toLocaleDateString('ja-JP', { month: '2-digit', day: '2-digit' });
+  };
+
+  // ✨ 最新ホヤホヤ判定（6時間以内）
+  const isBrandNew = (dateStr) => {
+    if (!dateStr) return false;
+    const now = new Date();
+    const date = new Date(dateStr);
+    const diffHours = (now.getTime() - date.getTime()) / (60 * 60 * 1000);
+    return diffHours >= 0 && diffHours < 6;
+  };
 
   const handleCopyPageTitles = () => {
     if (!surveys || surveys.length === 0) return;
@@ -482,31 +509,69 @@ const SurveyListView = ({
         )}
         </div>
 
-        {/* 右側：レイアウト切替ボタン */}
-        <div className="layout-switcher" style={{ flexShrink: 0, marginRight: '4px' }}>
+        {/* 右側：更新ボタン ＆ レイアウト切替ボタン */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0, marginRight: '4px' }}>
           <button
-            className={`layout-btn ${viewMode === 'list' ? 'active' : ''}`}
-            onClick={() => setViewMode('list')}
-            title="リスト表示"
+            type="button"
+            onClick={async () => {
+              if (isRefreshing) return;
+              setIsRefreshing(true);
+              if (onRefresh) {
+                await onRefresh();
+              }
+              setTimeout(() => setIsRefreshing(false), 600);
+            }}
+            title="最新に更新するらび！"
+            style={{
+              background: '#f8fafc',
+              border: '1px solid #e2e8f0',
+              borderRadius: '8px',
+              padding: '4px 8px',
+              fontSize: '0.75rem',
+              fontWeight: '700',
+              color: '#475569',
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '4px',
+              transition: 'all 0.2s ease',
+              height: '30px',
+              boxSizing: 'border-box'
+            }}
           >
-            <svg viewBox="0 0 24 24" width="15" height="15">
-              <rect x="3" y="4" width="18" height="2" fill="currentColor" />
-              <rect x="3" y="11" width="18" height="2" fill="currentColor" />
-              <rect x="3" y="18" width="18" height="2" fill="currentColor" />
-            </svg>
+            <span style={{
+              display: 'inline-block',
+              transition: 'transform 0.6s ease',
+              transform: isRefreshing ? 'rotate(360deg)' : 'none'
+            }}>🔄</span>
+            <span style={{ fontSize: '0.7rem' }}>更新</span>
           </button>
-          <button
-            className={`layout-btn ${viewMode === 'grid' ? 'active' : ''}`}
-            onClick={() => setViewMode('grid')}
-            title="グリッド表示"
-          >
-            <svg viewBox="0 0 24 24" width="15" height="15">
-              <rect x="3" y="3" width="8" height="8" rx="1" fill="currentColor" />
-              <rect x="13" y="3" width="8" height="8" rx="1" fill="currentColor" />
-              <rect x="3" y="13" width="8" height="8" rx="1" fill="currentColor" />
-              <rect x="13" y="13" width="8" height="8" rx="1" fill="currentColor" />
-            </svg>
-          </button>
+
+          <div className="layout-switcher" style={{ flexShrink: 0 }}>
+            <button
+              className={`layout-btn ${viewMode === 'list' ? 'active' : ''}`}
+              onClick={() => setViewMode('list')}
+              title="リスト表示"
+            >
+              <svg viewBox="0 0 24 24" width="15" height="15">
+                <rect x="3" y="4" width="18" height="2" fill="currentColor" />
+                <rect x="3" y="11" width="18" height="2" fill="currentColor" />
+                <rect x="3" y="18" width="18" height="2" fill="currentColor" />
+              </svg>
+            </button>
+            <button
+              className={`layout-btn ${viewMode === 'grid' ? 'active' : ''}`}
+              onClick={() => setViewMode('grid')}
+              title="グリッド表示"
+            >
+              <svg viewBox="0 0 24 24" width="15" height="15">
+                <rect x="3" y="3" width="8" height="8" rx="1" fill="currentColor" />
+                <rect x="13" y="3" width="8" height="8" rx="1" fill="currentColor" />
+                <rect x="3" y="13" width="8" height="8" rx="1" fill="currentColor" />
+                <rect x="13" y="13" width="8" height="8" rx="1" fill="currentColor" />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -792,10 +857,33 @@ const SurveyListView = ({
                                 {/* 1段目（上段）：バッジ類 */}
                                 <div className="list-item-meta-upper survey-item-meta-row" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '5px' }}>
                                   {showScoreBadge && <span className="popular-score-badge">{badgeLabel}</span>}
+                                  {isBrandNew(s.created_at) && !isEnded && (
+                                    <span style={{
+                                      background: 'linear-gradient(135deg, #ec4899 0%, #f43f5e 100%)',
+                                      color: '#ffffff',
+                                      fontSize: '0.62rem',
+                                      fontWeight: '900',
+                                      padding: '1px 5px',
+                                      borderRadius: '6px',
+                                      boxShadow: '0 1px 4px rgba(244, 63, 94, 0.35)',
+                                      letterSpacing: '0.02em',
+                                      display: 'inline-flex',
+                                      alignItems: 'center',
+                                      gap: '2px',
+                                      lineHeight: '1.2'
+                                    }}>
+                                      NEW
+                                    </span>
+                                  )}
                                   <span className={`status-badge ${isEnded ? 'ended' : 'active'}`}>
                                     {isEnded ? '終了' : '受付中'}
                                   </span>
-                                  <span className="survey-item-created-at" title="作成日時">🐣{new Date(s.created_at).toLocaleDateString('ja-JP', { month: '2-digit', day: '2-digit' })}</span>
+                                  <span className="survey-item-created-at" title={`作成日時: ${new Date(s.created_at).toLocaleString('ja-JP')}`} style={{
+                                    fontWeight: isBrandNew(s.created_at) ? '700' : 'normal',
+                                    color: isBrandNew(s.created_at) ? '#0284c7' : undefined
+                                  }}>
+                                    🐣{formatCreatedTime(s.created_at)}
+                                  </span>
                                   {s.deadline && <span className="survey-item-deadline">〆{new Date(s.deadline).toLocaleDateString('ja-JP', { month: '2-digit', day: '2-digit' })}</span>}
                                 </div>
                               {/* 2段目（下段）：リアクション数字類 */}
@@ -834,8 +922,31 @@ const SurveyListView = ({
                               {/* 1段目（上段）：バッジ類 */}
                               <div className="survey-item-meta-upper" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '2px' }}>
                                 {showScoreBadge && <span className="popular-score-badge">{badgeLabel}</span>}
+                                {isBrandNew(s.created_at) && !isEnded && (
+                                  <span style={{
+                                    background: 'linear-gradient(135deg, #ec4899 0%, #f43f5e 100%)',
+                                    color: '#ffffff',
+                                    fontSize: '0.62rem',
+                                    fontWeight: '900',
+                                    padding: '1px 5px',
+                                    borderRadius: '6px',
+                                    boxShadow: '0 1px 4px rgba(244, 63, 94, 0.35)',
+                                    letterSpacing: '0.02em',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '2px',
+                                    lineHeight: '1.2'
+                                  }}>
+                                    NEW
+                                  </span>
+                                )}
                                 <span className={`status-badge ${isEnded ? 'ended' : 'active'}`}>{isEnded ? '終了' : '受付中'}</span>
-                                <span className="survey-item-created-at" title="作成日時">🐣{new Date(s.created_at).toLocaleDateString('ja-JP', { month: '2-digit', day: '2-digit' })}</span>
+                                <span className="survey-item-created-at" title={`作成日時: ${new Date(s.created_at).toLocaleString('ja-JP')}`} style={{
+                                  fontWeight: isBrandNew(s.created_at) ? '700' : 'normal',
+                                  color: isBrandNew(s.created_at) ? '#0284c7' : undefined
+                                }}>
+                                  🐣{formatCreatedTime(s.created_at)}
+                                </span>
                                 {s.deadline && <span className="survey-item-deadline">〆{new Date(s.deadline).toLocaleDateString('ja-JP', { month: '2-digit', day: '2-digit' })}</span>}
                               </div>
                               {/* 2段目（下段）：リアクション数字類 */}

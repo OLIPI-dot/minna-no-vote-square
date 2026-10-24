@@ -3231,6 +3231,10 @@ function App() {
                   addTickets={addTickets}
                   levelInfo={levelInfo}
                   globalOnlineCount={globalOnlineCount}
+                  onRefresh={() => {
+                    fetchSurveys(user, false, currentPage, filterCategory, debouncedSearchQuery, activeTab, sortMode, popularMode, filterTag);
+                    fetchSidebarData();
+                  }}
                 />
               </Suspense>
             )}
