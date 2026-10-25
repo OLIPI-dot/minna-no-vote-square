@@ -230,7 +230,8 @@ const SurveyDetailView = ({
       <div className="detail-header">
         <div style={{ marginBottom: '16px' }}>
           <button 
-            onClick={() => navigateTo('list', null, { restoreScroll: true })} 
+            type="button"
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); navigateTo('list', null, { restoreScroll: true }); }} 
             className="back-to-list-btn-compact"
             style={{ 
               background: 'none', border: '1px solid #cbd5e1', borderRadius: '20px', 
@@ -1340,8 +1341,9 @@ const SurveyDetailView = ({
 
       <div style={{ textAlign: 'center', marginTop: '50px' }}>
         <button
+          type="button"
           className="back-to-list-link-btn"
-          onClick={() => navigateTo('list', null, { restoreScroll: true })}
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); navigateTo('list', null, { restoreScroll: true }); }}
           style={{
             background: '#ffffff',
             border: '2px solid #e2e8f0',

@@ -248,6 +248,8 @@ function App() {
   const [tagEditValue, setTagEditValue] = useState('');
   const isVotingProcessingRef = useRef(false); // 🛡️ 投票中の連打ガード
   const isInitialMountRef = useRef(true); // 🚀 初回マウント時の一度きりガード
+  const currentViewRef = useRef('list'); // 🧭 現在のビューを追跡（非同期上書き防止）
+  const detailRequestIdRef = useRef(0); // 🏷️ 詳細フェッチのリクエストID（古いレスポンスを無効化）
 
   // 📡 リアルタイム人数
   const [globalOnlineCount, setGlobalOnlineCount] = useState(1);
@@ -1712,6 +1714,7 @@ function App() {
 
   // 🔗 URL の ?s=<id> パラメータからアンケートを直接読み込む
   const loadFromUrl = async () => {
+    const myReqId = ++detailRequestIdRef.current;
     let urlTimeoutId = setTimeout(() => {
       console.warn("⚠️ loadFromUrl: Safety timeout triggered (10s). Forcing isLoading=false.");
       setIsLoading(false);
@@ -1734,6 +1737,7 @@ function App() {
         if (view === 'create') return;
 
         console.log("🏘️ loadFromUrl: Resetting to list view.");
+        currentViewRef.current = 'list';
         if (view !== 'list') {
           setView('list');
           setCurrentSurvey(null);
@@ -1746,7 +1750,15 @@ function App() {
       }
 
       const { data: sv, error: svError } = await supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count').eq('id', surveyId).maybeSingle();
+      
+      // 🛡️ ユーザーが既に一覧へ戻っていたら、遅れて届いた詳細データを適用しない！
+      if (myReqId !== detailRequestIdRef.current || currentViewRef.current === 'list') {
+        console.log("🛑 loadFromUrl cancelled: user navigated away.");
+        return;
+      }
+
       if (svError || !sv) {
+        currentViewRef.current = 'list';
         window.history.replaceState({ view: 'list' }, '', window.location.pathname + window.location.search + window.location.hash);
         setView('list');
         setCurrentSurvey(null);
@@ -1755,6 +1767,7 @@ function App() {
 
       if (sv.visibility === 'private' && (!user || user.id !== sv.user_id)) {
         alert('非公開のアンケートです🔒');
+        currentViewRef.current = 'list';
         window.history.replaceState({ view: 'list' }, '', window.location.pathname + window.location.search + window.location.hash);
         setView('list');
         return;
@@ -1771,14 +1784,15 @@ function App() {
         url.searchParams.delete('id');
         url.searchParams.delete('s');
         url.pathname = `/s/${sv.id}`;
-        window.history.replaceState({ view: 'details', surveyId: sv.id }, '', url);
+        window.history.replaceState({ view: 'details', surveyId: sv.id }, '', url.pathname + url.search + url.hash);
       } else if (!window.location.pathname.startsWith(`/s/${sv.id}`)) {
         url.pathname = `/s/${sv.id}`;
-        window.history.replaceState({ view: 'details', surveyId: sv.id }, '', url);
+        window.history.replaceState({ view: 'details', surveyId: sv.id }, '', url.pathname + url.search + url.hash);
       } else if (!window.history.state || !window.history.state.view) {
         window.history.replaceState({ view: 'details', surveyId: sv.id }, '', window.location.href);
       }
 
+      currentViewRef.current = 'details';
       setView('details');
       setAdjacentSurveys({ prev: null, next: null }); // リセット
 
@@ -2277,25 +2291,34 @@ function App() {
         return alert('非公開です🔒');
       }
 
+      const myDetailReqId = ++detailRequestIdRef.current;
+      currentViewRef.current = 'details';
+
       if (view !== 'details') {
         // 📍 リストから詳細に入る時のみ、今の位置(リスト)を履歴に刻む
         listScrollRef.current = currentScroll;
         const listUrl = new URL(window.location.href);
         listUrl.searchParams.delete('id');
+        listUrl.searchParams.delete('s');
         if (listUrl.pathname.startsWith('/s/')) listUrl.pathname = '/';
-        window.history.replaceState({ ...window.history.state, view: 'list', scrollY: currentScroll }, '', listUrl);
+        const safeListUrl = (listUrl.pathname || '/') + (listUrl.search || '') + (listUrl.hash || '');
+        window.history.replaceState({ ...window.history.state, view: 'list', scrollY: currentScroll }, '', safeListUrl);
         
         const detailUrl = new URL(window.location.href);
         detailUrl.searchParams.delete('id');
+        detailUrl.searchParams.delete('s');
         detailUrl.pathname = `/s/${survey.id}`;
-        window.history.pushState({ view: 'details', surveyId: survey.id, fromSquare: true }, '', detailUrl);
+        const safeDetailUrl = (detailUrl.pathname || '/') + (detailUrl.search || '') + (detailUrl.hash || '');
+        window.history.pushState({ view: 'details', surveyId: survey.id, fromSquare: true }, '', safeDetailUrl);
       } else {
         // 📍 既に詳細画面にいる場合(前後のアンケート遷移など)は、履歴を積み上げずURLだけ書き換える
         const wasFromSquare = window.history.state?.fromSquare;
         const detailUrl = new URL(window.location.href);
         detailUrl.searchParams.delete('id');
+        detailUrl.searchParams.delete('s');
         detailUrl.pathname = `/s/${survey.id}`;
-        window.history.replaceState({ view: 'details', surveyId: survey.id, fromSquare: wasFromSquare }, '', detailUrl);
+        const safeDetailUrl = (detailUrl.pathname || '/') + (detailUrl.search || '') + (detailUrl.hash || '');
+        window.history.replaceState({ view: 'details', surveyId: survey.id, fromSquare: wasFromSquare }, '', safeDetailUrl);
       }
 
       setView('details');
@@ -2308,6 +2331,7 @@ function App() {
       (async () => {
         if (!survey.created_at) {
           const { data: fullSv } = await supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count').eq('id', survey.id).maybeSingle();
+          if (myDetailReqId !== detailRequestIdRef.current || currentViewRef.current !== 'details') return;
           if (fullSv) {
             const mappedSv = applySakuraStats(fullSv);
             setCurrentSurvey(mappedSv);
@@ -2316,6 +2340,7 @@ function App() {
           }
         }
         const { data: preOpts } = await supabase.from('options').select('*').eq('survey_id', survey.id).order('id', { ascending: true });
+        if (myDetailReqId !== detailRequestIdRef.current || currentViewRef.current !== 'details') return;
         if (preOpts) {
           setOptions(preOpts);
           const realVotes = preOpts.reduce((sum, o) => sum + (o.votes || 0), 0);
@@ -2333,6 +2358,7 @@ function App() {
             supabase.from('surveys').select('id,title,category,tags,total_votes,image_url,created_at,view_count,comment_count').eq('visibility', 'public').lt('created_at', survey.created_at).order('created_at', { ascending: false }).limit(1).maybeSingle(),
             supabase.from('surveys').select('id,title,category,tags,total_votes,image_url,created_at,view_count,comment_count').eq('visibility', 'public').gt('created_at', survey.created_at).order('created_at', { ascending: true }).limit(1).maybeSingle()
           ]);
+          if (myDetailReqId !== detailRequestIdRef.current || currentViewRef.current !== 'details') return;
           setAdjacentSurveys({ prev: prevRes.data, next: nextRes.data });
         } catch { }
       })();
@@ -2344,6 +2370,7 @@ function App() {
         localStorage.setItem(viewKey, Date.now().toString());
         grantActionExp('view', survey.id); // 🌟 みんクエEXP付与
         supabase.rpc('increment_survey_view', { survey_id_arg: survey.id }).then(({ data: newViews }) => {
+          if (myDetailReqId !== detailRequestIdRef.current || currentViewRef.current !== 'details') return;
           if (newViews !== undefined) {
             setCurrentSurvey(prev => prev && prev.id === survey.id ? { ...prev, view_count: prev.view_count + 1 } : prev);
             setSurveys(prev => prev.map(s => s.id === survey.id ? { ...s, view_count: s.view_count + 1 } : s));
@@ -2352,14 +2379,28 @@ function App() {
       }
       return;
     } else if (nextView === 'list') {
-      // 🏘️ 広場に戻る: id パラメータだけを消去し、タブやページは維持する
+      // 🛡️ 進行中の詳細フェッチをすべて直ちに無効化！
+      detailRequestIdRef.current++;
+      currentViewRef.current = 'list';
+
+      // 🏘️ 広場に戻る: id / s パラメータを消去し、URLを安全に更新
       const url = new URL(window.location.href);
       url.searchParams.delete('id');
+      url.searchParams.delete('s');
       if (url.pathname.startsWith('/s/')) url.pathname = '/';
-      window.history.pushState({ view: 'list' }, '', url);
+      const safeListUrl = (url.pathname || '/') + (url.search || '') + (url.hash || '');
+      
+      try {
+        window.history.pushState({ view: 'list' }, '', safeListUrl);
+      } catch (e) {
+        console.warn('history.pushState failed:', e);
+      }
+
+      // 確実にリスト表示に切り替える
       setCurrentSurvey(null);
       setAdjacentSurveys({ prev: null, next: null });
       setView('list');
+
       // 📍 「一覧に戻る」ボタンの場合は、記事を開いた直前の位置に戻す。それ以外(ロゴ・タグ・フッター等)はTOPの一番上へ
       if (navOptions.restoreScroll && listScrollRef.current > 0) {
         restoreListScroll(listScrollRef.current);
@@ -2368,6 +2409,7 @@ function App() {
       }
       return;
     }
+    currentViewRef.current = nextView;
     setView(nextView);
   };
 
