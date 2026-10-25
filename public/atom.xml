@@ -4,11 +4,71 @@
   <subtitle>みんなの本音が集まる広場。最新のトレンドやニュースについてアンケート実施中！</subtitle>
   <link href="https://www.minna-no-vote-square.com/atom.xml" rel="self"/>
   <link href="https://www.minna-no-vote-square.com/"/>
-  <updated>2026-10-25T07:45:22.049Z</updated>
+  <updated>2026-10-25T12:52:05.931Z</updated>
   <id>https://www.minna-no-vote-square.com/</id>
   <author>
     <name>守護霊らび</name>
   </author>
+  <entry>
+    <title>事故で脚切断 25歳諦めていた恋愛</title>
+    <link href="https://www.minna-no-vote-square.com/s/23623"/>
+    <id>https://www.minna-no-vote-square.com/s/23623</id>
+    <updated>2026-10-25T12:52:03.044Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;話題&quot;,
+  &quot;point1_title&quot;: &quot;カーチェイスに巻き込まれる&quot;,
+  &quot;point1_desc&quot;: &quot;栃木県の幹線道路をバイクで走行していた25歳の看護師キャンディーさんが、カーチェイス状態で逆走してきた2台の車に衝突され、右脚切断などの重傷を負う悲劇に見舞われた。&quot;,
+  &quot;point2_title&quot;: &quot;友人の自分を責める苦...</summary>
+  </entry>
+  <entry>
+    <title>2家族8人乗る車横転 20代の母死亡</title>
+    <link href="https://www.minna-no-vote-square.com/s/23622"/>
+    <id>https://www.minna-no-vote-square.com/s/23622</id>
+    <updated>2026-10-25T12:51:44.494Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;中央道で乗用車が横転事故&quot;,
+  &quot;point1_desc&quot;: &quot;25日午前11時半前、岐阜県瑞浪市の中央自動車道下り瑞浪IC付近にて、乗用車が横転する重大事故が発生しました。現場は一時騒然となり、警察と消防による救助活動が迅速に行われました。&quot;,
+  &quot;point2_title&quot;: &quot;乗車...</summary>
+  </entry>
+  <entry>
+    <title>イオン爆発犠牲者7人 南側で発見</title>
+    <link href="https://www.minna-no-vote-square.com/s/23621"/>
+    <id>https://www.minna-no-vote-square.com/s/23621</id>
+    <updated>2026-10-25T12:51:25.391Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;イオンモール爆発で7名犠牲&quot;,
+  &quot;point1_desc&quot;: &quot;熊本地震の発生後にイオンモール熊本で発生した大規模な爆発事故により、犠牲となった7名のうち4名が1階の出入り口付近で、残る3名がほぼ真上にあたる2階の店舗エリアで発見されたことが明らかになった。&quot;,
+  &quot;point2_ti...</summary>
+  </entry>
+  <entry>
+    <title>内閣支持率45%で横ばい 毎日調査</title>
+    <link href="https://www.minna-no-vote-square.com/s/23620"/>
+    <id>https://www.minna-no-vote-square.com/s/23620</id>
+    <updated>2026-10-25T12:51:04.320Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;高市支持率は45％で横ばい&quot;,
+  &quot;point1_desc&quot;: &quot;毎日新聞が実施した全国世論調査によると、高市早苗内閣の支持率は前回調査と同じ45％で横ばいとなった。一方、不支持率は前回から1ポイント増加して41％となり、支持がやや拮抗している状況が浮き彫りとなった。&quot;,
+  &quot;point...</summary>
+  </entry>
+  <entry>
+    <title>不正アクセス 官邸主導で対策急ぐ</title>
+    <link href="https://www.minna-no-vote-square.com/s/23619"/>
+    <id>https://www.minna-no-vote-square.com/s/23619</id>
+    <updated>2026-10-25T12:50:42.907Z</updated>
+    <summary>[[SUMMARY:
+{
+  &quot;category&quot;: &quot;ニュース&quot;,
+  &quot;point1_title&quot;: &quot;政府がサイバー対策検討&quot;,
+  &quot;point1_desc&quot;: &quot;政府は相次ぐ不正アクセス事案を受け、首相官邸主導でサイバー攻撃対策の検討を急ぐ方針を固めた。企業活動や国民生活への深刻な影響拡大を懸念し、迅速な対応を進めている。&quot;,
+  &quot;point2_title&quot;: &quot;PHP脆弱性と不正アク...</summary>
+  </entry>
   <entry>
     <title>Suicaペンギンなぜ「卒業」解説</title>
     <link href="https://www.minna-no-vote-square.com/s/23618"/>
@@ -558,65 +618,5 @@
   &quot;point1_desc&quot;: &quot;佐川急便の荷物問い合わせサービスが第三者による不正アクセスを受け、最大で約5323万件もの個人情報が流出した可能性があることが同社の発表により明らかになりました。&quot;,
   &quot;point2_title&quot;: &quot;流出の恐れがある情報&quot;,
 ...</summary>
-  </entry>
-  <entry>
-    <title>米大統領 レブロン「無礼」と批判</title>
-    <link href="https://www.minna-no-vote-square.com/s/23573"/>
-    <id>https://www.minna-no-vote-square.com/s/23573</id>
-    <updated>2026-10-23T02:17:44.026Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;話題&quot;,
-  &quot;point1_title&quot;: &quot;トランプ氏がレブロンを批判&quot;,
-  &quot;point1_desc&quot;: &quot;トランプ米大統領は、NBAのスター選手であるレブロン・ジェームズ氏を猛烈に批判した。試合前の国歌斉唱時における同選手の行動について、国に対して無礼な振る舞いをしていると非難している。&quot;,
-  &quot;point2_title&quot;: &quot;国...</summary>
-  </entry>
-  <entry>
-    <title>「iPhone Duo」発売 予約は好調</title>
-    <link href="https://www.minna-no-vote-square.com/s/23572"/>
-    <id>https://www.minna-no-vote-square.com/s/23572</id>
-    <updated>2026-10-23T02:17:25.594Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;話題&quot;,
-  &quot;point1_title&quot;: &quot;折り畳みiPhone発売&quot;,
-  &quot;point1_desc&quot;: &quot;米アップルは初となる折り畳み型の「iPhone Duo」を発売する。長年大きなデザイン変更がなかった主力製品において、今回の新形状投入は同社の重要な転換点となると見られている。&quot;,
-  &quot;point2_title&quot;: &quot;新型デバイ...</summary>
-  </entry>
-  <entry>
-    <title>笹かまメーカー相次ぐ倒産 背景</title>
-    <link href="https://www.minna-no-vote-square.com/s/23571"/>
-    <id>https://www.minna-no-vote-square.com/s/23571</id>
-    <updated>2026-10-23T02:17:07.276Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;老舗メーカーの倒産相次ぐ&quot;,
-  &quot;point1_desc&quot;: &quot;宮城県の特産品である笹かまぼこを製造する中小規模の老舗メーカーで倒産が相次いでいる。長年親しまれてきた地元の伝統産業が、かつてない深刻な経営危機に直面しており製造現場に動揺が広がっている。&quot;,
-  &quot;point2_title&quot;...</summary>
-  </entry>
-  <entry>
-    <title>体一部ないシカ死骸4体 人為的か</title>
-    <link href="https://www.minna-no-vote-square.com/s/23570"/>
-    <id>https://www.minna-no-vote-square.com/s/23570</id>
-    <updated>2026-10-23T02:16:48.555Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;奈良公園で子鹿の死骸発見&quot;,
-  &quot;point1_desc&quot;: &quot;奈良県の興福寺や東大寺の境内などで、8月下旬から今月上旬にかけて体の一部がない子鹿の死骸が4体相次いで見つかった。県が詳細な状況確認と原因の調査を進めている。&quot;,
-  &quot;point2_title&quot;: &quot;相次ぐ発見に県が発表&quot;,...</summary>
-  </entry>
-  <entry>
-    <title>チベットでM7.0の地震 16人死亡</title>
-    <link href="https://www.minna-no-vote-square.com/s/23569"/>
-    <id>https://www.minna-no-vote-square.com/s/23569</id>
-    <updated>2026-10-23T02:16:29.358Z</updated>
-    <summary>[[SUMMARY:
-{
-  &quot;category&quot;: &quot;ニュース&quot;,
-  &quot;point1_title&quot;: &quot;チベットでM7.0の地震&quot;,
-  &quot;point1_desc&quot;: &quot;中国のチベット自治区にて22日夜、マグニチュード7.0の強い地震が発生した。揺れが激しく現地では大きな被害が出ており、発生直後から中国国営テレビなどを通じて状況が報じられている。&quot;,
-  &quot;point2_title&quot;: &quot;16...</summary>
   </entry>
 </feed>
