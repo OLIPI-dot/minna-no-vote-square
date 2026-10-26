@@ -248,7 +248,7 @@ function App() {
   const [tagEditValue, setTagEditValue] = useState('');
   const isVotingProcessingRef = useRef(false); // 🛡️ 投票中の連打ガード
   const isInitialMountRef = useRef(true); // 🚀 初回マウント時の一度きりガード
-  const currentViewRef = useRef('list'); // 🧭 現在のビューを追跡（非同期上書き防止）
+  const currentViewRef = useRef((typeof window !== 'undefined' && (new URLSearchParams(window.location.search).has('id') || new URLSearchParams(window.location.search).has('s') || window.location.pathname.startsWith('/s/'))) ? 'details' : 'list'); // 🧭 現在のビューを追跡（非同期上書き防止）
   const detailRequestIdRef = useRef(0); // 🏷️ 詳細フェッチのリクエストID（古いレスポンスを無効化）
   const surveyFetchRequestIdRef = useRef(0); // 📋 一覧フェッチのリクエストID（古いレスポンスの競合上書き防止）
   const lastPopStateTimeRef = useRef(0); // 🛡️ popstate直後の誤爆クリック防止用タイムスタンプ
@@ -1751,6 +1751,7 @@ function App() {
         return;
       }
 
+      currentViewRef.current = 'details';
       let { data: sv, error: svError } = await supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count').eq('id', surveyId).maybeSingle();
       
       // 🛡️ 一時的な通信エラーの場合は400ms後に1回リトライ！
