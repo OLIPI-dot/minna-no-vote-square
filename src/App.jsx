@@ -251,6 +251,7 @@ function App() {
   const currentViewRef = useRef('list'); // 🧭 現在のビューを追跡（非同期上書き防止）
   const detailRequestIdRef = useRef(0); // 🏷️ 詳細フェッチのリクエストID（古いレスポンスを無効化）
   const surveyFetchRequestIdRef = useRef(0); // 📋 一覧フェッチのリクエストID（古いレスポンスの競合上書き防止）
+  const lastPopStateTimeRef = useRef(0); // 🛡️ popstate直後の誤爆クリック防止用タイムスタンプ
 
   // 📡 リアルタイム人数
   const [globalOnlineCount, setGlobalOnlineCount] = useState(1);
@@ -2302,19 +2303,25 @@ function App() {
 
     const handlePopState = (e) => {
       console.log("↩️ popstate event fired!", e.state, "location:", window.location.pathname);
-      const params = new URLSearchParams(window.location.search);
-      const isDetailPath = params.has('id') || window.location.pathname.startsWith('/s/');
+      lastPopStateTimeRef.current = Date.now(); // 🛡️ 戻る直後の誤爆クリック防止
 
-      if (isDetailPath) {
-        loadFromUrl();
-      } else {
+      const state = e.state;
+      const pathname = window.location.pathname;
+      const params = new URLSearchParams(window.location.search);
+      const isDetailPath = params.has('id') || params.has('s') || pathname.startsWith('/s/');
+
+      // 🛡️ state が list、または URL が一覧パス（/）の場合は確実に一覧へ戻す！
+      if (!isDetailPath || (state && state.view === 'list') || pathname === '/') {
+        detailRequestIdRef.current++; // 🛡️ 進行中の詳細フェッチをすべて直ちに無効化！
+        currentViewRef.current = 'list';
+
         setView('list');
         setCurrentSurvey(null);
         setOptions([]);
         setVotedOption(null);
+        setAdjacentSurveys({ prev: null, next: null });
         
         // 🔗 URL からタブ・ページ状態を復元
-        const params = new URLSearchParams(window.location.search);
         setSortMode(params.get('tab') || 'latest');
         const p = parseInt(params.get('page'), 10);
         setCurrentPage(!isNaN(p) && p > 0 ? p : 1);
@@ -2324,14 +2331,29 @@ function App() {
         } else {
           setTimeout(() => window.scrollTo(0, 0), 20);
         }
+      } else {
+        currentViewRef.current = 'details';
+        loadFromUrl();
       }
     };
     window.addEventListener('popstate', handlePopState);
-    loadFromUrl(); // 初回読み込み
+    
+    // 🛡️ 初回マウント時、または詳細画面にいる時のみ loadFromUrl を実行する（一覧表示中に勝手に詳細をフェッチさせない）
+    const isDetailUrl = window.location.pathname.startsWith('/s/') || new URLSearchParams(window.location.search).has('id');
+    if (isInitialMountRef.current || isDetailUrl) {
+      isInitialMountRef.current = false;
+      loadFromUrl();
+    }
     return () => window.removeEventListener('popstate', handlePopState);
   }, [user]); // userが変わった時も再チェック
 
   const navigateTo = async (nextView, survey = null, navOptions = {}) => {
+    // 🛡️ popstate直後（450ms以内）のカード誤爆クリック（マウス戻るボタンのチャタリングやスクロール復元時の飛び込み）をガード！
+    if (nextView === 'details' && Date.now() - lastPopStateTimeRef.current < 450) {
+      console.warn("🛑 navigateTo('details') ignored: blocked by recent popstate debounce guard.");
+      return;
+    }
+
     // 現在のスクロール位置を「しおり」として保存らび！
     const currentScroll = window.pageYOffset;
 
