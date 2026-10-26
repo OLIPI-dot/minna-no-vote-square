@@ -461,10 +461,10 @@ const SurveyListView = ({
         </>
       )}
 
-      {/* ⚖️ 公式・ユーザー切り替えタブ + レイアウト切替（1行統合） */}
-      <div className="official-tab-navigation" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 8px', marginBottom: '16px', borderBottom: '2px solid #f1f5f9', width: '100%', boxSizing: 'border-box', height: '44px', overflow: 'visible' }}>
-        {/* 左側：タブ */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '2px', flex: 1, overflow: 'hidden', minWidth: 0 }}>
+      {/* ⚖️ 公式・ユーザー切り替えタブ + レイアウト切替（1行統合・スマホ最適化） */}
+      <div className="official-tab-navigation" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 4px', marginBottom: '16px', borderBottom: '2px solid #f1f5f9', width: '100%', boxSizing: 'border-box', height: '44px', overflow: 'visible' }}>
+        {/* 左側：タブ（スマホでも見切れないよう最適化） */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '2px', flex: 1, minWidth: 0, overflowX: 'auto', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
         {!['mine', 'watching'].includes(sortMode) ? (
           <>
             <button
@@ -474,15 +474,19 @@ const SurveyListView = ({
               }}
               className={`tab-btn ${activeTab === 'official' ? 'active' : ''}`}
               style={{
-                padding: '4px 5px', fontWeight: 'bold',
+                padding: '4px 6px', fontWeight: 'bold',
                 color: activeTab === 'official' ? '#8b5cf6' : '#94a3b8',
                 background: 'none', border: 'none',
                 borderBottom: activeTab === 'official' ? '3px solid #8b5cf6' : '3px solid transparent',
                 cursor: 'pointer', transition: 'all 0.2s',
-                whiteSpace: 'nowrap', flexShrink: 0, fontSize: '0.68rem'
+                whiteSpace: 'nowrap', flexShrink: 0, fontSize: '0.75rem',
+                display: 'inline-flex', alignItems: 'center', gap: '2px'
               }}
             >
-              📢 公式・ニュース <span className="tab-count" style={{ fontSize: '0.62rem', opacity: 0.8 }}>({totalOfficialCount})</span>
+              <span>📢</span>
+              <span className="tab-label-full">公式・ニュース</span>
+              <span className="tab-label-short">公式</span>
+              <span className="tab-count" style={{ fontSize: '0.65rem', opacity: 0.85 }}>({totalOfficialCount})</span>
             </button>
             <button
               onClick={() => {
@@ -491,26 +495,30 @@ const SurveyListView = ({
               }}
               className={`tab-btn ${activeTab === 'user' ? 'active' : ''}`}
               style={{
-                padding: '4px 5px', fontWeight: 'bold',
+                padding: '4px 6px', fontWeight: 'bold',
                 color: activeTab === 'user' ? '#8b5cf6' : '#94a3b8',
                 background: 'none', border: 'none',
                 borderBottom: activeTab === 'user' ? '3px solid #8b5cf6' : '3px solid transparent',
                 cursor: 'pointer', transition: 'all 0.2s',
-                whiteSpace: 'nowrap', flexShrink: 0, fontSize: '0.68rem'
+                whiteSpace: 'nowrap', flexShrink: 0, fontSize: '0.75rem',
+                display: 'inline-flex', alignItems: 'center', gap: '2px'
               }}
             >
-              👥 みんなの投稿 <span className="tab-count" style={{ fontSize: '0.62rem', opacity: 0.8 }}>({totalUserCount})</span>
+              <span>👥</span>
+              <span className="tab-label-full">みんなの投稿</span>
+              <span className="tab-label-short">投稿</span>
+              <span className="tab-count" style={{ fontSize: '0.65rem', opacity: 0.85 }}>({totalUserCount})</span>
             </button>
           </>
         ) : (
-          <div style={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#475569', whiteSpace: 'nowrap' }}>
+          <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#475569', whiteSpace: 'nowrap' }}>
             {sortMode === 'mine' ? '👤 あなたのアンケート' : '⭐ ウォッチ中のアンケート'}
           </div>
         )}
         </div>
 
         {/* 右側：更新ボタン ＆ レイアウト切替ボタン */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0, marginRight: '4px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 }}>
           <button
             type="button"
             onClick={async () => {
@@ -526,14 +534,14 @@ const SurveyListView = ({
               background: '#f8fafc',
               border: '1px solid #e2e8f0',
               borderRadius: '8px',
-              padding: '4px 8px',
-              fontSize: '0.75rem',
+              padding: '4px 6px',
+              fontSize: '0.72rem',
               fontWeight: '700',
               color: '#475569',
               cursor: 'pointer',
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '4px',
+              gap: '2px',
               transition: 'all 0.2s ease',
               height: '30px',
               boxSizing: 'border-box'
@@ -542,9 +550,10 @@ const SurveyListView = ({
             <span style={{
               display: 'inline-block',
               transition: 'transform 0.6s ease',
-              transform: isRefreshing ? 'rotate(360deg)' : 'none'
+              transform: isRefreshing ? 'rotate(360deg)' : 'none',
+              fontSize: '0.85rem'
             }}>🔄</span>
-            <span style={{ fontSize: '0.7rem' }}>更新</span>
+            <span className="refresh-btn-text" style={{ fontSize: '0.68rem' }}>更新</span>
           </button>
 
           <div className="layout-switcher" style={{ flexShrink: 0 }}>

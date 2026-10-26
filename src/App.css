@@ -4149,3 +4149,47 @@ button:active,
     padding: 12px 10px !important;
   }
 }
+
+/* 📱 スマホ最適化：タブ名・更新ボタン・バッジ見切れ防止 */
+@media (max-width: 520px) {
+  .tab-label-full {
+    display: none !important;
+  }
+  .tab-label-short {
+    display: inline !important;
+  }
+}
+
+@media (min-width: 521px) {
+  .tab-label-full {
+    display: inline !important;
+  }
+  .tab-label-short {
+    display: none !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .refresh-btn-text {
+    display: none !important;
+  }
+}
+
+/* 📱 スマホ時のバッジ微調整（1行にぴったり収める） */
+@media (max-width: 600px) {
+  .list-item-meta-upper.survey-item-meta-row {
+    gap: 3px !important;
+  }
+  .list-item-meta-upper .status-badge {
+    padding: 1px 4px !important;
+    font-size: 0.65rem !important;
+  }
+  .list-item-meta-upper .survey-item-created-at {
+    font-size: 0.65rem !important;
+    padding: 1px 4px !important;
+  }
+  .list-item-meta-upper .survey-item-deadline {
+    font-size: 0.65rem !important;
+    padding: 1px 4px !important;
+  }
+}

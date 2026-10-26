@@ -250,6 +250,7 @@ function App() {
   const isInitialMountRef = useRef(true); // 🚀 初回マウント時の一度きりガード
   const currentViewRef = useRef('list'); // 🧭 現在のビューを追跡（非同期上書き防止）
   const detailRequestIdRef = useRef(0); // 🏷️ 詳細フェッチのリクエストID（古いレスポンスを無効化）
+  const surveyFetchRequestIdRef = useRef(0); // 📋 一覧フェッチのリクエストID（古いレスポンスの競合上書き防止）
 
   // 📡 リアルタイム人数
   const [globalOnlineCount, setGlobalOnlineCount] = useState(1);
@@ -1749,8 +1750,21 @@ function App() {
         return;
       }
 
-      const { data: sv, error: svError } = await supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count').eq('id', surveyId).maybeSingle();
+      let { data: sv, error: svError } = await supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count').eq('id', surveyId).maybeSingle();
       
+      // 🛡️ 一時的な通信エラーの場合は400ms後に1回リトライ！
+      if ((svError || !sv) && (myReqId === detailRequestIdRef.current && currentViewRef.current !== 'list')) {
+        console.warn("⚠️ loadFromUrl: Detail fetch failed, retrying in 400ms...", svError);
+        await new Promise(r => setTimeout(r, 400));
+        if (myReqId === detailRequestIdRef.current && currentViewRef.current !== 'list') {
+          const retryRes = await supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count').eq('id', surveyId).maybeSingle();
+          if (retryRes.data) {
+            sv = retryRes.data;
+            svError = retryRes.error;
+          }
+        }
+      }
+
       // 🛡️ ユーザーが既に一覧へ戻っていたら、遅れて届いた詳細データを適用しない！
       if (myReqId !== detailRequestIdRef.current || currentViewRef.current === 'list') {
         console.log("🛑 loadFromUrl cancelled: user navigated away.");
@@ -1866,6 +1880,8 @@ function App() {
   };
 
   const fetchSurveys = async (currentUser, silent = false, page = 1, category = null, query = '', currentTab = 'official', sort = 'latest', pop = 'trending', tag = '') => {
+    const myFetchId = ++surveyFetchRequestIdRef.current;
+
     // 🚀 Early Fetch を使う条件: 初回ロード ＆ フィルタなし ＆ 新着順
     const isFirstLoad = !silent && page === 1 && (!category || category === 'すべて') && !query && !tag && currentTab === 'official' && sort === 'latest';
 
@@ -1889,9 +1905,14 @@ function App() {
         try {
           const earlyResult = await window.__INITIAL_DATA_PROMISE__;
           if (Array.isArray(earlyResult) && earlyResult.length > 0) {
-            sData = earlyResult;
-            count = earlyResult.length;
-            setTotalOfficialCount(prev => Math.max(prev, earlyResult.length));
+            const now = new Date();
+            // 期限切れを弾いても十分な件数がある場合のみ信頼するらび！
+            const activeEarly = earlyResult.filter(s => !s.deadline || new Date(s.deadline) > now);
+            if (activeEarly.length >= 10) {
+              sData = activeEarly;
+              count = activeEarly.length;
+              setTotalOfficialCount(prev => Math.max(prev, activeEarly.length));
+            }
           }
         } catch (e) {
           console.warn("Early fetch failed, fallback to standard query:", e);
@@ -1990,32 +2011,54 @@ function App() {
       }
 
       if (!sData) {
-        if (sort === 'popular') {
-          // pagination（range）は使わず一気に取得
-          const { data, error, count: c } = await baseQuery;
-          sData = data;
-          sError = error;
-          count = c;
-        } else {
-          const { data, error, count: c } = await baseQuery.range(start, end);
-          sData = data;
-          sError = error;
-          count = c;
-          if (sort === 'mine') setTotalMineCount(c || 0);
+        let retryCount = 0;
+        const maxRetries = 2;
+        while (retryCount <= maxRetries) {
+          if (sort === 'popular') {
+            // pagination（range）は使わず一気に取得
+            const { data, error, count: c } = await baseQuery;
+            sData = data;
+            sError = error;
+            count = c;
+          } else {
+            const { data, error, count: c } = await baseQuery.range(start, end);
+            sData = data;
+            sError = error;
+            count = c;
+            if (sort === 'mine') setTotalMineCount(c || 0);
 
-          // 🛡️ 範囲外ページ防止ガード: ページ番号が大きすぎて0件になったが全体件数(count)はある場合、自動で1ページ目を再取得！
-          if (page > 1 && (!data || data.length === 0) && (c || 0) > 0) {
-            console.warn(`⚠️ Page ${page} is empty but total count is ${c}. Auto-fallback to page 1.`);
-            setCurrentPage(1);
-            const { data: fbData } = await baseQuery.range(0, ITEMS_PER_PAGE - 1);
-            if (fbData && fbData.length > 0) {
-              sData = fbData;
+            // 🛡️ 範囲外ページ防止ガード: ページ番号が大きすぎて0件になったが全体件数(count)はある場合、自動で1ページ目を再取得！
+            if (page > 1 && (!data || data.length === 0) && (c || 0) > 0) {
+              console.warn(`⚠️ Page ${page} is empty but total count is ${c}. Auto-fallback to page 1.`);
+              setCurrentPage(1);
+              const { data: fbData } = await baseQuery.range(0, ITEMS_PER_PAGE - 1);
+              if (fbData && fbData.length > 0) {
+                sData = fbData;
+              }
             }
+          }
+
+          // 途中で新しいリクエストが始まっていたら中断
+          if (myFetchId !== surveyFetchRequestIdRef.current) {
+            console.log("🛑 fetchSurveys cancelled: newer request is running.");
+            return;
+          }
+
+          if (sData && !sError) {
+            break; // 取得成功！
+          }
+
+          retryCount++;
+          if (retryCount <= maxRetries) {
+            console.warn(`⚠️ fetchSurveys: Query attempt ${retryCount} failed. Retrying in ${retryCount * 500}ms...`, sError);
+            await new Promise(r => setTimeout(r, retryCount * 500));
+            if (myFetchId !== surveyFetchRequestIdRef.current) return;
           }
         }
       }
 
       if (safetyTimeoutId) clearTimeout(safetyTimeoutId);
+      if (myFetchId !== surveyFetchRequestIdRef.current) return;
 
       if (sError) console.error("❌ fetchSurveys: PUBLIC FETCH ERROR:", sError);
       if (sData) {
@@ -2149,10 +2192,16 @@ function App() {
           });
         });
       } else {
-        setSurveys([]);
+        if (sError) {
+          console.warn("⚠️ fetchSurveys: Query failed with error. Preserving previous survey list to prevent blank screen.", sError);
+          setSurveys(prev => (prev && prev.length > 0 ? prev : []));
+        } else {
+          setSurveys([]);
+        }
       }
     } catch (err) {
       console.error("❌ fetchSurveys CRASHED:", err);
+      setSurveys(prev => (prev && prev.length > 0 ? prev : []));
     } finally {
       if (safetyTimeoutId) clearTimeout(safetyTimeoutId);
       if (!silent) setIsLoading(false);
