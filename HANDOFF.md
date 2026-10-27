@@ -8,6 +8,13 @@
 
 ## 📌 直近の作業メモ・引き継ぎ事項（2026年10月27日）
 
+### 0-000. 🐉 みんクエ「レイドボス」で未攻撃なのに1位（攻撃済）になってしまう混線バグ修正（10/27実施）
+- **原因**: [`src/components/RaidBossMiniGame.jsx`](file:///i:/olipiprojects/antigravity-scratch/minna-no-vote-square/src/components/RaidBossMiniGame.jsx) のリアルタイム共闘通信（WebSocket `batch_damage`）において、送信者名と自分の表示名（初期ロード中やゲスト時の `匿名広場民` 等）が一致しただけで「自分の別端末からの攻撃（`isFromMe = true`）」と判定してしまい、他プレイヤーの累計ダメージを自分のダメージとして吸収・クラウド保存してしまっていた。
+- **改修内容**:
+  - `isFromMe` 判定を名前一致ではなく「ログイン済み かつ `senderUserId === user.id` が完全一致した場合のみ」に厳格化。
+  - 実際に自分で「⚔️ 攻撃する！」ボタンを押した証跡フラグ（`minique_raid_attacked_*`）がない限り、ローカルダメージを `0` に保ちクラウドへ誤バックアップしないようガードを追加。
+  - リセットバージョンを `20261027_clean_v2` に更新し、混入していた汚染データをローカル・クラウド双方から自動クリア。
+
 ### 0-00. 🔗 `api/og-injector.js` の正規URL（canonical）固定化 ＆ `generate_sitemap.cjs` の新着順ソート対応（10/27実施）
 - **改修内容**:
   - [`api/og-injector.js`](file:///i:/olipiprojects/antigravity-scratch/minna-no-vote-square/api/og-injector.js) で生成される `<link rel="canonical">` や `og:url` がアクセス元ホストに左右されず、常に正規ドメイン `https://www.minna-no-vote-square.com/s/:id` を指すように統一。

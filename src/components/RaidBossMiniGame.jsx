@@ -39,28 +39,39 @@ const RaidBossMiniGame = ({
     return `minique_raid_logs_${currentBoss.id}_${todayStr}`;
   };
 
+  const getAttackedKey = () => {
+    const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
+    return `minique_raid_attacked_${currentBoss.id}_${todayStr}`;
+  };
+
+  const RAID_RESET_VERSION = '20261027_clean_v2';
+
   // ☁️ レイド進捗（ボスHP・自ダメージ・ランキング・回復薬・実況ログ）のクラウド ＆ ローカル双方向同期
   const getInitialRaidProgress = () => {
     const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
 
-    // 🧹 過去テストデータ（ゾンビデータ）の確実な強制クリーンアップ
-    const RAID_RESET_VERSION = '20261019_clean_v1';
+    // 🧹 過去テストデータ・同名混線データの確実な強制クリーンアップ
     try {
       if (localStorage.getItem('minique_raid_reset_version') !== RAID_RESET_VERSION) {
         localStorage.removeItem(getTodayKey());
         localStorage.removeItem(getRankingKey());
         localStorage.removeItem(getFaintKey());
         localStorage.removeItem(getLogsKey());
+        localStorage.removeItem(getAttackedKey());
         localStorage.removeItem(`minique_raid_heals_${currentBoss.id}_${todayStr}`);
         localStorage.removeItem(`minique_raid_participation_${todayStr}`);
         localStorage.setItem('minique_raid_reset_version', RAID_RESET_VERSION);
       }
     } catch (e) {}
 
+    const hasLocallyAttacked = (() => {
+      try { return localStorage.getItem(getAttackedKey()) === 'true'; } catch (e) { return false; }
+    })();
+
     let localBossHp = currentBoss.maxHp;
     try {
       const saved = localStorage.getItem(getTodayKey());
-      if (saved) {
+      if (saved && hasLocallyAttacked) {
         const parsed = parseInt(saved, 10);
         if (!isNaN(parsed) && parsed >= 0) localBossHp = Math.min(parsed, currentBoss.maxHp);
       }
@@ -71,14 +82,18 @@ const RaidBossMiniGame = ({
       const saved = localStorage.getItem(getRankingKey());
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) localRanking = parsed;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          // 自分がまだ1回も攻撃していない場合は、isMeのダメージを必ず0に保つ（他人の匿名通信混入防止）
+          localRanking = parsed.map(r => r.isMe ? { ...r, damage: hasLocallyAttacked ? (r.damage || 0) : 0 } : r)
+            .sort((a, b) => b.damage - a.damage);
+        }
       }
     } catch (e) {}
 
     let localHeals = 3;
     try {
       const saved = localStorage.getItem(`minique_raid_heals_${currentBoss.id}_${todayStr}`);
-      if (saved !== null) {
+      if (saved !== null && hasLocallyAttacked) {
         const parsed = parseInt(saved, 10);
         if (!isNaN(parsed)) localHeals = Math.max(0, Math.min(3, parsed));
       }
@@ -87,7 +102,7 @@ const RaidBossMiniGame = ({
     let localLogs = null;
     try {
       const saved = localStorage.getItem(getLogsKey());
-      if (saved) {
+      if (saved && hasLocallyAttacked) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) localLogs = parsed;
       }
@@ -106,14 +121,19 @@ const RaidBossMiniGame = ({
       { id: 'me', name: hn || 'あなた', damage: 0, isMe: true }
     ];
 
-    // クラウドデータの統合
+    // クラウドデータの統合（現行リセットバージョンと一致するもののみ信頼）
     const cloudProgress = user?.user_metadata?.raid_progress_v1;
-    if (cloudProgress && cloudProgress.date === todayStr && cloudProgress.bossId === currentBoss.id) {
+    if (
+      cloudProgress &&
+      cloudProgress.resetVersion === RAID_RESET_VERSION &&
+      cloudProgress.date === todayStr &&
+      cloudProgress.bossId === currentBoss.id
+    ) {
       const syncedBossHp = typeof cloudProgress.bossHp === 'number'
         ? Math.min(localBossHp, cloudProgress.bossHp)
         : localBossHp;
       const cloudMyDmg = typeof cloudProgress.myDamage === 'number' ? cloudProgress.myDamage : 0;
-      const localMyDmg = defaultRanking.find(r => r.isMe)?.damage || 0;
+      const localMyDmg = hasLocallyAttacked ? (defaultRanking.find(r => r.isMe)?.damage || 0) : 0;
       const syncedMyDmg = Math.max(cloudMyDmg, localMyDmg);
       const syncedHeals = typeof cloudProgress.healsLeft === 'number'
         ? Math.min(localHeals, cloudProgress.healsLeft)
@@ -130,6 +150,7 @@ const RaidBossMiniGame = ({
       }).sort((a, b) => b.damage - a.damage);
 
       try {
+        if (syncedMyDmg > 0) localStorage.setItem(getAttackedKey(), 'true');
         localStorage.setItem(getTodayKey(), String(syncedBossHp));
         localStorage.setItem(getRankingKey(), JSON.stringify(syncedRanking));
         localStorage.setItem(`minique_raid_heals_${currentBoss.id}_${todayStr}`, String(syncedHeals));
@@ -246,6 +267,12 @@ const RaidBossMiniGame = ({
   const [rankingList, setRankingList] = useState(() => initialProgress.current.rankingList);
   const myDamage = rankingList.find(r => r.isMe)?.damage || 0;
 
+  // ハンドルネーム変更時に自分のランキング表示名も即時反映
+  useEffect(() => {
+    if (!hn) return;
+    setRankingList(prev => prev.map(r => r.isMe ? { ...r, name: hn } : r));
+  }, [hn]);
+
   // ☁️ ユーザーログイン時・端末切替時にクラウドから最新のレイド進捗を同期
   useEffect(() => {
     if (!user) return;
@@ -254,39 +281,43 @@ const RaidBossMiniGame = ({
     // 🔄 クラウド側でレイド進捗のリセットフラグが立っている場合、端末の古いローカルデータも綺麗に初期化
     const resetFlag = user.user_metadata?.raid_reset_flag;
     const localResetFlag = localStorage.getItem('minique_raid_last_reset_flag');
-    if (resetFlag && String(resetFlag) !== localResetFlag) {
+    const cloudProgress = user.user_metadata?.raid_progress_v1;
+    const isOutdatedCloud = cloudProgress && (
+      cloudProgress.resetVersion !== RAID_RESET_VERSION ||
+      cloudProgress.myDamage === 78907 ||
+      cloudProgress.bossHp === 0
+    );
+
+    if ((resetFlag && String(resetFlag) !== localResetFlag) || isOutdatedCloud) {
       try {
         localStorage.removeItem(getTodayKey());
         localStorage.removeItem(getRankingKey());
         localStorage.removeItem(getFaintKey());
         localStorage.removeItem(getLogsKey());
+        localStorage.removeItem(getAttackedKey());
         localStorage.removeItem(`minique_raid_heals_${currentBoss.id}_${todayStr}`);
         localStorage.removeItem(`minique_raid_participation_${todayStr}`);
-        localStorage.setItem('minique_raid_last_reset_flag', String(resetFlag));
+        if (resetFlag) localStorage.setItem('minique_raid_last_reset_flag', String(resetFlag));
       } catch (e) {}
 
-      setBossHp(currentBoss.maxHp);
-      setRankingList([
+      const freshRanking = [
         { id: 'npc_1', name: 'ベテラン広場民 🛡️', damage: 8500, isMe: false },
         { id: 'npc_2', name: '深夜の調査兵 🔦', damage: 5200, isMe: false },
         { id: 'npc_3', name: 'らびたん親衛隊 🐰', damage: 3400, isMe: false },
         { id: 'npc_4', name: '週末パトロール隊長 🚓', damage: 1800, isMe: false },
         { id: 'me', name: hn || 'あなた', damage: 0, isMe: true }
-      ]);
+      ];
+
+      setBossHp(currentBoss.maxHp);
+      setRankingList(freshRanking);
       setHealsLeft(3);
       setHasClaimedParticipation(false);
       setRaidLogs([
         `⚔️ 【${currentBoss.title}】 ${currentBoss.name} が広場に出現中！`,
         `📡 10秒更新のリアルタイム通信で広場のみんなと共闘中！`
       ]);
-      return;
-    }
 
-    const cloudProgress = user.user_metadata?.raid_progress_v1;
-
-    // 🛑 過去のテストデータ（78907ダメージやHP 0のゾンビデータ）を検知した場合は破棄してクラウドをクリア
-    if (cloudProgress && (cloudProgress.myDamage === 78907 || cloudProgress.bossHp === 0)) {
-      if (supabase) {
+      if (isOutdatedCloud && supabase) {
         supabase.auth.updateUser({
           data: {
             raid_progress_v1: null,
@@ -297,24 +328,36 @@ const RaidBossMiniGame = ({
       return;
     }
 
-    if (cloudProgress && cloudProgress.date === todayStr && cloudProgress.bossId === currentBoss.id) {
+    const hasLocallyAttacked = (() => {
+      try { return localStorage.getItem(getAttackedKey()) === 'true'; } catch (e) { return false; }
+    })();
+
+    if (
+      cloudProgress &&
+      cloudProgress.resetVersion === RAID_RESET_VERSION &&
+      cloudProgress.date === todayStr &&
+      cloudProgress.bossId === currentBoss.id
+    ) {
       let shouldUpdateCloud = false;
-      const currentMyDmg = rankingList.find(r => r.isMe)?.damage || 0;
+      const currentMyDmg = hasLocallyAttacked ? (rankingList.find(r => r.isMe)?.damage || 0) : 0;
       const cloudMyDmg = typeof cloudProgress.myDamage === 'number' ? cloudProgress.myDamage : 0;
       const bestMyDmg = Math.max(currentMyDmg, cloudMyDmg);
       if (currentMyDmg > cloudMyDmg) shouldUpdateCloud = true;
 
-      const currentHp = bossHp;
+      const currentHp = hasLocallyAttacked ? bossHp : currentBoss.maxHp;
       const cloudHp = typeof cloudProgress.bossHp === 'number' ? cloudProgress.bossHp : currentBoss.maxHp;
       const bestHp = Math.min(currentHp, cloudHp);
       if (currentHp < cloudHp) shouldUpdateCloud = true;
 
       const cloudHeals = typeof cloudProgress.healsLeft === 'number' ? cloudProgress.healsLeft : 3;
-      const bestHeals = Math.min(healsLeft, cloudHeals);
-      if (healsLeft < cloudHeals) shouldUpdateCloud = true;
+      const bestHeals = hasLocallyAttacked ? Math.min(healsLeft, cloudHeals) : cloudHeals;
+      if (hasLocallyAttacked && healsLeft < cloudHeals) shouldUpdateCloud = true;
 
       setBossHp(bestHp);
-      try { localStorage.setItem(getTodayKey(), String(bestHp)); } catch (e) {}
+      try {
+        if (bestMyDmg > 0) localStorage.setItem(getAttackedKey(), 'true');
+        localStorage.setItem(getTodayKey(), String(bestHp));
+      } catch (e) {}
 
       const cleanedRanking = rankingList.filter(r => r.isMe || r.name !== (hn || 'あなた'));
       const updatedRanking = cleanedRanking.map(r => r.isMe ? { ...r, damage: bestMyDmg, name: hn || 'あなた' } : r).sort((a, b) => b.damage - a.damage);
@@ -328,6 +371,7 @@ const RaidBossMiniGame = ({
         supabase.auth.updateUser({
           data: {
             raid_progress_v1: {
+              resetVersion: RAID_RESET_VERSION,
               date: todayStr,
               bossId: currentBoss.id,
               myDamage: bestMyDmg,
@@ -339,13 +383,14 @@ const RaidBossMiniGame = ({
         }).catch(console.warn);
       }
     } else {
-      // 端末ローカルにデータがあってクラウドがまだ空の場合、クラウドへ初バックアップ！
-      const currentMyDmg = rankingList.find(r => r.isMe)?.damage || 0;
-      if (currentMyDmg > 0 || bossHp < currentBoss.maxHp) {
+      // 端末ローカルで実際に自分が攻撃済みで、クラウドがまだ空の場合のみバックアップ！
+      const currentMyDmg = hasLocallyAttacked ? (rankingList.find(r => r.isMe)?.damage || 0) : 0;
+      if (hasLocallyAttacked && currentMyDmg > 0) {
         if (supabase) {
           supabase.auth.updateUser({
             data: {
               raid_progress_v1: {
+                resetVersion: RAID_RESET_VERSION,
                 date: todayStr,
                 bossId: currentBoss.id,
                 myDamage: currentMyDmg,
@@ -438,14 +483,13 @@ const RaidBossMiniGame = ({
       ].slice(0, 15));
 
       setRankingList(prevList => {
-        const myDisplayName = hn || 'あなた';
-        const isFromMe = allyName === myDisplayName;
+        // 🔑 同一ログインユーザーID（別端末）からの送信のみ「自分自身(isMe)」としてマージする！
+        // （「匿名広場民」や「あなた」などの名前一致でマージすると、他人の攻撃が自分のダメージに混入してしまうのを防ぐ）
+        const isFromMe = Boolean(user?.id && payload.senderUserId && payload.senderUserId === user.id);
 
-        // まず、自分と同名の非isMeな分身を綺麗に排除
-        let baseList = prevList.filter(item => item.isMe || item.name !== myDisplayName);
+        let baseList = [...prevList];
 
         if (isFromMe) {
-          // 自分の別端末からの送信なら、自分自身のダメージとしてマージ
           baseList = baseList.map(item => {
             if (item.isMe) {
               const newDmg = Math.max(item.damage, payload.totalDamage || (item.damage + allyDmg));
@@ -499,7 +543,8 @@ const RaidBossMiniGame = ({
               type: 'broadcast',
               event: 'batch_damage',
               payload: {
-                senderName: hn || 'あなた',
+                senderUserId: user?.id || null,
+                senderName: hn || '匿名広場民',
                 damage: dmgToSend,
                 totalDamage: myDamage + dmgToSend,
                 timestamp: Date.now()
@@ -518,7 +563,7 @@ const RaidBossMiniGame = ({
         supabase.removeChannel(channelRef.current);
       }
     };
-  }, [currentBoss.id, hn, myDamage]);
+  }, [currentBoss.id, hn, myDamage, user?.id]);
 
   // 🧪 回復薬を使う（HP回復 または 気絶からの即座復帰）
   const handleHeal = () => {
@@ -535,6 +580,7 @@ const RaidBossMiniGame = ({
         supabase.auth.updateUser({
           data: {
             raid_progress_v1: {
+              resetVersion: RAID_RESET_VERSION,
               date: todayStr,
               bossId: currentBoss.id,
               myDamage: myDamage,
@@ -610,7 +656,10 @@ const RaidBossMiniGame = ({
     });
     updatedRanking.sort((a, b) => b.damage - a.damage);
     setRankingList(updatedRanking);
-    try { localStorage.setItem(getRankingKey(), JSON.stringify(updatedRanking)); } catch (e) {}
+    try {
+      localStorage.setItem(getAttackedKey(), 'true');
+      localStorage.setItem(getRankingKey(), JSON.stringify(updatedRanking));
+    } catch (e) {}
 
     // ☁️ クラウド（Supabase user_metadata）へ即時バックアップ（PC/スマホ双方向反映）
     if (user && supabase) {
@@ -619,6 +668,7 @@ const RaidBossMiniGame = ({
       supabase.auth.updateUser({
         data: {
           raid_progress_v1: {
+            resetVersion: RAID_RESET_VERSION,
             date: todayStr,
             bossId: currentBoss.id,
             myDamage: currentMyDmg,
