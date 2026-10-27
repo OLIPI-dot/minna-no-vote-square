@@ -8,6 +8,12 @@
 
 ## 📌 直近の作業メモ・引き継ぎ事項（2026年10月27日）
 
+### 0-0000. 🥕 URアクセサリー「らびたんの特大ゴールドニンジン」専用効果【黄金部位撃ち】（ランダム部位ヒット）実装（10/27実施）
+- **背景**: 従来は汎用効果 `money_slap`（固定60〜160ダメージ）で攻撃力スケールがなく、URの特大ゴールドニンジンとしては少し控えめだった。
+- **改修内容**:
+  - [`src/data/items.json`](file:///i:/olipiprojects/antigravity-scratch/minna-no-vote-square/src/data/items.json) の `i23002`（らびたんの特大ゴールドニンジン）（ステータスは元の `ATK 86 / DEF 85 / HP 140` のまま維持）に、専用特殊効果 `golden_carrot`（【黄金部位撃ち】）を付与。
+  - 広場パトロール・地下ダンジョン・レイドボスの全バトルにおいて、攻撃時に特大ゴールドニンジンが当たる部位（①足の小指 / ②弁慶の泣き所［スネ］ / ③どてっ腹 / ④顔面ど真ん中 / ⑤脳天・急所）がランダムで抽選され、部位に応じて自分の攻撃力に連動した追加ダメージ＋脳震盪スタン（顔面35%・脳天100%）が炸裂するよう実装（[`src/components/PatrolMiniGame.jsx`](file:///i:/olipiprojects/antigravity-scratch/minna-no-vote-square/src/components/PatrolMiniGame.jsx), [`src/components/DungeonMiniGame.jsx`](file:///i:/olipiprojects/antigravity-scratch/minna-no-vote-square/src/components/DungeonMiniGame.jsx), [`src/components/RaidBossMiniGame.jsx`](file:///i:/olipiprojects/antigravity-scratch/minna-no-vote-square/src/components/RaidBossMiniGame.jsx), [`src/items.js`](file:///i:/olipiprojects/antigravity-scratch/minna-no-vote-square/src/items.js), [`src/data/effects.json`](file:///i:/olipiprojects/antigravity-scratch/minna-no-vote-square/src/data/effects.json)）。
+
 ### 0-000. 🐉 みんクエ「レイドボス」混線バグ修正 ＆ 装備特殊効果の全面発動対応 ＆ チケット異常増殖バグ修正（10/27実施）
 - **原因**:
   1. [`src/components/RaidBossMiniGame.jsx`](file:///i:/olipiprojects/antigravity-scratch/minna-no-vote-square/src/components/RaidBossMiniGame.jsx) のリアルタイム共闘通信（WebSocket `batch_damage`）において、送信者名と自分の表示名（初期ロード中やゲスト時の `匿名広場民` 等）が一致しただけで「自分の別端末からの攻撃（`isFromMe = true`）」と判定してしまい、他プレイヤーの累計ダメージを自分のダメージとして吸収・クラウド保存してしまっていた。

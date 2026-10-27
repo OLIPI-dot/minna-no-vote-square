@@ -59,8 +59,10 @@ export const getItemEffectDescription = (itemOrEffect, customRarity) => {
   let rarity = 'N';
 
   if (typeof itemOrEffect === 'object') {
-    eff = itemOrEffect.effect || (itemOrEffect.id && ITEMS.find(i => i.id === itemOrEffect.id)?.effect);
-    rarity = itemOrEffect.rarity || customRarity || 'N';
+    const baseId = itemOrEffect.id ? String(itemOrEffect.id).split('_')[0] : null;
+    const master = ITEMS.find(i => (baseId && i.id === baseId) || i.id === itemOrEffect.id || (itemOrEffect.name && i.name === itemOrEffect.name));
+    eff = master?.effect || itemOrEffect.effect;
+    rarity = master?.rarity || itemOrEffect.rarity || customRarity || 'N';
   } else {
     eff = itemOrEffect;
     rarity = customRarity || 'N';
@@ -69,6 +71,9 @@ export const getItemEffectDescription = (itemOrEffect, customRarity) => {
   if (!eff) return '';
 
   switch (eff) {
+    case 'golden_carrot': {
+      return `【黄金部位撃ち】当たる部位（小指〜脳天急所）で追加ダメージが劇的変化＆確率スタン`;
+    }
     case 'regen': {
       const pct = { N: 3, R: 5, SR: 10, UR: 15 }[rarity] || 5;
       return `【自動回復】ターン開始時にHPを${pct}%回復`;
@@ -310,5 +315,3 @@ export const getRarityBadgeStyle = (rarity) => {
     gap: '3px'
   };
 };
-
-

@@ -729,8 +729,8 @@ const RaidBossMiniGame = ({
         const item = equipment?.[slot];
         if (item) {
           const matchedItem = ITEMS.find(i => (item.id && i.id === String(item.id).split('_')[0]) || i.name === item.name);
-          const itemEff = item.effect || matchedItem?.effect;
-          const itemRarity = item.rarity || matchedItem?.rarity || 'N';
+          const itemEff = matchedItem?.effect || item.effect;
+          const itemRarity = matchedItem?.rarity || item.rarity || 'N';
           if (itemEff === eff) sources.push({ ...item, rarity: itemRarity });
         }
       });
@@ -882,6 +882,41 @@ const RaidBossMiniGame = ({
       turnLogs.push(`💸 【札束ビンタ】 ${getEffectMsg('money_slap', moneySlapItem)} (+${slapDmg} 追加ダメージ！)`);
     }
 
+    // 🥕 【黄金部位撃ち: golden_carrot】 らびたんの特大ゴールドニンジンが当たる部位でダメージ劇的変化！
+    const carrotItem = getEffectSource('golden_carrot');
+    let isCarrotBossStun = false;
+    if (carrotItem) {
+      const roll = Math.random();
+      let partName = '';
+      let carrotDmg = 0;
+      let partLog = '';
+      if (roll < 0.15) {
+        partName = '足の小指';
+        carrotDmg = Math.floor(myTotalAtk * 0.6) + Math.floor(Math.random() * 51) + 80;
+        partLog = `🥕 【部位ヒット：${partName}】 【${carrotItem.name}】がボスの足の小指にコツンと当たった！ 地味に悶絶して +${carrotDmg} ダメージ！`;
+      } else if (roll < 0.35) {
+        partName = '弁慶の泣き所（スネ）';
+        carrotDmg = Math.floor(myTotalAtk * 1.0) + Math.floor(Math.random() * 61) + 130;
+        partLog = `🥕 【部位ヒット：${partName}】 【${carrotItem.name}】がボスのスネにゴツンと直撃！ 涙目の +${carrotDmg} ダメージ！`;
+      } else if (roll < 0.60) {
+        partName = 'どてっ腹';
+        carrotDmg = Math.floor(myTotalAtk * 1.4) + Math.floor(Math.random() * 81) + 190;
+        partLog = `🥕💥 【部位ヒット：${partName}】 【${carrotItem.name}】がボスの横っ腹にめり込んだ！ 重い一撃で +${carrotDmg} 大ダメージ！`;
+      } else if (roll < 0.85) {
+        partName = '顔面ど真ん中';
+        carrotDmg = Math.floor(myTotalAtk * 2.0) + Math.floor(Math.random() * 121) + 280;
+        if (Math.random() < 0.35) isCarrotBossStun = true;
+        partLog = `🥕💥 【部位ヒット：${partName}】 純金の【${carrotItem.name}】がボスの顔面にモロ直撃！！ 鼻血ブーの +${carrotDmg} 特大ダメージ！`;
+      } else {
+        partName = '脳天・急所';
+        carrotDmg = Math.floor(myTotalAtk * 3.2) + Math.floor(Math.random() * 201) + 450;
+        isCarrotBossStun = true;
+        partLog = `🥕🌟 【部位ヒット：${partName}クリティカル！！】 黄金に輝く【${carrotItem.name}】がボスの脳天ど真ん中に隕石のごとく直撃！！ 魂が抜ける +${carrotDmg} 超絶メガダメージ！！`;
+      }
+      extraBossDmg += carrotDmg;
+      turnLogs.push(partLog);
+    }
+
     // 🚫 【BAN / ブロック: ban / block】
     const banItem = getEffectSource('ban') || getEffectSource('block');
     const banChance = getEffectRarityTotal('ban', { N: 0.02, R: 0.04, SR: 0.08, UR: 0.12, LR: 0.16 }, 0.04, 0.20)
@@ -979,8 +1014,12 @@ const RaidBossMiniGame = ({
         const defenseLogs = [];
         let counterDmgToBoss = 0;
 
-        // 🧠 スタン・行動阻止判定（mental_damage / cringe / meshitero / kidoku_ignore / mom_block）
+        // 🧠 スタン・行動阻止判定（golden_carrot / mental_damage / cringe / meshitero / kidoku_ignore / mom_block）
         let isBossStunned = false;
+        if (isCarrotBossStun) {
+          isBossStunned = true;
+          defenseLogs.push(`💫 【脳震盪】 特大ゴールドニンジンが急所に直撃した衝撃で、ボスは目を回して反撃できない！`);
+        }
         const mentalItem = getEffectSource('mental_damage');
         const mentalChance = getEffectRarityTotal('mental_damage', { N: 0.05, R: 0.08, SR: 0.15, UR: 0.20, LR: 0.25 }, 0.08, 0.40);
         if (mentalItem && Math.random() < mentalChance) {

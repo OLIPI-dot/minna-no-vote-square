@@ -466,8 +466,8 @@ const PatrolMiniGame = ({
         const item = equipment?.[slot];
         if (item) {
           const matchedItem = ITEMS.find(i => (item.id && i.id === String(item.id).split('_')[0]) || i.name === item.name);
-          const itemEff = item.effect || matchedItem?.effect;
-          const itemRarity = item.rarity || matchedItem?.rarity || 'N';
+          const itemEff = matchedItem?.effect || item.effect;
+          const itemRarity = matchedItem?.rarity || item.rarity || 'N';
           if (itemEff === eff) sources.push({ ...item, rarity: itemRarity });
         }
       });
@@ -775,6 +775,41 @@ const PatrolMiniGame = ({
         newLogs.push(`💸 ${getStackLabel('money_slap', '札束ビンタ')} ${getEffectMsg('money_slap', moneySlapItem)} (+${extraDmg} 追加ダメージ！)`);
       }
 
+      // 🥕 【黄金部位撃ち: golden_carrot】 らびたんの特大ゴールドニンジンが当たる部位でダメージ劇的変化！
+      const carrotItem = getEffectSource('golden_carrot');
+      let isCarrotStun = false;
+      if (carrotItem) {
+        const roll = Math.random();
+        let partName = '';
+        let carrotDmg = 0;
+        let partLog = '';
+        if (roll < 0.15) {
+          partName = '足の小指';
+          carrotDmg = Math.floor(pAtk * 0.6) + Math.floor(Math.random() * 41) + 60;
+          partLog = `🥕 【部位ヒット：${partName}】 【${carrotItem.name}】が敵の足の小指にコツンと当たった！ 地味に悶絶して +${carrotDmg} ダメージ！`;
+        } else if (roll < 0.35) {
+          partName = '弁慶の泣き所（スネ）';
+          carrotDmg = Math.floor(pAtk * 1.0) + Math.floor(Math.random() * 51) + 100;
+          partLog = `🥕 【部位ヒット：${partName}】 【${carrotItem.name}】が敵のスネにゴツンと直撃！ 涙目の +${carrotDmg} ダメージ！`;
+        } else if (roll < 0.60) {
+          partName = 'どてっ腹';
+          carrotDmg = Math.floor(pAtk * 1.4) + Math.floor(Math.random() * 71) + 150;
+          partLog = `🥕💥 【部位ヒット：${partName}】 【${carrotItem.name}】が敵の横っ腹にめり込んだ！ 重い一撃で +${carrotDmg} 大ダメージ！`;
+        } else if (roll < 0.85) {
+          partName = '顔面ど真ん中';
+          carrotDmg = Math.floor(pAtk * 2.0) + Math.floor(Math.random() * 101) + 220;
+          if (Math.random() < 0.35) isCarrotStun = true;
+          partLog = `🥕💥 【部位ヒット：${partName}】 純金の【${carrotItem.name}】が敵の顔面にモロ直撃！！ 鼻血ブーの +${carrotDmg} 特大ダメージ！`;
+        } else {
+          partName = '脳天・急所';
+          carrotDmg = Math.floor(pAtk * 3.2) + Math.floor(Math.random() * 181) + 380;
+          isCarrotStun = true;
+          partLog = `🥕🌟 【部位ヒット：${partName}クリティカル！！】 黄金に輝く【${carrotItem.name}】が敵の脳天ど真ん中に隕石のごとく直撃！！ 魂が抜ける +${carrotDmg} 超絶メガダメージ！！`;
+        }
+        dmgToEnemy += carrotDmg;
+        newLogs.push(partLog);
+      }
+
       currentEnemyHp = Math.max(0, currentEnemyHp - dmgToEnemy);
       
       if (doubleEdgedItem || overworkItem || collabItem) {
@@ -806,6 +841,12 @@ const PatrolMiniGame = ({
       if (currentEnemyHp > 0 && moneySlapItem && Math.random() < moneySlapChance) {
         isEnemyStunned = true;
         newLogs.push(`💫 【戦意喪失】 札束の衝撃で相手は放心状態になり、行動不能になった！`);
+      }
+
+      // 🥕 【黄金部位撃ちスタン】 顔面や脳天に当たった衝撃でピヨり付与！
+      if (currentEnemyHp > 0 && isCarrotStun && !isEnemyStunned) {
+        isEnemyStunned = true;
+        newLogs.push(`💫 【脳震盪】 特大ゴールドニンジンが急所に直撃した衝撃で、敵は目を回して動けなくなった！`);
       }
 
       // 🩸 【吸血: lifesteal】（N:10%/15%, R:15%/25%, SR:25%/40%, UR:35%/50%）
