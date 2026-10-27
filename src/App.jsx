@@ -555,6 +555,7 @@ function App() {
   }, [inventory, user?.id]);
 
   const hasProcessedLoginBonus = useRef(false);
+  const lastTicketUpdateRef = useRef(0);
 
   useEffect(() => {
     const handleAuthExp = (currentUser) => {
@@ -563,10 +564,12 @@ function App() {
       const localTickets = parseInt(localStorage.getItem('min_ake_tickets') || '0', 10);
       
       const localLastLogin = localStorage.getItem('min_ake_last_login') || '';
+      const TICKET_FIX_VER = '20261027_ticket_fix_v1';
       
       if (currentUser) {
         const dbExp = currentUser.user_metadata?.vote_exp || 0;
-        const dbTickets = currentUser.user_metadata?.gacha_tickets || 0;
+        const hasDbTickets = typeof currentUser.user_metadata?.gacha_tickets === 'number';
+        const dbTickets = hasDbTickets ? currentUser.user_metadata.gacha_tickets : 0;
         const lastLoginDate = currentUser.user_metadata?.last_login_date || '';
         const dbEquipment = currentUser.user_metadata?.custom_equipment;
         const dbInventory = currentUser.user_metadata?.custom_inventory;
@@ -577,12 +580,24 @@ function App() {
         const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
         
         let newTotalExp = Math.max(dbExp, localExp, 0);
-        let newTotalTickets = Math.max(dbTickets, localTickets, 0);
+        // 🎫 チケットは消費して減ることもあるため、Math.maxで古いローカル値を復活させない！
+        // （直近8秒以内にガチャ等で増減した場合はローカル最新値を優先し、通常時はクラウド値を正とする）
+        const isRecentTicketChange = (Date.now() - lastTicketUpdateRef.current) < 8000;
+        let newTotalTickets = isRecentTicketChange
+          ? Math.max(0, localTickets)
+          : (hasDbTickets ? Math.max(0, dbTickets) : Math.max(0, localTickets));
+
         const updates = {};
         let shouldUpdate = false;
-        
-        if (localTickets > dbTickets) {
-          updates.gacha_tickets = localTickets;
+
+        // 🧹 レイド混線バグ等で異常増殖してしまったチケット（52枚など）を1回だけ正常値（10枚）にリセット
+        if (currentUser.user_metadata?.ticket_fix_ver !== TICKET_FIX_VER && newTotalTickets > 15) {
+          newTotalTickets = 10;
+          updates.gacha_tickets = 10;
+          updates.ticket_fix_ver = TICKET_FIX_VER;
+          shouldUpdate = true;
+        } else if (!hasDbTickets && localTickets > 0) {
+          updates.gacha_tickets = newTotalTickets;
           shouldUpdate = true;
         }
         if (localExp > dbExp) {
@@ -1083,6 +1098,7 @@ function App() {
 
   const addTickets = async (amount) => {
     if (amount > 0) showRewardPopup(`🎫 + ${amount} チケット !!`, '#f59e0b');
+    lastTicketUpdateRef.current = Date.now();
     setGachaTickets(prev => {
       // 🛡️ チケット消費(amount < 0)の際に、古いキャッシュ値で巻き戻らないよう prev を直接加減算
       const newTickets = Math.max(0, prev + amount);

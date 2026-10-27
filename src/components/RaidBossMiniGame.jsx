@@ -3,6 +3,99 @@ import RAID_BOSSES from '../data/raid_bosses.json';
 import { ITEMS, getRarityColor, getRarityTextStyle, getRarityBadgeStyle, RARITY_CONFIG } from '../items';
 import { supabase } from '../supabaseClient';
 
+const RANDOM_EFFECT_MSGS = {
+  regen: [
+    "{item}の力で謎のエネルギーが湧き上がってきた！",
+    "{item}のおかげでマイナスイオン的な何かが傷を癒やしていく！"
+  ],
+  lifesteal: [
+    "{item}がボスの生命力を吸い取った！",
+    "えげつない吸血攻撃！{item}がボスのHPを吸収した！"
+  ],
+  double_attack: [
+    "{item}の軽快な動きで、怒涛の連続攻撃が発生！",
+    "限界を超えたF5連打！{item}での連撃が炸裂した！"
+  ],
+  mental_damage: [
+    "{item}のヤバすぎるオーラに、ボスのメンタルが削られた！",
+    "ボスは{item}を見て深いトラウマを思い出し、行動不能になった！"
+  ],
+  cringe: [
+    "{item}のあまりの痛さに、ボスはドン引きして動けなくなった...",
+    "ボスは{item}を見て「関わっちゃダメな奴だ」と察して固まっている！"
+  ],
+  reflect: [
+    "{item}の謎の力で、ボスの攻撃を見事に跳ね返した！",
+    "痛烈なカウンター！{item}がダメージを倍返しにした！"
+  ],
+  kusorep: [
+    "{item}の強烈なクソリプがボスの攻撃軌道を狂わせた！",
+    "あまりに的外れな{item}のせいで、ボスの攻撃の威力が霧散した！"
+  ],
+  lock_account: [
+    "{item}の強固な非公開設定により、攻撃の大部分をシャットアウトした！",
+    "フォロワー限定公開の結界が発動！{item}がダメージを大幅に遮断した！"
+  ],
+  privilege: [
+    "{item}の圧倒的権力により、あらゆる危害が免除された！",
+    "上級国民のバリア！{item}の特権が攻撃を無力化した！"
+  ],
+  mom_block: [
+    "「ご飯よー！」{item}のせいで家庭の空気が流れ、ボスは気まずさで攻撃の手を止めた！"
+  ],
+  hires: [
+    "{item}の超ハイレゾ音質により、ボスの攻撃の風切り音を完全察知して回避した！"
+  ],
+  buyout: [
+    "{item}の潤沢な資金力により、ボスの急所を買収工作で突き崩した！"
+  ],
+  money_slap: [
+    "{item}でボスの顔面を思い切りビンタした！",
+    "{item}の圧倒的な財力でボスを殴りつけた！",
+    "「これで黙りな！」{item}による札束の暴力が炸裂！"
+  ],
+  partner_cheer: [
+    "{item}が熱烈に応援している！ (会心率+20%)",
+    "{item}の熱いエールが背中を押す！ (会心率+20%)"
+  ],
+  partner_heal: [
+    "{item}が優しく癒やしてくれた！",
+    "{item}の看病で元気が湧いてきた！"
+  ],
+  partner_sponsor: [
+    "{item}が手厚いサポートをしてくれた！"
+  ],
+  partner_hack: [
+    "{item}がボスの装甲の弱点をハッキングした！"
+  ],
+  partner_expose: [
+    "{item}がボスの黒歴史ログを暴露した！"
+  ],
+  partner_law: [
+    "{item}が規約を持ち出してボスの攻撃に異議を唱えた！"
+  ],
+  rewrite_reality: [
+    "{item}が世界の因果律を書き換え、ボスに次元断裂ダメージを与えた！"
+  ],
+  ban: [
+    "{item}の権限でボスのアカウントに凍結ペナルティを叩き込んだ！"
+  ],
+  block: [
+    "{item}の先制ブロックでボスの存在感を削り取った！"
+  ],
+  viral_hit: [
+    "{item}の攻撃が広場中で大バズりし、拡散追撃が炸裂した！"
+  ]
+};
+
+const getEffectMsg = (effectType, item) => {
+  if (!item) return '';
+  if (item.effectMsg) return item.effectMsg;
+  const list = RANDOM_EFFECT_MSGS[effectType];
+  if (!list) return `【${item.name}】の力が発動した！`;
+  return list[Math.floor(Math.random() * list.length)].replace('{item}', `【${item.name}】`);
+};
+
 const RaidBossMiniGame = ({
   userLevel = 1,
   userExp = 0,
@@ -619,17 +712,217 @@ const RaidBossMiniGame = ({
     ].slice(0, 20));
   };
 
-  // 攻撃処理（プレイヤー即時反映 ＋ ボス反撃 ＋ 仲間加勢）
+  // 攻撃処理（プレイヤー即時反映 ＋ 装備特殊効果 ＋ ボス反撃 ＋ 仲間加勢）
   const handleAttack = () => {
     if (cooldown > 0 || isAttacking || faintSeconds > 0 || bossHp <= 0) return;
 
     setIsAttacking(true);
 
-    const isCrit = Math.random() < 0.22;
-    const critMult = isCrit ? 1.85 : 1.0;
-    const variance = 0.85 + (Math.random() * 0.30);
-    const calculatedDmg = Math.max(15, Math.floor(myTotalAtk * variance * critMult));
+    const turnLogs = [];
+    let workingPlayerHp = playerHp;
+    let extraBossDmg = 0;
 
+    // 🛡️ 装備の特殊効果ヘルパー（パトロール・地下ダンジョンと完全共通）
+    const getEffectSources = (eff) => {
+      const sources = [];
+      ['weapon', 'armor', 'accessory', 'partner'].forEach(slot => {
+        const item = equipment?.[slot];
+        if (item) {
+          const matchedItem = ITEMS.find(i => (item.id && i.id === String(item.id).split('_')[0]) || i.name === item.name);
+          const itemEff = item.effect || matchedItem?.effect;
+          const itemRarity = item.rarity || matchedItem?.rarity || 'N';
+          if (itemEff === eff) sources.push({ ...item, rarity: itemRarity });
+        }
+      });
+      return sources;
+    };
+    const getEffectSource = (eff) => {
+      const sources = getEffectSources(eff);
+      return sources.length > 0 ? sources[0] : null;
+    };
+    const getEffectCount = (eff) => getEffectSources(eff).length;
+    const getEffectChance = (eff, baseRate, maxCap = 0.50) => Math.min(maxCap, baseRate * getEffectCount(eff));
+    const getRarityRate = (item, rates, defaultRate = 0.10) => (!item ? 0 : (rates[item.rarity] ?? defaultRate));
+    const getEffectRarityTotal = (eff, rates, defaultRate = 0.10, maxCap = 0.60) => {
+      const sources = getEffectSources(eff);
+      if (sources.length === 0) return 0;
+      return Math.min(maxCap, sources.reduce((sum, item) => sum + getRarityRate(item, rates, defaultRate), 0));
+    };
+    const getStackLabel = (eff, label) => {
+      const count = getEffectCount(eff);
+      return count > 1 ? `【${label}×${count}】` : `【${label}】`;
+    };
+
+    // ✨ 【自動回復: regen】
+    const regenItem = getEffectSource('regen');
+    if (regenItem) {
+      const healPct = getEffectRarityTotal('regen', { N: 0.03, R: 0.05, SR: 0.10, UR: 0.15, LR: 0.20 }, 0.05, 0.30);
+      const healAmount = Math.max(1, Math.floor(pMaxHp * healPct));
+      workingPlayerHp = Math.min(pMaxHp, workingPlayerHp + healAmount);
+      turnLogs.push(`✨ ${getStackLabel('regen', '回復')} ${getEffectMsg('regen', regenItem)} (HP +${healAmount})`);
+    }
+
+    // 🐈 【癒やし: partner_heal】
+    const partnerHeal = getEffectSource('partner_heal');
+    if (partnerHeal) {
+      workingPlayerHp = Math.min(pMaxHp, workingPlayerHp + 20);
+      turnLogs.push(`🐈 【癒やし】 ${getEffectMsg('partner_heal', partnerHeal)} (HP +20)`);
+    }
+
+    // 👳 【石油王: partner_sponsor】
+    const sponsorItem = getEffectSource('partner_sponsor');
+    if (sponsorItem && Math.random() < 0.25) {
+      if (Math.random() < 0.5) {
+        const healAmount = Math.floor(pMaxHp * 0.5);
+        workingPlayerHp = Math.min(pMaxHp, workingPlayerHp + healAmount);
+        turnLogs.push(`💴 【資金援助】 ${getEffectMsg('partner_sponsor', sponsorItem)} (HP +${healAmount} 大回復！)`);
+      } else {
+        const sDmg = Math.max(80, Math.floor(myTotalAtk * 1.8));
+        extraBossDmg += sDmg;
+        turnLogs.push(`💴 【物理援助】 ${getEffectMsg('partner_sponsor', sponsorItem)} (札束の暴力で +${sDmg} ダメージ！)`);
+      }
+    }
+
+    // 💼 【買収: buyout】（レイドボスには特大買収追撃ダメージ！）
+    const buyoutItem = getEffectSource('buyout');
+    if (buyoutItem && Math.random() < getEffectChance('buyout', 0.10, 0.30)) {
+      const bDmg = Math.max(150, Math.floor(myTotalAtk * 2.5));
+      extraBossDmg += bDmg;
+      turnLogs.push(`💼 ${getStackLabel('buyout', '買収工作')} ${getEffectMsg('buyout', buyoutItem)} (+${bDmg} 特大ダメージ！)`);
+    }
+
+    // 💻 【ハック/特定: partner_hack / partner_expose】
+    const hackItem = getEffectSource('partner_hack') || getEffectSource('partner_expose');
+    let defBreakMult = 1.0;
+    if (hackItem && Math.random() < 0.30) {
+      defBreakMult = 1.35;
+      turnLogs.push(`💻 【解析】 ${getEffectMsg(getEffectSource('partner_hack') ? 'partner_hack' : 'partner_expose', hackItem)} (与ダメージ1.35倍！)`);
+    }
+
+    // 💥 【誤爆: gobaku】
+    const gobakuItem = getEffectSource('gobaku');
+    const gobakuChance = getEffectRarityTotal('gobaku', { N: 0.05, R: 0.10, SR: 0.15, UR: 0.20, LR: 0.25 }, 0.10, 0.30);
+    if (gobakuItem && Math.random() < gobakuChance) {
+      const roll = Math.random();
+      if (roll < 0.65) {
+        const gDmg = Math.max(60, Math.floor(myTotalAtk * 1.4));
+        extraBossDmg += gDmg;
+        turnLogs.push(`💥 ${getStackLabel('gobaku', '誤爆')} 送る相手を間違えた！ ボスに精神的動揺を与え +${gDmg} ダメージ！`);
+      } else if (roll < 0.85) {
+        const selfDmg = Math.max(3, Math.floor(pMaxHp * 0.06));
+        workingPlayerHp = Math.max(1, workingPlayerHp - selfDmg);
+        turnLogs.push(`💥 ${getStackLabel('gobaku', '誤爆')} 全体チャットに誤爆！ 恥ずかしさで ${selfDmg} の自傷ダメージ！`);
+      } else {
+        const gHeal = Math.max(10, Math.floor(pMaxHp * 0.12));
+        workingPlayerHp = Math.min(pMaxHp, workingPlayerHp + gHeal);
+        turnLogs.push(`🎁 ${getStackLabel('gobaku', '誤爆')} 無料クーポンを誤爆！ HPが ${gHeal} 回復した！`);
+      }
+    }
+
+    // 🎯 会心率 ＆ 領域展開
+    const critBonus = getEffectRarityTotal('crit_up', { N: 0.05, R: 0.10, SR: 0.20, UR: 0.25, LR: 0.30 }, 0.10, 0.50);
+    let basePCrit = 0.22 + critBonus;
+    const cheerItem = getEffectSource('partner_cheer');
+    if (cheerItem) {
+      basePCrit += 0.20;
+      turnLogs.push(`📣 【応援】 ${getEffectMsg('partner_cheer', cheerItem)}`);
+    }
+    const cursedItem = getEffectSource('cursed_power');
+    if (cursedItem) basePCrit = Math.max(basePCrit, 0.55);
+
+    const domainItem = getEffectSource('domain_expansion');
+    const domainChance = getEffectRarityTotal('domain_expansion', { R: 0.08, SR: 0.15, UR: 0.25, LR: 0.30 }, 0.12, 0.40);
+    let isDomainActive = false;
+    if (domainItem && Math.random() < domainChance) {
+      isDomainActive = true;
+      turnLogs.push(`🤞 ${getStackLabel('domain_expansion', '領域展開')} 「領域展開――！」 必中＆確定会心の結界が発動！（ダメージ1.3倍）`);
+    }
+
+    const isCrit = isDomainActive || (Math.random() < Math.min(0.75, basePCrit));
+    const critMult = isCrit ? (isDomainActive ? 2.2 : 1.85) : 1.0;
+    const variance = 0.85 + (Math.random() * 0.30);
+    let baseStrikeDmg = Math.max(15, Math.floor(myTotalAtk * variance * critMult * defBreakMult));
+
+    // ⚔️ 諸刃の剣・残業
+    const doubleEdgedItem = getEffectSource('double_edged');
+    if (doubleEdgedItem) {
+      baseStrikeDmg *= 2;
+      const recoil = Math.max(1, Math.floor(pMaxHp * 0.12));
+      workingPlayerHp = Math.max(1, workingPlayerHp - recoil);
+      turnLogs.push(`💥 【諸刃の剣】 ダメージ2倍！ 反動で自身に ${recoil} ダメージ！`);
+    }
+    const overworkItem = getEffectSource('overwork');
+    if (overworkItem) {
+      baseStrikeDmg *= 3;
+      const recoil = Math.max(1, Math.floor(pMaxHp * 0.20));
+      workingPlayerHp = Math.max(1, workingPlayerHp - recoil);
+      turnLogs.push(`💼 【残業】 限界突破のダメージ3倍！ 反動で自身に ${recoil} ダメージ！`);
+    }
+
+    // 🌀 【現実改変: rewrite_reality】
+    const rewriteItem = getEffectSource('rewrite_reality');
+    if (rewriteItem && Math.random() < 0.18) {
+      const rwDmg = Math.max(200, Math.floor(myTotalAtk * 2.8));
+      extraBossDmg += rwDmg;
+      turnLogs.push(`🌀 【現実改変】 ${getEffectMsg('rewrite_reality', rewriteItem)} (+${rwDmg} 超次元ダメージ！)`);
+    }
+
+    // 💸 【札束ビンタ: money_slap】
+    const moneySlapItem = getEffectSource('money_slap');
+    if (moneySlapItem) {
+      const rarityBonus = {
+        LR: { min: 120, max: 280 },
+        UR: { min: 60, max: 160 },
+        SR: { min: 35, max: 95 },
+        R:  { min: 20, max: 60 },
+        N:  { min: 10, max: 35 }
+      }[moneySlapItem.rarity] || { min: 30, max: 100 };
+      const slapDmg = Math.floor(Math.random() * (rarityBonus.max - rarityBonus.min + 1)) + rarityBonus.min;
+      extraBossDmg += slapDmg;
+      turnLogs.push(`💸 【札束ビンタ】 ${getEffectMsg('money_slap', moneySlapItem)} (+${slapDmg} 追加ダメージ！)`);
+    }
+
+    // 🚫 【BAN / ブロック: ban / block】
+    const banItem = getEffectSource('ban') || getEffectSource('block');
+    const banChance = getEffectRarityTotal('ban', { N: 0.02, R: 0.04, SR: 0.08, UR: 0.12, LR: 0.16 }, 0.04, 0.20)
+      + getEffectRarityTotal('block', { N: 0.02, R: 0.04, SR: 0.08, UR: 0.12, LR: 0.16 }, 0.04, 0.20);
+    if (banItem && Math.random() < Math.min(0.25, banChance)) {
+      const banDmg = Math.max(180, Math.floor(myTotalAtk * 2.4));
+      extraBossDmg += banDmg;
+      turnLogs.push(`🚫 【アカウント凍結】 ${getEffectMsg(getEffectSource('ban') ? 'ban' : 'block', banItem)} (+${banDmg} 制裁ダメージ！)`);
+    }
+
+    // ⚔️ 【連撃: double_attack】
+    const doubleItem = getEffectSource('double_attack');
+    const doubleChance = getEffectRarityTotal('double_attack', { N: 0.10, R: 0.15, SR: 0.30, UR: 0.40, LR: 0.50 }, 0.15, 0.60);
+    if (doubleItem && Math.random() < doubleChance) {
+      const doubleDmgRate = getEffectRarityTotal('double_attack', { N: 0.40, R: 0.60, SR: 0.80, UR: 1.00, LR: 1.20 }, 0.60, 1.20);
+      const secondDmg = Math.max(10, Math.floor(baseStrikeDmg * doubleDmgRate));
+      extraBossDmg += secondDmg;
+      turnLogs.push(`⚔️ ${getStackLabel('double_attack', '連撃')} ${getEffectMsg('double_attack', doubleItem)} (+${secondDmg} 追撃ダメージ！)`);
+    }
+
+    // 🚀 【拡散爆発: viral_hit】
+    const viralItem = getEffectSource('viral_hit');
+    if (viralItem && Math.random() < 0.25) {
+      const burstDmg = Math.max(15, Math.floor(baseStrikeDmg * 0.55));
+      extraBossDmg += burstDmg;
+      turnLogs.push(`🚀 【拡散爆発】 ${getEffectMsg('viral_hit', viralItem)} (+${burstDmg} ダメージ！)`);
+    }
+
+    const calculatedDmg = baseStrikeDmg + extraBossDmg;
+
+    // 🩸 【吸血: lifesteal】
+    const lifestealItem = getEffectSource('lifesteal');
+    const lifestealChance = getEffectRarityTotal('lifesteal', { N: 0.10, R: 0.15, SR: 0.25, UR: 0.35, LR: 0.45 }, 0.15, 0.60);
+    if (lifestealItem && Math.random() < lifestealChance) {
+      const drainRate = getEffectRarityTotal('lifesteal', { N: 0.15, R: 0.25, SR: 0.40, UR: 0.50, LR: 0.60 }, 0.25, 0.60);
+      const drain = Math.max(1, Math.floor(calculatedDmg * drainRate));
+      workingPlayerHp = Math.min(pMaxHp, workingPlayerHp + drain);
+      turnLogs.push(`🩸 ${getStackLabel('lifesteal', '吸収')} ${getEffectMsg('lifesteal', lifestealItem)} (HP +${drain} 吸収！)`);
+    }
+
+    setPlayerHp(workingPlayerHp);
     unsyncedDamageRef.current += calculatedDmg;
 
     const allyDmg = Math.floor(80 + Math.random() * 180);
@@ -644,8 +937,8 @@ const RaidBossMiniGame = ({
 
     const weaponName = equipment?.weapon?.name || '素手';
     const logMsg = isCrit
-      ? `💥 【会心の一撃！】 『${weaponName}』 で ${calculatedDmg.toLocaleString()} の超大ダメージ！`
-      : `⚔️ 『${weaponName}』 で ${calculatedDmg.toLocaleString()} のダメージを与えた！`;
+      ? `💥 【会心の一撃！】 『${weaponName}』 で合計 ${calculatedDmg.toLocaleString()} の超大ダメージ！`
+      : `⚔️ 『${weaponName}』 で合計 ${calculatedDmg.toLocaleString()} のダメージを与えた！`;
 
     let updatedRanking = rankingList.map(entry => {
       if (entry.isMe) {
@@ -675,7 +968,7 @@ const RaidBossMiniGame = ({
             bossHp: nextHp,
             healsLeft: healsLeft,
             rankingList: updatedRanking,
-            raidLogs: [logMsg, ...raidLogs].slice(0, 15)
+            raidLogs: [logMsg, ...turnLogs, ...raidLogs].slice(0, 15)
           }
         }
       }).catch(err => console.warn('Raid cloud sync error:', err));
@@ -683,16 +976,158 @@ const RaidBossMiniGame = ({
 
     if (nextHp > 0) {
       setTimeout(() => {
+        const defenseLogs = [];
+        let counterDmgToBoss = 0;
+
+        // 🧠 スタン・行動阻止判定（mental_damage / cringe / meshitero / kidoku_ignore / mom_block）
+        let isBossStunned = false;
+        const mentalItem = getEffectSource('mental_damage');
+        const mentalChance = getEffectRarityTotal('mental_damage', { N: 0.05, R: 0.08, SR: 0.15, UR: 0.20, LR: 0.25 }, 0.08, 0.40);
+        if (mentalItem && Math.random() < mentalChance) {
+          isBossStunned = true;
+          defenseLogs.push(`🧠 【精神攻撃】 ${getEffectMsg('mental_damage', mentalItem)} (ボスはショックで反撃できない！)`);
+        }
+        const cringeItem = getEffectSource('cringe');
+        const cringeChance = getEffectRarityTotal('cringe', { N: 0.03, R: 0.05, SR: 0.10, UR: 0.15, LR: 0.20 }, 0.05, 0.25);
+        if (!isBossStunned && cringeItem && Math.random() < cringeChance) {
+          isBossStunned = true;
+          defenseLogs.push(`😬 【ドン引き】 ${getEffectMsg('cringe', cringeItem)} (ボスはドン引きして反撃を忘れている！)`);
+        }
+        const meshiteroItem = getEffectSource('meshitero');
+        const meshiteroChance = getEffectRarityTotal('meshitero', { N: 0.05, R: 0.10, SR: 0.20, UR: 0.25, LR: 0.30 }, 0.10, 0.40);
+        if (!isBossStunned && meshiteroItem && Math.random() < meshiteroChance) {
+          isBossStunned = true;
+          defenseLogs.push(`🍜 ${getStackLabel('meshitero', '飯テロ')} 特製背脂ニンニクマシマシ画像を投下！ ボスはお腹が鳴って動けない！`);
+        }
+        const momItem = getEffectSource('mom_block');
+        if (!isBossStunned && momItem && Math.random() < 0.18) {
+          isBossStunned = true;
+          defenseLogs.push(`👵 【オカン乱入】 ${getEffectMsg('mom_block', momItem)}`);
+        }
+        const kidokuItem = getEffectSource('kidoku_ignore');
+        const kidokuChance = getEffectRarityTotal('kidoku_ignore', { N: 0.05, R: 0.10, SR: 0.20, UR: 0.25, LR: 0.30 }, 0.10, 0.40);
+        if (!isBossStunned && kidokuItem && Math.random() < kidokuChance) {
+          isBossStunned = true;
+          const moyamoyaDmg = Math.max(50, Math.floor(myTotalAtk * 1.2));
+          counterDmgToBoss += moyamoyaDmg;
+          defenseLogs.push(`💬 ${getStackLabel('kidoku_ignore', '既読スルー')} ボスの威嚇を既読スルー！ ボスはモヤモヤして ${moyamoyaDmg} の自傷ダメージ！`);
+        }
+
+        if (isBossStunned) {
+          if (counterDmgToBoss > 0) {
+            setBossHp(hp => Math.max(0, hp - counterDmgToBoss));
+            setRankingList(list => list.map(e => e.isMe ? { ...e, damage: e.damage + counterDmgToBoss } : e).sort((a, b) => b.damage - a.damage));
+          }
+          setRaidLogs(prev => [
+            ...defenseLogs,
+            ...turnLogs,
+            logMsg,
+            ...prev
+          ].slice(0, 20));
+          return;
+        }
+
         const randomSkill = currentBoss.skills[Math.floor(Math.random() * currentBoss.skills.length)];
         const rawEnemyAtk = 30 + (userLevel * 3.2);
         const isBossCrit = Math.random() < 0.15;
         const bossVariance = 0.85 + (Math.random() * 0.3);
-        const mitigatedDmg = Math.max(8, Math.floor((rawEnemyAtk * bossVariance * (isBossCrit ? 1.5 : 1.0)) - (myTotalDef * 0.4)));
+        let mitigatedDmg = Math.max(8, Math.floor((rawEnemyAtk * bossVariance * (isBossCrit ? 1.5 : 1.0)) - (myTotalDef * 0.4)));
+
+        // 💨 回避判定（stealth / dodge_up / giga_death / hires）
+        const stealthItem = getEffectSource('stealth');
+        const dodgeBonus = getEffectRarityTotal('dodge_up', { N: 0.05, R: 0.10, SR: 0.20, UR: 0.25, LR: 0.30 }, 0.10, 0.50);
+        const gigaBonus = getEffectRarityTotal('giga_death', { N: 0.05, R: 0.10, SR: 0.20, UR: 0.25, LR: 0.30 }, 0.10, 0.40);
+        const gigaItem = getEffectSource('giga_death');
+        const hiresItem = getEffectSource('hires');
+        let isDodged = false;
+
+        let totalDodgeChance = dodgeBonus + gigaBonus;
+        if (stealthItem) {
+          totalDodgeChance += getRarityRate(stealthItem, { N: 0.05, R: 0.10, SR: 0.20, UR: 0.25, LR: 0.30 }, 0.10);
+        }
+
+        if (totalDodgeChance > 0 && Math.random() < Math.min(0.60, totalDodgeChance)) {
+          isDodged = true;
+          if (gigaItem && Math.random() < 0.60) {
+            defenseLogs.push(`📶 【通信制限】 ボスはギガ死（128kbps）でカクついて攻撃が空振りした！ (ダメージ 0)`);
+          } else {
+            defenseLogs.push(stealthItem
+              ? `🥷 【ステルス】 匿名性の陰に隠れてボスの『${randomSkill}』を完全回避！ (ダメージ 0)`
+              : `💨 【回避】 華麗なステップでボスの『${randomSkill}』をかわした！ (ダメージ 0)`);
+          }
+        } else if (hiresItem && Math.random() < 0.35) {
+          isDodged = true;
+          defenseLogs.push(`🎧 【ハイレゾ】 ${getEffectMsg('hires', hiresItem)} (ダメージ 0)`);
+        }
+
+        if (isDodged) {
+          mitigatedDmg = 0;
+        } else {
+          // 👀 【手刀見切り: sharp_eye】
+          const sharpEyeItem = getEffectSource('sharp_eye');
+          const sharpEyeChance = getEffectRarityTotal('sharp_eye', { N: 0.05, R: 0.10, SR: 0.20, UR: 0.25, LR: 0.30 }, 0.10, 0.40);
+          if (sharpEyeItem && Math.random() < sharpEyeChance) {
+            const counterDmg = Math.max(40, Math.floor(myTotalAtk * 1.5));
+            counterDmgToBoss += counterDmg;
+            mitigatedDmg = 0;
+            defenseLogs.push(`👀 ${getStackLabel('sharp_eye', '手刀見切り')} 「ふっ…おれでなきゃ見逃しちゃうね」 ボスの攻撃を見切り、手刀カウンターで +${counterDmg} ダメージ！`);
+          } else {
+            // 📜 クソリプ防御 / 特権 / 鍵垢 / 弁護士
+            const kusorepItem = getEffectSource('kusorep');
+            const kusorepChance = getEffectRarityTotal('kusorep', { N: 0.05, R: 0.10, SR: 0.20, UR: 0.30, LR: 0.35 }, 0.10, 0.50);
+            const privilegeItem = getEffectSource('privilege');
+            const lockItem = getEffectSource('lock_account');
+            const lawItem = getEffectSource('partner_law');
+
+            if (kusorepItem && Math.random() < kusorepChance) {
+              mitigatedDmg = 1;
+              defenseLogs.push(`📜 ${getStackLabel('kusorep', 'クソリプ')} ${getEffectMsg('kusorep', kusorepItem)} (被ダメージが1になった！)`);
+            } else if (privilegeItem && Math.random() < getEffectChance('privilege', 0.25, 0.50)) {
+              mitigatedDmg = 0;
+              defenseLogs.push(`👑 ${getStackLabel('privilege', '特権')} ${getEffectMsg('privilege', privilegeItem)} (被ダメージを完全無効化！)`);
+            } else if (lockItem) {
+              const lockCut = getEffectRarityTotal('lock_account', { N: 0.05, R: 0.10, SR: 0.15, UR: 0.20, LR: 0.25 }, 0.10, 0.35);
+              mitigatedDmg = Math.max(1, Math.floor(mitigatedDmg * (1.0 - lockCut)));
+              defenseLogs.push(`🔒 【鍵垢】 ${getEffectMsg('lock_account', lockItem)} (ダメージ${Math.round(lockCut * 100)}%軽減)`);
+            } else if (lawItem && Math.random() < 0.50) {
+              mitigatedDmg = Math.max(1, Math.floor(mitigatedDmg * 0.50));
+              defenseLogs.push(`👨‍⚖️ 【異議あり】 ${getEffectMsg('partner_law', lawItem)} (ダメージ半減)`);
+            }
+
+            // 🪞 【反射: reflect】
+            const reflectItem = getEffectSource('reflect');
+            if (mitigatedDmg > 0 && reflectItem && Math.random() < getEffectChance('reflect', 0.30, 0.60)) {
+              const refDmg = Math.max(25, Math.floor(mitigatedDmg * 2.5));
+              counterDmgToBoss += refDmg;
+              defenseLogs.push(`🪞 ${getStackLabel('reflect', '反射')} ${getEffectMsg('reflect', reflectItem)} (+${refDmg} 反射ダメージ！)`);
+            }
+          }
+        }
+
+        if (counterDmgToBoss > 0) {
+          unsyncedDamageRef.current += counterDmgToBoss;
+          setBossHp(hp => {
+            const nHp = Math.max(0, hp - counterDmgToBoss);
+            try { localStorage.setItem(getTodayKey(), String(nHp)); } catch (e) {}
+            return nHp;
+          });
+          setRankingList(list => {
+            const nextL = list.map(e => e.isMe ? { ...e, damage: e.damage + counterDmgToBoss } : e).sort((a, b) => b.damage - a.damage);
+            try { localStorage.setItem(getRankingKey(), JSON.stringify(nextL)); } catch (e) {}
+            return nextL;
+          });
+        }
 
         setPlayerHp(curHp => {
           const nextPlayerHp = Math.max(0, curHp - mitigatedDmg);
-          setBossAttackPopup({ val: mitigatedDmg, skill: randomSkill, isCrit: isBossCrit });
-          setTimeout(() => setBossAttackPopup(null), 1200);
+          if (mitigatedDmg > 0) {
+            setBossAttackPopup({ val: mitigatedDmg, skill: randomSkill, isCrit: isBossCrit });
+            setTimeout(() => setBossAttackPopup(null), 1200);
+          }
+
+          const bossHitLine = mitigatedDmg > 0
+            ? [`💥 『${currentBoss.name}』の『${randomSkill}』！ あなたは ${mitigatedDmg} のダメージを受けた！`]
+            : [];
 
           if (nextPlayerHp === 0) {
             const faintTime = 30;
@@ -702,13 +1137,17 @@ const RaidBossMiniGame = ({
             } catch (e) {}
             setRaidLogs(prev => [
               `😵 【戦闘不能…！】 ボスの強烈な一撃で気絶してしまった！ (回復薬で即復帰可能)`,
-              `💥 『${currentBoss.name}』の『${randomSkill}』！ あなたは ${mitigatedDmg} のダメージを受けた！`,
+              ...bossHitLine,
+              ...defenseLogs,
+              ...turnLogs,
               logMsg,
               ...prev
             ].slice(0, 20));
           } else {
             setRaidLogs(prev => [
-              `💥 『${currentBoss.name}』の『${randomSkill}』！ あなたは ${mitigatedDmg} のダメージを受けた！`,
+              ...bossHitLine,
+              ...defenseLogs,
+              ...turnLogs,
               logMsg,
               ...prev
             ].slice(0, 20));
@@ -718,7 +1157,7 @@ const RaidBossMiniGame = ({
       }, 400);
     } else {
       const victoryMsg = `🎉🎉 【討伐成功！！】 広場のみんなで 『${currentBoss.name}』 を打ち倒した！！ 🎉🎉`;
-      setRaidLogs(prev => [victoryMsg, logMsg, ...prev].slice(0, 20));
+      setRaidLogs(prev => [victoryMsg, ...turnLogs, logMsg, ...prev].slice(0, 20));
       if (addTickets) addTickets(currentBoss.rewardTickets);
       if (addExp) addExp(currentBoss.rewardExp);
     }

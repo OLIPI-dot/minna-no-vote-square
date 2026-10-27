@@ -8,12 +8,14 @@
 
 ## 📌 直近の作業メモ・引き継ぎ事項（2026年10月27日）
 
-### 0-000. 🐉 みんクエ「レイドボス」で未攻撃なのに1位（攻撃済）になってしまう混線バグ修正（10/27実施）
-- **原因**: [`src/components/RaidBossMiniGame.jsx`](file:///i:/olipiprojects/antigravity-scratch/minna-no-vote-square/src/components/RaidBossMiniGame.jsx) のリアルタイム共闘通信（WebSocket `batch_damage`）において、送信者名と自分の表示名（初期ロード中やゲスト時の `匿名広場民` 等）が一致しただけで「自分の別端末からの攻撃（`isFromMe = true`）」と判定してしまい、他プレイヤーの累計ダメージを自分のダメージとして吸収・クラウド保存してしまっていた。
+### 0-000. 🐉 みんクエ「レイドボス」混線バグ修正 ＆ 装備特殊効果の全面発動対応 ＆ チケット異常増殖バグ修正（10/27実施）
+- **原因**:
+  1. [`src/components/RaidBossMiniGame.jsx`](file:///i:/olipiprojects/antigravity-scratch/minna-no-vote-square/src/components/RaidBossMiniGame.jsx) のリアルタイム共闘通信（WebSocket `batch_damage`）において、送信者名と自分の表示名（初期ロード中やゲスト時の `匿名広場民` 等）が一致しただけで「自分の別端末からの攻撃（`isFromMe = true`）」と判定してしまい、他プレイヤーの累計ダメージを自分のダメージとして吸収・クラウド保存してしまっていた。
+  2. [`src/App.jsx`](file:///i:/olipiprojects/antigravity-scratch/minna-no-vote-square/src/App.jsx) の `handleAuthExp` でガチャチケットを `Math.max(dbTickets, localTickets)` で同期していたため、消費したチケットがタブ切替時に復活したり、レイド混線バグ時の報酬でチケットが52枚まで異常増加していた。
 - **改修内容**:
-  - `isFromMe` 判定を名前一致ではなく「ログイン済み かつ `senderUserId === user.id` が完全一致した場合のみ」に厳格化。
-  - 実際に自分で「⚔️ 攻撃する！」ボタンを押した証跡フラグ（`minique_raid_attacked_*`）がない限り、ローカルダメージを `0` に保ちクラウドへ誤バックアップしないようガードを追加。
-  - リセットバージョンを `20261027_clean_v2` に更新し、混入していた汚染データをローカル・クラウド双方から自動クリア。
+  - `isFromMe` 判定を名前一致ではなく「ログイン済み かつ `senderUserId === user.id` が完全一致した場合のみ」に厳格化し、実攻撃フラグ（`minique_raid_attacked_*`）とリセットバージョン `20261027_clean_v2` を導入。
+  - レイドボス戦でも武器・防具・アクセ・相棒の全特殊効果（領域展開、連撃、手刀見切り、クソリプ防御、札束ビンタ、吸血、自動回復、ステルス回避、反射、飯テロ等）が発動し、レイド戦闘ログと累計ダメージに反映されるよう実装。
+  - `App.jsx` のチケット同期ロジックを修正（消費後に復活しないようクラウド値＋直近操作優先に変更）し、バグで増殖していたチケットを正常値（10枚）へ1回自動補正。
 
 ### 0-00. 🔗 `api/og-injector.js` の正規URL（canonical）固定化 ＆ `generate_sitemap.cjs` の新着順ソート対応（10/27実施）
 - **改修内容**:
