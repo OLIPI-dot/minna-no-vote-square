@@ -50,7 +50,7 @@ if (!url || !key) {
 async function generateSitemap() {
     try {
         console.log('探検開始！アンケートの道しるべ（サイトマップ）を作るよ！🐰🗺️');
-        const res = await fetch(`${url}/rest/v1/surveys?visibility=eq.public&select=id,created_at`, {
+        const res = await fetch(`${url}/rest/v1/surveys?visibility=eq.public&select=id,created_at&order=created_at.desc&limit=5000`, {
             headers: {
                 'apikey': key,
                 'Authorization': `Bearer ${key}`

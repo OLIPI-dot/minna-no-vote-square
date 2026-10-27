@@ -2130,8 +2130,8 @@ function App() {
         if (query && sData.length === 0) {
           console.warn("⚠️ fetchSurveys: Search returned 0 results for:", query);
         }
-        // 📊 タブのカウント表示を同期するらび！
-        if (!query.trim()) {
+        // 📊 タブのカウント表示を同期するらび！（ウォッチ中・マイページ表示中は全体カウントを上書きしない）
+        if (!query.trim() && sort !== 'watching' && sort !== 'mine') {
           (async () => {
             // 💡 現在のソートやカテゴリの条件を、カウント用クエリにも反映させるらび！
             // ⚠️ モバイルSafariやCDNで HEAD リクエスト(head:true)のヘッダーが消失しないよう、GET + limit(1) で確実にcountを取得するらび！
@@ -2176,7 +2176,7 @@ function App() {
 
       // ログイン中なら自分の非公開/限定公開アンケートも別枠で取得（とりあえず最新20件）
       let mine = [];
-      if (currentUser && page === 1 && !category && !query && !tag && sort !== 'mine') {
+      if (currentUser && page === 1 && !category && !query && !tag && sort !== 'mine' && sort !== 'watching') {
         console.log("🔍 fetchSurveys: STAGE 2 - Fetching private/limited surveys for user:", currentUser.id);
         let mQuery = supabase.from('surveys').select('id,title,category,visibility,created_at,deadline,is_official,total_votes,likes_count,view_count,comment_count').neq('visibility', 'public');
         if (!isActuallyAdmin) {
@@ -2850,8 +2850,8 @@ function App() {
       alert('ちくちく言葉やNGワードが含まれているみたい。やさしい言葉で書いてね🐰🥕');
       return false;
     }
-    if (options.length >= 8) {
-      alert('このアンケートの選択肢追加枠（最大8個まで）はいっぱいだよ🐰💦');
+    if (options.length >= 14) {
+      alert('このアンケートの選択肢追加枠（最大14個まで）はいっぱいだよ🐰💦');
       return false;
     }
     const isDuplicate = options.some(o => {

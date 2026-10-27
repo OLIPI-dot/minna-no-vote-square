@@ -8,10 +8,15 @@
 
 ## 📌 直近の作業メモ・引き継ぎ事項（2026年10月27日）
 
-### 0-0. ➕ みんなが「自分の選択肢（第5〜第8の選択肢）」を追加して投票できる参加型機能（10/27実施）
+### 0-00. 🔗 `api/og-injector.js` の正規URL（canonical）固定化 ＆ `generate_sitemap.cjs` の新着順ソート対応（10/27実施）
+- **改修内容**:
+  - [`api/og-injector.js`](file:///i:/olipiprojects/antigravity-scratch/minna-no-vote-square/api/og-injector.js) で生成される `<link rel="canonical">` や `og:url` がアクセス元ホストに左右されず、常に正規ドメイン `https://www.minna-no-vote-square.com/s/:id` を指すように統一。
+  - [`scripts/generate_sitemap.cjs`](file:///i:/olipiprojects/antigravity-scratch/minna-no-vote-square/scripts/generate_sitemap.cjs) のSupabase取得クエリに `order=created_at.desc&limit=5000` を追加し、常に最新のアンケートから順にサイトマップへ収録されるよう改善。
+
+### 0-0. ➕ みんなが「自分の選択肢（追加10枠・最大14択まで）」を追加して投票できる参加型機能（10/27実施）
 - **背景**: 既存の4択だけでは「いや、こっちでしょ！」と思う人が参加しきれないため、ログイン不要で自分の選択肢を追加してそのまま1票入れられる参加型機能を導入。
 - **改修内容**:
-  - [`src/App.jsx`](file:///i:/olipiprojects/antigravity-scratch/minna-no-vote-square/src/App.jsx) に `handleAddCustomOption` を実装（最大35文字・URL禁止・NGワードフィルタ・重複チェック・1アンケート最大8枠までの安全ガード付き）。
+  - [`src/App.jsx`](file:///i:/olipiprojects/antigravity-scratch/minna-no-vote-square/src/App.jsx) に `handleAddCustomOption` を実装（最大35文字・URL禁止・NGワードフィルタ・重複チェック・1アンケート最大14枠［初期4択＋追加10枠］までの安全ガード付き）。
   - 追加された選択肢は Supabase `options` テーブルに即時保存され、そのまま1票が投じられて自動ウォッチ登録＆ボーナスEXP（計+15 EXP）が付与される。
   - [`src/components/SurveyDetailView.jsx`](file:///i:/olipiprojects/antigravity-scratch/minna-no-vote-square/src/components/SurveyDetailView.jsx) の選択肢一覧の下に「➕ ピンとくる選択肢がない？自分の選択肢を追加して1票入れる！」ボタンと展開式フォームを追加し、追加された選択肢には「🙋 みんなが追加」（本人の画面では「✨ あなたが追加」）バッジを表示。
 

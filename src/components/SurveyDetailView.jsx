@@ -613,8 +613,8 @@ const SurveyDetailView = ({
           </div>
         )}
 
-        {/* ➕ 自分の選択肢を追加して投票する参加型フォーム（未投票 ＆ 受付中 ＆ 8枠未満） */}
-        {!votedOption && !isTimeUp && options.length > 0 && options.length < 8 && typeof handleAddCustomOption === 'function' && (
+        {/* ➕ 自分の選択肢を追加して投票する参加型フォーム（未投票 ＆ 受付中 ＆ 14枠未満） */}
+        {!votedOption && !isTimeUp && options.length > 0 && options.length < 14 && typeof handleAddCustomOption === 'function' && (
           <div style={{ marginTop: '18px' }}>
             {!isAddingOption ? (
               <button
@@ -647,7 +647,7 @@ const SurveyDetailView = ({
                   e.currentTarget.style.background = '#f8fafc';
                 }}
               >
-                <span>➕ ピンとくる選択肢がない？自分の選択肢を追加して1票入れる！（あと{8 - options.length}枠）</span>
+                <span>➕ ピンとくる選択肢がない？自分の選択肢を追加して1票入れる！（あと{14 - options.length}枠）</span>
               </button>
             ) : (
               <div style={{
@@ -659,7 +659,7 @@ const SurveyDetailView = ({
               }}>
                 <div style={{ fontSize: '0.9rem', fontWeight: '800', color: '#5b21b6', marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span>🙋 新しい選択肢を追加して投票するらび！（最大35文字）</span>
-                  <span style={{ fontSize: '0.78rem', color: '#7c3aed', fontWeight: 'bold' }}>残り {8 - options.length} 枠</span>
+                  <span style={{ fontSize: '0.78rem', color: '#7c3aed', fontWeight: 'bold' }}>残り {14 - options.length} 枠</span>
                 </div>
                 <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                   <input

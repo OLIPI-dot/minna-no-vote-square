@@ -70,6 +70,7 @@ export default async function handler(req, res) {
   const protocol = req.headers['x-forwarded-proto'] || 'https';
   const host = req.headers['x-forwarded-host'] || req.headers.host;
   const baseUrl = `${protocol}://${host}`;
+  const CANONICAL_BASE_URL = 'https://www.minna-no-vote-square.com';
 
   try {
     // 1. 本来の静的 index.html をフェッチ
@@ -93,12 +94,12 @@ export default async function handler(req, res) {
       return res.status(404).send(html);
     }
 
-    // 3. OGP ＆ SEO用メタ情報を生成
+    // 3. OGP ＆ SEO用メタ情報を生成（正規URLは常に www ありに統一）
     const title = escapeHtml(`📊「${survey.title}」| みんアケ🐰🥕 | みんなのアンケート広場`);
     const cleanDesc = escapeHtml(formatCleanDescription(survey.description, survey.title));
-    const siteUrl = `${baseUrl}/s/${surveyId}`;
+    const siteUrl = `${CANONICAL_BASE_URL}/s/${surveyId}`;
 
-    let imageUrl = `${baseUrl}/ogp-image.png`;
+    let imageUrl = `${CANONICAL_BASE_URL}/ogp-image.png`;
     if (survey.image_url) {
       const parts = survey.image_url.split(',').map(v => v.trim());
       const ytPart = parts.find(v => v.startsWith('yt:'));
