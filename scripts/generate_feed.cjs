@@ -42,6 +42,57 @@ const sanitizeXml = (str) => {
     return (str || '').replace(/[^\x09\x0A\x0D\x20-\uD7FF\uE000-\uFFFD\u10000-\u10FFFF]/g, '');
 };
 
+// 🌸 [[SUMMARY: ...]] のJSONを綺麗にパースして自然な要約文を生成するらび！
+const formatCleanSummary = (rawDesc, title) => {
+    if (!rawDesc) {
+        return `「${title || 'アンケート'}」についてみんなの意見や投票結果をリアルタイム公開中！`;
+    }
+
+    let text = '';
+    if (rawDesc.includes('[[SUMMARY:')) {
+        try {
+            const match = rawDesc.match(/\[\[SUMMARY:\s*([\s\S]*?)\s*\]\]/);
+            if (match && match[1]) {
+                const json = JSON.parse(match[1]);
+                const parts = [];
+                if (json.point1_desc) parts.push(json.point1_desc);
+                if (json.point2_desc) parts.push(json.point2_desc);
+                if (json.rabi_comment) parts.push(json.point2_desc ? json.rabi_comment : json.rabi_comment);
+                text = parts.join(' ').trim();
+            }
+        } catch (e) {
+            // JSONパース失敗時も正規表現で安全に本文を救出
+        }
+        if (!text) {
+            const p1 = rawDesc.match(/"point1_desc"\s*:\s*"([^"]+)"/);
+            const p2 = rawDesc.match(/"point2_desc"\s*:\s*"([^"]+)"/);
+            const rabi = rawDesc.match(/"rabi_comment"\s*:\s*"([^"]+)"/);
+            const parts = [p1 && p1[1], p2 && p2[1], rabi && rabi[1]].filter(Boolean);
+            text = parts.length > 0
+                ? parts.join(' ').trim()
+                : rawDesc.replace(/\[\[SUMMARY:[\s\S]*?(\]\]|$)/g, '').trim();
+        }
+    } else {
+        text = rawDesc;
+    }
+
+    text = text
+        .replace(/<[^>]*>?/gm, '')
+        .replace(/\[.*?\]\(.*?\)/g, '')
+        .replace(/https?:\/\/\S+/g, '')
+        .replace(/[#*`_~]/g, '')
+        .replace(/（出典：.*?）/g, '')
+        .replace(/【続きを読む】/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+    if (!text) {
+        return `「${title || 'アンケート'}」についてみんなの投票結果や意見をチェック！`;
+    }
+
+    return text.length > 200 ? text.substring(0, 200) + '...' : text;
+};
+
 if (!url || !key) {
     console.error('Environment variables missing!');
     process.exit(1);
@@ -80,7 +131,7 @@ async function generateFeed() {
 
         surveys.forEach(survey => {
             const date = new Date(survey.created_at).toISOString();
-            const cleanDesc = (survey.description || '').replace(/<[^>]*>?/gm, '').substring(0, 200) + '...';
+            const cleanDesc = formatCleanSummary(survey.description, survey.title);
             atom += `  <entry>
     <title>${escapeXml(sanitizeXml(survey.title))}</title>
     <link href="${SITE_URL}/s/${survey.id}"/>
