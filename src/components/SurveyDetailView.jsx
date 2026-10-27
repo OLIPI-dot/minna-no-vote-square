@@ -88,7 +88,9 @@ const SurveyDetailView = ({
   votedOption,
   isTotalVotes,
   options,
+  setOptions,
   handleVote,
+  handleAddCustomOption,
   handleLikeSurvey,
   handleShareResult,
   likedSurveys,
@@ -154,7 +156,16 @@ const SurveyDetailView = ({
   const [activeStampPicker, setActiveStampPicker] = React.useState(null);
   const [confirmingDeleteId, setConfirmingDeleteId] = React.useState(null);
   const [showEmbedModal, setShowEmbedModal] = React.useState(false);
+  const [isAddingOption, setIsAddingOption] = React.useState(false);
+  const [customOptionText, setCustomOptionText] = React.useState('');
+  const [isSubmittingCustomOption, setIsSubmittingCustomOption] = React.useState(false);
   const embedCode = `<iframe src="${window.location.origin}/embed/${currentSurvey?.id}" width="100%" height="400" frameborder="0" style="border:1px solid #e2e8f0; border-radius:12px; max-width:600px; display:block; margin: 0 auto;"></iframe>`;
+
+  React.useEffect(() => {
+    setIsAddingOption(false);
+    setCustomOptionText('');
+    setIsSubmittingCustomOption(false);
+  }, [currentSurvey?.id]);
 
   React.useEffect(() => {
     const handleClickOutside = (e) => {
@@ -498,15 +509,37 @@ const SurveyDetailView = ({
         {options.length > 0 ? options.map((opt, index) => {
           const perc = isTotalVotes > 0 ? Math.round((opt.votes / isTotalVotes) * 100) : 0;
           const isWinner = options.length > 1 && opt.votes === Math.max(...options.map(o => o.votes)) && opt.votes > 0;
+          const isUserAdded = (opt.name || '').startsWith('\u200B') || (currentSurvey.is_official && index >= 4);
+          const cleanName = (opt.name || '').replace(/^\u200B/, '');
+          const displayLabel = cleanName.startsWith(`${index + 1}.`) ? cleanName : `${index + 1}. ${cleanName}`;
+          let isMyAdded = false;
+          try {
+            const myAddedIds = JSON.parse(localStorage.getItem('my_added_options') || '[]');
+            isMyAdded = myAddedIds.includes(opt.id);
+          } catch {}
 
           return (
             <div key={opt.id} className="result-bar-container" style={{ marginBottom: '16px' }}>
               {votedOption || isTimeUp ? (
                 <>
-                  <div className="result-info" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', alignItems: 'center' }}>
-                    <span className="choice-name" style={{ fontWeight: isWinner ? '900' : 'bold', color: isWinner ? '#7c3aed' : '#334155', fontSize: '1.05rem' }}>
-                      {isWinner && <span style={{ marginRight: '6px' }}>🏆</span>}
-                      {(opt.name.startsWith(`${index + 1}.`) ? opt.name : `${index + 1}. ${opt.name}`) + (String(votedOption) === String(opt.id) ? ' ✅' : '')}
+                  <div className="result-info" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                    <span className="choice-name" style={{ fontWeight: isWinner ? '900' : 'bold', color: isWinner ? '#7c3aed' : '#334155', fontSize: '1.05rem', display: 'inline-flex', alignItems: 'center', flexWrap: 'wrap', gap: '6px' }}>
+                      {isWinner && <span>🏆</span>}
+                      <span>{displayLabel + (String(votedOption) === String(opt.id) ? ' ✅' : '')}</span>
+                      {isUserAdded && (
+                        <span style={{
+                          fontSize: '0.72rem',
+                          background: isMyAdded ? '#ede9fe' : '#fef3c7',
+                          color: isMyAdded ? '#6d28d9' : '#d97706',
+                          border: `1px solid ${isMyAdded ? '#ddd6fe' : '#fde68a'}`,
+                          padding: '2px 8px',
+                          borderRadius: '999px',
+                          fontWeight: '800',
+                          lineHeight: 1.2
+                        }}>
+                          {isMyAdded ? '✨ あなたが追加' : '🙋 みんなが追加'}
+                        </span>
+                      )}
                     </span>
                     <span className="vote-count-meta" style={{ fontSize: '0.9rem', color: '#64748b' }}>
                       <span className="vote-count-num" style={{ fontWeight: 'bold', color: isWinner ? '#7c3aed' : '#64748b' }}>
@@ -531,8 +564,8 @@ const SurveyDetailView = ({
                   width: '100%',
                   padding: '18px 25px',
                   borderRadius: '18px',
-                  border: '2px solid #e2e8f0',
-                  background: 'white',
+                  border: isUserAdded ? '2px solid #fde68a' : '2px solid #e2e8f0',
+                  background: isUserAdded ? '#fffbeb' : 'white',
                   fontSize: '1.1rem',
                   fontWeight: 'bold',
                   color: '#334155',
@@ -541,7 +574,9 @@ const SurveyDetailView = ({
                   textAlign: 'left',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '12px'
+                  justifyContent: 'space-between',
+                  gap: '12px',
+                  flexWrap: 'wrap'
                 }} onMouseOver={e => {
                   e.currentTarget.style.transform = 'translateX(8px)';
                   e.currentTarget.style.borderColor = '#7c3aed';
@@ -549,11 +584,25 @@ const SurveyDetailView = ({
                   e.currentTarget.style.background = '#f5f3ff';
                 }} onMouseOut={e => {
                   e.currentTarget.style.transform = 'translateX(0)';
-                  e.currentTarget.style.borderColor = '#e2e8f0';
+                  e.currentTarget.style.borderColor = isUserAdded ? '#fde68a' : '#e2e8f0';
                   e.currentTarget.style.color = '#334155';
-                  e.currentTarget.style.background = 'white';
+                  e.currentTarget.style.background = isUserAdded ? '#fffbeb' : 'white';
                 }}>
-                  {opt.name.startsWith(`${index + 1}.`) ? opt.name : `${index + 1}. ${opt.name}`}
+                  <span>{displayLabel}</span>
+                  {isUserAdded && (
+                    <span style={{
+                      fontSize: '0.75rem',
+                      background: '#fef3c7',
+                      color: '#d97706',
+                      border: '1px solid #fde68a',
+                      padding: '2px 10px',
+                      borderRadius: '999px',
+                      fontWeight: '800',
+                      flexShrink: 0
+                    }}>
+                      🙋 みんなが追加
+                    </span>
+                  )}
                 </button>
               )}
             </div>
@@ -561,6 +610,141 @@ const SurveyDetailView = ({
         }) : (
           <div className="options-loading" style={{ textAlign: 'center', padding: '30px', color: '#94a3b8', fontStyle: 'italic' }}>
             🗳️ 投票項目を読み込み中らび...✨
+          </div>
+        )}
+
+        {/* ➕ 自分の選択肢を追加して投票する参加型フォーム（未投票 ＆ 受付中 ＆ 8枠未満） */}
+        {!votedOption && !isTimeUp && options.length > 0 && options.length < 8 && typeof handleAddCustomOption === 'function' && (
+          <div style={{ marginTop: '18px' }}>
+            {!isAddingOption ? (
+              <button
+                type="button"
+                onClick={() => setIsAddingOption(true)}
+                style={{
+                  width: '100%',
+                  padding: '14px 20px',
+                  borderRadius: '16px',
+                  border: '2px dashed #cbd5e1',
+                  background: '#f8fafc',
+                  color: '#475569',
+                  fontSize: '0.95rem',
+                  fontWeight: '800',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  transition: 'all 0.2s'
+                }}
+                onMouseOver={e => {
+                  e.currentTarget.style.borderColor = '#7c3aed';
+                  e.currentTarget.style.color = '#7c3aed';
+                  e.currentTarget.style.background = '#f5f3ff';
+                }}
+                onMouseOut={e => {
+                  e.currentTarget.style.borderColor = '#cbd5e1';
+                  e.currentTarget.style.color = '#475569';
+                  e.currentTarget.style.background = '#f8fafc';
+                }}
+              >
+                <span>➕ ピンとくる選択肢がない？自分の選択肢を追加して1票入れる！（あと{8 - options.length}枠）</span>
+              </button>
+            ) : (
+              <div style={{
+                padding: '18px 20px',
+                borderRadius: '18px',
+                border: '2px solid #ddd6fe',
+                background: 'linear-gradient(135deg, #f5f3ff, #faf5ff)',
+                boxShadow: '0 8px 20px rgba(124, 58, 237, 0.08)'
+              }}>
+                <div style={{ fontSize: '0.9rem', fontWeight: '800', color: '#5b21b6', marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span>🙋 新しい選択肢を追加して投票するらび！（最大35文字）</span>
+                  <span style={{ fontSize: '0.78rem', color: '#7c3aed', fontWeight: 'bold' }}>残り {8 - options.length} 枠</span>
+                </div>
+                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                  <input
+                    type="text"
+                    value={customOptionText}
+                    onChange={e => setCustomOptionText(e.target.value)}
+                    maxLength={35}
+                    placeholder="例: いや、〇〇だと思う！"
+                    disabled={isSubmittingCustomOption}
+                    onKeyDown={async e => {
+                      if (e.key === 'Enter' && !isSubmittingCustomOption) {
+                        e.preventDefault();
+                        setIsSubmittingCustomOption(true);
+                        const ok = await handleAddCustomOption(customOptionText);
+                        setIsSubmittingCustomOption(false);
+                        if (ok) {
+                          setCustomOptionText('');
+                          setIsAddingOption(false);
+                        }
+                      }
+                    }}
+                    style={{
+                      flex: '1 1 220px',
+                      padding: '12px 16px',
+                      borderRadius: '12px',
+                      border: '2px solid #c4b5fd',
+                      fontSize: '0.98rem',
+                      background: '#fff',
+                      color: '#1e293b',
+                      outline: 'none'
+                    }}
+                  />
+                  <button
+                    type="button"
+                    disabled={isSubmittingCustomOption || !customOptionText.trim()}
+                    onClick={async () => {
+                      setIsSubmittingCustomOption(true);
+                      const ok = await handleAddCustomOption(customOptionText);
+                      setIsSubmittingCustomOption(false);
+                      if (ok) {
+                        setCustomOptionText('');
+                        setIsAddingOption(false);
+                      }
+                    }}
+                    style={{
+                      padding: '12px 20px',
+                      borderRadius: '12px',
+                      border: 'none',
+                      background: (!customOptionText.trim() || isSubmittingCustomOption) ? '#cbd5e1' : 'linear-gradient(135deg, #7c3aed, #ec4899)',
+                      color: '#fff',
+                      fontWeight: '900',
+                      fontSize: '0.95rem',
+                      cursor: (!customOptionText.trim() || isSubmittingCustomOption) ? 'not-allowed' : 'pointer',
+                      boxShadow: (!customOptionText.trim() || isSubmittingCustomOption) ? 'none' : '0 4px 12px rgba(124, 58, 237, 0.25)',
+                      whiteSpace: 'nowrap'
+                    }}
+                  >
+                    {isSubmittingCustomOption ? '追加中...' : '🗳️ 追加して1票入れる！'}
+                  </button>
+                  <button
+                    type="button"
+                    disabled={isSubmittingCustomOption}
+                    onClick={() => {
+                      setIsAddingOption(false);
+                      setCustomOptionText('');
+                    }}
+                    style={{
+                      padding: '12px 14px',
+                      borderRadius: '12px',
+                      border: '1px solid #cbd5e1',
+                      background: '#fff',
+                      color: '#64748b',
+                      fontWeight: 'bold',
+                      fontSize: '0.85rem',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    閉じる
+                  </button>
+                </div>
+                <div style={{ fontSize: '0.78rem', color: '#64748b', marginTop: '8px' }}>
+                  💡 追加した選択肢は他の人の画面にも表示されて、みんなも投票できるようになるよ！（＋15 EXP獲得✨）
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>

@@ -2743,7 +2743,7 @@ function App() {
   const handleVote = async (optionId) => {
     if (isVotingProcessingRef.current) return; // 🛡️ 魔法の最中は受け付けないらび！
     const targetId = typeof optionId === 'object' ? optionId.id : optionId;
-    const option = options.find(o => o.id === targetId);
+    const option = options.find(o => o.id === targetId) || (typeof optionId === 'object' && optionId !== null ? optionId : null);
     if (!option || isTimeUp || votedOption) return;
 
     isVotingProcessingRef.current = true; // 🚧 ガード開始！
@@ -2785,7 +2785,9 @@ function App() {
     });
 
     const currentTotal = (currentSurvey.total_votes || 0) + 1;
-    const updatedOptions = options.map(o => o.id === option.id ? { ...o, votes: (o.votes || 0) + 1 } : o);
+    const existsInOptions = options.some(o => o.id === option.id);
+    const baseOptions = existsInOptions ? options : [...options, option];
+    const updatedOptions = baseOptions.map(o => o.id === option.id ? { ...o, votes: (o.votes || 0) + 1 } : o);
     const updatedSurvey = {
       ...currentSurvey,
       total_votes: currentTotal,
@@ -2803,7 +2805,7 @@ function App() {
       window.gtag('event', 'vote_survey', {
         'survey_id': currentSurvey.id,
         'survey_title': currentSurvey.title,
-        'option_name': option.name || option.text
+        'option_name': (option.name || option.text || '').replace(/^\u200B/, '')
       });
     }
 
@@ -2826,6 +2828,77 @@ function App() {
         setCurrentSurvey(prev => prev && String(prev.id) === String(currentSurvey.id) ? { ...prev, total_votes: serverTotal } : prev);
       }
     });
+  };
+
+  // ➕ みんなが自分の選択肢を追加してそのまま1票入れる参加型機能らび！
+  const handleAddCustomOption = async (customText) => {
+    if (!currentSurvey || isTimeUp || votedOption || isVotingProcessingRef.current) return false;
+    const cleanText = (customText || '').trim().replace(/^[1-9１-９][.．\s]+/, '').trim();
+    if (!cleanText) {
+      alert('追加したい選択肢を入力してね🐰🥕');
+      return false;
+    }
+    if (cleanText.length > 35) {
+      alert('選択肢は35文字以内で入力してね🐰🥕');
+      return false;
+    }
+    if (/https?:\/\/|www\./i.test(cleanText)) {
+      alert('選択肢にURLは入れられないよ🐰💦');
+      return false;
+    }
+    if (hasNGWord(cleanText)) {
+      alert('ちくちく言葉やNGワードが含まれているみたい。やさしい言葉で書いてね🐰🥕');
+      return false;
+    }
+    if (options.length >= 8) {
+      alert('このアンケートの選択肢追加枠（最大8個まで）はいっぱいだよ🐰💦');
+      return false;
+    }
+    const isDuplicate = options.some(o => {
+      const existingClean = (o.name || '').replace(/^\u200B/, '').replace(/^[1-9１-９][.．\s]+/, '').trim().toLowerCase();
+      return existingClean === cleanText.toLowerCase();
+    });
+    if (isDuplicate) {
+      alert('同じ選択肢がすでにあるみたい！そっちにポチッと投票してね🐰✨');
+      return false;
+    }
+
+    isVotingProcessingRef.current = true;
+    try {
+      // \u200B（ゼロ幅スペース）を先頭に付与して「みんなが追加した選択肢」として識別可能にするらび！
+      const { data: insertedOpt, error: insertError } = await supabase
+        .from('options')
+        .insert([{ survey_id: currentSurvey.id, name: `\u200B${cleanText}`, votes: 0 }])
+        .select()
+        .single();
+
+      if (insertError || !insertedOpt) {
+        console.error('❌ Custom option insert error:', insertError);
+        isVotingProcessingRef.current = false;
+        alert('選択肢の追加に失敗しちゃった…通信環境を確認してもう一度試してみてね🐰💦');
+        return false;
+      }
+
+      // 自分が追加した選択肢IDを記録（バッジ表示用）
+      try {
+        const myAdded = JSON.parse(localStorage.getItem('my_added_options') || '[]');
+        if (!myAdded.includes(insertedOpt.id)) {
+          localStorage.setItem('my_added_options', JSON.stringify([...myAdded, insertedOpt.id]));
+        }
+      } catch {}
+
+      // 選択肢追加ボーナスEXP (+5)
+      addExp(5);
+
+      // ガードを一旦解除してそのまま handleVote で1票投じるらび！
+      isVotingProcessingRef.current = false;
+      await handleVote(insertedOpt);
+      return true;
+    } catch (err) {
+      console.error('❌ handleAddCustomOption exception:', err);
+      isVotingProcessingRef.current = false;
+      return false;
+    }
   };
 
   const handleLikeSurvey = async () => {
@@ -3113,7 +3186,8 @@ function App() {
       : currentSurvey.title;
     const lines = options.map((opt, index) => {
       const perc = currentSurvey.total_votes > 0 ? Math.round((opt.votes / currentSurvey.total_votes) * 100) : 0;
-      const name = opt.name.length > 8 ? opt.name.slice(0, 8) + '…' : opt.name;
+      const cleanOptName = (opt.name || '').replace(/^\u200B/, '');
+      const name = cleanOptName.length > 8 ? cleanOptName.slice(0, 8) + '…' : cleanOptName;
       return `${index + 1}. ${name} ${bar(perc)} ${perc}%`;
     });
     const url = `${window.location.origin}/s/${currentSurvey.id}`;
@@ -3150,20 +3224,22 @@ function App() {
       const hasVotes = currentSurvey.total_votes > 0;
 
       if (myVoted) {
+        const cleanMyName = (myVoted.name || '').replace(/^\u200B/, '');
         // 投票済み：自分の意見を表明して共感を集める！
         const templates = [
-          `🐰🥕 みんなに聞いてみた！\n\n「${title}」\n\n私は「${myVoted.name}」派！\nあなたはどっち？👇`,
-          `🥕 正直に言うと...\n「${myVoted.name}」だと思う！\n\n（「${title}」）\n\n🐰 あなたの意見も聞かせて！👇`,
-          `🐰💬 みんなはどう思う？\n\n「${title}」\n私は「${myVoted.name}」に1票！\n\n🥕 一緒に考えてみよう👇`,
+          `🐰🥕 みんなに聞いてみた！\n\n「${title}」\n\n私は「${cleanMyName}」派！\nあなたはどっち？👇`,
+          `🥕 正直に言うと...\n「${cleanMyName}」だと思う！\n\n（「${title}」）\n\n🐰 あなたの意見も聞かせて！👇`,
+          `🐰💬 みんなはどう思う？\n\n「${title}」\n私は「${cleanMyName}」に1票！\n\n🥕 一緒に考えてみよう👇`,
         ];
         xText = templates[Math.floor(Math.random() * templates.length)];
       } else if (hasVotes && isWinner) {
         // 投票あり：意外な結果で好奇心を煽る！
         const topPerc = Math.round(topOption.votes / currentSurvey.total_votes * 100);
+        const cleanTopName = (topOption.name || '').replace(/^\u200B/, '');
         const templates = [
-          `🐰🥕 みんなに聞いてみたら...\n\n「${title}」\n\nなんと「${topOption.name}」が${topPerc}%！\n🤔 あなたはどう思う？👇`,
+          `🐰🥕 みんなに聞いてみたら...\n\n「${title}」\n\nなんと「${cleanTopName}」が${topPerc}%！\n🤔 あなたはどう思う？👇`,
           `🥕✨ ${currentSurvey.total_votes}人の本音がここに...\n\n「${title}」\n\n🐰 結果が気になる人はこちら👇`,
-          `🐰 賛否両論！\n「${title}」\n\n現在「${topOption.name}」が${topPerc}%リード中🥕\nあなたはどっち派？👇`,
+          `🐰 賛否両論！\n「${title}」\n\n現在「${cleanTopName}」が${topPerc}%リード中🥕\nあなたはどっち派？👇`,
         ];
         xText = templates[Math.floor(Math.random() * templates.length)];
       } else {
@@ -3550,8 +3626,10 @@ function App() {
                   setIsTimeUp={setIsTimeUp}
                   votedOption={votedOption}
                   options={options}
+                  setOptions={setOptions}
                   isTotalVotes={options.reduce((sum, o) => sum + (o.votes || 0), 0)}
                   handleVote={handleVote}
+                  handleAddCustomOption={handleAddCustomOption}
                   handleLikeSurvey={handleLikeSurvey}
                   handleShareResult={handleShareResult}
                   likedSurveys={likedSurveys}
