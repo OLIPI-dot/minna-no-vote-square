@@ -191,7 +191,64 @@ function App() {
   const [popularMode, setPopularMode] = useState('trending');
   const [filterCategory, setFilterCategory] = useState('すべて');
   const [tempOption, setTempOption] = useState('');
-  const [watchedIds, setWatchedIds] = useState(() => JSON.parse(localStorage.getItem('watched_surveys') || '[]'));
+  const [watchedIds, setWatchedIds] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('watched_surveys') || '[]');
+      if (!localStorage.getItem('watched_migrated_v1')) {
+        const votedIds = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (k && k.startsWith('voted_survey_')) {
+            const sid = Number(k.replace('voted_survey_', ''));
+            if (!isNaN(sid) && sid > 0) votedIds.push(sid);
+          }
+        }
+        const merged = Array.from(new Set([...saved.map(v => Number(v) || v), ...votedIds]));
+        localStorage.setItem('watched_surveys', JSON.stringify(merged));
+        localStorage.setItem('watched_migrated_v1', '1');
+        return merged;
+      }
+      return saved;
+    } catch {
+      return [];
+    }
+  });
+
+  // 🧹 ウォッチ中リストの自動お掃除（締切から3日以上経過した記事や削除済み記事を自動で整理らび！）
+  useEffect(() => {
+    try {
+      const currentWatched = JSON.parse(localStorage.getItem('watched_surveys') || '[]')
+        .map(id => Number(id))
+        .filter(n => !isNaN(n) && n > 0);
+      if (currentWatched.length === 0) return;
+
+      const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
+      const tenDaysAgo = new Date(Date.now() - 10 * 24 * 60 * 60 * 1000);
+
+      supabase
+        .from('surveys')
+        .select('id, deadline, created_at')
+        .in('id', currentWatched)
+        .then(({ data, error }) => {
+          if (error || !data) return;
+          const validSet = new Set(
+            data
+              .filter(sv => {
+                if (sv.deadline) return new Date(sv.deadline) >= threeDaysAgo;
+                return new Date(sv.created_at) >= tenDaysAgo;
+              })
+              .map(sv => Number(sv.id))
+          );
+          const cleaned = currentWatched.filter(id => validSet.has(Number(id)));
+          if (cleaned.length !== currentWatched.length) {
+            setWatchedIds(cleaned);
+            localStorage.setItem('watched_surveys', JSON.stringify(cleaned));
+          }
+        });
+    } catch {
+      // ignore
+    }
+  }, []);
   const [deadline, setDeadline] = useState('');
   const [isTimeUp, setIsTimeUp] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -1937,14 +1994,19 @@ function App() {
         if (currentUser) {
           baseQuery = baseQuery.eq('user_id', currentUser.id);
         } else {
-          baseQuery = baseQuery.eq('id', '00000000-0000-0000-0000-000000000000'); // 空結果にするためのダミー
+          baseQuery = baseQuery.eq('id', -1); // 空結果にするためのダミー
         }
       } else if (sort === 'watching') {
-        const localWatched = JSON.parse(localStorage.getItem('watched_surveys') || '[]');
+        const localWatched = JSON.parse(localStorage.getItem('watched_surveys') || '[]')
+          .map(id => Number(id))
+          .filter(n => !isNaN(n) && n > 0);
         if (localWatched.length > 0) {
-          baseQuery = baseQuery.in('id', localWatched);
+          const threeDaysAgoIso = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString();
+          baseQuery = baseQuery
+            .in('id', localWatched)
+            .or(`deadline.is.null,deadline.gte.${threeDaysAgoIso}`);
         } else {
-          baseQuery = baseQuery.eq('id', '00000000-0000-0000-0000-000000000000');
+          baseQuery = baseQuery.eq('id', -1);
         }
       } else {
         baseQuery = baseQuery.eq('visibility', 'public');
@@ -2701,6 +2763,14 @@ function App() {
     // 🏎️ 楽観的UI更新: 瞬時に反映させるらび！
     localStorage.setItem(`voted_survey_${currentSurvey.id}`, String(option.id));
     setVotedOption(String(option.id));
+
+    // ⭐ 投票したアンケートを自動で「ウォッチ中」にも追加するらび！
+    setWatchedIds(prev => {
+      if (prev.some(id => String(id) === String(currentSurvey.id))) return prev;
+      const next = [Number(currentSurvey.id) || currentSurvey.id, ...prev];
+      localStorage.setItem('watched_surveys', JSON.stringify(next));
+      return next;
+    });
     
     // 🏆 経験値を付与！
     addExp(10);
@@ -2843,7 +2913,8 @@ function App() {
 
   const toggleWatch = (e, id) => {
     e.stopPropagation();
-    const newIds = watchedIds.includes(id) ? watchedIds.filter(v => v !== id) : [...watchedIds, id];
+    const exists = watchedIds.some(v => String(v) === String(id));
+    const newIds = exists ? watchedIds.filter(v => String(v) !== String(id)) : [Number(id) || id, ...watchedIds];
     setWatchedIds(newIds);
     localStorage.setItem('watched_surveys', JSON.stringify(newIds));
   };

@@ -179,6 +179,15 @@ const SurveyListView = ({
       } else if (popularMode === 'votes') {
         list.sort((a, b) => Number(b.total_votes || 0) - Number(a.total_votes || 0));
       }
+    } else if (sortMode === 'watching') {
+      // ⭐ ウォッチ中: 「受付中」を上、「終了（締切後3日以内）」を下に並べるらび！
+      const now = new Date();
+      list.sort((a, b) => {
+        const endedA = a.deadline && new Date(a.deadline) < now ? 1 : 0;
+        const endedB = b.deadline && new Date(b.deadline) < now ? 1 : 0;
+        if (endedA !== endedB) return endedA - endedB;
+        return new Date(b.created_at) - new Date(a.created_at);
+      });
     }
     return list;
   }, [surveys, debouncedSearchQuery, filterTag, activeTab, sortMode, popularMode]);
@@ -287,7 +296,7 @@ const SurveyListView = ({
         <button className={sortMode === 'today' ? 'active' : ''} onClick={() => { setSortMode('today'); if (typeof setCurrentPage === 'function') setCurrentPage(1); }}>☀️ 今日の話題 {searchQuery && (searchStats?.sortModes?.today || 0) > 0 && <span className="tab-hit-badge">{searchStats.sortModes.today}</span>}</button>
         <button className={sortMode === 'latest' ? 'active' : ''} onClick={() => { setSortMode('latest'); if (typeof setCurrentPage === 'function') setCurrentPage(1); }}>🆕 新着順 {searchQuery && (searchStats?.sortModes?.latest || 0) > 0 && <span className="tab-hit-badge">{searchStats.sortModes.latest}</span>}</button>
         <button className={sortMode === 'popular' ? 'active' : ''} onClick={() => { setSortMode('popular'); if (typeof setCurrentPage === 'function') setCurrentPage(1); }}>🔥 人気 {searchQuery && (searchStats?.sortModes?.popular || 0) > 0 && <span className="tab-hit-badge">{searchStats.sortModes.popular}</span>}</button>
-        <button className={sortMode === 'watching' ? 'active' : ''} onClick={() => { setSortMode('watching'); if (typeof setCurrentPage === 'function') setCurrentPage(1); }}>⭐ ウォッチ中</button>
+        <button className={sortMode === 'watching' ? 'active' : ''} onClick={() => { setSortMode('watching'); if (typeof setCurrentPage === 'function') setCurrentPage(1); }}>⭐ ウォッチ中 {watchedIds.length > 0 && <span className="tab-hit-badge">{watchedIds.length}</span>}</button>
         <button className={sortMode === 'ended' ? 'active' : ''} onClick={() => { setSortMode('ended'); if (typeof setCurrentPage === 'function') setCurrentPage(1); }}>📁 アーカイブ {searchQuery && (searchStats?.sortModes?.ended || 0) > 0 && <span className="tab-hit-badge">{searchStats.sortModes.ended}</span>}</button>
         <button
           className={sortMode === 'mine' ? 'active' : ''}
@@ -512,7 +521,7 @@ const SurveyListView = ({
           </>
         ) : (
           <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#475569', whiteSpace: 'nowrap' }}>
-            {sortMode === 'mine' ? '👤 あなたのアンケート' : '⭐ ウォッチ中のアンケート'}
+            {sortMode === 'mine' ? '👤 あなたのアンケート' : '⭐ ウォッチ中のアンケート（終了後3日で自動整理）'}
           </div>
         )}
         </div>
@@ -666,8 +675,12 @@ const SurveyListView = ({
               );
             }
 
-            return <div className="empty-msg" style={{ padding: '40px 20px', textAlign: 'center', color: '#64748b', whiteSpace: 'pre-wrap' }}>
-              {sortMode === 'mine' ? '🐰 まだアンケートを作っていないよ！\n「新しいアンケートを作る」から挑戦してみてね🥕' : '該当するアンケートがないよ〜🐰🥕'}
+            return <div className="empty-msg" style={{ padding: '40px 20px', textAlign: 'center', color: '#64748b', whiteSpace: 'pre-wrap', lineHeight: '1.8' }}>
+              {sortMode === 'mine'
+                ? '🐰 まだアンケートを作っていないよ！\n「新しいアンケートを作る」から挑戦してみてね🥕'
+                : sortMode === 'watching'
+                  ? '🐰 まだウォッチ中のアンケートがないよ！\nアンケートに1票投票するか、カードの「☆」を押すとここに自動保存されて、いつでもその後の結果を見返せるよ🥕'
+                  : '該当するアンケートがないよ〜🐰🥕'}
             </div>;
           }
 
@@ -855,11 +868,11 @@ const SurveyListView = ({
                               </span>
                               {/* 右側：☆のみ */}
                               <button
-                                className={`watch-star-btn ${watchedIds.includes(s.id) ? 'active' : ''}`}
+                                className={`watch-star-btn ${watchedIds.some(wId => String(wId) === String(s.id)) ? 'active' : ''}`}
                                 onClick={e => toggleWatch(e, s.id)}
-                                aria-label={watchedIds.includes(s.id) ? "ウォッチリストから削除" : "ウォッチリストに追加"}
-                                style={{ flexShrink: 0, background: 'none', border: 'none', fontSize: '1rem', cursor: 'pointer', padding: '2px', lineHeight: 1, color: watchedIds.includes(s.id) ? '#f59e0b' : '#94a3b8' }}
-                              >{watchedIds.includes(s.id) ? '★' : '☆'}</button>
+                                aria-label={watchedIds.some(wId => String(wId) === String(s.id)) ? "ウォッチリストから削除" : "ウォッチリストに追加"}
+                                style={{ flexShrink: 0, background: 'none', border: 'none', fontSize: '1rem', cursor: 'pointer', padding: '2px', lineHeight: 1, color: watchedIds.some(wId => String(wId) === String(s.id)) ? '#f59e0b' : '#94a3b8' }}
+                              >{watchedIds.some(wId => String(wId) === String(s.id)) ? '★' : '☆'}</button>
                             </div>
                             {/* 下段：メタ情報（2段レイアウト） */}
                             <div className="list-item-meta-container" style={{ display: 'flex', flexDirection: 'column', gap: '4px', overflow: 'hidden', minWidth: 0, marginTop: '4px' }}>
@@ -887,6 +900,20 @@ const SurveyListView = ({
                                   <span className={`status-badge ${isEnded ? 'ended' : 'active'}`}>
                                     {isEnded ? '終了' : '受付中'}
                                   </span>
+                                  {typeof window !== 'undefined' && localStorage.getItem(`voted_survey_${s.id}`) && (
+                                    <span style={{
+                                      background: '#ede9fe',
+                                      color: '#6d28d9',
+                                      fontSize: '0.62rem',
+                                      fontWeight: '800',
+                                      padding: '1px 5px',
+                                      borderRadius: '6px',
+                                      border: '1px solid #ddd6fe',
+                                      lineHeight: '1.2'
+                                    }}>
+                                      ✅投票済
+                                    </span>
+                                  )}
                                   <span className="survey-item-created-at" title={`作成日時: ${new Date(s.created_at).toLocaleString('ja-JP')}`} style={{
                                     fontWeight: isBrandNew(s.created_at) ? '700' : 'normal',
                                     color: isBrandNew(s.created_at) ? '#0284c7' : undefined
@@ -920,11 +947,11 @@ const SurveyListView = ({
                               {/* グリッド：☆ボタンのみ右上絶対配置（24px, 画像に被らないよう縮小） */}
                               <div style={{ position: 'absolute', top: '6px', right: '6px', zIndex: 10 }}>
                                 <button
-                                  className={`watch-star-btn ${watchedIds.includes(s.id) ? 'active' : ''}`}
+                                  className={`watch-star-btn ${watchedIds.some(wId => String(wId) === String(s.id)) ? 'active' : ''}`}
                                   onClick={e => toggleWatch(e, s.id)}
-                                  aria-label={watchedIds.includes(s.id) ? "ウォッチリストから削除" : "ウォッチリストに追加"}
+                                  aria-label={watchedIds.some(wId => String(wId) === String(s.id)) ? "ウォッチリストから削除" : "ウォッチリストに追加"}
                                   style={{ background: 'rgba(255,255,255,0.88)', border: 'none', borderRadius: '50%', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.85rem', cursor: 'pointer', boxShadow: '0 1px 3px rgba(0,0,0,0.12)', padding: 0 }}
-                                >{watchedIds.includes(s.id) ? '★' : '☆'}</button>
+                                >{watchedIds.some(wId => String(wId) === String(s.id)) ? '★' : '☆'}</button>
                               </div>
                             </div>
                             <div className="survey-item-meta-container" style={{ display: 'flex', flexDirection: 'column', gap: '6px', overflow: 'hidden', minWidth: 0, marginTop: '8px' }}>

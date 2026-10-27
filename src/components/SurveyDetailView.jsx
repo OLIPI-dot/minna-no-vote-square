@@ -577,9 +577,12 @@ const SurveyDetailView = ({
           textAlign: 'center',
           animation: 'fadeInUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
         }}>
-          <h4 style={{ fontSize: '1.2rem', fontWeight: '900', color: '#0f172a', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+          <h4 style={{ fontSize: '1.2rem', fontWeight: '900', color: '#0f172a', marginBottom: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
             <span>🎉</span> 投票ありがとう！結果をみんなにシェアしよう！
           </h4>
+          <div style={{ fontSize: '0.88rem', color: '#475569', marginBottom: '16px', background: '#ffffff', display: 'inline-block', padding: '8px 16px', borderRadius: '20px', border: '1px solid #cbd5e1', fontWeight: 'bold' }}>
+            ⭐ トップ画面の<span style={{ color: '#7c3aed' }}>「ウォッチ中」</span>に自動保存したよ！あとでまたみんなの結果を見に来てね🐰
+          </div>
           <button onClick={() => handleShareResult('x')} style={{
             background: '#000000',
             color: 'white',

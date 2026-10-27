@@ -32,27 +32,56 @@ function log(msg) {
 }
 
 const RSS_FEEDS = [
-    // 🥇 ニュース・時事・総合（最優先らび！）
-    'https://news.yahoo.co.jp/rss/topics/top-picks.xml',
-    'https://news.yahoo.co.jp/rss/categories/it.xml',
-    'https://gigazine.net/news/rss_2.0/',
-    'http://kai-you.net/contents/feed.rss',
+    // 🥇 配信・YouTube・VTuber・ネットトレンド（最優先らび！）
+    { url: 'https://panora.tokyo/feed/', source: 'PANORA' },
+    { url: 'https://logtube.jp/feed/', source: 'LogTube' },
+    { url: 'https://kai-you.net/contents/feed.rss', source: 'KAI-YOU' },
+    { url: 'https://news.denfaminicogamer.jp/feed', source: '電ファミニコゲーマー' },
 
-    // 🥈 エンタメ・トレンド
-    'https://news.yahoo.co.jp/rss/media/natalien/all.xml',
-    'https://news.yahoo.co.jp/rss/categories/entertainment.xml',
-    'https://animeanime.jp/rss/index.rdf',
-    'https://jp.ign.com/feed.xml',
+    // 🥈 ストリーマー・ゲーム配信・サブカル
+    { url: 'https://automaton-media.com/feed/', source: 'AUTOMATON' },
+    { url: 'https://www.gamespark.jp/rss20/index.rdf', source: 'Game*Spark' },
+    { url: 'https://animeanime.jp/rss/index.rdf', source: 'アニメ！アニメ！' },
+    { url: 'https://www.4gamer.net/rss/news_topics.xml', source: '4Gamer' },
 
-    // 🥉 ゲーム・サブカル
-    'https://news.denfaminicogamer.jp/feed',
-    'https://www.gamespark.jp/rss20/index.rdf',
-    'https://automaton-media.com/feed/',
-    'https://www.4gamer.net/rss/news_topics.xml',
-
-    // 🏷️ その他
-    'https://logtube.jp/feed/'
+    // 🥉 エンタメ・ネット話題
+    { url: 'https://news.yahoo.co.jp/rss/categories/entertainment.xml', source: 'Yahoo!エンタメ' },
+    { url: 'https://news.yahoo.co.jp/rss/media/natalien/all.xml', source: 'ナタリー' },
+    { url: 'https://gigazine.net/news/rss_2.0/', source: 'GIGAZINE' }
 ];
+
+/**
+ * 🎥 ユーチュラ（YouTube・Kick・配信者・VTuber専門ニュース）から最新記事一覧を取得するらび！
+ */
+async function fetchYuturaLatest() {
+    try {
+        const res = await axios.get('https://yutura.net/', {
+            timeout: 20000,
+            headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36' }
+        });
+        const $ = cheerio.load(res.data);
+        const list = [];
+        $('a[href*="/news/archives/"]').each((_, el) => {
+            const href = $(el).attr('href');
+            if (!href) return;
+            const link = href.startsWith('http') ? href : `https://yutura.net${href}`;
+            const title = $(el).text().trim().replace(/\s+/g, ' ').replace(/\d{4}年\d{1,2}月\d{1,2}日.*$/, '').trim();
+            if (title.length >= 12 && !list.some(item => item.link === link)) {
+                list.push({
+                    title,
+                    link,
+                    pubDateStr: new Date().toISOString(),
+                    sourceName: 'ユーチュラ'
+                });
+            }
+        });
+        log(`🎥 ユーチュラから最新の配信・YouTubeニュースを ${list.length} 件取得しました！`);
+        return list.slice(0, 15);
+    } catch (e) {
+        log(`⚠️ ユーチュラ取得エラー: ${e.message}`);
+        return [];
+    }
+}
 
 /**
  * 🕵️ YouTube検索（確信度チェック付き）
@@ -341,6 +370,18 @@ function extractMainContent(html) {
         });
     });
 
+    // フォールバック: もしノイズ除去が効きすぎて段落が少なすぎる場合は、シンプルに記事段落を救出するらび！
+    if (paragraphs.join('').length < 200) {
+        const $fallback = cheerio.load(html);
+        $fallback('script, style, aside, nav, footer, .related, .ranking, .ad, figure, figcaption').remove();
+        $fallback('article p, .entry-content p, .article-body p, .post-content p, main p').each((_, p) => {
+            const t = $fallback(p).text().trim().replace(/\s+/g, ' ');
+            if (t.length >= 20 && !paragraphs.includes(t)) {
+                paragraphs.push(t);
+            }
+        });
+    }
+
     const mainText = paragraphs.join('\n\n').trim();
     return { mainText, paragraphs };
 }
@@ -427,12 +468,13 @@ async function fetchRichData(url, newsTitle = '') {
 
 function classifyNews(title, description) {
     const textLower = (title + ' ' + (description || '')).toLowerCase();
-    const scores = { 'ニュース': 30, 'エンタメ': 0, '話題': 0, '芸能': 0, 'ゲーム': 0 }; // ニュースに底上げスコアを付与らび！🥕🛡️
+    const scores = { 'エンタメ': 20, '話題': 15, 'ゲーム': 0, '芸能': 0, 'ニュース': 0 }; // 配信・エンタメ・話題を優先らび！🎥✨
     const keywords = {
-        'エンタメ': ['映画', 'ドラマ', 'アニメ', '音楽', 'アイドル', '漫画', 'コミック', '声優', 'youtube', 'vtuber', '動画配信', '実況'],
-        '芸能': ['芸能', 'ジャニーズ', '不倫', '結婚', '熱愛', '退所', 'スター', '俳優', '女優', 'タレント', '芸人'], '話題': ['sns', 'ネットで', 'バズ', '炎上', '流行', 'x', 'twitter', 'tiktok', 'インスタ'],
+        'エンタメ': ['映画', 'ドラマ', 'アニメ', '音楽', 'アイドル', '漫画', 'コミック', '声優', 'youtube', 'youtuber', 'vtuber', 'kick', 'twitch', '配信', 'ストリーマー', '実況', 'チャンネル', '登録者', 'にじさんじ', 'ホロライブ'],
+        '芸能': ['芸能', '不倫', '結婚', '熱愛', '退所', 'スター', '俳優', '女優', 'タレント', '芸人'],
+        '話題': ['sns', 'ネットで', 'バズ', '炎上', '流行', 'x', 'twitter', 'tiktok', 'インスタ', 'ban', '謝罪', '批判', '物議'],
         'ニュース': ['政治', '経済', '社会', '事件', '事故', '科学', '国際', '物価'],
-        'ゲーム': ['ps5', 'switch', 'steam', 'ゲーム', 'プレイステーション', 'ニンテンドー', 'esports', 'rpg', 'fps', 'インディー', 'mod', 'pcゲーム', 'xbox', 'オープンワールド', '新作タイトル']
+        'ゲーム': ['ps5', 'switch', 'steam', 'ゲーム', 'プレイステーション', 'ニンテンドー', 'esports', 'rpg', 'fps', 'インディー', 'mod', 'pcゲーム', 'xbox', 'オープンワールド', '新作タイトル', 'スプラ', 'ポケカ', 'マイクラ', 'スト6', 'valorant', 'apex']
     };
     for (const [cat, words] of Object.entries(keywords)) {
         words.forEach(w => { if (textLower.includes(w)) scores[cat] += 20; });
@@ -473,20 +515,25 @@ function hasDuplicateTopic(title, postedTitles) {
 async function startAutoPosting() {
     log('🚀 プレミアム自動投稿エンジン 起動らびっ！！ (長文リッチ＆エンタメ強化版) ' + (IS_DRY_RUN ? ' (DRY RUN)' : ''));
 
-    // 🎲 ニュース系フィード（上位4件）を固定し、残りをシャッフルして多様性を出すらび！
+    // 🎥 1. まずユーチュラ（YouTube・Kick・配信者・VTuber）の最新記事を取得！
+    const yuturaNews = await fetchYuturaLatest();
+
+    // 🎲 2. 配信・VTuber・ゲーム・サブカル系RSSフィードを取得（上位4件を優先し残りをシャッフル）
     const priorityFeeds = RSS_FEEDS.slice(0, 4);
     const otherFeeds = RSS_FEEDS.slice(4).sort(() => Math.random() - 0.5);
     const orderedFeeds = [...priorityFeeds, ...otherFeeds];
 
-    let allNews = [];
-    for (const feed of orderedFeeds) {
+    let rssNews = [];
+    for (const feedObj of orderedFeeds) {
+        const feedUrl = typeof feedObj === 'string' ? feedObj : feedObj.url;
+        const feedSource = typeof feedObj === 'string' ? 'ニュース' : feedObj.source;
         try {
-            const response = await axios.get(feed, { timeout: 30000, headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36' } });
+            const response = await axios.get(feedUrl, { timeout: 30000, headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36' } });
             const feedData = response.data;
             const items = feedData.match(/<item>([\s\S]*?)<\/item>/g) || [];
             for (const item of items) {
                 const title = stripHtml(item.match(/<title>([\s\S]*?)<\/title>/)?.[1]);
-                const link = item.match(/<link>([\s\S]*?)<\/link>/)?.[1];
+                const link = stripHtml(item.match(/<link>([\s\S]*?)<\/link>/)?.[1]);
                 const pubDateStr = item.match(/<pubDate>([\s\S]*?)<\/pubDate>/)?.[1] || item.match(/<dc:date>([\s\S]*?)<\/dc:date>/)?.[1];
 
                 if (!title || !link) continue;
@@ -497,19 +544,25 @@ async function startAutoPosting() {
                     const now = new Date();
                     const diffMs = now - pubDate;
                     if (diffMs > 24 * 60 * 60 * 1000) {
-                        // log(`⏳ 古い記事をスキップ: ${title} (${pubDate.toLocaleString()})`);
                         continue;
                     }
                 } else {
-                    // 日付が取れない場合、不確実なのでスキップするのが安全らび
                     continue;
                 }
 
-                allNews.push({ title, link, pubDateStr });
+                rssNews.push({ title, link, pubDateStr, sourceName: feedSource });
             }
         } catch (e) {
-            log(`❌ フィード取得失敗: ${feed} -> ${e.message}`);
+            log(`❌ フィード取得失敗: ${feedUrl} -> ${e.message}`);
         }
+    }
+
+    // 🎶 ユーチュラ（配信・YouTube・Kick）の記事と、VTuber・ゲーム・トレンドRSSの記事をバランスよく交互に並べるらび！
+    let allNews = [];
+    const maxLen = Math.max(yuturaNews.length, rssNews.length);
+    for (let i = 0; i < maxLen; i++) {
+        if (i < yuturaNews.length) allNews.push(yuturaNews[i]);
+        if (i < rssNews.length) allNews.push(rssNews[i]);
     }
 
     const { data: recentSurveys } = await supabase.from('surveys').select('title, description, category').order('created_at', { ascending: false }).limit(500);
@@ -591,7 +644,7 @@ async function startAutoPosting() {
 
             // 🏷️ 出典元をタイトルから抜き出すらび！
             const sourceMatch = news.title.match(/[（\(](.*?)[）\)]$/);
-            const sourceName = sourceMatch ? sourceMatch[1] : 'ニュース';
+            const sourceName = sourceMatch ? sourceMatch[1] : (news.sourceName || 'ニュース');
 
             // ⚠️ AI要約が生成できなかった場合は、本文の文字数に関わらず強制スキップ！
             // （タイトルや短いキャプションだけの淡白な記事が投稿されるのを防ぐらび！）
