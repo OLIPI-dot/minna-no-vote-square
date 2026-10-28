@@ -8,6 +8,12 @@
 
 ## 📌 直近の作業メモ・引き継ぎ事項（2026年10月27日）
 
+### 0-00000. ⚡ アンケート一覧カードへの「1行チラ見せ見出し（クリック誘引フック）」導入（10/28実施）
+- **背景**: 一覧画面で記事を開く前に「どんな内容・論点の話題か」をチラ見せして興味を惹き、クリック率と回遊性を高める。
+- **改修内容**:
+  - [`src/components/SurveyListView.jsx`](file:///i:/olipiprojects/antigravity-scratch/minna-no-vote-square/src/components/SurveyListView.jsx) に `extractSurveyTeaser` を実装し、`[[SUMMARY:...]]` 内の `point1_title` と `point1_desc`（または本文先頭）から自動でキャッチーな見出しバッジと1行チラ見せテキストを抽出。
+  - リスト表示・グリッド表示の両方でタイトル直下に `⚡見出しバッジ ＋ 1行チラ見せ本文… ＋ ▸詳細` を表示し、スマホ（横幅600px以下）では右端を `▸` のみに省スペース化して本文がたっぷり読めるよう [`src/App.css`](file:///i:/olipiprojects/antigravity-scratch/minna-no-vote-square/src/App.css) を最適化。
+
 ### 0-0000. 🥕 URアクセサリー「らびたんの特大ゴールドニンジン」専用効果【黄金部位撃ち】（ランダム部位ヒット）実装（10/27実施）
 - **背景**: 従来は汎用効果 `money_slap`（固定60〜160ダメージ）で攻撃力スケールがなく、URの特大ゴールドニンジンとしては少し控えめだった。
 - **改修内容**:

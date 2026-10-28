@@ -86,6 +86,49 @@ const SurveyListView = ({
     return diffHours >= 0 && diffHours < 6;
   };
 
+  // ⚡ アンケート本文・AI要約から「1行チラ見せ見出し（フック）」を抽出するらび！
+  const extractSurveyTeaser = (s) => {
+    if (!s || !s.description) return null;
+    if (s.tags?.includes('お知らせ') && s.title?.includes('||')) {
+      const announceBody = s.title.split('||')[1]?.trim();
+      return announceBody ? { badge: 'お知らせ', text: announceBody } : null;
+    }
+    const desc = String(s.description);
+    const summaryMatch = desc.match(/\[\[SUMMARY:([\s\S]*?)\]\]/);
+    if (summaryMatch) {
+      try {
+        const parsed = JSON.parse(summaryMatch[1].trim());
+        const stripCount = (v) => typeof v === 'string'
+          ? v.replace(/\s*[（(]\s*\d+\s*(?:文字|字)\s*[）)]/g, '').trim()
+          : '';
+        let badge = stripCount(parsed.point1_title) || '注目ポイント';
+        if (badge.length > 10) badge = badge.slice(0, 10);
+        let text = stripCount(parsed.point1_desc) || stripCount(parsed.rabi_comment) || '';
+        if (parsed.point1_title && text.startsWith(parsed.point1_title)) {
+          text = text.substring(parsed.point1_title.length).replace(/^[:：\s]+/, '').trim();
+        }
+        if (text) return { badge, text };
+      } catch (e) {
+        // fallback below
+      }
+    }
+    // 一般投稿などSUMMARY JSONがない場合のフォールバック
+    const cleanText = desc
+      .replace(/\[\[SUMMARY:[\s\S]*?\]\]/g, '')
+      .replace(/\[\[SECRET_ANSWER:[\s\S]*?\]\]/g, '')
+      .replace(/🐰\s*\*\*らびの視点：\*\*[\s\S]*?(?=\n\n|$)/g, '')
+      .replace(/\[([^\]]+)\]\(https?:\/\/[^\s)]+\)/g, '')
+      .replace(/https?:\/\/[^\s)]+/g, '')
+      .replace(/[\(（]\s*出典[\s\S]*?[\)）]/g, '')
+      .replace(/###\s*/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+    if (cleanText.length >= 6) {
+      return { badge: '詳細チラ見', text: cleanText };
+    }
+    return null;
+  };
+
   const handleCopyPageTitles = () => {
     if (!surveys || surveys.length === 0) return;
     const titles = surveys.map(s => s.title).join('\n');
@@ -734,6 +777,7 @@ const SurveyListView = ({
                 // 💬 ガヤ（コメント）タグを探す
                 const commentTag = s.tags?.find(t => String(t).startsWith('comment:'));
                 const pickupComment = commentTag ? commentTag.replace('comment:', '') : null;
+                const teaser = extractSurveyTeaser(s);
 
                 return (
                   <React.Fragment key={s.id}>
@@ -874,6 +918,51 @@ const SurveyListView = ({
                                 style={{ flexShrink: 0, background: 'none', border: 'none', fontSize: '1rem', cursor: 'pointer', padding: '2px', lineHeight: 1, color: watchedIds.some(wId => String(wId) === String(s.id)) ? '#f59e0b' : '#94a3b8' }}
                               >{watchedIds.some(wId => String(wId) === String(s.id)) ? '★' : '☆'}</button>
                             </div>
+                            {/* ⚡ チラ見せ見出し（PCは1〜2行・スマホは2行でたっぷり読めるクリック誘引フック） */}
+                            {teaser && (
+                              <div className="survey-item-teaser-row" style={{
+                                background: 'linear-gradient(90deg, #faf5ff 0%, #fdf2f8 60%, #fffbeb 100%)',
+                                border: '1px solid #e9d5ff',
+                                borderRadius: '8px',
+                                padding: '4px 8px',
+                                minWidth: 0,
+                                maxWidth: '100%'
+                              }}>
+                                <div className="survey-item-teaser-clamp" style={{
+                                  fontSize: '0.74rem',
+                                  fontWeight: 600,
+                                  color: '#475569',
+                                  lineHeight: 1.45,
+                                  display: '-webkit-box',
+                                  WebkitLineClamp: 2,
+                                  WebkitBoxOrient: 'vertical',
+                                  overflow: 'hidden',
+                                  wordBreak: 'break-word'
+                                }}>
+                                  <span style={{
+                                    display: 'inline-block',
+                                    background: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
+                                    color: '#ffffff',
+                                    fontSize: '0.64rem',
+                                    fontWeight: 900,
+                                    padding: '0px 6px',
+                                    borderRadius: '5px',
+                                    marginRight: '5px',
+                                    verticalAlign: 'baseline',
+                                    lineHeight: 1.35
+                                  }}>
+                                    ⚡{teaser.badge}
+                                  </span>
+                                  <span>{teaser.text}</span>
+                                  <span style={{
+                                    fontSize: '0.7rem',
+                                    fontWeight: 800,
+                                    color: '#7c3aed',
+                                    marginLeft: '3px'
+                                  }}>▸</span>
+                                </div>
+                              </div>
+                            )}
                             {/* 下段：メタ情報（2段レイアウト） */}
                             <div className="list-item-meta-container" style={{ display: 'flex', flexDirection: 'column', gap: '4px', overflow: 'hidden', minWidth: 0, marginTop: '4px' }}>
                                 {/* 1段目（上段）：バッジ類 */}
@@ -944,6 +1033,46 @@ const SurveyListView = ({
                                   <span style={{ marginLeft: '8px', fontSize: '1.2rem', display: 'inline-block', verticalAlign: 'middle' }}>✨</span>
                                 )}
                               </span>
+                              {/* ⚡ グリッド用 2行チラ見せ見出し */}
+                              {teaser && (
+                                <div className="survey-item-teaser-row-grid" style={{
+                                  background: 'linear-gradient(90deg, #faf5ff 0%, #fdf2f8 100%)',
+                                  border: '1px solid #e9d5ff',
+                                  borderRadius: '7px',
+                                  padding: '3px 7px',
+                                  marginTop: '4px',
+                                  minWidth: 0,
+                                  maxWidth: '100%'
+                                }}>
+                                  <div style={{
+                                    fontSize: '0.72rem',
+                                    fontWeight: 600,
+                                    color: '#475569',
+                                    lineHeight: 1.4,
+                                    display: '-webkit-box',
+                                    WebkitLineClamp: 2,
+                                    WebkitBoxOrient: 'vertical',
+                                    overflow: 'hidden',
+                                    wordBreak: 'break-word'
+                                  }}>
+                                    <span style={{
+                                      display: 'inline-block',
+                                      background: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
+                                      color: '#ffffff',
+                                      fontSize: '0.6rem',
+                                      fontWeight: 900,
+                                      padding: '0px 5px',
+                                      borderRadius: '4px',
+                                      marginRight: '4px',
+                                      verticalAlign: 'baseline',
+                                      lineHeight: 1.3
+                                    }}>
+                                      ⚡{teaser.badge}
+                                    </span>
+                                    <span>{teaser.text}</span>
+                                  </div>
+                                </div>
+                              )}
                               {/* グリッド：☆ボタンのみ右上絶対配置（24px, 画像に被らないよう縮小） */}
                               <div style={{ position: 'absolute', top: '6px', right: '6px', zIndex: 10 }}>
                                 <button

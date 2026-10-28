@@ -4193,3 +4193,14 @@ button:active,
     padding: 1px 4px !important;
   }
 }
+
+/* 📱 スマホ時の1行チラ見せ見出し（省スペースで本文をたっぷり見せる） */
+@media (max-width: 600px) {
+  .survey-item-teaser-row {
+    padding: 2px 6px !important;
+    gap: 4px !important;
+  }
+  .survey-item-teaser-more-text {
+    display: none !important;
+  }
+}
