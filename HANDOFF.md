@@ -22,6 +22,7 @@
 - **改修内容**:
   - [`src/components/SurveyListView.jsx`](file:///i:/olipiprojects/antigravity-scratch/minna-no-vote-square/src/components/SurveyListView.jsx) に `extractSurveyTeaser` を実装し、タイトルと内容が重複しやすい1段落目（`point1`）ではなく、アンケートの問いかけ（`survey_question`）＋踏み込んだ2段落目（`point2_desc` / `rabi_comment`）を優先抽出。
   - PC画面（601px以上）ではサムネイル右側のカラム内にスッキリ表示し、スマホ画面（600px以下）ではカード下段（横幅いっぱい）に配置することで、サムネイル横の高さバランスを整えつつ約50文字たっぷり読めるよう [`src/App.css`](file:///i:/olipiprojects/antigravity-scratch/minna-no-vote-square/src/App.css) を最適化。
+  - グリッド表示（`view-grid`）では、タイトル（`clamp(0.76rem, 2.2vw, 1.0rem)`・省略なし全文表示）のすぐ下に縦並びで💡チラ見せ見出し枠（`clamp(0.68rem, 1.8vw, 0.82rem)`・3行表示・サムネイルと同幅）を配置し、PCでもスマホ2列表示でもタイトルと要点の両方が見やすく収まるよう調整。
 
 ### 0-0000. 🥕 URアクセサリー「らびたんの特大ゴールドニンジン」専用効果【黄金部位撃ち】（ランダム部位ヒット）実装（10/27実施）
 - **背景**: 従来は汎用効果 `money_slap`（固定60〜160ダメージ）で攻撃力スケールがなく、URの特大ゴールドニンジンとしては少し控えめだった。
