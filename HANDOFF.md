@@ -1,14 +1,23 @@
 # 🐰 引き継ぎメモ (HANDOFF) 🥕✨
 
-> **最終更新日**: 2026年10月27日  
+> **最終更新日**: 2026年10月28日  
 > **プロジェクト**: minna-no-vote-square（みんアケ🐰🥕）  
 > **デプロイ先**: Vercel (https://minna-no-vote-square.vercel.app)
 
 ---
 
-## 📌 直近の作業メモ・引き継ぎ事項（2026年10月27日）
+## 📌 直近の作業メモ・引き継ぎ事項（2026年10月28日）
 
-### 0-00000. ⚡ アンケート一覧カードへの「1行チラ見せ見出し（クリック誘引フック）」導入（10/28実施）
+### 0-000000. 🎫 ガチャチケット枚数が「46枚」に先祖返りしてしまうクラウド同期競合バグの根本修正（10/28実施）
+- **原因**:
+  1. [`src/supabaseClient.js`](file:///i:/olipiprojects/antigravity-scratch/minna-no-vote-square/src/supabaseClient.js) で `lock: false` が指定されているため、複数箇所から `supabase.auth.updateUser({ data: ... })` が同時に呼ばれた際、リクエストが直列化されず並行送信されていた。
+  2. [`src/App.jsx`](file:///i:/olipiprojects/antigravity-scratch/minna-no-vote-square/src/App.jsx) の初回同期 `handleAuthExp` 実行時に `user?.id` が確定した瞬間、装備・インベントリ・図鑑2種の計4つの `useEffect` が一斉に発火し、さらに `getSession()` と `getUser()` も並行で `handleAuthExp` を呼んでいたため、最大6本の `PUT /auth/v1/user` が同時送信され、後から完了したリクエストがサーバー上の `gacha_tickets: 10` や `ticket_fix_ver` を古いスナップショット（42枚）で上書きしてしまっていた（その後、10/28のログインボーナス+1枚＋レイド参加賞+3枚で46枚になっていた）。
+- **改修内容**:
+  - [`src/supabaseClient.js`](file:///i:/olipiprojects/antigravity-scratch/minna-no-vote-square/src/supabaseClient.js) の `supabase.auth.updateUser` にマイクロバッチ（60ms以内の `data` 更新を1つのペイロードへ自動マージ）＆直列実行キューを実装し、アプリ内のどこから同時に `updateUser` が呼ばれても絶対に上書き消失が起きないように保護。
+  - [`src/App.jsx`](file:///i:/olipiprojects/antigravity-scratch/minna-no-vote-square/src/App.jsx) の4つの保存用 `useEffect` から不要な `user?.id` 依存を外し、クラウド同期中フラグ（`isSyncingFromCloudRef`）で初回ロード時の無駄な再送信を遮断。
+  - `getSession()` と `getUser()` の二重実行を整理し、`TICKET_FIX_VER = '20261028_ticket_fix_v2'` でチケット枚数を確実に10枚へリセットするよう修正。
+
+### 0-00000. ⚡ アンケート一覧カードへの「2行チラ見せ見出し（クリック誘引フック）」導入（10/28実施）
 - **背景**: 一覧画面で記事を開く前に「どんな内容・論点の話題か」をチラ見せして興味を惹き、クリック率と回遊性を高める。
 - **改修内容**:
   - [`src/components/SurveyListView.jsx`](file:///i:/olipiprojects/antigravity-scratch/minna-no-vote-square/src/components/SurveyListView.jsx) に `extractSurveyTeaser` を実装し、`[[SUMMARY:...]]` 内の `point1_title` と `point1_desc`（または本文先頭）から自動でキャッチーな見出しバッジと1行チラ見せテキストを抽出。

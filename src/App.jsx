@@ -469,6 +469,7 @@ function App() {
   });
 
   const isAuthLoaded = useRef(false);
+  const isSyncingFromCloudRef = useRef(false);
   const listScrollRef = useRef(0); // 記事を開く直前の一覧のスクロール位置
 
   // 🪶 クラウド保存用スリム化（JWTサイズ肥大化・400 Bad Request防止）
@@ -492,24 +493,24 @@ function App() {
 
   useEffect(() => {
     localStorage.setItem('min_ake_equipment', JSON.stringify(equipment));
-    if (user && isAuthLoaded.current) {
+    if (user && isAuthLoaded.current && !isSyncingFromCloudRef.current) {
       supabase.auth.updateUser({ data: { custom_equipment: toSlimEquipment(equipment) } });
     }
-  }, [equipment, user?.id]);
+  }, [equipment]);
 
   useEffect(() => {
     localStorage.setItem('min_ake_acquired_items', JSON.stringify(acquiredItems));
-    if (user && isAuthLoaded.current) {
+    if (user && isAuthLoaded.current && !isSyncingFromCloudRef.current) {
       supabase.auth.updateUser({ data: { custom_acquired_items: acquiredItems } });
     }
-  }, [acquiredItems, user?.id]);
+  }, [acquiredItems]);
 
   useEffect(() => {
     localStorage.setItem('min_ake_encountered_enemies', JSON.stringify(encounteredEnemies));
-    if (user && isAuthLoaded.current) {
+    if (user && isAuthLoaded.current && !isSyncingFromCloudRef.current) {
       supabase.auth.updateUser({ data: { custom_encountered_enemies: encounteredEnemies } });
     }
-  }, [encounteredEnemies, user?.id]);
+  }, [encounteredEnemies]);
 
   // 起動時にインベントリと装備のアイテムを図鑑に自動登録する
   useEffect(() => {
@@ -549,22 +550,23 @@ function App() {
 
   useEffect(() => {
     localStorage.setItem('min_ake_inventory', JSON.stringify(inventory));
-    if (user && isAuthLoaded.current) {
+    if (user && isAuthLoaded.current && !isSyncingFromCloudRef.current) {
       supabase.auth.updateUser({ data: { custom_inventory: toSlimInventory(inventory) } });
     }
-  }, [inventory, user?.id]);
+  }, [inventory]);
 
   const hasProcessedLoginBonus = useRef(false);
   const lastTicketUpdateRef = useRef(0);
 
   useEffect(() => {
     const handleAuthExp = (currentUser) => {
+      isSyncingFromCloudRef.current = true;
       setUser(currentUser);
       const localExp = parseInt(localStorage.getItem('min_ake_exp') || '0', 10);
       const localTickets = parseInt(localStorage.getItem('min_ake_tickets') || '0', 10);
       
       const localLastLogin = localStorage.getItem('min_ake_last_login') || '';
-      const TICKET_FIX_VER = '20261027_ticket_fix_v1';
+      const TICKET_FIX_VER = '20261028_ticket_fix_v2';
       
       if (currentUser) {
         const dbExp = currentUser.user_metadata?.vote_exp || 0;
@@ -590,11 +592,13 @@ function App() {
         const updates = {};
         let shouldUpdate = false;
 
-        // 🧹 レイド混線バグ等で異常増殖してしまったチケット（52枚など）を1回だけ正常値（10枚）にリセット
+        // 🧹 レイド混線や並行通信による上書きで残っていた異常チケット（46枚・52枚など）を確実に10枚へリセット
         if (currentUser.user_metadata?.ticket_fix_ver !== TICKET_FIX_VER && newTotalTickets > 15) {
           newTotalTickets = 10;
           updates.gacha_tickets = 10;
           updates.ticket_fix_ver = TICKET_FIX_VER;
+          localStorage.setItem('min_ake_ticket_fix_ver', TICKET_FIX_VER);
+          lastTicketUpdateRef.current = Date.now();
           shouldUpdate = true;
         } else if (!hasDbTickets && localTickets > 0) {
           updates.gacha_tickets = newTotalTickets;
@@ -772,7 +776,14 @@ function App() {
           updates.last_login_date = todayStr;
           updates.vote_exp = newTotalExp;
           updates.gacha_tickets = newTotalTickets;
+          lastTicketUpdateRef.current = Date.now();
           shouldUpdate = true;
+        }
+
+        localStorage.setItem('min_ake_tickets', String(newTotalTickets));
+        localStorage.setItem('min_ake_exp', String(newTotalExp));
+        if (currentUser.user_metadata && shouldUpdate) {
+          Object.assign(currentUser.user_metadata, updates);
         }
         
         setUserExp(newTotalExp);
@@ -808,6 +819,9 @@ function App() {
         setUserExp(newTotalExp);
         setGachaTickets(newTotalTickets);
       }
+      setTimeout(() => {
+        isSyncingFromCloudRef.current = false;
+      }, 0);
     };
 
     // 🛡️ URLに含まれるOAuthトークン（#access_token）またはコード（?code）、エラーを確実に処理する魔法！
@@ -928,13 +942,15 @@ function App() {
 
     supabase.auth.getSession().then(({ data: { session }, error }) => {
       if (error) console.error('getSession error:', error);
-      handleAuthExp(session?.user ?? null);
-
-      // 🔄 サーバーから最新のユーザー情報（他端末で変更された名前やEXPなど）を即座に取得して反映！
       if (session?.user) {
+        // 🔄 サーバーから最新のユーザー情報を取得して1回で確実に同期（並行実行による先祖返り防止）
         supabase.auth.getUser().then(({ data: { user: latestUser } }) => {
-          if (latestUser) handleAuthExp(latestUser);
+          handleAuthExp(latestUser || session.user);
+        }).catch(() => {
+          handleAuthExp(session.user);
         });
+      } else {
+        handleAuthExp(null);
       }
     }).catch(err => {
       console.error('getSession catch:', err);
