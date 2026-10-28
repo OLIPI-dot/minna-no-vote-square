@@ -505,6 +505,36 @@ const SurveyDetailView = ({
         </div>
       )}
 
+      {/* ❓ 投票の問いかけ（選択肢だけだと何のアンケートか分からないため、選択肢の上に表示） */}
+      {(() => {
+        const m = String(descPart || currentSurvey.description || '').match(/\[\[SUMMARY:([\s\S]*?)\]\]/);
+        if (!m) return null;
+        let question = '';
+        try {
+          question = String(JSON.parse(m[1].trim()).survey_question || '')
+            .replace(/\s*[（(]\s*\d+\s*(?:文字|字)\s*[）)]/g, '')
+            .trim();
+        } catch { return null; }
+        if (!question) return null;
+        return (
+          <div className="survey-question-banner" style={{
+            margin: '24px 0 0 0',
+            padding: '14px 16px',
+            background: 'linear-gradient(135deg, #f5f3ff, #fdf2f8)',
+            border: '2px solid #ddd6fe',
+            borderRadius: '14px',
+            textAlign: 'center',
+            fontWeight: 900,
+            fontSize: '1.15rem',
+            lineHeight: 1.5,
+            color: '#4c1d95',
+            wordBreak: 'break-word'
+          }}>
+            🗳️ {question}
+          </div>
+        );
+      })()}
+
       <div className="options-container" style={{ margin: '20px 0 40px 0' }}>
         {options.length > 0 ? options.map((opt, index) => {
           const perc = isTotalVotes > 0 ? Math.round((opt.votes / isTotalVotes) * 100) : 0;
