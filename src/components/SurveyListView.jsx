@@ -102,7 +102,7 @@ const SurveyListView = ({
           ? v.replace(/\s*[（(]\s*\d+\s*(?:文字|字)\s*[）)]/g, '').trim()
           : '';
         let badge = stripCount(parsed.point1_title) || '注目ポイント';
-        if (badge.length > 10) badge = badge.slice(0, 10);
+        if (badge.length > 28) badge = badge.slice(0, 28) + '…';
         let text = stripCount(parsed.point1_desc) || stripCount(parsed.rabi_comment) || '';
         if (parsed.point1_title && text.startsWith(parsed.point1_title)) {
           text = text.substring(parsed.point1_title.length).replace(/^[:：\s]+/, '').trim();
@@ -929,10 +929,10 @@ const SurveyListView = ({
                                 maxWidth: '100%'
                               }}>
                                 <div className="survey-item-teaser-clamp" style={{
-                                  fontSize: '0.74rem',
+                                  fontSize: '0.76rem',
                                   fontWeight: 600,
-                                  color: '#475569',
-                                  lineHeight: 1.45,
+                                  color: '#334155',
+                                  lineHeight: 1.5,
                                   display: '-webkit-box',
                                   WebkitLineClamp: 2,
                                   WebkitBoxOrient: 'vertical',
@@ -940,16 +940,17 @@ const SurveyListView = ({
                                   wordBreak: 'break-word'
                                 }}>
                                   <span style={{
-                                    display: 'inline-block',
-                                    background: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
-                                    color: '#ffffff',
-                                    fontSize: '0.64rem',
-                                    fontWeight: 900,
-                                    padding: '0px 6px',
+                                    display: 'inline',
+                                    background: '#ede9fe',
+                                    color: '#5b21b6',
+                                    fontSize: '0.76rem',
+                                    fontWeight: 800,
+                                    padding: '1px 6px',
                                     borderRadius: '5px',
-                                    marginRight: '5px',
-                                    verticalAlign: 'baseline',
-                                    lineHeight: 1.35
+                                    marginRight: '6px',
+                                    border: '1px solid #ddd6fe',
+                                    boxDecorationBreak: 'clone',
+                                    WebkitBoxDecorationBreak: 'clone'
                                   }}>
                                     ⚡{teaser.badge}
                                   </span>
@@ -1045,10 +1046,10 @@ const SurveyListView = ({
                                   maxWidth: '100%'
                                 }}>
                                   <div style={{
-                                    fontSize: '0.72rem',
+                                    fontSize: '0.74rem',
                                     fontWeight: 600,
-                                    color: '#475569',
-                                    lineHeight: 1.4,
+                                    color: '#334155',
+                                    lineHeight: 1.45,
                                     display: '-webkit-box',
                                     WebkitLineClamp: 2,
                                     WebkitBoxOrient: 'vertical',
@@ -1056,16 +1057,17 @@ const SurveyListView = ({
                                     wordBreak: 'break-word'
                                   }}>
                                     <span style={{
-                                      display: 'inline-block',
-                                      background: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
-                                      color: '#ffffff',
-                                      fontSize: '0.6rem',
-                                      fontWeight: 900,
-                                      padding: '0px 5px',
+                                      display: 'inline',
+                                      background: '#ede9fe',
+                                      color: '#5b21b6',
+                                      fontSize: '0.74rem',
+                                      fontWeight: 800,
+                                      padding: '1px 5px',
                                       borderRadius: '4px',
-                                      marginRight: '4px',
-                                      verticalAlign: 'baseline',
-                                      lineHeight: 1.3
+                                      marginRight: '5px',
+                                      border: '1px solid #ddd6fe',
+                                      boxDecorationBreak: 'clone',
+                                      WebkitBoxDecorationBreak: 'clone'
                                     }}>
                                       ⚡{teaser.badge}
                                     </span>
