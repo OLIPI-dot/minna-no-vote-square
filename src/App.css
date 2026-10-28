@@ -4249,3 +4249,12 @@ button:active,
 .survey-list.view-grid .survey-item-teaser-row-grid {
   flex: 1 1 auto !important;
 }
+
+/* 📱 スマホ：リスト表示のバッジ行（NEW・受付中・時間・〆日付）が見切れないよう、入りきらないときは折り返す */
+@media (max-width: 600px) {
+  .survey-list.view-list .list-item-meta-upper.survey-item-meta-row {
+    flex-wrap: wrap !important;
+    overflow: visible !important;
+    row-gap: 3px !important;
+  }
+}
