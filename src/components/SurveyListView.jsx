@@ -1029,42 +1029,6 @@ const SurveyListView = ({
                                   <span style={{ marginLeft: '8px', fontSize: '1.2rem', display: 'inline-block', verticalAlign: 'middle' }}>✨</span>
                                 )}
                               </span>
-                              {/* ⚡ グリッド用 2行チラ見せ見出し */}
-                              {teaser && (
-                                <div className="survey-item-teaser-row-grid" style={{
-                                  background: 'linear-gradient(90deg, #faf5ff 0%, #fdf2f8 100%)',
-                                  border: '1px solid #e9d5ff',
-                                  borderRadius: '7px',
-                                  padding: '4px 7px',
-                                  marginTop: '4px',
-                                  minWidth: 0,
-                                  maxWidth: '100%'
-                                }}>
-                                  <div style={{
-                                    fontSize: '0.74rem',
-                                    fontWeight: 600,
-                                    color: '#334155',
-                                    lineHeight: 1.45,
-                                    display: '-webkit-box',
-                                    WebkitLineClamp: 2,
-                                    WebkitBoxOrient: 'vertical',
-                                    overflow: 'hidden',
-                                    wordBreak: 'break-word'
-                                  }}>
-                                    <span style={{ marginRight: '3px' }}>💡</span>
-                                    {teaser.hook && (
-                                      <span style={{
-                                        color: '#5b21b6',
-                                        fontWeight: 800,
-                                        marginRight: '5px'
-                                      }}>
-                                        {teaser.hook}
-                                      </span>
-                                    )}
-                                    <span>{teaser.text}</span>
-                                  </div>
-                                </div>
-                              )}
                               {/* グリッド：☆ボタンのみ右上絶対配置（24px, 画像に被らないよう縮小） */}
                               <div style={{ position: 'absolute', top: '6px', right: '6px', zIndex: 10 }}>
                                 <button
@@ -1075,6 +1039,44 @@ const SurveyListView = ({
                                 >{watchedIds.some(wId => String(wId) === String(s.id)) ? '★' : '☆'}</button>
                               </div>
                             </div>
+                            {/* ⚡ グリッド用 2行チラ見せ見出し（タイトルの下に縦並びで横幅いっぱい配置） */}
+                            {teaser && (
+                              <div className="survey-item-teaser-row-grid" style={{
+                                background: 'linear-gradient(90deg, #faf5ff 0%, #fdf2f8 100%)',
+                                border: '1px solid #e9d5ff',
+                                borderRadius: '7px',
+                                padding: '5px 8px',
+                                marginTop: '4px',
+                                width: '100%',
+                                boxSizing: 'border-box',
+                                minWidth: 0,
+                                maxWidth: '100%'
+                              }}>
+                                <div style={{
+                                  fontSize: '0.74rem',
+                                  fontWeight: 600,
+                                  color: '#334155',
+                                  lineHeight: 1.45,
+                                  display: '-webkit-box',
+                                  WebkitLineClamp: 2,
+                                  WebkitBoxOrient: 'vertical',
+                                  overflow: 'hidden',
+                                  wordBreak: 'break-word'
+                                }}>
+                                  <span style={{ marginRight: '3px' }}>💡</span>
+                                  {teaser.hook && (
+                                    <span style={{
+                                      color: '#5b21b6',
+                                      fontWeight: 800,
+                                      marginRight: '5px'
+                                    }}>
+                                      {teaser.hook}
+                                    </span>
+                                  )}
+                                  <span>{teaser.text}</span>
+                                </div>
+                              </div>
+                            )}
                             <div className="survey-item-meta-container" style={{ display: 'flex', flexDirection: 'column', gap: '6px', overflow: 'hidden', minWidth: 0, marginTop: '8px' }}>
                               {/* 1段目（上段）：バッジ類 */}
                               <div className="survey-item-meta-upper" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '2px' }}>

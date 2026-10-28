@@ -4215,3 +4215,22 @@ button:active,
     flex-basis: 100% !important;
   }
 }
+
+
+/* 🔲 グリッド表示（view-grid）でのタイトル＆チラ見せボックス幅崩れ修正 */
+.view-grid .survey-item-info {
+  display: block !important;
+  padding-right: 0 !important;
+  width: 100% !important;
+  margin-bottom: 2px !important;
+}
+
+.view-grid .survey-item-title {
+  display: -webkit-box !important;
+  width: 100% !important;
+}
+
+.view-grid .survey-item-teaser-row-grid {
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
