@@ -86,12 +86,12 @@ const SurveyListView = ({
     return diffHours >= 0 && diffHours < 6;
   };
 
-  // ⚡ アンケート本文・AI要約から「1行チラ見せ見出し（フック）」を抽出するらび！
+  // ⚡ アンケート本文・AI要約から「タイトルと被らないチラ見せフック（問いかけ＋踏み込んだ要点）」を抽出するらび！
   const extractSurveyTeaser = (s) => {
     if (!s || !s.description) return null;
     if (s.tags?.includes('お知らせ') && s.title?.includes('||')) {
       const announceBody = s.title.split('||')[1]?.trim();
-      return announceBody ? { badge: 'お知らせ', text: announceBody } : null;
+      return announceBody ? { hook: 'お知らせ：', text: announceBody } : null;
     }
     const desc = String(s.description);
     const summaryMatch = desc.match(/\[\[SUMMARY:([\s\S]*?)\]\]/);
@@ -101,13 +101,13 @@ const SurveyListView = ({
         const stripCount = (v) => typeof v === 'string'
           ? v.replace(/\s*[（(]\s*\d+\s*(?:文字|字)\s*[）)]/g, '').trim()
           : '';
-        let badge = stripCount(parsed.point1_title) || '注目ポイント';
-        if (badge.length > 28) badge = badge.slice(0, 28) + '…';
-        let text = stripCount(parsed.point1_desc) || stripCount(parsed.rabi_comment) || '';
-        if (parsed.point1_title && text.startsWith(parsed.point1_title)) {
-          text = text.substring(parsed.point1_title.length).replace(/^[:：\s]+/, '').trim();
+        // 1段落目(point1)はタイトルの繰り返しになりやすいため、問いかけ(survey_question)や2段落目(point2)を優先！
+        let hook = stripCount(parsed.survey_question) || stripCount(parsed.point2_title) || stripCount(parsed.point1_title) || '';
+        let text = stripCount(parsed.point2_desc) || stripCount(parsed.rabi_comment) || stripCount(parsed.point1_desc) || '';
+        if (hook && text.startsWith(hook)) {
+          text = text.substring(hook.length).replace(/^[:：\s]+/, '').trim();
         }
-        if (text) return { badge, text };
+        if (hook || text) return { hook, text };
       } catch (e) {
         // fallback below
       }
@@ -124,7 +124,7 @@ const SurveyListView = ({
       .replace(/\s+/g, ' ')
       .trim();
     if (cleanText.length >= 6) {
-      return { badge: '詳細チラ見', text: cleanText };
+      return { hook: '', text: cleanText };
     }
     return null;
   };
@@ -918,9 +918,9 @@ const SurveyListView = ({
                                 style={{ flexShrink: 0, background: 'none', border: 'none', fontSize: '1rem', cursor: 'pointer', padding: '2px', lineHeight: 1, color: watchedIds.some(wId => String(wId) === String(s.id)) ? '#f59e0b' : '#94a3b8' }}
                               >{watchedIds.some(wId => String(wId) === String(s.id)) ? '★' : '☆'}</button>
                             </div>
-                            {/* ⚡ チラ見せ見出し（PCは1〜2行・スマホは2行でたっぷり読めるクリック誘引フック） */}
+                            {/* ⚡ チラ見せ見出し（PC用：右カラム内に表示） */}
                             {teaser && (
-                              <div className="survey-item-teaser-row" style={{
+                              <div className="survey-item-teaser-row survey-item-teaser-pc" style={{
                                 background: 'linear-gradient(90deg, #faf5ff 0%, #fdf2f8 60%, #fffbeb 100%)',
                                 border: '1px solid #e9d5ff',
                                 borderRadius: '8px',
@@ -939,24 +939,19 @@ const SurveyListView = ({
                                   overflow: 'hidden',
                                   wordBreak: 'break-word'
                                 }}>
-                                  <span style={{
-                                    display: 'inline',
-                                    background: '#ede9fe',
-                                    color: '#5b21b6',
-                                    fontSize: '0.76rem',
-                                    fontWeight: 800,
-                                    padding: '1px 6px',
-                                    borderRadius: '5px',
-                                    marginRight: '6px',
-                                    border: '1px solid #ddd6fe',
-                                    boxDecorationBreak: 'clone',
-                                    WebkitBoxDecorationBreak: 'clone'
-                                  }}>
-                                    ⚡{teaser.badge}
-                                  </span>
+                                  <span style={{ marginRight: '3px' }}>💡</span>
+                                  {teaser.hook && (
+                                    <span style={{
+                                      color: '#5b21b6',
+                                      fontWeight: 800,
+                                      marginRight: '6px'
+                                    }}>
+                                      {teaser.hook}
+                                    </span>
+                                  )}
                                   <span>{teaser.text}</span>
                                   <span style={{
-                                    fontSize: '0.7rem',
+                                    fontSize: '0.72rem',
                                     fontWeight: 800,
                                     color: '#7c3aed',
                                     marginLeft: '3px'
@@ -1040,7 +1035,7 @@ const SurveyListView = ({
                                   background: 'linear-gradient(90deg, #faf5ff 0%, #fdf2f8 100%)',
                                   border: '1px solid #e9d5ff',
                                   borderRadius: '7px',
-                                  padding: '3px 7px',
+                                  padding: '4px 7px',
                                   marginTop: '4px',
                                   minWidth: 0,
                                   maxWidth: '100%'
@@ -1056,21 +1051,16 @@ const SurveyListView = ({
                                     overflow: 'hidden',
                                     wordBreak: 'break-word'
                                   }}>
-                                    <span style={{
-                                      display: 'inline',
-                                      background: '#ede9fe',
-                                      color: '#5b21b6',
-                                      fontSize: '0.74rem',
-                                      fontWeight: 800,
-                                      padding: '1px 5px',
-                                      borderRadius: '4px',
-                                      marginRight: '5px',
-                                      border: '1px solid #ddd6fe',
-                                      boxDecorationBreak: 'clone',
-                                      WebkitBoxDecorationBreak: 'clone'
-                                    }}>
-                                      ⚡{teaser.badge}
-                                    </span>
+                                    <span style={{ marginRight: '3px' }}>💡</span>
+                                    {teaser.hook && (
+                                      <span style={{
+                                        color: '#5b21b6',
+                                        fontWeight: 800,
+                                        marginRight: '5px'
+                                      }}>
+                                        {teaser.hook}
+                                      </span>
+                                    )}
                                     <span>{teaser.text}</span>
                                   </div>
                                 </div>
@@ -1143,6 +1133,47 @@ const SurveyListView = ({
                           </>
                         )}
                       </div>
+                      {/* 📱 スマホ用：カード下段（横幅いっぱい）に広がるチラ見せ枠 */}
+                      {viewMode === 'list' && teaser && (
+                        <div className="survey-item-teaser-row survey-item-teaser-mobile" style={{
+                          background: 'linear-gradient(90deg, #faf5ff 0%, #fdf2f8 60%, #fffbeb 100%)',
+                          border: '1px solid #e9d5ff',
+                          borderRadius: '8px',
+                          padding: '5px 9px',
+                          width: '100%',
+                          boxSizing: 'border-box'
+                        }}>
+                          <div className="survey-item-teaser-clamp" style={{
+                            fontSize: '0.75rem',
+                            fontWeight: 600,
+                            color: '#334155',
+                            lineHeight: 1.45,
+                            display: '-webkit-box',
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden',
+                            wordBreak: 'break-word'
+                          }}>
+                            <span style={{ marginRight: '3px' }}>💡</span>
+                            {teaser.hook && (
+                              <span style={{
+                                color: '#5b21b6',
+                                fontWeight: 800,
+                                marginRight: '5px'
+                              }}>
+                                {teaser.hook}
+                              </span>
+                            )}
+                            <span>{teaser.text}</span>
+                            <span style={{
+                              fontSize: '0.72rem',
+                              fontWeight: 800,
+                              color: '#7c3aed',
+                              marginLeft: '3px'
+                            }}>▸</span>
+                          </div>
+                        </div>
+                      )}
                     </div>
 
                     {(idx + 1) % 9 === 0 && (

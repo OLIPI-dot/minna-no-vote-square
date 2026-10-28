@@ -4194,13 +4194,24 @@ button:active,
   }
 }
 
-/* 📱 スマホ時の1行チラ見せ見出し（省スペースで本文をたっぷり見せる） */
-@media (max-width: 600px) {
-  .survey-item-teaser-row {
-    padding: 2px 6px !important;
-    gap: 4px !important;
-  }
-  .survey-item-teaser-more-text {
+/* 📱💻 PC・スマホ別 チラ見せ見出しハイブリッド配置 */
+@media (min-width: 601px) {
+  .survey-item-teaser-mobile {
     display: none !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .survey-list.view-list .survey-item-card {
+    flex-wrap: wrap !important;
+    row-gap: 8px !important;
+  }
+  .survey-item-teaser-pc {
+    display: none !important;
+  }
+  .survey-item-teaser-mobile {
+    display: block !important;
+    width: 100% !important;
+    flex-basis: 100% !important;
   }
 }
