@@ -1575,7 +1575,7 @@ body {
 
 /* 📊 個別カードの閲覧数 */
 .survey-item-views {
-  color: #94a3b8;
+  color: #64748b;
   font-size: 0.85rem;
   font-weight: 700;
 }
@@ -4214,4 +4214,38 @@ button:active,
     width: 100% !important;
     flex-basis: 100% !important;
   }
+}
+
+/* 📜 リスト表示：リアクション数字（投票・閲覧・いいね・コメント）を読みやすく */
+.survey-list.view-list .list-item-meta-lower.survey-item-meta-row span {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  padding: 2px 4px !important;
+}
+
+/* 🔲 グリッド表示：タイトル・見出し・バッジ間の余計な余白を解消（上から詰めて、バッジ類は下端にそろえる） */
+.survey-list.view-grid .survey-item-content {
+  justify-content: flex-start !important;
+  gap: 4px !important;
+  min-height: 0 !important;
+}
+
+/* 📱 スマホ：リスト表示のサムネイルを大きく見やすく（90px → 112px、枠いっぱいに表示） */
+@media (max-width: 600px) {
+  .survey-list.view-list .survey-item-card .video-thumb-wrapper {
+    width: 112px !important;
+    min-width: 112px !important;
+    max-width: 112px !important;
+    height: 112px !important;
+    min-height: 112px !important;
+    max-height: 112px !important;
+  }
+  .survey-list.view-list .survey-item-card .video-thumb-wrapper img {
+    object-fit: cover !important;
+  }
+}
+
+/* 🔲 グリッド表示：見出し枠を縦にのばして、短い見出しのカードに出る空白を埋める */
+.survey-list.view-grid .survey-item-teaser-row-grid {
+  flex: 1 1 auto !important;
 }

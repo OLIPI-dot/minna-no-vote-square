@@ -308,7 +308,7 @@ const SurveyListView = ({
       <button
         className="create-new-button"
         onClick={() => user ? setView('create') : alert("🌟 広場をもっと楽しもう！\n\nアンケートを作るには、ログインが必要だよ。上の「Googleでログイン」から、らびと一緒に始めよう！🐰🥕")}
-      >＋ 新しいアンケートを作る</button>
+      >✏️ 新しいアンケートを作る</button>
 
       {!user && <SiteConceptSection totalVotes={totalVotes} onLogin={handleGoogleLogin} />}
 
@@ -1066,7 +1066,7 @@ const SurveyListView = ({
                                   color: '#334155',
                                   lineHeight: 1.42,
                                   display: '-webkit-box',
-                                  WebkitLineClamp: 3,
+                                  WebkitLineClamp: 6,
                                   WebkitBoxOrient: 'vertical',
                                   overflow: 'hidden',
                                   wordBreak: 'break-word'
@@ -1085,7 +1085,7 @@ const SurveyListView = ({
                                 </div>
                               </div>
                             )}
-                            <div className="survey-item-meta-container" style={{ display: 'flex', flexDirection: 'column', gap: '6px', overflow: 'hidden', minWidth: 0, marginTop: '8px' }}>
+                            <div className="survey-item-meta-container" style={{ display: 'flex', flexDirection: 'column', gap: '6px', overflow: 'hidden', minWidth: 0, marginTop: 'auto', paddingTop: '8px' }}>
                               {/* 1段目（上段）：バッジ類 */}
                               <div className="survey-item-meta-upper" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '2px' }}>
                                 {showScoreBadge && <span className="popular-score-badge">{badgeLabel}</span>}
@@ -1118,10 +1118,10 @@ const SurveyListView = ({
                               </div>
                               {/* 2段目（下段）：リアクション数字類 */}
                               <div className="survey-item-meta-lower" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', alignItems: 'center', width: '100%', padding: '0 2px', boxSizing: 'border-box' }}>
-                                <span className="survey-item-votes" title="投票数" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2px', fontSize: '10px', whiteSpace: 'nowrap' }}>🗳️ {s.total_votes || 0}</span>
-                                <span className="survey-item-views" title="閲覧数" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2px', fontSize: '10px', whiteSpace: 'nowrap' }}>👁️ {s.view_count || 0}</span>
-                                <span className="survey-item-likes" title="いいね数" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2px', fontSize: '10px', whiteSpace: 'nowrap' }}>👍 {s.likes_count || 0}</span>
-                                <span className="survey-item-comments" title="コメント数" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2px', fontSize: '10px', whiteSpace: 'nowrap' }}>💬 {s.comment_count || 0}</span>
+                                <span className="survey-item-votes" title="投票数" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2px', fontSize: 'clamp(11px, 2.8vw, 13px)', fontWeight: 700, whiteSpace: 'nowrap' }}>🗳️ {s.total_votes || 0}</span>
+                                <span className="survey-item-views" title="閲覧数" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2px', fontSize: 'clamp(11px, 2.8vw, 13px)', fontWeight: 700, whiteSpace: 'nowrap' }}>👁️ {s.view_count || 0}</span>
+                                <span className="survey-item-likes" title="いいね数" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2px', fontSize: 'clamp(11px, 2.8vw, 13px)', fontWeight: 700, whiteSpace: 'nowrap' }}>👍 {s.likes_count || 0}</span>
+                                <span className="survey-item-comments" title="コメント数" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2px', fontSize: 'clamp(11px, 2.8vw, 13px)', fontWeight: 700, whiteSpace: 'nowrap' }}>💬 {s.comment_count || 0}</span>
                               </div>
                             </div>
                             {s.tags && s.tags.length > 0 && (
