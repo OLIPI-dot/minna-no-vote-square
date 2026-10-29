@@ -32,12 +32,6 @@ function log(msg) {
 }
 
 const RSS_FEEDS = [
-    // 🌐 時事・社会・IT・トレンドニュース（ニュースカテゴリ強化らび！📰✨）
-    { url: 'https://news.yahoo.co.jp/rss/topics/top-picks.xml', source: 'Yahoo!主要' },
-    { url: 'https://news.yahoo.co.jp/rss/topics/it.xml', source: 'Yahoo!IT・科学' },
-    { url: 'https://news.yahoo.co.jp/rss/topics/domestic.xml', source: 'Yahoo!国内' },
-    { url: 'https://news.yahoo.co.jp/rss/topics/business.xml', source: 'Yahoo!経済' },
-
     // 🥇 配信・YouTube・VTuber・ネットトレンド（最優先らび！）
     { url: 'https://panora.tokyo/feed/', source: 'PANORA' },
     { url: 'https://logtube.jp/feed/', source: 'LogTube' },
@@ -228,7 +222,7 @@ let geminiModel = null;
 if (GEMINI_API_KEY) {
     try {
         const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-        geminiModel = genAI.getGenerativeModel({ model: 'gemini-3.8-flash' });
+        geminiModel = genAI.getGenerativeModel({ model: 'gemini-3.6-flash' });
         log('🤖 Gemini AI モデル初期化完了らび！');
     } catch (e) {
         log(`⚠️ Gemini初期化エラー: ${e.message}（フォールバック処理を使用します）`);
@@ -252,7 +246,7 @@ async function generateAISummary(articleContent) {
         }
         try {
             const truncated = articleContent.substring(0, 2500); // 少し増やして情報量を確保
-            const generatePromise = geminiModel.generateContent({
+            const result = await geminiModel.generateContent({
                 contents: [{ role: 'user', parts: [{ text: AI_SUMMARY_PROMPT(truncated) }] }],
                 generationConfig: {
                     maxOutputTokens: AI_SUMMARY_OPTIONS.max_tokens,
@@ -260,10 +254,6 @@ async function generateAISummary(articleContent) {
                     ...(useThinkingConfig ? { thinkingConfig: AI_SUMMARY_OPTIONS.thinkingConfig } : {})
                 }
             });
-            const timeoutPromise = new Promise((_, reject) => 
-                setTimeout(() => reject(new Error('AI generation timed out (25s)')), 25000)
-            );
-            const result = await Promise.race([generatePromise, timeoutPromise]);
             const u = result.response.usageMetadata;
             if (u) log(`📊 トークン使用量: 入力${u.promptTokenCount} / 思考${u.thoughtsTokenCount || 0} / 出力${u.candidatesTokenCount} / 合計${u.totalTokenCount}`);
             const responseText = result.response.text().trim();
@@ -478,12 +468,12 @@ async function fetchRichData(url, newsTitle = '') {
 
 function classifyNews(title, description) {
     const textLower = (title + ' ' + (description || '')).toLowerCase();
-    const scores = { 'エンタメ': 0, '話題': 0, 'ゲーム': 0, '芸能': 0, 'ニュース': 0 }; // カテゴリを偏りなく判定らび！⚖️
+    const scores = { 'エンタメ': 20, '話題': 15, 'ゲーム': 0, '芸能': 0, 'ニュース': 0 }; // 配信・エンタメ・話題を優先らび！🎥✨
     const keywords = {
         'エンタメ': ['映画', 'ドラマ', 'アニメ', '音楽', 'アイドル', '漫画', 'コミック', '声優', 'youtube', 'youtuber', 'vtuber', 'kick', 'twitch', '配信', 'ストリーマー', '実況', 'チャンネル', '登録者', 'にじさんじ', 'ホロライブ'],
         '芸能': ['芸能', '不倫', '結婚', '熱愛', '退所', 'スター', '俳優', '女優', 'タレント', '芸人'],
         '話題': ['sns', 'ネットで', 'バズ', '炎上', '流行', 'x', 'twitter', 'tiktok', 'インスタ', 'ban', '謝罪', '批判', '物議'],
-        'ニュース': ['政治', '経済', '社会', '事件', '事故', '科学', '国際', '物価', '企業', '政府', '調査', '発表', '新機能', 'サービス', 'テクノロジー', 'ai', 'aiツール', 'スマホ', 'iphone', 'android', '警察', '裁判', 'トラブル', '対策', '導入'],
+        'ニュース': ['政治', '経済', '社会', '事件', '事故', '科学', '国際', '物価'],
         'ゲーム': ['ps5', 'switch', 'steam', 'ゲーム', 'プレイステーション', 'ニンテンドー', 'esports', 'rpg', 'fps', 'インディー', 'mod', 'pcゲーム', 'xbox', 'オープンワールド', '新作タイトル', 'スプラ', 'ポケカ', 'マイクラ', 'スト6', 'valorant', 'apex']
     };
     for (const [cat, words] of Object.entries(keywords)) {
@@ -581,8 +571,8 @@ async function startAutoPosting() {
 
     let count = 0;
     let attemptCount = 0;
-    const POST_LIMIT = 10; // 1回10件へ増量！ (1日6回実行で合計最大60本/日) 🥕
-    const MAX_ATTEMPTS = 45; // 10件確実に確保できるよう試行回数上限を45回に拡張
+    const POST_LIMIT = 5; // 1回5件へ増量！ (1日4回実行で合計最大20本/日) 🥕
+    const MAX_ATTEMPTS = 25; // 5件確実に確保できるよう試行回数上限を25回に拡張
     
     // 🎲 カテゴリの偏りを防ぐための記録用（1回の実行の中でカテゴリをバラバラにする）
     const postedCategories = new Set();
