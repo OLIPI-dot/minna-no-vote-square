@@ -252,7 +252,7 @@ async function generateAISummary(articleContent) {
         }
         try {
             const truncated = articleContent.substring(0, 2500); // 少し増やして情報量を確保
-            const result = await geminiModel.generateContent({
+            const generatePromise = geminiModel.generateContent({
                 contents: [{ role: 'user', parts: [{ text: AI_SUMMARY_PROMPT(truncated) }] }],
                 generationConfig: {
                     maxOutputTokens: AI_SUMMARY_OPTIONS.max_tokens,
@@ -260,6 +260,10 @@ async function generateAISummary(articleContent) {
                     ...(useThinkingConfig ? { thinkingConfig: AI_SUMMARY_OPTIONS.thinkingConfig } : {})
                 }
             });
+            const timeoutPromise = new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('AI generation timed out (25s)')), 25000)
+            );
+            const result = await Promise.race([generatePromise, timeoutPromise]);
             const u = result.response.usageMetadata;
             if (u) log(`📊 トークン使用量: 入力${u.promptTokenCount} / 思考${u.thoughtsTokenCount || 0} / 出力${u.candidatesTokenCount} / 合計${u.totalTokenCount}`);
             const responseText = result.response.text().trim();
