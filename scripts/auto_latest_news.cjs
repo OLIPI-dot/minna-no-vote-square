@@ -291,6 +291,11 @@ async function generateAISummary(articleContent) {
         } catch (e) {
             lastError = e.message;
             log(`⚠️ AI要約エラー (試行 ${attempt}/3): ${e.message}`);
+            if (/quota exceeded|per day|429 Too Many Requests/i.test(e.message || '')) {
+                global.isQuotaExceeded = true;
+                log('🛑 本日のGemini API無料枠の上限に達したため、これ以上のリトライを停止します。');
+                return null;
+            }
             // 思考設定そのものが拒否された場合は、設定を外して次の試行へ
             if (useThinkingConfig && /thinking/i.test(e.message || '')) {
                 useThinkingConfig = false;
@@ -713,8 +718,12 @@ async function startAutoPosting() {
         } catch (e) { log(`❌ 投稿失敗: ${e.message}`); }
     }
     if (count === 0) {
-        log(`❌ 投稿件数が0件だったため、エラーとして異常終了します。`);
-        process.exit(1);
+        if (global.isQuotaExceeded) {
+            log(`🍵 本日のAPI無料枠（20回）を使い切っているため、この回はお休みして正常終了しますらび！`);
+        } else {
+            log(`❌ 投稿件数が0件だったため、エラーとして異常終了します。`);
+            process.exit(1);
+        }
     }
     log(`✨ 自動投稿完了らび！`);
 }
