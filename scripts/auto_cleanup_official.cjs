@@ -27,9 +27,9 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 async function autoCleanupOfficial() {
     console.log('🧹 公式ニュースのお掃除スクリプトを開始しますらび！');
 
-    // 60日前の日付を計算
-    const sixtyDaysAgo = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString();
-    console.log(`📅 基準日: ${sixtyDaysAgo} 以前の公式ニュースを検索します。`);
+    // 365日（1年）前の日付を計算
+    const oneYearAgo = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString();
+    console.log(`📅 基準日: ${oneYearAgo} 以前の公式ニュースを検索します。`);
 
     // 1. 削除対象の公式ニュースを取得
     // 🛡️ ユーザーの投稿を絶対に消さないために eq('is_official', true) を必須にする！
@@ -37,7 +37,7 @@ async function autoCleanupOfficial() {
         .from('surveys')
         .select('id, title, created_at')
         .eq('is_official', true)
-        .lt('created_at', sixtyDaysAgo);
+        .lt('created_at', oneYearAgo);
 
     if (fetchErr) {
         console.error('❌ 削除対象の検索中にエラーが発生しました:', fetchErr);
@@ -45,7 +45,7 @@ async function autoCleanupOfficial() {
     }
 
     if (!oldSurveys || oldSurveys.length === 0) {
-        console.log('✨ 60日以上経過した古い公式ニュースはありませんでした。お掃除終了らび！');
+        console.log('✨ 365日（1年）以上経過した古い公式ニュースはありませんでした。お掃除終了らび！');
         return;
     }
 
