@@ -3294,13 +3294,14 @@ function App() {
       }
 
       // 🏷️ ハッシュタグ：ベース + カテゴリ + 記事タグ（最大3つ）
-      const baseTags = ['みんアケ', 'みんなのアンケート広場', '投票'];
+      const baseTags = ['みんアケ', '投票'];
       const categoryTag = currentSurvey.category
         ? [currentSurvey.category.replace(/\s/g, '')]
         : [];
       const articleTags = Array.isArray(currentSurvey.tags)
         ? currentSurvey.tags
             .filter(t => !t.startsWith('_STAMP:') && !t.startsWith('[L]') && t.length >= 2 && t.length <= 15)
+            .map(t => t.replace(/\s+/g, ''))
             .slice(0, 3)
         : [];
       const allHashtags = [...baseTags, ...categoryTag, ...articleTags].join(',');
