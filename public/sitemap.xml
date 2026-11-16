@@ -3,30 +3,60 @@
   <!-- メインページ -->
   <url>
     <loc>https://www.minna-no-vote-square.com/</loc>
-    <lastmod>2026-11-15</lastmod>
+    <lastmod>2026-11-16</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <!-- 静的コンテンツ -->
   <url>
     <loc>https://www.minna-no-vote-square.com/about.html</loc>
-    <lastmod>2026-11-15</lastmod>
+    <lastmod>2026-11-16</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.minna-no-vote-square.com/contact.html</loc>
-    <lastmod>2026-11-15</lastmod>
+    <lastmod>2026-11-16</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.minna-no-vote-square.com/terms.html</loc>
-    <lastmod>2026-11-15</lastmod>
+    <lastmod>2026-11-16</lastmod>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://www.minna-no-vote-square.com/privacy.html</loc>
-    <lastmod>2026-11-15</lastmod>
+    <lastmod>2026-11-16</lastmod>
     <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://www.minna-no-vote-square.com/s/23993</loc>
+    <lastmod>2026-11-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.minna-no-vote-square.com/s/23992</loc>
+    <lastmod>2026-11-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.minna-no-vote-square.com/s/23991</loc>
+    <lastmod>2026-11-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.minna-no-vote-square.com/s/23990</loc>
+    <lastmod>2026-11-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.minna-no-vote-square.com/s/23989</loc>
+    <lastmod>2026-11-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
   </url>
   <url>
     <loc>https://www.minna-no-vote-square.com/s/23988</loc>
