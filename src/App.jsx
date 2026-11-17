@@ -1779,7 +1779,7 @@ function App() {
         "itemListElement": surveys.slice(0, 10).map((sv, index) => ({
           "@type": "ListItem",
           "position": index + 1,
-          "url": `${SITE_BASE_URL}/?id=${sv.id}`,
+          "url": `${SITE_BASE_URL}/s/${sv.id}`,
           "name": sv.title || 'アンケート'
         }))
       };
@@ -3268,10 +3268,11 @@ function App() {
         // 投票あり：意外な結果で好奇心を煽る！
         const topPerc = Math.round(topOption.votes / currentSurvey.total_votes * 100);
         const cleanTopName = (topOption.name || '').replace(/^\u200B/, '');
+        const thirdHead = topPerc < 100 ? '🐰 賛否両論！' : '🐰 いま注目のアンケート！';
         const templates = [
           `🐰🥕 みんなに聞いてみたら...\n\n「${title}」\n\nなんと「${cleanTopName}」が${topPerc}%！\n🤔 あなたはどう思う？👇`,
           `🥕✨ ${currentSurvey.total_votes}人の本音がここに...\n\n「${title}」\n\n🐰 結果が気になる人はこちら👇`,
-          `🐰 賛否両論！\n「${title}」\n\n現在「${cleanTopName}」が${topPerc}%リード中🥕\nあなたはどっち派？👇`,
+          `${thirdHead}\n「${title}」\n\n現在「${cleanTopName}」が${topPerc}%リード中🥕\nあなたはどっち派？👇`,
         ];
         xText = templates[Math.floor(Math.random() * templates.length)];
       } else {

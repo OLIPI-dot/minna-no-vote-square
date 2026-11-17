@@ -127,20 +127,38 @@ export default async function handler(req, res) {
       return res.status(200).send(html);
     }
 
-    // 2. Supabase からアンケート情報・選択肢・コメントを並列取得（SEO本文生成用）
+    // 2. Supabase からアンケート情報・選択肢・コメント・新着アンケートを並列取得（SEO本文＆内部リンク網生成用）
     const [
       { data: survey, error },
       { data: options },
-      { data: comments }
+      { data: comments },
+      { data: recentSurveys }
     ] = await Promise.all([
       supabase.from('surveys').select('*').eq('id', surveyId).maybeSingle(),
       supabase.from('options').select('id, name, votes').eq('survey_id', surveyId).order('id', { ascending: true }),
-      supabase.from('comments').select('user_name, content, created_at').eq('survey_id', surveyId).order('created_at', { ascending: true }).limit(10)
+      supabase.from('comments').select('user_name, content, created_at').eq('survey_id', surveyId).order('created_at', { ascending: true }).limit(10),
+      supabase.from('surveys').select('id, title, category').eq('visibility', 'public').neq('id', surveyId).order('created_at', { ascending: false }).limit(10)
     ]);
 
     if (error || !survey) {
       res.setHeader('Content-Type', 'text/html; charset=utf-8');
       return res.status(404).send(html);
+    }
+
+    // 同じカテゴリの関連アンケートも最大8件取得して内部リンク網を構築
+    let categorySurveys = [];
+    if (survey.category) {
+      const { data: catData } = await supabase
+        .from('surveys')
+        .select('id, title, category')
+        .eq('visibility', 'public')
+        .eq('category', survey.category)
+        .neq('id', surveyId)
+        .order('created_at', { ascending: false })
+        .limit(8);
+      if (Array.isArray(catData)) {
+        categorySurveys = catData;
+      }
     }
 
     // 3. OGP ＆ SEO用メタ情報を生成（正規URLは常に www ありに統一）
@@ -168,33 +186,63 @@ export default async function handler(req, res) {
       plainText
     ].filter(Boolean).join(' ') || cleanDesc;
 
-    const jsonLdData = {
-      "@context": "https://schema.org",
-      "@type": "DiscussionForumPosting",
-      "headline": survey.title,
-      "description": formatCleanDescription(survey.description, survey.title),
-      "articleBody": bodyTextForSchema,
-      "url": siteUrl,
-      "datePublished": survey.created_at,
-      "image": imageUrl,
-      "author": {
-        "@type": "Organization",
+    const breadcrumbItems = [
+      {
+        "@type": "ListItem",
+        "position": 1,
         "name": "みんなのアンケート広場（みんアケ）",
-        "url": CANONICAL_BASE_URL
-      },
-      "interactionStatistic": [
-        {
-          "@type": "InteractionCounter",
-          "interactionType": "https://schema.org/VoteAction",
-          "userInteractionCount": survey.total_votes || 0
+        "item": `${CANONICAL_BASE_URL}/`
+      }
+    ];
+    if (survey.category) {
+      breadcrumbItems.push({
+        "@type": "ListItem",
+        "position": 2,
+        "name": survey.category,
+        "item": `${CANONICAL_BASE_URL}/?c=${encodeURIComponent(survey.category)}`
+      });
+    }
+    breadcrumbItems.push({
+      "@type": "ListItem",
+      "position": breadcrumbItems.length + 1,
+      "name": survey.title,
+      "item": siteUrl
+    });
+
+    const jsonLdData = [
+      {
+        "@context": "https://schema.org",
+        "@type": "DiscussionForumPosting",
+        "headline": survey.title,
+        "description": formatCleanDescription(survey.description, survey.title),
+        "articleBody": bodyTextForSchema,
+        "url": siteUrl,
+        "datePublished": survey.created_at,
+        "image": imageUrl,
+        "author": {
+          "@type": "Organization",
+          "name": "みんなのアンケート広場（みんアケ）",
+          "url": CANONICAL_BASE_URL
         },
-        {
-          "@type": "InteractionCounter",
-          "interactionType": "https://schema.org/CommentAction",
-          "userInteractionCount": survey.comment_count || (comments ? comments.length : 0)
-        }
-      ]
-    };
+        "interactionStatistic": [
+          {
+            "@type": "InteractionCounter",
+            "interactionType": "https://schema.org/VoteAction",
+            "userInteractionCount": survey.total_votes || 0
+          },
+          {
+            "@type": "InteractionCounter",
+            "interactionType": "https://schema.org/CommentAction",
+            "userInteractionCount": survey.comment_count || (comments ? comments.length : 0)
+          }
+        ]
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": breadcrumbItems
+      }
+    ];
     const safeJsonLd = JSON.stringify(jsonLdData).replace(/</g, '\\u003c');
 
     // 5. HTML 内のプレースホルダーを置換（Google検索が最重要視する meta description ＆ JSON-LD も完全注入！）
@@ -242,10 +290,10 @@ export default async function handler(req, res) {
 
     const optionsHtml = Array.isArray(options) && options.length > 0
       ? `<section><h2>投票の選択肢（現在 合計${Number(survey.total_votes) || 0}票）</h2><ul>${options.map(o => {
-          const optName = escapeHtml((o.name || '').replace(/^\u200B/, ''));
-          const optVotes = Number(o.votes) || 0;
-          return `<li>${optName}（${optVotes}票）</li>`;
-        }).join('')}</ul></section>`
+        const optName = escapeHtml((o.name || '').replace(/^\u200B/, ''));
+        const optVotes = Number(o.votes) || 0;
+        return `<li>${optName}（${optVotes}票）</li>`;
+      }).join('')}</ul></section>`
       : '';
 
     const commentsHtml = Array.isArray(comments) && comments.length > 0
@@ -256,18 +304,37 @@ export default async function handler(req, res) {
       ? `<p>関連キーワード: ${cleanTags.map(t => escapeHtml(t)).join(' / ')}</p>`
       : '';
 
+    const usedIds = new Set([String(surveyId)]);
+    const relatedCategoryHtml = categorySurveys.length > 0
+      ? `<nav aria-label="関連するアンケート"><h2>「${escapeHtml(survey.category)}」の関連アンケート</h2><ul>${categorySurveys.map(item => {
+        usedIds.add(String(item.id));
+        return `<li><a href="${CANONICAL_BASE_URL}/s/${item.id}">${escapeHtml(item.title)}</a></li>`;
+      }).join('')}</ul></nav>`
+      : '';
+
+    const filteredRecent = Array.isArray(recentSurveys)
+      ? recentSurveys.filter(item => !usedIds.has(String(item.id))).slice(0, 6)
+      : [];
+
+    const recentSurveysHtml = filteredRecent.length > 0
+      ? `<nav aria-label="新着アンケート"><h2>いま注目の新着アンケート</h2><ul>${filteredRecent.map(item => `<li><a href="${CANONICAL_BASE_URL}/s/${item.id}">${escapeHtml(item.title)}</a></li>`).join('')}</ul></nav>`
+      : '';
+
     const ssrArticleHtml = `<div id="root">
     <div style="display:flex;align-items:center;justify-content:center;min-height:60vh;font-family:sans-serif;color:#94a3b8;">
       <p>読み込み中...🐰</p>
     </div>
     <article style="max-width:720px;margin:0 auto;padding:16px;color:#475569;font-family:sans-serif;font-size:14px;line-height:1.7;">
+      <nav aria-label="パンくずリスト"><a href="${CANONICAL_BASE_URL}/">みんなのアンケート広場（みんアケ）トップ</a>${survey.category ? ` &gt; <span>${escapeHtml(survey.category)}</span>` : ''}</nav>
       <h1>${escapeHtml(survey.title)}</h1>
-      ${ survey.category ? `<p>カテゴリ: ${escapeHtml(survey.category)}</p>` : '' }
+      ${survey.category ? `<p>カテゴリ: ${escapeHtml(survey.category)}</p>` : ''}
       ${tagsHtml}
       ${pointsHtml}
       ${rabiHtml}
       ${optionsHtml}
       ${commentsHtml}
+      ${relatedCategoryHtml}
+      ${recentSurveysHtml}
     </article>
   </div>`;
 
