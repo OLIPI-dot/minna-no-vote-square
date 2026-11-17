@@ -15,6 +15,51 @@ function escapeHtml(unsafe) {
     .replace(/\s+/g, " "); // 改行・連続空白を綺麗にスペース変換
 }
 
+// 🌸 [[SUMMARY: ...]] から構造化データを抽出するヘルパー
+function extractSummaryData(rawDesc) {
+  if (!rawDesc) return { points: [], rabiComment: '', plainText: '' };
+
+  const points = [];
+  let rabiComment = '';
+  let plainText = '';
+
+  if (rawDesc.includes('[[SUMMARY:')) {
+    try {
+      const match = rawDesc.match(/\[\[SUMMARY:\s*([\s\S]*?)\s*\]\]/);
+      if (match && match[1]) {
+        const json = JSON.parse(match[1]);
+        if (json.point1_title || json.point1_desc) {
+          points.push({ title: json.point1_title || 'ポイント1', desc: json.point1_desc || '' });
+        }
+        if (json.point2_title || json.point2_desc) {
+          points.push({ title: json.point2_title || 'ポイント2', desc: json.point2_desc || '' });
+        }
+        if (json.point3_title || json.point3_desc) {
+          points.push({ title: json.point3_title || 'ポイント3', desc: json.point3_desc || '' });
+        }
+        if (json.rabi_comment) {
+          rabiComment = json.rabi_comment;
+        }
+      }
+    } catch (e) {
+      // JSONパース失敗時はフォールバック
+    }
+  }
+
+  plainText = rawDesc
+    .replace(/\[\[SUMMARY:[\s\S]*?\]\]/g, '')
+    .replace(/<[^>]*>?/gm, '')
+    .replace(/\[.*?\]\(.*?\)/g, '')
+    .replace(/https?:\/\/\S+/g, '')
+    .replace(/[#*`_~]/g, '')
+    .replace(/（出典：.*?）/g, '')
+    .replace(/【続きを読む】/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  return { points, rabiComment, plainText };
+}
+
 // 🌸 Google検索やSNSで最もクリックされやすい魅力的な要約文を生成する
 function formatCleanDescription(rawDesc, title) {
   if (!rawDesc) {
@@ -82,12 +127,16 @@ export default async function handler(req, res) {
       return res.status(200).send(html);
     }
 
-    // 2. Supabase からアンケート情報を取得
-    const { data: survey, error } = await supabase
-      .from('surveys')
-      .select('*')
-      .eq('id', surveyId)
-      .maybeSingle();
+    // 2. Supabase からアンケート情報・選択肢・コメントを並列取得（SEO本文生成用）
+    const [
+      { data: survey, error },
+      { data: options },
+      { data: comments }
+    ] = await Promise.all([
+      supabase.from('surveys').select('*').eq('id', surveyId).maybeSingle(),
+      supabase.from('options').select('id, name, votes').eq('survey_id', surveyId).order('id', { ascending: true }),
+      supabase.from('comments').select('user_name, content, created_at').eq('survey_id', surveyId).order('created_at', { ascending: true }).limit(10)
+    ]);
 
     if (error || !survey) {
       res.setHeader('Content-Type', 'text/html; charset=utf-8');
@@ -95,7 +144,7 @@ export default async function handler(req, res) {
     }
 
     // 3. OGP ＆ SEO用メタ情報を生成（正規URLは常に www ありに統一）
-    const title = escapeHtml(`📊「${survey.title}」| みんアケ🐰🥕 | みんなのアンケート広場`);
+    const title = escapeHtml(`📊「${survey.title}」【みんなの本音・投票結果】| みんアケ🐰🥕`);
     const cleanDesc = escapeHtml(formatCleanDescription(survey.description, survey.title));
     const siteUrl = `${CANONICAL_BASE_URL}/s/${surveyId}`;
 
@@ -111,7 +160,44 @@ export default async function handler(req, res) {
       }
     }
 
-    // 4. HTML 内のプレースホルダーを置換（Google検索が最重要視する meta description も完全注入！）
+    // 4. 構造化データ（DiscussionForumPosting）を生成してGoogle検索に記事・投票・コメントを伝える
+    const { points, rabiComment, plainText } = extractSummaryData(survey.description);
+    const bodyTextForSchema = [
+      ...points.map(p => `${p.title}: ${p.desc}`),
+      rabiComment,
+      plainText
+    ].filter(Boolean).join(' ') || cleanDesc;
+
+    const jsonLdData = {
+      "@context": "https://schema.org",
+      "@type": "DiscussionForumPosting",
+      "headline": survey.title,
+      "description": formatCleanDescription(survey.description, survey.title),
+      "articleBody": bodyTextForSchema,
+      "url": siteUrl,
+      "datePublished": survey.created_at,
+      "image": imageUrl,
+      "author": {
+        "@type": "Organization",
+        "name": "みんなのアンケート広場（みんアケ）",
+        "url": CANONICAL_BASE_URL
+      },
+      "interactionStatistic": [
+        {
+          "@type": "InteractionCounter",
+          "interactionType": "https://schema.org/VoteAction",
+          "userInteractionCount": survey.total_votes || 0
+        },
+        {
+          "@type": "InteractionCounter",
+          "interactionType": "https://schema.org/CommentAction",
+          "userInteractionCount": survey.comment_count || (comments ? comments.length : 0)
+        }
+      ]
+    };
+    const safeJsonLd = JSON.stringify(jsonLdData).replace(/</g, '\\u003c');
+
+    // 5. HTML 内のプレースホルダーを置換（Google検索が最重要視する meta description ＆ JSON-LD も完全注入！）
     const customOgTags = `
   <!-- INJECTED BY OG-INJECTOR (SEO & OGP) -->
   <title>${title}</title>
@@ -127,6 +213,7 @@ export default async function handler(req, res) {
   <meta name="twitter:title" content="${title}" />
   <meta name="twitter:description" content="${cleanDesc}" />
   <meta name="twitter:image" content="${imageUrl}" />
+  <script type="application/ld+json">${safeJsonLd}</script>
     `;
 
     // <!-- OG_TAGS_PLACEHOLDER_START --> から <!-- OG_TAGS_PLACEHOLDER_END --> までを置換
@@ -138,6 +225,56 @@ export default async function handler(req, res) {
     // 元の <title> タグや静的 <meta name="description"> を安全に置換
     html = html.replace(/<title>.*?<\/title>/, '');
     html = html.replace(/<meta\s+name=["']description["']\s+content=["'].*?["']\s*\/?>/i, '');
+
+    // 6. Googlebot向けに初期HTMLの <div id="root"> 内にアンケート本文・選択肢・コメントをSSR注入！
+    // （人間がブラウザで開いた時はReact起動と同時にいつもの画面へ自動で置き換わります）
+    const cleanTags = Array.isArray(survey.tags)
+      ? survey.tags.filter(t => typeof t === 'string' && !t.startsWith('_STAMP:') && !t.startsWith('[L]'))
+      : [];
+
+    const pointsHtml = points.length > 0
+      ? `<section><h2>ニュースの要点・背景</h2>${points.map(p => `<h3>${escapeHtml(p.title)}</h3><p>${escapeHtml(p.desc)}</p>`).join('')}</section>`
+      : (plainText ? `<section><h2>アンケートの背景</h2><p>${escapeHtml(plainText)}</p></section>` : '');
+
+    const rabiHtml = rabiComment
+      ? `<section><h2>らびたんのコメント</h2><p>${escapeHtml(rabiComment)}</p></section>`
+      : '';
+
+    const optionsHtml = Array.isArray(options) && options.length > 0
+      ? `<section><h2>投票の選択肢（現在 合計${Number(survey.total_votes) || 0}票）</h2><ul>${options.map(o => {
+          const optName = escapeHtml((o.name || '').replace(/^\u200B/, ''));
+          const optVotes = Number(o.votes) || 0;
+          return `<li>${optName}（${optVotes}票）</li>`;
+        }).join('')}</ul></section>`
+      : '';
+
+    const commentsHtml = Array.isArray(comments) && comments.length > 0
+      ? `<section><h2>みんなのコメント・本音</h2><ul>${comments.map(c => `<li><strong>${escapeHtml(c.user_name || '名無しの広場民')}:</strong> ${escapeHtml(c.content || '')}</li>`).join('')}</ul></section>`
+      : '';
+
+    const tagsHtml = cleanTags.length > 0
+      ? `<p>関連キーワード: ${cleanTags.map(t => escapeHtml(t)).join(' / ')}</p>`
+      : '';
+
+    const ssrArticleHtml = `<div id="root">
+    <div style="display:flex;align-items:center;justify-content:center;min-height:60vh;font-family:sans-serif;color:#94a3b8;">
+      <p>読み込み中...🐰</p>
+    </div>
+    <article style="max-width:720px;margin:0 auto;padding:16px;color:#475569;font-family:sans-serif;font-size:14px;line-height:1.7;">
+      <h1>${escapeHtml(survey.title)}</h1>
+      ${ survey.category ? `<p>カテゴリ: ${escapeHtml(survey.category)}</p>` : '' }
+      ${tagsHtml}
+      ${pointsHtml}
+      ${rabiHtml}
+      ${optionsHtml}
+      ${commentsHtml}
+    </article>
+  </div>`;
+
+    html = html.replace(
+      /<div id="root">[\s\S]*?<\/div>\s*<\/div>/,
+      ssrArticleHtml
+    );
 
     // 5. 書き換えた HTML を返す
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
