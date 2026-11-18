@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 import AdSenseBox from './AdSenseBox';
 import SquareTimeline from './SquareTimeline';
+import RecentComments from './RecentComments';
 import RaidBossMiniGame from './RaidBossMiniGame';
 import PatrolMiniGame from './PatrolMiniGame';
 import DungeonMiniGame from './DungeonMiniGame';
@@ -163,6 +164,9 @@ const Sidebar = ({
           ))}
         </div>
       </div>
+
+      {/* 2.5 💬 新着コメント（どの記事にどんなコメントがついたか） */}
+      <RecentComments navigateTo={navigateTo} />
 
       {/* 3. ⏳ もうすぐ終了！ (条件付きレンダリング) */}
       {endingSoonSurveys.length > 0 && (
