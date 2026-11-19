@@ -379,7 +379,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
         className="summary-rabi-avatar"
         onClick={handleRabiAvatarClick}
         title="クリックでらびたんにニンジンをあげる🥕"
-        style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', flexShrink: 0, marginTop: '2px', cursor: 'pointer', userSelect: 'none' }}
+        style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', width: '50px', flex: '0 0 50px', marginTop: '2px', cursor: 'pointer', userSelect: 'none' }}
       >
         {carrotBursts.map(b => (
           <React.Fragment key={b.burstId}>
@@ -449,6 +449,11 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
         </span>
         {carrotCount > 0 && (
           <span style={{
+            position: 'absolute',
+            top: '68px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 10,
             fontSize: '0.65rem',
             fontWeight: '900',
             color: '#ea580c',
