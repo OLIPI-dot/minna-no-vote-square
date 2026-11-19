@@ -1873,7 +1873,7 @@ const SurveyDetailView = ({
         <div className="adjacent-nav-section" style={{ marginTop: '44px' }}>
           <div className="adjacent-nav-grid" style={{ 
             display: 'grid', 
-            gridTemplateColumns: (adjacentSurveys.prev && adjacentSurveys.next) ? '1fr 1fr' : '1fr', 
+            gridTemplateColumns: (adjacentSurveys.prev && adjacentSurveys.next) ? 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))' : '1fr', 
             gap: '16px' 
           }}>
             {(() => {
@@ -1983,6 +1983,7 @@ const SurveyDetailView = ({
                         borderRadius: '999px',
                         marginBottom: '6px',
                         letterSpacing: '0.03em',
+                        whiteSpace: 'nowrap',
                         boxShadow: '0 2px 6px rgba(15, 23, 42, 0.12)'
                       }}>
                         {nav.label}
