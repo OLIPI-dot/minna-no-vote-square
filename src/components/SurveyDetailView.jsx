@@ -536,61 +536,121 @@ const SurveyDetailView = ({
       })()}
 
       <div className="options-container" style={{ margin: '20px 0 40px 0' }}>
-        {options.length > 0 ? options.map((opt, index) => {
-          const perc = isTotalVotes > 0 ? Math.round((opt.votes / isTotalVotes) * 100) : 0;
-          const isWinner = options.length > 1 && opt.votes === Math.max(...options.map(o => o.votes)) && opt.votes > 0;
-          const isUserAdded = (opt.name || '').startsWith('\u200B') || (currentSurvey.is_official && index >= 4);
-          const cleanName = (opt.name || '').replace(/^\u200B/, '');
-          const displayLabel = cleanName.startsWith(`${index + 1}.`) ? cleanName : `${index + 1}. ${cleanName}`;
-          const strippedLabel = cleanName.replace(/^\d+\.\s*/, '');
-          let isMyAdded = false;
-          try {
-            const myAddedIds = JSON.parse(localStorage.getItem('my_added_options') || '[]');
-            isMyAdded = myAddedIds.includes(opt.id);
-          } catch {}
+        {options.length > 0 ? (() => {
+          const uniquePositiveVotes = [...new Set(options.map(o => Number(o.votes) || 0).filter(v => v > 0))].sort((a, b) => b - a);
+          const RANK_PALETTES = {
+            1: { medal: '👑', accent: '#ec4899', barBg: 'linear-gradient(90deg, #f43f5e, #ec4899, #8b5cf6)', badgeBg: 'linear-gradient(135deg, #f43f5e, #ec4899)', textColor: '#be185d', cardBorder: '#fbcfe8' },
+            2: { medal: '🥈', accent: '#0ea5e9', barBg: 'linear-gradient(90deg, #0ea5e9, #6366f1)', badgeBg: 'linear-gradient(135deg, #0ea5e9, #6366f1)', textColor: '#0369a1', cardBorder: '#bae6fd' },
+            3: { medal: '🥉', accent: '#10b981', barBg: 'linear-gradient(90deg, #10b981, #0d9488)', badgeBg: 'linear-gradient(135deg, #10b981, #0d9488)', textColor: '#047857', cardBorder: '#a7f3d0' },
+          };
+          const DEFAULT_PALETTE = { medal: null, accent: '#cbd5e1', barBg: 'linear-gradient(90deg, #a78bfa, #c4b5fd)', badgeBg: '#94a3b8', textColor: '#475569', cardBorder: '#e2e8f0' };
 
-          return (
-            <div key={opt.id} className={votedOption || isTimeUp ? "result-bar-container" : "option-button-wrapper"} style={{ marginBottom: '14px' }}>
-              {votedOption || isTimeUp ? (
-                <>
-                  <div className="result-info" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                    <span className="choice-name" style={{ fontWeight: isWinner ? '900' : 'bold', color: isWinner ? '#7c3aed' : '#334155', fontSize: '1.05rem', display: 'inline-flex', alignItems: 'center', flexWrap: 'wrap', gap: '6px' }}>
-                      {isWinner && <span>🏆</span>}
-                      <span>{displayLabel + (String(votedOption) === String(opt.id) ? ' ✅' : '')}</span>
-                      {isUserAdded && (
+          return options.map((opt, index) => {
+            const perc = isTotalVotes > 0 ? Math.round((opt.votes / isTotalVotes) * 100) : 0;
+            const voteCount = Number(opt.votes) || 0;
+            const voteRank = voteCount > 0 ? uniquePositiveVotes.indexOf(voteCount) + 1 : 0;
+            const palette = RANK_PALETTES[voteRank] || DEFAULT_PALETTE;
+            const isMyVote = String(votedOption) === String(opt.id);
+            const isUserAdded = (opt.name || '').startsWith('\u200B') || (currentSurvey.is_official && index >= 4);
+            const cleanName = (opt.name || '').replace(/^\u200B/, '');
+            const strippedLabel = cleanName.replace(/^\d+\.\s*/, '');
+            let isMyAdded = false;
+            try {
+              const myAddedIds = JSON.parse(localStorage.getItem('my_added_options') || '[]');
+              isMyAdded = myAddedIds.includes(opt.id);
+            } catch {}
+
+            const showResult = Boolean(votedOption || isTimeUp);
+            const borderEdge = isMyVote ? '2px solid #8b5cf6' : `1px solid ${palette.cardBorder}`;
+
+            return (
+              <div
+                key={opt.id}
+                className={showResult ? "result-bar-container" : "option-button-wrapper"}
+                style={showResult ? {
+                  marginBottom: '14px',
+                  background: isMyVote ? 'linear-gradient(180deg, #ffffff 0%, #faf5ff 100%)' : '#ffffff',
+                  padding: '14px 16px',
+                  borderRadius: '16px',
+                  borderTop: borderEdge,
+                  borderRight: borderEdge,
+                  borderBottom: borderEdge,
+                  borderLeft: `5px solid ${palette.accent}`,
+                  boxShadow: isMyVote ? '0 6px 18px rgba(124, 58, 237, 0.14)' : '0 4px 12px rgba(15, 23, 42, 0.04)'
+                } : { marginBottom: '14px' }}
+              >
+                {showResult ? (
+                  <>
+                    <div className="result-info" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                      <span className="choice-name" style={{ fontWeight: voteRank === 1 || isMyVote ? '800' : '700', color: voteRank === 1 ? palette.textColor : '#1e293b', fontSize: '1rem', display: 'inline-flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
                         <span style={{
-                          fontSize: '0.72rem',
-                          background: isMyAdded ? '#ede9fe' : '#fef3c7',
-                          color: isMyAdded ? '#6d28d9' : '#d97706',
-                          border: `1px solid ${isMyAdded ? '#ddd6fe' : '#fde68a'}`,
-                          padding: '2px 8px',
-                          borderRadius: '999px',
-                          fontWeight: '800',
-                          lineHeight: 1.2
+                          flex: '0 0 auto',
+                          width: '24px',
+                          height: '24px',
+                          borderRadius: '50%',
+                          background: palette.badgeBg,
+                          color: '#ffffff',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '0.78rem',
+                          fontWeight: '900'
                         }}>
-                          {isMyAdded ? '✨ あなたが追加' : '🙋 みんなが追加'}
+                          {index + 1}
                         </span>
-                      )}
-                    </span>
-                    <span className="vote-count-meta" style={{ fontSize: '0.9rem', color: '#64748b' }}>
-                      <span className="vote-count-num" style={{ fontWeight: 'bold', color: isWinner ? '#7c3aed' : '#64748b' }}>
-                        <AnimatedCounter value={opt.votes || 0} />票
+                        {palette.medal && <span style={{ fontSize: '1.1rem', lineHeight: 1 }}>{palette.medal}</span>}
+                        <span style={{ lineHeight: 1.4 }}>{strippedLabel}</span>
+                        {isMyVote && (
+                          <span style={{
+                            fontSize: '0.72rem',
+                            background: '#ede9fe',
+                            color: '#6d28d9',
+                            border: '1px solid #c4b5fd',
+                            padding: '2px 8px',
+                            borderRadius: '999px',
+                            fontWeight: '900',
+                            lineHeight: 1.2
+                          }}>
+                            ✅ あなたの投票
+                          </span>
+                        )}
+                        {isUserAdded && (
+                          <span style={{
+                            fontSize: '0.72rem',
+                            background: isMyAdded ? '#ede9fe' : '#fef3c7',
+                            color: isMyAdded ? '#6d28d9' : '#d97706',
+                            border: `1px solid ${isMyAdded ? '#ddd6fe' : '#fde68a'}`,
+                            padding: '2px 8px',
+                            borderRadius: '999px',
+                            fontWeight: '800',
+                            lineHeight: 1.2
+                          }}>
+                            {isMyAdded ? '✨ あなたが追加' : '🙋 みんなが追加'}
+                          </span>
+                        )}
                       </span>
-                      <span className="vote-count-perc" style={{ marginLeft: '8px', opacity: 0.8 }}>({perc}%)</span>
-                    </span>
-                  </div>
-                  <div className="result-bar-bg" style={{ height: '14px', background: '#f1f5f9', borderRadius: '10px', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
-                    <div className="result-bar-fill" style={{
-                      width: `${perc}%`,
-                      height: '100%',
-                      background: isWinner ? 'linear-gradient(90deg, #7c3aed, #ec4899)' : 'linear-gradient(90deg, #94a3b8, #cbd5e1)',
-                      borderRadius: '10px',
-                      transition: 'width 1s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                      boxShadow: isWinner ? '0 0 10px rgba(124, 58, 237, 0.3)' : 'none'
-                    }}></div>
-                  </div>
-                </>
-              ) : (
+                      <span className="vote-count-meta" style={{ display: 'inline-flex', flexDirection: 'row', alignItems: 'baseline', gap: '5px', color: '#64748b', marginLeft: 'auto' }}>
+                        <span className="vote-count-perc" style={{ fontSize: '1.2rem', fontWeight: '900', color: palette.textColor, opacity: 1 }}>
+                          {perc}%
+                        </span>
+                        <span className="vote-count-num" style={{ fontSize: '0.82rem', fontWeight: '700', color: '#64748b' }}>
+                          (<AnimatedCounter value={voteCount} />票)
+                        </span>
+                      </span>
+                    </div>
+                    <div className="result-bar-bg" style={{ height: '16px', background: '#f1f5f9', borderRadius: '999px', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
+                      <div className="result-bar-fill" style={{
+                        width: `${perc}%`,
+                        minWidth: voteCount > 0 ? '8px' : '0',
+                        height: '100%',
+                        background: palette.barBg,
+                        borderRadius: '999px',
+                        transition: 'width 0.9s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                        boxShadow: voteRank === 1 ? '0 0 10px rgba(236, 72, 153, 0.35)' : 'none'
+                      }}></div>
+                    </div>
+                  </>
+                ) : (
                 <button className="option-button" onClick={() => handleVote(opt)} style={{
                   width: '100%',
                   padding: '15px 18px',
@@ -694,9 +754,10 @@ const SurveyDetailView = ({
                   </span>
                 </button>
               )}
-            </div>
-          );
-        }) : (
+              </div>
+            );
+          });
+        })() : (
           <div className="options-loading" style={{ textAlign: 'center', padding: '30px', color: '#94a3b8', fontStyle: 'italic' }}>
             🗳️ 投票項目を読み込み中らび...✨
           </div>

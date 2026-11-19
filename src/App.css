@@ -1599,12 +1599,12 @@ body {
 }
 
 .result-bar-container {
-  margin-bottom: 25px;
-  background: #f8fafc;
-  padding: 22px;
-  border-radius: 24px;
-  border: 1px solid #f1f5f9;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.02);
+  margin-bottom: 14px;
+  background: #ffffff;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
 }
 
 .result-info {
