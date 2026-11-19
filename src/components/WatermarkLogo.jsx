@@ -39,7 +39,21 @@ const WatermarkLogo = ({ onClick }) => {
       onClick={handleClick}
     >
       <span className="watermark-logo-text">みんアケ</span>
-      <span className="watermark-logo-icon">🐰🥕</span>
+      <span className="watermark-logo-icon" style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+        <img
+          src="/favicon-144x144.png"
+          alt="らびたん"
+          style={{
+            width: '22px',
+            height: '22px',
+            borderRadius: '50%',
+            border: '1.5px solid #f472b6',
+            objectFit: 'cover',
+            boxShadow: '0 1px 4px rgba(236, 72, 153, 0.25)'
+          }}
+        />
+        <span>🥕</span>
+      </span>
 
       {/* Render Sparkles */}
       {sparkles.map(s => (
