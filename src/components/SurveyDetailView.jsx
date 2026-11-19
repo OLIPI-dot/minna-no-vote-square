@@ -542,6 +542,7 @@ const SurveyDetailView = ({
           const isUserAdded = (opt.name || '').startsWith('\u200B') || (currentSurvey.is_official && index >= 4);
           const cleanName = (opt.name || '').replace(/^\u200B/, '');
           const displayLabel = cleanName.startsWith(`${index + 1}.`) ? cleanName : `${index + 1}. ${cleanName}`;
+          const strippedLabel = cleanName.replace(/^\d+\.\s*/, '');
           let isMyAdded = false;
           try {
             const myAddedIds = JSON.parse(localStorage.getItem('my_added_options') || '[]');
@@ -549,7 +550,7 @@ const SurveyDetailView = ({
           } catch {}
 
           return (
-            <div key={opt.id} className="result-bar-container" style={{ marginBottom: '16px' }}>
+            <div key={opt.id} className={votedOption || isTimeUp ? "result-bar-container" : "option-button-wrapper"} style={{ marginBottom: '14px' }}>
               {votedOption || isTimeUp ? (
                 <>
                   <div className="result-info" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
@@ -592,15 +593,23 @@ const SurveyDetailView = ({
               ) : (
                 <button className="option-button" onClick={() => handleVote(opt)} style={{
                   width: '100%',
-                  padding: '18px 25px',
+                  padding: '15px 18px',
+                  marginBottom: 0,
                   borderRadius: '18px',
-                  border: isUserAdded ? '2px solid #fde68a' : '2px solid #e2e8f0',
-                  background: isUserAdded ? '#fffbeb' : 'white',
-                  fontSize: '1.1rem',
-                  fontWeight: 'bold',
-                  color: '#334155',
+                  borderWidth: '2px 2px 5px 2px',
+                  borderStyle: 'solid',
+                  borderColor: isUserAdded ? '#f59e0b #f59e0b #d97706 #f59e0b' : '#c4b5fd #c4b5fd #8b5cf6 #c4b5fd',
+                  background: isUserAdded
+                    ? 'linear-gradient(180deg, #ffffff 0%, #fffbeb 100%)'
+                    : 'linear-gradient(180deg, #ffffff 0%, #faf5ff 100%)',
+                  boxShadow: isUserAdded
+                    ? '0 4px 12px rgba(245, 158, 11, 0.14)'
+                    : '0 4px 12px rgba(124, 58, 237, 0.10)',
+                  fontSize: '1.05rem',
+                  fontWeight: '800',
+                  color: '#1e293b',
                   cursor: 'pointer',
-                  transition: 'all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                  transition: 'all 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
                   textAlign: 'left',
                   display: 'flex',
                   alignItems: 'center',
@@ -608,31 +617,81 @@ const SurveyDetailView = ({
                   gap: '12px',
                   flexWrap: 'wrap'
                 }} onMouseOver={e => {
-                  e.currentTarget.style.transform = 'translateX(8px)';
-                  e.currentTarget.style.borderColor = '#7c3aed';
-                  e.currentTarget.style.color = '#7c3aed';
-                  e.currentTarget.style.background = '#f5f3ff';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.borderColor = isUserAdded ? '#d97706' : '#7c3aed';
+                  e.currentTarget.style.borderBottomColor = isUserAdded ? '#b45309' : '#6d28d9';
+                  e.currentTarget.style.color = isUserAdded ? '#92400e' : '#5b21b6';
+                  e.currentTarget.style.background = isUserAdded
+                    ? 'linear-gradient(180deg, #fffbeb 0%, #fef3c7 100%)'
+                    : 'linear-gradient(180deg, #faf5ff 0%, #ede9fe 100%)';
+                  e.currentTarget.style.boxShadow = isUserAdded
+                    ? '0 8px 18px rgba(245, 158, 11, 0.22)'
+                    : '0 8px 18px rgba(124, 58, 237, 0.20)';
                 }} onMouseOut={e => {
-                  e.currentTarget.style.transform = 'translateX(0)';
-                  e.currentTarget.style.borderColor = isUserAdded ? '#fde68a' : '#e2e8f0';
-                  e.currentTarget.style.color = '#334155';
-                  e.currentTarget.style.background = isUserAdded ? '#fffbeb' : 'white';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.borderColor = isUserAdded ? '#f59e0b' : '#c4b5fd';
+                  e.currentTarget.style.borderBottomColor = isUserAdded ? '#d97706' : '#8b5cf6';
+                  e.currentTarget.style.color = '#1e293b';
+                  e.currentTarget.style.background = isUserAdded
+                    ? 'linear-gradient(180deg, #ffffff 0%, #fffbeb 100%)'
+                    : 'linear-gradient(180deg, #ffffff 0%, #faf5ff 100%)';
+                  e.currentTarget.style.boxShadow = isUserAdded
+                    ? '0 4px 12px rgba(245, 158, 11, 0.14)'
+                    : '0 4px 12px rgba(124, 58, 237, 0.10)';
                 }}>
-                  <span>{displayLabel}</span>
-                  {isUserAdded && (
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: '1 1 200px', minWidth: 0 }}>
                     <span style={{
-                      fontSize: '0.75rem',
-                      background: '#fef3c7',
-                      color: '#d97706',
-                      border: '1px solid #fde68a',
-                      padding: '2px 10px',
+                      flex: '0 0 auto',
+                      width: '28px',
+                      height: '28px',
+                      borderRadius: '50%',
+                      background: isUserAdded
+                        ? 'linear-gradient(135deg, #f59e0b, #d97706)'
+                        : 'linear-gradient(135deg, #8b5cf6, #ec4899)',
+                      color: '#ffffff',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '0.88rem',
+                      fontWeight: '900',
+                      boxShadow: '0 2px 6px rgba(124, 58, 237, 0.25)'
+                    }}>
+                      {index + 1}
+                    </span>
+                    <span style={{ lineHeight: 1.45, wordBreak: 'break-word' }}>{strippedLabel}</span>
+                  </span>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', flexShrink: 0, marginLeft: 'auto' }}>
+                    {isUserAdded && (
+                      <span style={{
+                        fontSize: '0.72rem',
+                        background: '#fef3c7',
+                        color: '#b45309',
+                        border: '1px solid #fcd34d',
+                        padding: '3px 8px',
+                        borderRadius: '999px',
+                        fontWeight: '800',
+                        flexShrink: 0
+                      }}>
+                        🙋 みんなが追加
+                      </span>
+                    )}
+                    <span style={{
+                      background: isUserAdded
+                        ? 'linear-gradient(135deg, #f59e0b, #ea580c)'
+                        : 'linear-gradient(135deg, #7c3aed, #ec4899)',
+                      color: '#ffffff',
+                      padding: '6px 12px',
                       borderRadius: '999px',
-                      fontWeight: '800',
+                      fontSize: '0.78rem',
+                      fontWeight: '900',
+                      letterSpacing: '0.03em',
+                      boxShadow: '0 2px 8px rgba(124, 58, 237, 0.25)',
+                      whiteSpace: 'nowrap',
                       flexShrink: 0
                     }}>
-                      🙋 みんなが追加
+                      投票 ▶
                     </span>
-                  )}
+                  </span>
                 </button>
               )}
             </div>

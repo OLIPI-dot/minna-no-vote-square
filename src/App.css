@@ -1734,24 +1734,34 @@ body {
 
 .option-button {
   width: 100%;
-  padding: 20px;
-  border: 3px solid #e2e8f0;
-  border-radius: 20px;
-  background: white;
-  margin-bottom: 15px;
-  font-weight: 900;
-  font-size: 1.1rem;
+  padding: 16px 18px;
+  border: 2px solid #c4b5fd;
+  border-bottom: 5px solid #8b5cf6;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #ffffff 0%, #faf5ff 100%);
+  margin-bottom: 0;
+  font-weight: 800;
+  font-size: 1.05rem;
   cursor: pointer;
-  transition: all 0.2s;
-  color: #334155;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease, border-color 0.16s ease;
+  color: #1e293b;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.10);
 }
 
 .option-button:hover {
-  border-color: var(--primary-color);
-  color: var(--primary-color);
-  background: #f5f3ff;
+  border-color: #7c3aed;
+  border-bottom-color: #6d28d9;
+  color: #5b21b6;
+  background: linear-gradient(180deg, #faf5ff 0%, #ede9fe 100%);
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.1);
+  box-shadow: 0 8px 18px rgba(124, 58, 237, 0.18);
+}
+
+.option-button:active {
+  transform: translateY(2px) !important;
+  border-bottom-width: 2px !important;
+  margin-top: 3px;
+  box-shadow: 0 2px 6px rgba(124, 58, 237, 0.12) !important;
 }
 
 /* 📣 シェア・報告ボタン */
