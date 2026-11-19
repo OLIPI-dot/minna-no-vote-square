@@ -251,6 +251,27 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
   // 要約カードを表示する判定（JSONまたは要約文があれば常に表示！）
   const showSummaryCard = Boolean(summaryJson || summaryPoints.length > 0);
 
+  // 📝 読みやすさのため、文の区切り（。！？）ごとに段落を分けて表示する
+  const renderSentences = (text) => {
+    if (!text) return null;
+    const tokens = String(text).split(/([。！？]+(?![。！？」』）)]))/).filter(Boolean);
+    const sentences = [];
+    for (let i = 0; i < tokens.length; i++) {
+      if (/^[。！？]+$/.test(tokens[i]) && sentences.length > 0) {
+        sentences[sentences.length - 1] += tokens[i];
+      } else {
+        const trimmed = tokens[i].trim();
+        if (trimmed) sentences.push(trimmed);
+      }
+    }
+    if (sentences.length <= 1) return text;
+    return sentences.map((s, i) => (
+      <span key={i} className="summary-sentence" style={{ display: 'block', marginTop: i > 0 ? '6px' : 0 }}>
+        {s}
+      </span>
+    ));
+  };
+
   return (
     <div className="survey-description-container" style={{
       margin: '0 auto 50px auto',
@@ -384,7 +405,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
                         )}
                       </div>
                       <span className="summary-point-text" style={{ whiteSpace: "normal" }}>
-                        {summaryJson.point1_desc}
+                        {renderSentences(summaryJson.point1_desc)}
                       </span>
                     </li>
                   )}
@@ -423,7 +444,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
                         )}
                       </div>
                       <span className="summary-point-text" style={{ whiteSpace: "normal" }}>
-                        {summaryJson.point2_desc}
+                        {renderSentences(summaryJson.point2_desc)}
                       </span>
                     </li>
                   )}
@@ -462,7 +483,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
                         )}
                       </div>
                       <span className="summary-point-text" style={{ whiteSpace: "normal" }}>
-                        {summaryJson.point3_desc}
+                        {renderSentences(summaryJson.point3_desc)}
                       </span>
                     </li>
                   )}
@@ -470,9 +491,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
                   {/* らびのひとこと */}
                   {summaryJson.rabi_comment && (
                     <li className="summary-rabi" style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '12px',
+                      display: 'block',
                       marginTop: '16px',
                       padding: '14px 20px',
                       background: 'linear-gradient(135deg, #fff7ed 0%, #fdf4ff 50%, #f0fdf4 100%)',
@@ -482,28 +501,27 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
                       fontSize: '0.98rem',
                       lineHeight: '1.6'
                     }}>
-                      <span style={{ fontSize: '1.4rem', flexShrink: 0 }}>🐰</span>
-                      <span className="flex flex-col md:block gap-1 w-full" style={{ whiteSpace: "normal" }}>
+                      <div className="summary-box-header" style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
+                        <span style={{ fontSize: '1.25rem', flexShrink: 0, lineHeight: 1 }}>🐰</span>
                         <strong style={{
                           background: 'linear-gradient(90deg, #ea580c, #c026d3)',
                           WebkitBackgroundClip: 'text',
                           WebkitTextFillColor: 'transparent',
-                          fontWeight: '900',
-                          marginRight: '8px'
+                          fontWeight: '900'
                         }}>
-                          らびのひとこと：
+                          らびのひとこと
                         </strong>
-                        <span className="summary-rabi-text" style={{ color: '#431407', fontWeight: '600' }}>{summaryJson.rabi_comment}</span>
-                      </span>
+                      </div>
+                      <div className="summary-rabi-text" style={{ color: '#334155', fontWeight: '400', whiteSpace: 'normal' }}>
+                        {renderSentences(summaryJson.rabi_comment)}
+                      </div>
                     </li>
                   )}
 
                   {/* 専門用語の解説（ある場合のみ） */}
                   {summaryJson.keyword_title && summaryJson.keyword_desc && (
                     <li className="summary-keyword" style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '10px',
+                      display: 'block',
                       marginTop: '16px',
                       padding: '12px 18px',
                       background: 'linear-gradient(135deg, rgba(243, 232, 255, 0.7) 0%, rgba(253, 244, 255, 0.7) 100%)',
@@ -513,15 +531,17 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
                       color: '#4c1d95',
                       lineHeight: '1.6'
                     }}>
-                      <span style={{ fontSize: '1.2rem', flexShrink: 0 }}>💡</span>
-                      <span style={{ whiteSpace: 'normal', width: '100%', fontWeight: '600' }}>
-                        <span style={{ background: '#7e22ce', color: '#fff', padding: '2px 8px', borderRadius: '6px', fontSize: '0.85rem', marginRight: '6px' }}>
+                      <div className="summary-box-header" style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '4px', marginBottom: '6px' }}>
+                        <span style={{ fontSize: '1.1rem', flexShrink: 0, lineHeight: 1 }}>💡</span>
+                        <span style={{ background: '#7e22ce', color: '#fff', padding: '2px 8px', borderRadius: '6px', fontSize: '0.82rem', fontWeight: '700', marginRight: '2px' }}>
                           用語
                         </span>
                         <strong style={{ color: '#581c87' }}>{summaryJson.keyword_title}</strong>
-                        <span style={{ color: '#7e22ce' }}>とは： </span>
-                        <span style={{ color: '#334155', fontWeight: '500' }}>{summaryJson.keyword_desc}</span>
-                      </span>
+                        <span style={{ color: '#7e22ce', fontWeight: '600' }}>とは</span>
+                      </div>
+                      <div className="summary-keyword-text" style={{ color: '#334155', fontWeight: '400', whiteSpace: 'normal' }}>
+                        {renderSentences(summaryJson.keyword_desc)}
+                      </div>
                     </li>
                   )}
                 </>
@@ -536,9 +556,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
                       const thoughtText = point.replace(/^.*らびの(ひとこと|感想|視点)[：:]\s*/, '').replace(/^\*\*|\*\*$/g, '');
                       return (
                         <li key={idx} className="summary-rabi" style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '12px',
+                          display: 'block',
                           marginTop: '16px',
                           padding: '14px 20px',
                           background: 'linear-gradient(135deg, #fff7ed 0%, #fdf4ff 50%, #f0fdf4 100%)',
@@ -548,19 +566,20 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
                           fontSize: '0.98rem',
                           lineHeight: '1.6'
                         }}>
-                          <span style={{ fontSize: '1.4rem', flexShrink: 0 }}>🐰</span>
-                          <span className="flex flex-col md:block gap-1 w-full" style={{ whiteSpace: "normal" }}>
+                          <div className="summary-box-header" style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
+                            <span style={{ fontSize: '1.25rem', flexShrink: 0, lineHeight: 1 }}>🐰</span>
                             <strong style={{
                               background: 'linear-gradient(90deg, #ea580c, #c026d3)',
                               WebkitBackgroundClip: 'text',
                               WebkitTextFillColor: 'transparent',
-                              fontWeight: '900',
-                              marginRight: '8px'
+                              fontWeight: '900'
                             }}>
-                              らびのひとこと：
+                              らびのひとこと
                             </strong>
-                            <span className="summary-rabi-text" style={{ color: '#431407', fontWeight: '600' }}>{thoughtText}</span>
-                          </span>
+                          </div>
+                          <div className="summary-rabi-text" style={{ color: '#334155', fontWeight: '400', whiteSpace: 'normal' }}>
+                            {renderSentences(thoughtText)}
+                          </div>
                         </li>
                       );
                     }
@@ -572,9 +591,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
                       const glossaryParts = cleanGlossary.split(/(とは[：:])/);
                       return (
                         <li key={idx} className="summary-keyword" style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '10px',
+                          display: 'block',
                           marginTop: '16px',
                           padding: '12px 18px',
                           background: 'linear-gradient(135deg, rgba(243, 232, 255, 0.7) 0%, rgba(253, 244, 255, 0.7) 100%)',
@@ -584,21 +601,33 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
                           color: '#4c1d95',
                           lineHeight: '1.6'
                         }}>
-                          <span style={{ fontSize: '1.2rem', flexShrink: 0 }}>💡</span>
-                          <span style={{ whiteSpace: 'normal', width: '100%', fontWeight: '600' }}>
-                            {glossaryParts.length >= 3 ? (
-                              <>
-                                <span style={{ background: '#7e22ce', color: '#fff', padding: '2px 8px', borderRadius: '6px', fontSize: '0.85rem', marginRight: '6px' }}>
+                          {glossaryParts.length >= 3 ? (
+                            <>
+                              <div className="summary-box-header" style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '4px', marginBottom: '6px' }}>
+                                <span style={{ fontSize: '1.1rem', flexShrink: 0, lineHeight: 1 }}>💡</span>
+                                <span style={{ background: '#7e22ce', color: '#fff', padding: '2px 8px', borderRadius: '6px', fontSize: '0.82rem', fontWeight: '700', marginRight: '2px' }}>
                                   用語
                                 </span>
                                 <strong style={{ color: '#581c87' }}>{glossaryParts[0].replace(/\*\*/g, '')}</strong>
-                                <span style={{ color: '#7e22ce' }}>{glossaryParts[1]} </span>
-                                <span style={{ color: '#334155', fontWeight: '500' }}>{glossaryParts.slice(2).join('')}</span>
-                              </>
-                            ) : (
-                              cleanGlossary
-                            )}
-                          </span>
+                                <span style={{ color: '#7e22ce', fontWeight: '600' }}>とは</span>
+                              </div>
+                              <div className="summary-keyword-text" style={{ color: '#334155', fontWeight: '400', whiteSpace: 'normal' }}>
+                                {renderSentences(glossaryParts.slice(2).join('').trim())}
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <div className="summary-box-header" style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '4px', marginBottom: '6px' }}>
+                                <span style={{ fontSize: '1.1rem', flexShrink: 0, lineHeight: 1 }}>💡</span>
+                                <span style={{ background: '#7e22ce', color: '#fff', padding: '2px 8px', borderRadius: '6px', fontSize: '0.82rem', fontWeight: '700' }}>
+                                  用語
+                                </span>
+                              </div>
+                              <div className="summary-keyword-text" style={{ color: '#334155', fontWeight: '400', whiteSpace: 'normal' }}>
+                                {renderSentences(cleanGlossary)}
+                              </div>
+                            </>
+                          )}
                         </li>
                       );
                     }
