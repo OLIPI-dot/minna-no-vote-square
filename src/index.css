@@ -49,13 +49,18 @@ html, body {
   .summary-point-item {
     margin-bottom: 18px !important;
   }
-  /* らびのひとこと：🐰を上に置いて本文の幅を広げ、太字をやわらげる */
+  /* らびのひとこと・用語：🐰や💡を先頭文字の横に並べて1行無駄にしない＆2行目以降は全幅で折り返す */
   .summary-rabi,
   .summary-keyword {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 4px !important;
+    display: block !important;
     padding: 12px 14px !important;
+  }
+  .summary-rabi > span:first-child,
+  .summary-keyword > span:first-child {
+    display: inline !important;
+    font-size: 1.15rem !important;
+    margin-right: 6px !important;
+    vertical-align: -1px !important;
   }
   .summary-rabi-text {
     font-weight: 500 !important;
