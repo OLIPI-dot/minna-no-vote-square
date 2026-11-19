@@ -216,13 +216,21 @@ ${articleContent}
 
 
 
+// ⏱️ GitHub Actions のジョブは10分で強制終了されるため、時間に余裕をもって切り上げるらび！
+const SCRIPT_START_TIME = Date.now();
+const elapsedMs = () => Date.now() - SCRIPT_START_TIME;
+const NEW_ARTICLE_CUTOFF_MS = 5 * 60 * 1000;   // 5分を過ぎたら新しい記事には取りかからない
+const AI_RETRY_CUTOFF_MS = 6.5 * 60 * 1000;   // 6.5分を過ぎたらAIのリトライもしない
+const GEMINI_TIMEOUT_MS = 90 * 1000;          // AIの返事を待つのは最大90秒まで
+
 // 🤖 Gemini APIクライアントの初期化（APIキーがない場合はnull → フォールバック処理へ）
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 let geminiModel = null;
 if (GEMINI_API_KEY) {
     try {
         const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-        geminiModel = genAI.getGenerativeModel({ model: 'gemini-3.6-flash' });
+        // 🛡️ Google側が混雑して返事が来ないとき、いつまでも固まらないよう待ち時間に上限を付ける
+        geminiModel = genAI.getGenerativeModel({ model: 'gemini-3.6-flash' }, { timeout: GEMINI_TIMEOUT_MS });
         log('🤖 Gemini AI モデル初期化完了らび！');
     } catch (e) {
         log(`⚠️ Gemini初期化エラー: ${e.message}（フォールバック処理を使用します）`);
@@ -241,6 +249,11 @@ async function generateAISummary(articleContent) {
     let lastError = null;
     for (let attempt = 1; attempt <= 3; attempt++) {
         if (attempt > 1) {
+            if (elapsedMs() > AI_RETRY_CUTOFF_MS) {
+                global.isTimeBudgetHit = true;
+                log('⏱️ 実行時間が長くなってきたため、この記事のリトライはやめておきます。');
+                break;
+            }
             log(`⏳ リトライ待機します... (試行 ${attempt}/3)`);
             await new Promise(r => setTimeout(r, 2000));
         }
@@ -588,6 +601,11 @@ async function startAutoPosting() {
 
     for (const news of allNews) {
         if (count >= POST_LIMIT) break;
+        if (elapsedMs() > NEW_ARTICLE_CUTOFF_MS) {
+            global.isTimeBudgetHit = true;
+            log(`⏱️ 実行開始から5分が経ったため、今回はここまでにします（${count}件投稿済み）。`);
+            break;
+        }
         if (attemptCount >= MAX_ATTEMPTS) {
             log(`⚠️ 最大試行回数（${MAX_ATTEMPTS}回）に達したため、処理を打ち切ります。`);
             break;
@@ -720,6 +738,8 @@ async function startAutoPosting() {
     if (count === 0) {
         if (global.isQuotaExceeded) {
             log(`🍵 本日のAPI無料枠（20回）を使い切っているため、この回はお休みして正常終了しますらび！`);
+        } else if (global.isTimeBudgetHit) {
+            log(`🍵 Gemini側が混み合っていて時間内に投稿できなかったため、この回はお休みして正常終了しますらび！`);
         } else {
             log(`❌ 投稿件数が0件だったため、エラーとして異常終了します。`);
             process.exit(1);

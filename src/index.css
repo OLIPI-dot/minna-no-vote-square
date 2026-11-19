@@ -23,6 +23,44 @@ html, body {
     margin-left: 0 !important;
     line-height: 1.7 !important;
   }
+
+  /* 📱 スマホで要約を読みやすく（PCの見た目はそのまま） */
+  /* 外枠と要約カードの余白を減らして、1行に入る文字数を増やす */
+  .survey-description-box {
+    padding: 22px 14px !important;
+    border-radius: 20px !important;
+  }
+  .summary-card {
+    padding: 18px 14px !important;
+    border-radius: 18px !important;
+    margin-bottom: 24px !important;
+  }
+  /* 両端そろえをやめて、英単語まわりの不自然なすき間をなくす */
+  .survey-description-box,
+  .summary-card,
+  .summary-point-text {
+    text-align: left !important;
+  }
+  .summary-point-text {
+    font-size: 0.98rem !important;
+    letter-spacing: 0 !important;
+    color: #1e293b !important;
+  }
+  .summary-point-item {
+    margin-bottom: 18px !important;
+  }
+  /* らびのひとこと：🐰を上に置いて本文の幅を広げ、太字をやわらげる */
+  .summary-rabi,
+  .summary-keyword {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 4px !important;
+    padding: 12px 14px !important;
+  }
+  .summary-rabi-text {
+    font-weight: 500 !important;
+    line-height: 1.75 !important;
+  }
 }
 
 /* 🐰 左下追従の「みんアケ」透かしロゴ */

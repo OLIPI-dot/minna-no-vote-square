@@ -297,7 +297,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
       }}>
         {/* ⚡ 要約・注目ポイントカード (目を引くリッチデザイン＆高ジャンプ率！) */}
         {showSummaryCard && (
-          <div style={{
+          <div className="summary-card" style={{
             background: 'linear-gradient(135deg, #ffffff 0%, #faf5ff 50%, #f0fdf4 100%)',
             borderRadius: '24px',
             padding: '26px 30px',
@@ -469,7 +469,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
 
                   {/* らびのひとこと */}
                   {summaryJson.rabi_comment && (
-                    <li style={{
+                    <li className="summary-rabi" style={{
                       display: 'flex',
                       alignItems: 'center',
                       gap: '12px',
@@ -493,14 +493,14 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
                         }}>
                           らびのひとこと：
                         </strong>
-                        <span style={{ color: '#431407', fontWeight: '600' }}>{summaryJson.rabi_comment}</span>
+                        <span className="summary-rabi-text" style={{ color: '#431407', fontWeight: '600' }}>{summaryJson.rabi_comment}</span>
                       </span>
                     </li>
                   )}
 
                   {/* 専門用語の解説（ある場合のみ） */}
                   {summaryJson.keyword_title && summaryJson.keyword_desc && (
-                    <li style={{
+                    <li className="summary-keyword" style={{
                       display: 'flex',
                       alignItems: 'center',
                       gap: '10px',
@@ -535,7 +535,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
                     if (isLabiThought) {
                       const thoughtText = point.replace(/^.*らびの(ひとこと|感想|視点)[：:]\s*/, '').replace(/^\*\*|\*\*$/g, '');
                       return (
-                        <li key={idx} style={{
+                        <li key={idx} className="summary-rabi" style={{
                           display: 'flex',
                           alignItems: 'center',
                           gap: '12px',
@@ -559,7 +559,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
                             }}>
                               らびのひとこと：
                             </strong>
-                            <span style={{ color: '#431407', fontWeight: '600' }}>{thoughtText}</span>
+                            <span className="summary-rabi-text" style={{ color: '#431407', fontWeight: '600' }}>{thoughtText}</span>
                           </span>
                         </li>
                       );
@@ -571,7 +571,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
                       const cleanGlossary = point.replace(/^💡\s*/, '').replace(/^\*\*|\*\*$/g, '');
                       const glossaryParts = cleanGlossary.split(/(とは[：:])/);
                       return (
-                        <li key={idx} style={{
+                        <li key={idx} className="summary-keyword" style={{
                           display: 'flex',
                           alignItems: 'center',
                           gap: '10px',
