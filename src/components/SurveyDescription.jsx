@@ -266,7 +266,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
     }
     if (sentences.length <= 1) return text;
     return sentences.map((s, i) => (
-      <span key={i} className="summary-sentence" style={{ display: 'block', marginTop: i > 0 ? '6px' : 0 }}>
+      <span key={i} className="summary-sentence" style={{ display: 'block', marginTop: i > 0 ? '4px' : 0 }}>
         {s}
       </span>
     ));

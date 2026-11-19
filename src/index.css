@@ -15,7 +15,18 @@ html, body {
     display: flex !important;
     flex-direction: column !important;
     align-items: flex-start !important;
-    margin-bottom: 18px !important;
+    padding-bottom: 20px !important;
+    margin-bottom: 22px !important;
+    border-bottom: 1px dashed #d8b4fe !important;
+  }
+  .summary-point-item:last-child,
+  .summary-point-item:has(+ :not(.summary-point-item)) {
+    border-bottom: none !important;
+    padding-bottom: 4px !important;
+    margin-bottom: 6px !important;
+  }
+  .summary-point-header {
+    margin-bottom: 10px !important;
   }
 
   /* 📱 スマホで要約を読みやすく（PCの見た目はそのまま） */
@@ -52,6 +63,7 @@ html, body {
   .summary-rabi,
   .summary-keyword {
     display: block !important;
+    margin-top: 22px !important;
     padding: 12px 14px !important;
   }
   .summary-rabi-text,
