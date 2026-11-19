@@ -6,6 +6,26 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const contentTopRef = useRef(null);
+  const [carrotBursts, setCarrotBursts] = useState([]);
+  const [carrotCount, setCarrotCount] = useState(0);
+
+  const handleRabiAvatarClick = () => {
+    const burstId = Date.now() + Math.random();
+    const reactions = ['もぐもぐ🥕', 'わーい🥕✨', 'うまらび！🥕', 'ありがとらび💕', 'シャキシャキ🥕'];
+    const label = reactions[carrotCount % reactions.length];
+    const particles = [
+      { id: `${burstId}-1`, emoji: '🥕', tx: '-26px', ty: '-48px', rot: '-28deg', delay: '0s' },
+      { id: `${burstId}-2`, emoji: '🥕', tx: '2px',   ty: '-60px', rot: '12deg',  delay: '0.04s' },
+      { id: `${burstId}-3`, emoji: '🥕', tx: '28px',  ty: '-44px', rot: '32deg',  delay: '0.08s' },
+      { id: `${burstId}-4`, emoji: '✨', tx: '-14px', ty: '-56px', rot: '-10deg', delay: '0.02s' },
+      { id: `${burstId}-5`, emoji: '💕', tx: '18px',  ty: '-54px', rot: '18deg',  delay: '0.06s' },
+    ];
+    setCarrotCount(prev => prev + 1);
+    setCarrotBursts(prev => [...prev.slice(-15), { burstId, label, particles }]);
+    setTimeout(() => {
+      setCarrotBursts(prev => prev.filter(b => b.burstId !== burstId));
+    }, 950);
+  };
 
   const handleToggle = () => {
     if (isExpanded) {
@@ -354,8 +374,57 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
         boxShadow: 'none'
       }}
     >
-      {/* 左側：らびたん丸アイコン */}
-      <div className="summary-rabi-avatar" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', flexShrink: 0, marginTop: '2px' }}>
+      {/* 左側：らびたん丸アイコン（クリックでニンジンが出現🥕） */}
+      <div
+        className="summary-rabi-avatar"
+        onClick={handleRabiAvatarClick}
+        title="クリックでらびたんにニンジンをあげる🥕"
+        style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', flexShrink: 0, marginTop: '2px', cursor: 'pointer', userSelect: 'none' }}
+      >
+        {carrotBursts.map(b => (
+          <React.Fragment key={b.burstId}>
+            <span
+              className="rabi-carrot-toast"
+              style={{
+                position: 'absolute',
+                top: '-28px',
+                left: '50%',
+                background: 'linear-gradient(135deg, #f97316, #ec4899)',
+                color: '#ffffff',
+                fontSize: '0.68rem',
+                fontWeight: '900',
+                padding: '2px 8px',
+                borderRadius: '999px',
+                whiteSpace: 'nowrap',
+                pointerEvents: 'none',
+                zIndex: 25,
+                boxShadow: '0 3px 10px rgba(249, 115, 22, 0.35)'
+              }}
+            >
+              {b.label}
+            </span>
+            {b.particles.map(p => (
+              <span
+                key={p.id}
+                className="rabi-carrot-particle"
+                style={{
+                  position: 'absolute',
+                  top: '10px',
+                  left: '14px',
+                  fontSize: '1.15rem',
+                  pointerEvents: 'none',
+                  zIndex: 24,
+                  '--tx': p.tx,
+                  '--ty': p.ty,
+                  '--rot': p.rot,
+                  animationDelay: p.delay
+                }}
+              >
+                {p.emoji}
+              </span>
+            ))}
+          </React.Fragment>
+        ))}
         <div className="summary-rabi-avatar-circle" style={{
           width: '46px',
           height: '46px',
@@ -378,6 +447,21 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
         <span style={{ fontSize: '0.7rem', fontWeight: '900', color: '#db2777', letterSpacing: '0.02em', whiteSpace: 'nowrap' }}>
           らびたん
         </span>
+        {carrotCount > 0 && (
+          <span style={{
+            fontSize: '0.65rem',
+            fontWeight: '900',
+            color: '#ea580c',
+            background: '#ffedd5',
+            border: '1px solid #fdba74',
+            borderRadius: '999px',
+            padding: '0 6px',
+            lineHeight: 1.3,
+            whiteSpace: 'nowrap'
+          }}>
+            🥕×{carrotCount}
+          </span>
+        )}
       </div>
 
       {/* 右側：真っ白で読みやすいチャット吹き出し */}
