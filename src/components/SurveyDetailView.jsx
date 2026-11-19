@@ -1973,37 +1973,49 @@ const SurveyDetailView = ({
         </div>
       )}
 
-      <div style={{ textAlign: 'center', marginTop: '50px' }}>
+      <div style={{ textAlign: 'center', marginTop: '44px' }}>
         <button
           type="button"
           className="back-to-list-link-btn"
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); navigateTo('list', null, { restoreScroll: true }); }}
           style={{
-            background: '#ffffff',
-            border: '2px solid #e2e8f0',
-            color: '#475569',
-            padding: '14px 32px',
-            borderRadius: '30px',
-            fontWeight: 'bold',
+            background: 'linear-gradient(180deg, #ffffff 0%, #faf5ff 100%)',
+            borderWidth: '2px 2px 5px 2px',
+            borderStyle: 'solid',
+            borderColor: '#c4b5fd #c4b5fd #8b5cf6 #c4b5fd',
+            color: '#5b21b6',
+            padding: '13px 32px',
+            borderRadius: '999px',
+            fontWeight: '900',
             fontSize: '1.05rem',
             cursor: 'pointer',
-            transition: 'all 0.2s ease',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.02)'
+            transition: 'all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+            boxShadow: '0 6px 18px rgba(124, 58, 237, 0.14)',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '10px'
           }}
           onMouseOver={e => {
-            e.currentTarget.style.background = '#f8fafc';
-            e.currentTarget.style.borderColor = '#cbd5e1';
-            e.currentTarget.style.color = '#334155';
+            e.currentTarget.style.background = 'linear-gradient(180deg, #faf5ff 0%, #ede9fe 100%)';
+            e.currentTarget.style.borderColor = '#7c3aed';
+            e.currentTarget.style.borderBottomColor = '#6d28d9';
             e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 10px 22px rgba(124, 58, 237, 0.22)';
           }}
           onMouseOut={e => {
-            e.currentTarget.style.background = '#ffffff';
-            e.currentTarget.style.borderColor = '#e2e8f0';
-            e.currentTarget.style.color = '#475569';
+            e.currentTarget.style.background = 'linear-gradient(180deg, #ffffff 0%, #faf5ff 100%)';
+            e.currentTarget.style.borderColor = '#c4b5fd';
+            e.currentTarget.style.borderBottomColor = '#8b5cf6';
             e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 6px 18px rgba(124, 58, 237, 0.14)';
           }}
         >
-          ← アンケート一覧に戻る
+          <img
+            src="/favicon-144x144.png"
+            alt="らびたん"
+            style={{ width: '28px', height: '28px', borderRadius: '50%', border: '2px solid #f472b6', objectFit: 'cover' }}
+          />
+          <span>← アンケート一覧（広場）に戻る</span>
         </button>
       </div>
 

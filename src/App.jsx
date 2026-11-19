@@ -3755,13 +3755,30 @@ function App() {
         </div>
       </div>
 
-      <footer className="main-footer" style={{ padding: '60px 20px', background: '#f8fafc', borderTop: '1px solid #e2e8f0' }}>
+      <footer className="main-footer" style={{
+        padding: '56px 20px',
+        background: 'linear-gradient(180deg, #faf5ff 0%, #fdf2f8 50%, #f8fafc 100%)',
+        borderTop: '2px solid #e9d5ff'
+      }}>
         <div className="footer-content" style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', flexWrap: 'wrap', gap: '40px' }}>
           <div className="footer-about" style={{ flex: '2 1 400px' }}>
-            <h4 style={{ fontSize: '1.2rem', color: '#1e293b', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span>🥕</span> みんなのアンケート広場
+            <h4 style={{ fontSize: '1.22rem', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <img
+                src="/favicon-144x144.png"
+                alt="らびたん"
+                style={{ width: '36px', height: '36px', borderRadius: '50%', border: '2px solid #f472b6', objectFit: 'cover', boxShadow: '0 2px 8px rgba(244, 114, 182, 0.25)' }}
+              />
+              <span style={{
+                background: 'linear-gradient(135deg, #7c3aed, #ec4899)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                fontWeight: '900'
+              }}>
+                みんなのアンケート広場
+              </span>
+              <span>🥕</span>
             </h4>
-            <p style={{ color: '#64748b', lineHeight: '1.8', fontSize: '0.95rem' }}>
+            <p style={{ color: '#475569', lineHeight: '1.8', fontSize: '0.95rem' }}>
               ここは、匿名で集まる本音が明日の世界を少しだけ面白くする場所です。<br />
               最新ニュースから趣味の話題まで、AI守護霊「らび」と一緒に、安心して意見を共有できるコミュニティを目指しています。
             </p>
@@ -3769,21 +3786,22 @@ function App() {
 
           <div className="footer-links" style={{ flex: '3 1 500px', display: 'flex', flexWrap: 'wrap', gap: '30px' }}>
             <div className="footer-link-group" style={{ flex: '1 1 150px' }}>
-              <h5 style={{ color: '#1e293b', marginBottom: '15px', fontWeight: 'bold' }}>📚 コンテンツ</h5>
+              <h5 style={{ color: '#4c1d95', marginBottom: '15px', fontWeight: '900' }}>📚 コンテンツ</h5>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                <li style={{ marginBottom: '10px' }}><a href="/about.html" style={{ color: '#64748b', textDecoration: 'none' }}>🌟 当サイトについて</a></li>
-                <li onClick={() => setShowingTerms(true)} style={{ marginBottom: '10px', color: '#64748b', cursor: 'pointer' }}>📖 利用規約</li>
-                <li onClick={() => setShowingPrivacy(true)} style={{ marginBottom: '10px', color: '#64748b', cursor: 'pointer' }}>📄 プライバシーポリシー</li>
-                <li onClick={() => setShowingContact(true)} style={{ marginBottom: '10px', color: '#64748b', cursor: 'pointer' }}>📩 お問い合わせ</li>
+                <li style={{ marginBottom: '10px' }}><a href="/about.html" style={{ color: '#475569', textDecoration: 'none', fontWeight: '600' }}>🌟 当サイトについて</a></li>
+                <li onClick={() => setShowingTerms(true)} style={{ marginBottom: '10px', color: '#475569', cursor: 'pointer', fontWeight: '600' }}>📖 利用規約</li>
+                <li onClick={() => setShowingPrivacy(true)} style={{ marginBottom: '10px', color: '#475569', cursor: 'pointer', fontWeight: '600' }}>📄 プライバシーポリシー</li>
+                <li onClick={() => setShowingContact(true)} style={{ marginBottom: '10px', color: '#475569', cursor: 'pointer', fontWeight: '600' }}>📩 お問い合わせ</li>
               </ul>
             </div>
 
             <div className="footer-link-group" style={{ flex: '1 1 150px' }}>
-              <h5 style={{ color: '#1e293b', marginBottom: '15px', fontWeight: 'bold' }}>🧭 ナビゲート</h5>
+              <h5 style={{ color: '#4c1d95', marginBottom: '15px', fontWeight: '900' }}>🧭 ナビゲート</h5>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                <li onClick={() => { navigateTo('list'); setSortMode('latest'); }} style={{ marginBottom: '10px', color: '#64748b', cursor: 'pointer' }}>🆕 新着アンケート</li>
-                <li onClick={() => { navigateTo('list'); setSortMode('popular'); }} style={{ marginBottom: '10px', color: '#64748b', cursor: 'pointer' }}>🔥 人気の話題</li>
-                <li style={{ marginBottom: '10px' }}><a href="/sitemap.xml" target="_blank" style={{ color: '#64748b', textDecoration: 'none' }}>🗺️ サイトマップ</a></li>
+                <li onClick={() => { navigateTo('list'); setSortMode('latest'); }} style={{ marginBottom: '10px', color: '#475569', cursor: 'pointer', fontWeight: '600' }}>🆕 新着アンケート</li>
+                <li onClick={() => { navigateTo('list'); setSortMode('popular'); }} style={{ marginBottom: '10px', color: '#475569', cursor: 'pointer', fontWeight: '600' }}>🔥 人気の話題</li>
+                <li style={{ marginBottom: '10px' }}><a href="/sitemap.xml" target="_blank" style={{ color: '#475569', textDecoration: 'none', fontWeight: '600' }}>🗺️ サイトマップ</a></li>
+                <li style={{ marginBottom: '10px' }}><a href="https://x.com/minna_no_vote" target="_blank" rel="noopener noreferrer" style={{ color: '#64748b', textDecoration: 'none', fontWeight: '700' }}>🐦 公式X（@minna_no_vote）</a></li>
               </ul>
             </div>
           </div>
@@ -3791,26 +3809,30 @@ function App() {
 
         {/* 🥕 クリエイター支援 ＆ らびの応援コーナー */}
         <div className="footer-support-section" style={{
-          maxWidth: '800px', margin: '40px auto 0 auto', padding: '30px',
-          borderRadius: '32px', background: 'linear-gradient(135deg, #fff, #f5f3ff)',
-          border: '1px solid #e2e8f0', textAlign: 'center',
-          boxShadow: '0 10px 30px rgba(0,0,0,0.03)'
+          maxWidth: '800px', margin: '40px auto 0 auto', padding: '28px',
+          borderRadius: '28px', background: 'linear-gradient(135deg, #ffffff 0%, #fdf2f8 50%, #faf5ff 100%)',
+          border: '2px solid #fbcfe8', textAlign: 'center',
+          boxShadow: '0 8px 24px rgba(236, 72, 153, 0.08)'
         }}>
-          <p style={{ margin: '0 0 15px 0', fontSize: '1rem', color: '#ec4899', fontWeight: '900' }}>🐰 うさぎのらび ＆ おりぴプロジェクトを応援！ 🥕</p>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '15px', flexWrap: 'wrap' }}>
+          <p style={{ margin: '0 0 16px 0', fontSize: '1.02rem', color: '#db2777', fontWeight: '900' }}>🐰 うさぎのらび ＆ おりぴプロジェクトを応援！ 🥕</p>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '14px', flexWrap: 'wrap' }}>
             <a href="https://ofuse.me/olipi" target="_blank" rel="noopener noreferrer" style={{
-              display: 'inline-block', padding: '12px 30px', background: '#db2777', color: '#fff',
-              borderRadius: '100px', textDecoration: 'none', fontWeight: 'bold', fontSize: '1rem',
-              boxShadow: '0 4px 15px rgba(219, 39, 119, 0.3)', transition: 'all 0.2s'
-            }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'}
-              onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}>
-              OFUSEで応援を送る ✨
+              display: 'inline-block', padding: '12px 28px', background: 'linear-gradient(135deg, #f43f5e, #ec4899)', color: '#fff',
+              borderWidth: '2px 2px 4px 2px', borderStyle: 'solid', borderColor: '#ec4899 #ec4899 #be185d #ec4899',
+              borderRadius: '999px', textDecoration: 'none', fontWeight: '900', fontSize: '0.98rem',
+              boxShadow: '0 4px 14px rgba(236, 72, 153, 0.28)', transition: 'transform 0.18s ease'
+            }} onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+              onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}>
+              💗 OFUSEで応援を送る ✨
             </a>
             <button onClick={() => setShowingAbout(true)} style={{
-              padding: '12px 30px', background: '#fff', color: '#7c3aed',
-              borderRadius: '100px', border: '2px solid #7c3aed', fontWeight: 'bold', fontSize: '1rem',
-              cursor: 'pointer', transition: 'all 0.2s'
-            }}>
+              padding: '12px 28px', background: 'linear-gradient(180deg, #ffffff 0%, #faf5ff 100%)', color: '#6d28d9',
+              borderWidth: '2px 2px 4px 2px', borderStyle: 'solid', borderColor: '#c4b5fd #c4b5fd #8b5cf6 #c4b5fd',
+              borderRadius: '999px', fontWeight: '900', fontSize: '0.98rem',
+              cursor: 'pointer', transition: 'transform 0.18s ease',
+              boxShadow: '0 4px 12px rgba(124, 58, 237, 0.12)'
+            }} onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+              onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}>
               もっと詳しく知る 🥕
             </button>
           </div>
