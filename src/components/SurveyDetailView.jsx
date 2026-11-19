@@ -240,20 +240,56 @@ const SurveyDetailView = ({
     <div className="score-card">
       <div className="detail-header">
         <div style={{ marginBottom: '16px' }}>
-          <button 
+          <button
             type="button"
-            onClick={(e) => { e.preventDefault(); e.stopPropagation(); navigateTo('list', null, { restoreScroll: true }); }} 
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); navigateTo('list', null, { restoreScroll: true }); }}
             className="back-to-list-btn-compact"
-            style={{ 
-              background: 'none', border: '1px solid #cbd5e1', borderRadius: '20px', 
-              padding: '6px 14px', fontSize: '0.85rem', color: '#64748b', 
-              cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '4px',
+            style={{
+              background: 'linear-gradient(180deg, #ffffff 0%, #faf5ff 100%)',
+              borderWidth: '1.5px 1.5px 4px 1.5px',
+              borderStyle: 'solid',
+              borderColor: '#c4b5fd #c4b5fd #8b5cf6 #c4b5fd',
+              borderRadius: '999px',
+              padding: '6px 16px 6px 10px',
+              fontSize: '0.88rem',
+              fontWeight: '900',
+              color: '#5b21b6',
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              boxShadow: '0 4px 12px rgba(139, 92, 246, 0.12)',
               transition: 'all 0.2s'
             }}
-            onMouseOver={(e) => { e.currentTarget.style.background = '#f8fafc'; e.currentTarget.style.color = '#334155'; e.currentTarget.style.borderColor = '#94a3b8'; }}
-            onMouseOut={(e) => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = '#64748b'; e.currentTarget.style.borderColor = '#cbd5e1'; }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.background = 'linear-gradient(180deg, #fdf2f8 0%, #f5f3ff 100%)';
+              e.currentTarget.style.borderColor = '#f472b6 #f472b6 #db2777 #f472b6';
+              e.currentTarget.style.color = '#be185d';
+              e.currentTarget.style.boxShadow = '0 6px 16px rgba(236, 72, 153, 0.2)';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.background = 'linear-gradient(180deg, #ffffff 0%, #faf5ff 100%)';
+              e.currentTarget.style.borderColor = '#c4b5fd #c4b5fd #8b5cf6 #c4b5fd';
+              e.currentTarget.style.color = '#5b21b6';
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(139, 92, 246, 0.12)';
+            }}
           >
-            ← 一覧に戻る
+            <img
+              src="/favicon-144x144.png"
+              alt="らびたん"
+              style={{
+                width: '22px',
+                height: '22px',
+                borderRadius: '50%',
+                objectFit: 'cover',
+                border: '1.5px solid #f472b6',
+                background: '#fff',
+                flexShrink: 0
+              }}
+            />
+            <span>← 一覧に戻る</span>
           </button>
         </div>
         <h1 className="survey-title">{titlePart}</h1>
