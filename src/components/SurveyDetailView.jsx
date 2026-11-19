@@ -517,20 +517,61 @@ const SurveyDetailView = ({
         } catch { return null; }
         if (!question) return null;
         return (
-          <div className="survey-question-banner" style={{
-            margin: '24px 0 0 0',
-            padding: '14px 16px',
-            background: 'linear-gradient(135deg, #f5f3ff, #fdf2f8)',
-            border: '2px solid #ddd6fe',
-            borderRadius: '14px',
-            textAlign: 'center',
-            fontWeight: 900,
-            fontSize: '1.15rem',
-            lineHeight: 1.5,
-            color: '#4c1d95',
-            wordBreak: 'break-word'
-          }}>
-            🗳️ {question}
+          <div className="survey-question-banner-wrap" style={{ position: 'relative', margin: '28px 0 22px 0' }}>
+            <div className="survey-question-banner" style={{
+              position: 'relative',
+              overflow: 'hidden',
+              padding: '16px 18px 15px 18px',
+              background: 'linear-gradient(135deg, #faf5ff 0%, #fdf2f8 50%, #eff6ff 100%)',
+              border: '2px solid #c084fc',
+              borderRadius: '18px',
+              textAlign: 'center',
+              boxShadow: '0 8px 22px rgba(168, 85, 247, 0.16)'
+            }}>
+              <div className="survey-question-shimmer" />
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '5px',
+                background: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
+                color: '#ffffff',
+                fontSize: '0.74rem',
+                fontWeight: 900,
+                padding: '3px 12px',
+                borderRadius: '999px',
+                marginBottom: '8px',
+                letterSpacing: '0.04em',
+                boxShadow: '0 2px 8px rgba(236, 72, 153, 0.3)'
+              }}>
+                <span>🐰 みんなに質問！あなたはどう思う？👇</span>
+              </div>
+              <div style={{
+                fontWeight: 900,
+                fontSize: '1.12rem',
+                lineHeight: 1.5,
+                color: '#4c1d95',
+                wordBreak: 'break-word',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px'
+              }}>
+                <span className="survey-question-icon" style={{ display: 'inline-block', fontSize: '1.3rem', flexShrink: 0 }}>🗳️</span>
+                <span>{question}</span>
+              </div>
+            </div>
+            {/* 吹き出しの下向き三角しっぽ */}
+            <div style={{
+              width: '14px',
+              height: '14px',
+              background: '#fdf2f8',
+              borderRight: '2px solid #c084fc',
+              borderBottom: '2px solid #c084fc',
+              transform: 'rotate(45deg)',
+              margin: '-8px auto 0 auto',
+              position: 'relative',
+              zIndex: 2
+            }} />
           </div>
         );
       })()}
