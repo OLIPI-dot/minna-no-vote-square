@@ -356,7 +356,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
     >
       {/* 左側：らびたん丸アイコン */}
       <div className="summary-rabi-avatar" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', flexShrink: 0, marginTop: '2px' }}>
-        <div style={{
+        <div className="summary-rabi-avatar-circle" style={{
           width: '46px',
           height: '46px',
           borderRadius: '50%',

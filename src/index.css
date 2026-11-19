@@ -103,6 +103,35 @@ html, body {
 .summary-rabi { animation-delay: 0.28s; }
 .summary-keyword { animation-delay: 0.35s; }
 
+/* 🐰 らびたんアイコン：ぴょこぴょこジャンプ＆小首かしげアニメーション */
+@keyframes rabiAvatarHop {
+  0%, 75%, 100% {
+    transform: translateY(0) rotate(0deg) scale(1);
+    box-shadow: 0 3px 10px rgba(244, 114, 182, 0.25);
+  }
+  12% {
+    transform: translateY(2px) rotate(0deg) scale(1.05, 0.94);
+  }
+  26% {
+    transform: translateY(-6px) rotate(-7deg) scale(0.97, 1.05);
+    box-shadow: 0 8px 16px rgba(244, 114, 182, 0.38);
+  }
+  40% {
+    transform: translateY(0) rotate(5deg) scale(1.04, 0.96);
+  }
+  54% {
+    transform: translateY(-3px) rotate(-3deg) scale(1);
+    box-shadow: 0 6px 14px rgba(244, 114, 182, 0.32);
+  }
+  66% {
+    transform: translateY(0) rotate(0deg) scale(1.02, 0.98);
+  }
+}
+.summary-rabi-avatar-circle {
+  animation: rabiAvatarHop 2.8s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+
 /* 🗳️ 投票の問いかけバナー：ふわふわ浮遊＋キラッと光るツヤ＋アイコンのぴょこぴょこ動き */
 @keyframes questionBannerFloat {
   0%, 100% {
