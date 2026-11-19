@@ -1634,78 +1634,136 @@ const SurveyDetailView = ({
       )}
 
 
-      {/* 🚀 前後のアンケートへのナビゲーション（カード形式にアップグレードらび！） */}
+      {/* 🚀 前後のアンケートへのナビゲーション（存在感＆立体ボタン風にアップグレードらび！） */}
       {(adjacentSurveys.prev || adjacentSurveys.next) && (
-        <div className="adjacent-nav-section" style={{ marginTop: '40px' }}>
+        <div className="adjacent-nav-section" style={{ marginTop: '44px' }}>
           <div className="adjacent-nav-grid" style={{ 
             display: 'grid', 
             gridTemplateColumns: (adjacentSurveys.prev && adjacentSurveys.next) ? '1fr 1fr' : '1fr', 
             gap: '16px' 
           }}>
-            {[
-              { type: 'prev', label: '← 前のアンケート', data: adjacentSurveys.prev },
-              { type: 'next', label: '次のアンケート →', data: adjacentSurveys.next }
-            ].filter(nav => nav.data).map(nav => {
-              const s = nav.data;
-              let thumb = null;
-              if (s.image_url) {
-                const parts = s.image_url.split(',')[0].trim();
-                if (parts.startsWith('yt:')) thumb = `https://img.youtube.com/vi/${parts.substring(3)}/mqdefault.jpg`;
-                else if (parts.startsWith('nico:')) thumb = '/nico_fallback.jpg';
-                else thumb = parts;
-              }
+            {(() => {
+              const NAV_STYLES = {
+                prev: {
+                  borderColor: '#bae6fd #bae6fd #38bdf8 #bae6fd',
+                  hoverBorder: '#0ea5e9',
+                  hoverBottom: '#0284c7',
+                  restBorder: '#bae6fd',
+                  restBottom: '#38bdf8',
+                  bg: 'linear-gradient(180deg, #ffffff 0%, #f0f9ff 100%)',
+                  shadow: '0 6px 16px rgba(14, 165, 233, 0.10)',
+                  hoverShadow: '0 10px 24px rgba(14, 165, 233, 0.20)',
+                  pillBg: 'linear-gradient(135deg, #0ea5e9, #6366f1)',
+                  thumbBorder: '#bae6fd'
+                },
+                next: {
+                  borderColor: '#f5d0fe #f5d0fe #a855f7 #f5d0fe',
+                  hoverBorder: '#c026d3',
+                  hoverBottom: '#9333ea',
+                  restBorder: '#f5d0fe',
+                  restBottom: '#a855f7',
+                  bg: 'linear-gradient(180deg, #ffffff 0%, #fdf4ff 100%)',
+                  shadow: '0 6px 16px rgba(168, 85, 247, 0.12)',
+                  hoverShadow: '0 10px 24px rgba(168, 85, 247, 0.22)',
+                  pillBg: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
+                  thumbBorder: '#f5d0fe'
+                }
+              };
 
-              return (
-                <div key={s.id} onClick={() => navigateTo('details', s)} style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  overflow: 'hidden',
-                  background: '#ffffff',
-                  padding: '16px',
-                  borderRadius: '20px',
-                  border: '2px solid #f1f5f9',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.02)',
-                  flexDirection: nav.type === 'prev' ? 'row' : 'row-reverse',
-                  textAlign: nav.type === 'prev' ? 'left' : 'right'
-                }} onMouseOver={e => {
-                  e.currentTarget.style.borderColor = '#cbd5e1';
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                  e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.05)';
-                }} onMouseOut={e => {
-                  e.currentTarget.style.borderColor = '#f1f5f9';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.02)';
-                }}>
-                  <div style={{ position: 'relative', width: '80px', height: '80px', flexShrink: 0, borderRadius: '12px', overflow: 'hidden', background: '#f8fafc' }}>
-                    {!thumb || brokenImages.has(s.id) ? (
-                      <CategoryEyecatch category={s.category} />
-                    ) : (
-                      <img
-                        src={thumb}
-                        alt={s.title}
-                        referrerPolicy="no-referrer"
-                        onError={(e) => {
-                          e.currentTarget.style.display = 'none';
-                          setBrokenImages(prev => new Set([...prev, s.id]));
-                        }}
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                      />
-                    )}
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
-                    <div style={{ fontSize: '0.8rem', fontWeight: 'bold', color: nav.type === 'next' ? '#7c3aed' : '#64748b', marginBottom: '4px' }}>
-                      {nav.label}
+              return [
+                { type: 'prev', label: '◀ 前のアンケート', data: adjacentSurveys.prev },
+                { type: 'next', label: '次のアンケート ▶', data: adjacentSurveys.next }
+              ].filter(nav => nav.data).map(nav => {
+                const s = nav.data;
+                const st = NAV_STYLES[nav.type];
+                let thumb = null;
+                if (s.image_url) {
+                  const parts = s.image_url.split(',')[0].trim();
+                  if (parts.startsWith('yt:')) thumb = `https://img.youtube.com/vi/${parts.substring(3)}/mqdefault.jpg`;
+                  else if (parts.startsWith('nico:')) thumb = '/nico_fallback.jpg';
+                  else thumb = parts;
+                }
+
+                return (
+                  <div key={s.id} onClick={() => navigateTo('details', s)} style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '14px',
+                    overflow: 'hidden',
+                    background: st.bg,
+                    padding: '15px 16px',
+                    borderRadius: '20px',
+                    borderWidth: '2px 2px 5px 2px',
+                    borderStyle: 'solid',
+                    borderColor: st.borderColor,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                    boxShadow: st.shadow,
+                    flexDirection: nav.type === 'prev' ? 'row' : 'row-reverse',
+                    textAlign: nav.type === 'prev' ? 'left' : 'right'
+                  }} onMouseOver={e => {
+                    e.currentTarget.style.borderColor = st.hoverBorder;
+                    e.currentTarget.style.borderBottomColor = st.hoverBottom;
+                    e.currentTarget.style.transform = 'translateY(-3px)';
+                    e.currentTarget.style.boxShadow = st.hoverShadow;
+                  }} onMouseOut={e => {
+                    e.currentTarget.style.borderColor = st.restBorder;
+                    e.currentTarget.style.borderBottomColor = st.restBottom;
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = st.shadow;
+                  }}>
+                    <div style={{
+                      position: 'relative',
+                      width: '80px',
+                      height: '80px',
+                      flexShrink: 0,
+                      borderRadius: '14px',
+                      overflow: 'hidden',
+                      background: '#f8fafc',
+                      border: `2px solid ${st.thumbBorder}`,
+                      boxShadow: '0 3px 8px rgba(15, 23, 42, 0.08)'
+                    }}>
+                      {!thumb || brokenImages.has(s.id) ? (
+                        <CategoryEyecatch category={s.category} />
+                      ) : (
+                        <img
+                          src={thumb}
+                          alt={s.title}
+                          referrerPolicy="no-referrer"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            setBrokenImages(prev => new Set([...prev, s.id]));
+                          }}
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
+                      )}
                     </div>
-                    <div style={{ fontWeight: 'bold', color: '#1e293b', fontSize: '0.95rem', lineHeight: '1.4', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                      {s.title}
+                    <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', alignItems: nav.type === 'prev' ? 'flex-start' : 'flex-end' }}>
+                      <span style={{
+                        display: 'inline-block',
+                        background: st.pillBg,
+                        color: '#ffffff',
+                        fontSize: '0.74rem',
+                        fontWeight: '900',
+                        padding: '3px 10px',
+                        borderRadius: '999px',
+                        marginBottom: '6px',
+                        letterSpacing: '0.03em',
+                        boxShadow: '0 2px 6px rgba(15, 23, 42, 0.12)'
+                      }}>
+                        {nav.label}
+                      </span>
+                      <div style={{ fontWeight: '800', color: '#1e293b', fontSize: '0.96rem', lineHeight: '1.42', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', width: '100%' }}>
+                        {s.title}
+                      </div>
+                      <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: '700', marginTop: '6px' }}>
+                        📂 {s.category || 'アンケート'} ・ 🗳️ {s.total_votes || 0}票
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              });
+            })()}
           </div>
         </div>
       )}

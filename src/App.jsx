@@ -1906,8 +1906,8 @@ function App() {
         try {
           const [{ data: preOpts }, { data: pData }, { data: nData }] = await Promise.all([
             supabase.from('options').select('*').eq('survey_id', sv.id).order('id', { ascending: true }),
-            supabase.from('surveys').select('id,title,category,tags,total_votes,image_url,created_at,view_count,comment_count').eq('visibility', 'public').lt('created_at', sv.created_at).order('created_at', { ascending: false }).limit(1).maybeSingle(),
-            supabase.from('surveys').select('id,title,category,tags,total_votes,image_url,created_at,view_count,comment_count').eq('visibility', 'public').gt('created_at', sv.created_at).order('created_at', { ascending: true }).limit(1).maybeSingle()
+            supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count').eq('visibility', 'public').lt('created_at', sv.created_at).order('created_at', { ascending: false }).limit(1).maybeSingle(),
+            supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count').eq('visibility', 'public').gt('created_at', sv.created_at).order('created_at', { ascending: true }).limit(1).maybeSingle()
           ]);
           if (preOpts) {
             setOptions(preOpts);
@@ -2495,7 +2495,7 @@ function App() {
       setIsTimeUp(survey.deadline && new Date(survey.deadline) < new Date());
 
       (async () => {
-        if (!survey.created_at) {
+        if (!survey.created_at || survey.description === undefined) {
           const { data: fullSv } = await supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count').eq('id', survey.id).maybeSingle();
           if (myDetailReqId !== detailRequestIdRef.current || currentViewRef.current !== 'details') return;
           if (fullSv) {
@@ -2521,8 +2521,8 @@ function App() {
         setVotedOption(localStorage.getItem(`voted_survey_${survey.id}`));
         try {
           const [prevRes, nextRes] = await Promise.all([
-            supabase.from('surveys').select('id,title,category,tags,total_votes,image_url,created_at,view_count,comment_count').eq('visibility', 'public').lt('created_at', survey.created_at).order('created_at', { ascending: false }).limit(1).maybeSingle(),
-            supabase.from('surveys').select('id,title,category,tags,total_votes,image_url,created_at,view_count,comment_count').eq('visibility', 'public').gt('created_at', survey.created_at).order('created_at', { ascending: true }).limit(1).maybeSingle()
+            supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count').eq('visibility', 'public').lt('created_at', survey.created_at).order('created_at', { ascending: false }).limit(1).maybeSingle(),
+            supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count').eq('visibility', 'public').gt('created_at', survey.created_at).order('created_at', { ascending: true }).limit(1).maybeSingle()
           ]);
           if (myDetailReqId !== detailRequestIdRef.current || currentViewRef.current !== 'details') return;
           setAdjacentSurveys({ prev: prevRes.data, next: nextRes.data });
