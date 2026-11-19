@@ -251,6 +251,34 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
   // 要約カードを表示する判定（JSONまたは要約文があれば常に表示！）
   const showSummaryCard = Boolean(summaryJson || summaryPoints.length > 0);
 
+  // 🖍️ 読みやすさのため、文中のカギカッコや数字+単位にやさしい黄色マーカーを引く
+  const highlightKeywords = (sentence) => {
+    if (!sentence) return sentence;
+    const regex = /(「[^」]{1,28}」|『[^』]{1,28}』|第?\d+(?:[.,]\d+)?(?:時間|分|秒|年|ヶ月|か月|月|日|万|億|兆|円|ドル|個|件|人|名|台|本|枚|回|歳|%|％|倍|位|周年|弾)+)/g;
+    const parts = String(sentence).split(regex);
+    if (parts.length <= 1) return sentence;
+    return parts.map((part, idx) => {
+      if (idx % 2 === 1) {
+        return (
+          <mark
+            key={idx}
+            className="summary-highlight"
+            style={{
+              background: 'linear-gradient(transparent 58%, rgba(253, 224, 71, 0.65) 58%)',
+              color: '#0f172a',
+              fontWeight: '600',
+              padding: '0 2px',
+              borderRadius: '2px'
+            }}
+          >
+            {part}
+          </mark>
+        );
+      }
+      return part;
+    });
+  };
+
   // 📝 読みやすさのため、文の区切り（。！？）ごとに段落を分けて表示する
   const renderSentences = (text) => {
     if (!text) return null;
@@ -264,10 +292,10 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
         if (trimmed) sentences.push(trimmed);
       }
     }
-    if (sentences.length <= 1) return text;
+    if (sentences.length <= 1) return highlightKeywords(text);
     return sentences.map((s, i) => (
       <span key={i} className="summary-sentence" style={{ display: 'block', marginTop: i > 0 ? '4px' : 0 }}>
-        {s}
+        {highlightKeywords(s)}
       </span>
     ));
   };
@@ -371,122 +399,101 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
               {summaryJson ? (
                 // 🎯 JSONフォーマット対応：キー指定の堅牢な描画（文章の途中切れ・パース崩れゼロ！）
                 <>
-                  {/* 注目ポイント1 */}
-                  {summaryJson.point1_desc && (
-                    <li className="summary-point-item flex flex-col md:flex-row items-start gap-2 md:gap-[14px] text-[1.02rem] text-slate-800 leading-[1.75] font-medium" style={{ marginBottom: '16px' }}>
-                      <div className="summary-point-header" style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-                        <span style={{
-                          flex: '0 0 auto',
-                          width: '28px',
-                          height: '28px',
-                          background: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
-                          color: 'white',
-                          borderRadius: '50%',
+                  {/* 注目ポイント1〜3（色分けミニカード＋ステップ推進デザイン） */}
+                  {[
+                    {
+                      num: 1,
+                      title: summaryJson.point1_title,
+                      desc: summaryJson.point1_desc,
+                      badgeBg: 'linear-gradient(135deg, #f43f5e, #ec4899)',
+                      badgeShadow: '0 3px 10px rgba(244, 63, 94, 0.28)',
+                      accent: '#f43f5e',
+                      border: '#ffe4e6',
+                      titleColor: '#be123c'
+                    },
+                    {
+                      num: 2,
+                      title: summaryJson.point2_title,
+                      desc: summaryJson.point2_desc,
+                      badgeBg: 'linear-gradient(135deg, #0ea5e9, #6366f1)',
+                      badgeShadow: '0 3px 10px rgba(14, 165, 233, 0.28)',
+                      accent: '#0ea5e9',
+                      border: '#e0f2fe',
+                      titleColor: '#0369a1'
+                    },
+                    {
+                      num: 3,
+                      title: summaryJson.point3_title,
+                      desc: summaryJson.point3_desc,
+                      badgeBg: 'linear-gradient(135deg, #10b981, #0d9488)',
+                      badgeShadow: '0 3px 10px rgba(16, 185, 129, 0.28)',
+                      accent: '#10b981',
+                      border: '#d1fae5',
+                      titleColor: '#047857'
+                    }
+                  ].filter(p => p.desc).map((pt) => (
+                    <li
+                      key={pt.num}
+                      className={`summary-point-item summary-step-${pt.num}`}
+                      style={{
+                        display: 'block',
+                        background: '#ffffff',
+                        borderRadius: '16px',
+                        padding: '14px 16px',
+                        marginBottom: '14px',
+                        border: `1px solid ${pt.border}`,
+                        borderLeft: `5px solid ${pt.accent}`,
+                        boxShadow: '0 4px 12px rgba(15, 23, 42, 0.04)'
+                      }}
+                    >
+                      <div
+                        className="summary-point-header"
+                        style={{
                           display: 'flex',
                           alignItems: 'center',
-                          justifyContent: 'center',
-                          fontSize: '0.85rem',
-                          fontWeight: '900',
-                          boxShadow: '0 3px 10px rgba(236, 72, 153, 0.3)'
-                        }}>1</span>
-                        {summaryJson.point1_title && (
-                          <span style={{
-                            display: 'inline-block',
-                            background: 'linear-gradient(135deg, #f3e8ff 0%, #fae8ff 100%)',
-                            color: '#6b21a8',
-                            fontWeight: '800',
-                            padding: '1px 10px',
-                            borderRadius: '8px',
-                            border: '1px solid #e9d5ff',
-                            fontSize: '0.92rem'
-                          }}>
-                            {summaryJson.point1_title}
+                          gap: '10px',
+                          marginBottom: '8px',
+                          paddingBottom: '7px',
+                          borderBottom: '1px dashed #e2e8f0'
+                        }}
+                      >
+                        <span
+                          style={{
+                            flex: '0 0 auto',
+                            width: '26px',
+                            height: '26px',
+                            background: pt.badgeBg,
+                            color: 'white',
+                            borderRadius: '50%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '0.84rem',
+                            fontWeight: '900',
+                            boxShadow: pt.badgeShadow
+                          }}
+                        >
+                          {pt.num}
+                        </span>
+                        {pt.title && (
+                          <span
+                            className="summary-point-title"
+                            style={{
+                              color: pt.titleColor,
+                              fontWeight: '800',
+                              fontSize: '1.02rem',
+                              lineHeight: '1.35'
+                            }}
+                          >
+                            {pt.title}
                           </span>
                         )}
                       </div>
-                      <span className="summary-point-text" style={{ whiteSpace: "normal" }}>
-                        {renderSentences(summaryJson.point1_desc)}
+                      <span className="summary-point-text" style={{ display: 'block', whiteSpace: 'normal', color: '#334155', fontSize: '0.95rem', fontWeight: '400', lineHeight: '1.65' }}>
+                        {renderSentences(pt.desc)}
                       </span>
                     </li>
-                  )}
-
-                  {/* 注目ポイント2 */}
-                  {summaryJson.point2_desc && (
-                    <li className="summary-point-item flex flex-col md:flex-row items-start gap-2 md:gap-[14px] text-[1.02rem] text-slate-800 leading-[1.75] font-medium" style={{ marginBottom: '16px' }}>
-                      <div className="summary-point-header" style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-                        <span style={{
-                          flex: '0 0 auto',
-                          width: '28px',
-                          height: '28px',
-                          background: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
-                          color: 'white',
-                          borderRadius: '50%',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontSize: '0.85rem',
-                          fontWeight: '900',
-                          boxShadow: '0 3px 10px rgba(236, 72, 153, 0.3)'
-                        }}>2</span>
-                        {summaryJson.point2_title && (
-                          <span style={{
-                            display: 'inline-block',
-                            background: 'linear-gradient(135deg, #f3e8ff 0%, #fae8ff 100%)',
-                            color: '#6b21a8',
-                            fontWeight: '800',
-                            padding: '1px 10px',
-                            borderRadius: '8px',
-                            border: '1px solid #e9d5ff',
-                            fontSize: '0.92rem'
-                          }}>
-                            {summaryJson.point2_title}
-                          </span>
-                        )}
-                      </div>
-                      <span className="summary-point-text" style={{ whiteSpace: "normal" }}>
-                        {renderSentences(summaryJson.point2_desc)}
-                      </span>
-                    </li>
-                  )}
-
-                  {/* 注目ポイント3 */}
-                  {summaryJson.point3_desc && (
-                    <li className="summary-point-item flex flex-col md:flex-row items-start gap-2 md:gap-[14px] text-[1.02rem] text-slate-800 leading-[1.75] font-medium" style={{ marginBottom: '16px' }}>
-                      <div className="summary-point-header" style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-                        <span style={{
-                          flex: '0 0 auto',
-                          width: '28px',
-                          height: '28px',
-                          background: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
-                          color: 'white',
-                          borderRadius: '50%',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontSize: '0.85rem',
-                          fontWeight: '900',
-                          boxShadow: '0 3px 10px rgba(236, 72, 153, 0.3)'
-                        }}>3</span>
-                        {summaryJson.point3_title && (
-                          <span style={{
-                            display: 'inline-block',
-                            background: 'linear-gradient(135deg, #f3e8ff 0%, #fae8ff 100%)',
-                            color: '#6b21a8',
-                            fontWeight: '800',
-                            padding: '1px 10px',
-                            borderRadius: '8px',
-                            border: '1px solid #e9d5ff',
-                            fontSize: '0.92rem'
-                          }}>
-                            {summaryJson.point3_title}
-                          </span>
-                        )}
-                      </div>
-                      <span className="summary-point-text" style={{ whiteSpace: "normal" }}>
-                        {renderSentences(summaryJson.point3_desc)}
-                      </span>
-                    </li>
-                  )}
+                  ))}
 
                   {/* らびのひとこと */}
                   {summaryJson.rabi_comment && (
