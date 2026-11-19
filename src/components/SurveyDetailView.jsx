@@ -434,28 +434,41 @@ const SurveyDetailView = ({
         renderCommentContent={renderCommentContent}
         isTimeUp={isTimeUp}
       >
-      {/* 💬 みんなのガヤ（ピックアップコメント複数表示 - 2ch風） */}
+      {/* 💬 みんなのガヤ（ピックアップコメント複数表示 - やさしいパステルカード版） */}
       {pickupComments.length > 0 && (
         <div style={{
-          background: '#efefef',
-          border: '1px solid #ccc',
-          borderRadius: '4px',
-          padding: '16px 20px',
+          background: 'linear-gradient(135deg, #faf5ff 0%, #f8fafc 100%)',
+          border: '2px solid #e9d5ff',
+          borderRadius: '20px',
+          padding: '18px 18px',
           margin: '0 0 30px 0',
           position: 'relative',
-          fontFamily: '"Mona", "MS PGothic", "IPAMonaPGothic", "Monapo", sans-serif'
+          boxShadow: '0 6px 18px rgba(168, 85, 247, 0.07)'
         }}>
           <div style={{ 
-            fontSize: '1.1rem', 
-            fontWeight: 'bold', 
-            color: '#cc0000', 
-            marginBottom: '16px',
-            borderBottom: '1px solid #ccc',
-            paddingBottom: '8px'
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            marginBottom: '14px',
+            borderBottom: '1px dashed #d8b4fe',
+            paddingBottom: '10px'
           }}>
-            【ネット民の反応】
+            <span style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              background: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
+              color: '#ffffff',
+              padding: '4px 14px',
+              borderRadius: '999px',
+              fontSize: '0.85rem',
+              fontWeight: '900',
+              boxShadow: '0 3px 10px rgba(236, 72, 153, 0.25)'
+            }}>
+              💬 ネット民の反応
+            </span>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {pickupComments.map((comment, i) => {
               const d = new Date(currentSurvey.created_at || Date.now());
               d.setMinutes(d.getMinutes() + i * 3 + 2);
@@ -475,11 +488,22 @@ const SurveyDetailView = ({
               const chId = 'ID:' + idBase.substring(0, 8).toUpperCase();
 
               return (
-                <div key={i} style={{ fontSize: '15px', color: '#000', lineHeight: '1.5', textAlign: 'left', wordBreak: 'break-all' }}>
-                  <div style={{ marginBottom: '8px' }}>
-                    {i + 1} 名前：<span style={{ color: 'green', fontWeight: 'bold' }}>名無しの広場民</span> ：{yyyy}/{mm}/{dd}({day}) {hh}:{min}:{ss}.{ms} <br className="mobile-only-br" />{chId}
+                <div key={i} style={{
+                  fontSize: '15px',
+                  color: '#1e293b',
+                  lineHeight: '1.55',
+                  textAlign: 'left',
+                  wordBreak: 'break-all',
+                  background: '#ffffff',
+                  borderRadius: '14px',
+                  padding: '12px 14px',
+                  border: '1px solid #ede9fe',
+                  boxShadow: '0 2px 6px rgba(15, 23, 42, 0.03)'
+                }}>
+                  <div style={{ marginBottom: '6px', fontSize: '0.84rem', color: '#64748b' }}>
+                    {i + 1} 名前：<span style={{ color: '#15803d', fontWeight: 'bold' }}>名無しの広場民</span> ：{yyyy}/{mm}/{dd}({day}) {hh}:{min}:{ss}.{ms} <br className="mobile-only-br" />{chId}
                   </div>
-                  <div style={{ marginLeft: '2em', wordBreak: 'break-word', whiteSpace: 'pre-wrap', letterSpacing: 'normal', textAlign: 'left' }}>
+                  <div style={{ marginLeft: '2em', wordBreak: 'break-word', whiteSpace: 'pre-wrap', letterSpacing: 'normal', textAlign: 'left', color: '#0f172a' }}>
                     {comment}
                   </div>
                 </div>
@@ -1212,97 +1236,219 @@ const SurveyDetailView = ({
         </div>
       )}
 
-      <div className="share-result-area" style={{ marginTop: '40px', display: 'flex', justifyContent: 'center', gap: '12px' }}>
-        <button className={`like-survey-btn ${likedSurveys.some(id => String(id) === String(currentSurvey.id)) ? 'liked' : ''}`} onClick={handleLikeSurvey} style={{ background: likedSurveys.some(id => String(id) === String(currentSurvey.id)) ? '#ec4899' : '#fbcfe8', color: likedSurveys.some(id => String(id) === String(currentSurvey.id)) ? 'white' : '#be185d', padding: '12px 28px', borderRadius: '30px', fontWeight: 'bold', border: 'none' }}>
-          {likedSurveys.some(id => String(id) === String(currentSurvey.id)) ? '💖 いいね済' : '🤍 いいね！'} <AnimatedCounter value={currentSurvey.likes_count || 0} />
-        </button>
-        <button className="share-x-btn" onClick={() => handleShareResult('x')} style={{ background: '#000', color: 'white', padding: '12px 28px', borderRadius: '30px', fontWeight: 'bold', border: 'none', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', transition: 'transform 0.2s', boxShadow: '0 4px 10px rgba(0,0,0,0.15)' }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'} onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}>
+      <div className="share-result-area" style={{ marginTop: '40px', display: 'flex', justifyContent: 'center', gap: '12px', flexWrap: 'wrap' }}>
+        {(() => {
+          const isLiked = likedSurveys.some(id => String(id) === String(currentSurvey.id));
+          return (
+            <button
+              className={`like-survey-btn ${isLiked ? 'liked' : ''}`}
+              onClick={handleLikeSurvey}
+              style={{
+                background: isLiked ? 'linear-gradient(180deg, #f43f5e 0%, #ec4899 100%)' : 'linear-gradient(180deg, #ffffff 0%, #fdf2f8 100%)',
+                color: isLiked ? '#ffffff' : '#be185d',
+                padding: '11px 26px',
+                borderRadius: '999px',
+                fontWeight: '900',
+                fontSize: '0.96rem',
+                borderWidth: '2px 2px 4px 2px',
+                borderStyle: 'solid',
+                borderColor: isLiked ? '#ec4899 #ec4899 #be185d #ec4899' : '#f9a8d4 #f9a8d4 #f472b6 #f9a8d4',
+                boxShadow: isLiked ? '0 4px 12px rgba(236, 72, 153, 0.28)' : '0 4px 10px rgba(244, 114, 182, 0.14)',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                transition: 'transform 0.16s ease'
+              }}
+            >
+              {isLiked ? '💖 いいね済' : '💗 いいね！'} <AnimatedCounter value={currentSurvey.likes_count || 0} />
+            </button>
+          );
+        })()}
+        <button
+          className="share-x-btn"
+          onClick={() => handleShareResult('x')}
+          style={{
+            background: '#0f172a',
+            color: '#ffffff',
+            padding: '11px 26px',
+            borderRadius: '999px',
+            fontWeight: '900',
+            fontSize: '0.96rem',
+            borderWidth: '2px 2px 4px 2px',
+            borderStyle: 'solid',
+            borderColor: '#334155 #334155 #000000 #334155',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            cursor: 'pointer',
+            transition: 'transform 0.18s',
+            boxShadow: '0 4px 12px rgba(15, 23, 42, 0.18)'
+          }}
+          onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+          onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}
+        >
           <svg viewBox="0 0 24 24" style={{ width: '18px', height: '18px', fill: 'white' }}>
             <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
           </svg>
           シェア
         </button>
-        <button className="share-copy-btn" onClick={() => handleShareResult('copy')} style={{ background: '#f1f5f9', color: '#475569', padding: '12px 24px', borderRadius: '30px', fontWeight: 'bold', border: 'none', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background = '#e2e8f0'} onMouseOut={e => e.currentTarget.style.background = '#f1f5f9'}>
+        <button
+          className="share-copy-btn"
+          onClick={() => handleShareResult('copy')}
+          style={{
+            background: '#ffffff',
+            color: '#334155',
+            padding: '11px 22px',
+            borderRadius: '999px',
+            fontWeight: '900',
+            fontSize: '0.96rem',
+            borderWidth: '2px 2px 4px 2px',
+            borderStyle: 'solid',
+            borderColor: '#cbd5e1 #cbd5e1 #94a3b8 #cbd5e1',
+            boxShadow: '0 4px 10px rgba(15, 23, 42, 0.06)',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            cursor: 'pointer',
+            transition: 'transform 0.16s, background 0.16s'
+          }}
+          onMouseOver={e => { e.currentTarget.style.background = '#f8fafc'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+          onMouseOut={e => { e.currentTarget.style.background = '#ffffff'; e.currentTarget.style.transform = 'translateY(0)'; }}
+        >
           📋 コピー
         </button>
       </div>
 
       {/* 💬 コメント（掲示板）セクション */}
       <div className="comment-section-area" id="comments" style={{ 
-        marginTop: '50px', 
-        padding: '32px 24px', 
-        background: '#efefef', 
-        border: '1px solid #ccc', 
-        borderRadius: '4px', 
-        fontFamily: '"Mona", "MS PGothic", "IPAMonaPGothic", "Monapo", sans-serif'
+        marginTop: '46px', 
+        padding: '24px 20px', 
+        background: 'linear-gradient(135deg, #faf5ff 0%, #fdf2f8 50%, #f8fafc 100%)', 
+        border: '2px solid #e9d5ff', 
+        borderRadius: '24px',
+        boxShadow: '0 8px 24px rgba(168, 85, 247, 0.07)'
       }}>
-        <h3 className="comments-title" style={{ color: '#cc0000', fontSize: '1.2rem', borderBottom: '1px solid #ccc', paddingBottom: '8px', marginBottom: '24px' }}>
-          💬 みんなの書き込み <span style={{ fontSize: '0.9rem', fontWeight: 'normal', color: '#666' }}>({comments.length}件)</span>
+        <h3 className="comments-title" style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+          borderBottom: '1px dashed #d8b4fe',
+          paddingBottom: '12px',
+          marginBottom: '20px',
+          marginTop: 0
+        }}>
+          <span style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '6px',
+            background: 'linear-gradient(135deg, #7c3aed, #ec4899)',
+            color: '#ffffff',
+            padding: '4px 14px',
+            borderRadius: '999px',
+            fontSize: '0.9rem',
+            fontWeight: '900',
+            boxShadow: '0 3px 10px rgba(124, 58, 237, 0.25)'
+          }}>
+            💬 みんなの書き込み
+          </span>
+          <span style={{
+            fontSize: '0.84rem',
+            fontWeight: '800',
+            color: '#6b21a8',
+            background: '#ffffff',
+            border: '1px solid #e9d5ff',
+            padding: '2px 10px',
+            borderRadius: '999px'
+          }}>
+            {comments.length}件
+          </span>
         </h3>
 
         {isConfirmingPost ? (
-          <div style={{ marginBottom: '32px', padding: '16px', background: '#fff', border: '2px solid #cc0000', borderRadius: '4px' }}>
-            <div style={{ fontSize: '1.1rem', fontWeight: 'bold', color: '#cc0000', marginBottom: '12px' }}>
+          <div style={{ marginBottom: '28px', padding: '18px', background: '#ffffff', border: '2px solid #f43f5e', borderRadius: '18px', boxShadow: '0 4px 14px rgba(244, 63, 94, 0.08)' }}>
+            <div style={{ fontSize: '1.05rem', fontWeight: '900', color: '#be123c', marginBottom: '10px' }}>
               ⚠️ 書き込み確認
             </div>
-            <div style={{ fontSize: '0.9rem', color: '#333', marginBottom: '16px', lineHeight: '1.6' }}>
+            <div style={{ fontSize: '0.9rem', color: '#334155', marginBottom: '16px', lineHeight: '1.65' }}>
               ・書き込む前に、他の人が読んで不快にならないか確認してください。<br />
               ・誹謗中傷、個人情報の特定、脅迫など、法的に問題のある書き込みは通報の対象となり、警察への情報提供を行う場合があります。<br />
               <br />
               <strong>本当に書き込みますか？</strong>
             </div>
-            <div style={{ display: 'flex', gap: '12px' }}>
+            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
               <button 
                 onClick={() => {
                   handlePostComment();
                   setIsConfirmingPost(false);
                 }}
                 disabled={isPostingComment}
-                style={{ padding: '8px 24px', background: '#cc0000', color: '#fff', border: 'none', borderRadius: '2px', cursor: isPostingComment ? 'not-allowed' : 'pointer', fontWeight: 'bold' }}
+                style={{
+                  padding: '10px 22px',
+                  background: 'linear-gradient(135deg, #f43f5e, #ec4899)',
+                  color: '#fff',
+                  border: 'none',
+                  borderBottom: '3px solid #be123c',
+                  borderRadius: '12px',
+                  cursor: isPostingComment ? 'not-allowed' : 'pointer',
+                  fontWeight: '900'
+                }}
               >
                 {isPostingComment ? '送信中...' : '本当に書き込む'}
               </button>
               <button 
                 onClick={() => setIsConfirmingPost(false)}
-                style={{ padding: '8px 24px', background: '#e0e0e0', border: '1px solid #888', borderRadius: '2px', cursor: 'pointer' }}
+                style={{
+                  padding: '10px 20px',
+                  background: '#f1f5f9',
+                  color: '#475569',
+                  border: '1px solid #cbd5e1',
+                  borderRadius: '12px',
+                  cursor: 'pointer',
+                  fontWeight: 'bold'
+                }}
               >
                 修正する
               </button>
             </div>
           </div>
         ) : (
-          <div style={{ marginBottom: '32px', padding: '16px', background: '#fff', border: '1px solid #ccc', borderRadius: '4px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', fontSize: '0.9rem', fontWeight: 'bold' }}>
+          <div style={{ marginBottom: '28px', padding: '16px', background: '#ffffff', border: '2px solid #e9d5ff', borderRadius: '18px', boxShadow: '0 4px 12px rgba(15, 23, 42, 0.03)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px', fontSize: '0.9rem', fontWeight: '800', color: '#475569' }}>
               <span>名前：</span>
               <input 
                 type="text" 
                 placeholder="名無しの広場民" 
                 value={commentName} 
                 onChange={e => setCommentName(e.target.value)} 
-                style={{ padding: '2px 4px', border: '1px solid #aaa', borderRadius: '2px', width: '200px' }}
+                style={{ padding: '6px 12px', border: '1.5px solid #cbd5e1', borderRadius: '12px', width: '210px', maxWidth: '100%', fontSize: '0.92rem' }}
               />
             </div>
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'stretch', gap: '10px', flexWrap: 'wrap' }}>
               <textarea 
-                placeholder="書き込む内容を入力" 
+                placeholder="記事の感想やあなたの意見を書いてみてね🐰✨" 
                 value={commentContent} 
                 onChange={e => setCommentContent(e.target.value)} 
-                style={{ flex: 1, height: '80px', padding: '4px', border: '1px solid #aaa', borderRadius: '2px', resize: 'vertical', fontFamily: 'inherit' }}
+                style={{ flex: '1 1 220px', minHeight: '82px', padding: '10px 12px', border: '1.5px solid #cbd5e1', borderRadius: '12px', resize: 'vertical', fontFamily: 'inherit', fontSize: '0.95rem' }}
               />
               <button 
                 onClick={() => setIsConfirmingPost(true)} 
                 disabled={isPostingComment || !commentContent.trim()}
                 style={{ 
-                  padding: '4px 16px', 
-                  background: '#e0e0e0', 
-                  border: '1px solid #888', 
-                  borderRadius: '2px',
+                  padding: '10px 20px', 
+                  background: (isPostingComment || !commentContent.trim()) ? '#e2e8f0' : 'linear-gradient(135deg, #7c3aed, #ec4899)',
+                  color: (isPostingComment || !commentContent.trim()) ? '#94a3b8' : '#ffffff',
+                  border: 'none',
+                  borderBottom: (isPostingComment || !commentContent.trim()) ? '3px solid #cbd5e1' : '4px solid #6d28d9',
+                  borderRadius: '14px',
                   cursor: (isPostingComment || !commentContent.trim()) ? 'not-allowed' : 'pointer',
-                  fontWeight: 'bold',
-                  alignSelf: 'stretch'
+                  fontWeight: '900',
+                  fontSize: '0.95rem',
+                  boxShadow: (isPostingComment || !commentContent.trim()) ? 'none' : '0 4px 12px rgba(124, 58, 237, 0.25)',
+                  transition: 'all 0.16s ease'
                 }}
               >
-                書き込む
+                💬 書き込む
               </button>
             </div>
           </div>
@@ -1353,7 +1499,16 @@ const SurveyDetailView = ({
             const cleanName = trip ? authorName.split('◆')[0] : authorName;
 
             return (
-              <div key={c.id} style={{ fontSize: '15px', color: '#000', lineHeight: '1.5' }}>
+              <div key={c.id} style={{
+                fontSize: '15px',
+                color: '#1e293b',
+                lineHeight: '1.55',
+                background: '#ffffff',
+                padding: '14px 16px',
+                borderRadius: '16px',
+                border: '1px solid #ede9fe',
+                boxShadow: '0 2px 8px rgba(15, 23, 42, 0.03)'
+              }}>
                 <div style={{ marginBottom: '8px' }}>
                   <span onClick={() => setCommentContent(prev => prev + `>>${stableResNum} `)} style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline', marginRight: '4px' }}>{stableResNum}</span>
                   名前：<span style={{ color: 'green', fontWeight: 'bold' }}>
@@ -1500,33 +1655,45 @@ const SurveyDetailView = ({
               </div>
             );
           }) : (
-            <div style={{ display: 'flex', justifyContent: 'center', margin: '40px 0' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', margin: '28px 0 8px 0' }}>
               <div style={{
                 background: '#ffffff',
-                border: '2px dashed #cbd5e1',
-                borderRadius: '24px',
-                padding: '24px 32px',
+                border: '2px dashed #d8b4fe',
+                borderRadius: '20px',
+                padding: '20px 26px',
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '16px',
-                boxShadow: '0 4px 10px rgba(0,0,0,0.02)',
+                gap: '14px',
+                boxShadow: '0 4px 14px rgba(168, 85, 247, 0.08)',
                 position: 'relative'
               }}>
-                <span style={{ fontSize: '2.5rem' }}>🐰</span>
+                <img
+                  src="/favicon-144x144.png"
+                  alt="らびたん"
+                  className="summary-rabi-avatar-circle"
+                  style={{
+                    width: '48px',
+                    height: '48px',
+                    borderRadius: '50%',
+                    border: '2.5px solid #f472b6',
+                    objectFit: 'cover',
+                    flexShrink: 0
+                  }}
+                />
                 <div style={{ textAlign: 'left' }}>
-                  <span style={{ display: 'block', color: '#64748b', fontSize: '0.95rem', fontWeight: 'bold', marginBottom: '4px' }}>まだ感想がないみたい…</span>
-                  <span style={{ display: 'block', color: '#7c3aed', fontSize: '1.05rem', fontWeight: '900' }}>一番乗りで教えてね！🥕</span>
+                  <span style={{ display: 'block', color: '#64748b', fontSize: '0.92rem', fontWeight: 'bold', marginBottom: '4px' }}>まだ感想がないみたい…</span>
+                  <span style={{ display: 'block', color: '#7c3aed', fontSize: '1.04rem', fontWeight: '900' }}>一番乗りで教えてね！🥕</span>
                 </div>
                 {/* 吹き出しのしっぽ */}
                 <div style={{
                   position: 'absolute',
-                  bottom: '-8px',
+                  bottom: '-9px',
                   left: '46px',
                   width: '16px',
                   height: '16px',
                   background: '#ffffff',
-                  borderBottom: '2px dashed #cbd5e1',
-                  borderRight: '2px dashed #cbd5e1',
+                  borderBottom: '2px dashed #d8b4fe',
+                  borderRight: '2px dashed #d8b4fe',
                   transform: 'rotate(45deg)'
                 }}></div>
               </div>
@@ -1545,14 +1712,21 @@ const SurveyDetailView = ({
 
 {/* 🔥 関連アンケートセクション (回遊性アップ！) */}
       {relatedSurveys && relatedSurveys.length > 0 && (
-        <div className="related-surveys-section" style={{ marginTop: '16px', padding: '32px 24px', background: '#ffffff', borderRadius: '24px', border: '1px solid #e2e8f0', boxShadow: '0 4px 15px rgba(0,0,0,0.03)' }}>
-          <h3 style={{ fontSize: '1.4rem', fontWeight: '900', color: '#1e293b', marginBottom: '24px', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+        <div className="related-surveys-section" style={{
+          marginTop: '24px',
+          padding: '28px 22px',
+          background: 'linear-gradient(135deg, #ffffff 0%, #faf5ff 50%, #fdf2f8 100%)',
+          borderRadius: '24px',
+          border: '2px solid #e9d5ff',
+          boxShadow: '0 8px 24px rgba(168, 85, 247, 0.08)'
+        }}>
+          <h3 style={{ fontSize: '1.35rem', fontWeight: '900', color: '#4c1d95', marginBottom: '20px', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
             <span>🔥</span> この話題、みんなはどう思ってる？
           </h3>
           <div className="related-scroll-container" style={{
             display: 'flex',
             overflowX: 'auto',
-            gap: '20px',
+            gap: '18px',
             paddingTop: '8px',
             paddingBottom: '20px',
             paddingLeft: '4px',
@@ -1572,8 +1746,10 @@ const SurveyDetailView = ({
               return (
                 <div key={s.id} className="related-card" onClick={() => navigateTo('details', s)} style={{
                   background: '#fff', borderRadius: '20px', overflow: 'hidden', cursor: 'pointer',
-                  boxShadow: '0 4px 15px rgba(0,0,0,0.05)', transition: 'all 0.3s ease',
-                  border: '1px solid #f1f5f9',
+                  boxShadow: '0 5px 14px rgba(124, 58, 237, 0.08)', transition: 'all 0.25s ease',
+                  borderWidth: '2px 2px 5px 2px',
+                  borderStyle: 'solid',
+                  borderColor: '#e9d5ff #e9d5ff #c084fc #e9d5ff',
                   minWidth: '280px',
                   flex: '0 0 280px',
                   display: 'flex',
@@ -1581,7 +1757,17 @@ const SurveyDetailView = ({
                   scrollSnapAlign: 'start',
                   userSelect: 'none',
                   WebkitTapHighlightColor: 'transparent'
-                }} onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 12px 25px rgba(0,0,0,0.1)'; }} onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.05)'; }}>
+                }} onMouseOver={e => {
+                  e.currentTarget.style.transform = 'translateY(-4px)';
+                  e.currentTarget.style.borderColor = '#a855f7';
+                  e.currentTarget.style.borderBottomColor = '#7c3aed';
+                  e.currentTarget.style.boxShadow = '0 12px 25px rgba(124, 58, 237, 0.16)';
+                }} onMouseOut={e => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.borderColor = '#e9d5ff';
+                  e.currentTarget.style.borderBottomColor = '#c084fc';
+                  e.currentTarget.style.boxShadow = '0 5px 14px rgba(124, 58, 237, 0.08)';
+                }}>
                   <div style={{ width: '100%', height: '140px', overflow: 'hidden', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc', flexShrink: 0 }}>
                     {!thumb || brokenImages.has(s.id) ? (
                       <CategoryEyecatch category={s.category} />
@@ -1597,7 +1783,19 @@ const SurveyDetailView = ({
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                       />
                     )}
-                    <div style={{ position: 'absolute', top: '10px', right: '10px', background: 'rgba(255,255,255,0.9)', padding: '2px 8px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 'bold', color: '#64748b', zIndex: 2 }}>
+                    <div style={{
+                      position: 'absolute',
+                      top: '10px',
+                      right: '10px',
+                      background: 'linear-gradient(135deg, #7c3aed, #ec4899)',
+                      padding: '3px 10px',
+                      borderRadius: '999px',
+                      fontSize: '0.72rem',
+                      fontWeight: '900',
+                      color: '#ffffff',
+                      boxShadow: '0 2px 6px rgba(124, 58, 237, 0.3)',
+                      zIndex: 2
+                    }}>
                       {s.category}
                     </div>
                   </div>
