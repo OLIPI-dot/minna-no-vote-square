@@ -37,18 +37,19 @@ const WatermarkLogo = ({ onClick }) => {
     <div 
       className="watermark-logo"
       onClick={handleClick}
+      style={{ padding: '5px 14px 5px 7px', gap: '8px' }}
     >
       <span className="watermark-logo-icon" style={{ display: 'inline-flex', alignItems: 'center' }}>
         <img
           src="/favicon-144x144.png"
           alt="らびたん"
           style={{
-            width: '24px',
-            height: '24px',
+            width: '34px',
+            height: '34px',
             borderRadius: '50%',
-            border: '1.5px solid #f472b6',
+            border: '2px solid #f472b6',
             objectFit: 'cover',
-            boxShadow: '0 1px 4px rgba(236, 72, 153, 0.25)'
+            boxShadow: '0 2px 6px rgba(236, 72, 153, 0.28)'
           }}
         />
       </span>
