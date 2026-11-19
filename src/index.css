@@ -56,8 +56,17 @@ html, body {
     letter-spacing: 0 !important;
     color: #1e293b !important;
   }
-  /* らびのひとこと・用語：見出しの下に本文を配置してスッキリさせる */
-  .summary-rabi,
+  /* らびのひとこと：チャット吹き出し */
+  .summary-rabi {
+    display: flex !important;
+    margin-top: 18px !important;
+    padding: 0 !important;
+    gap: 10px !important;
+  }
+  .summary-rabi-bubble {
+    padding: 12px 13px !important;
+  }
+  /* 用語：見出しの下に本文を配置してスッキリさせる */
   .summary-keyword {
     display: block !important;
     margin-top: 16px !important;

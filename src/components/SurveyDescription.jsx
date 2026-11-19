@@ -279,8 +279,27 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
     });
   };
 
-  // 📝 読みやすさのため、文の区切り（。！？）ごとに段落を分けて表示する
-  const renderSentences = (text) => {
+  // ✂️ 長い一文（36文字以上）は読点（、）の後ろでも折り返して1行を読みやすくする
+  const splitLongSentenceByComma = (s, force = false) => {
+    if (!s || (!force && s.length < 36) || !s.includes('、')) return [s];
+    const parts = s.split('、');
+    const chunks = [];
+    let current = '';
+    for (let i = 0; i < parts.length; i++) {
+      const piece = i < parts.length - 1 ? `${parts[i]}、` : parts[i];
+      current += piece;
+      const remaining = parts.slice(i + 1).join('、');
+      if (current.length >= 14 && remaining.length >= 10) {
+        chunks.push(current.trim());
+        current = '';
+      }
+    }
+    if (current.trim()) chunks.push(current.trim());
+    return chunks.length > 0 ? chunks : [s];
+  };
+
+  // 📝 読みやすさのため、文の区切り（。！？）と長い文の読点ごとに段落を分けて表示する
+  const renderSentences = (text, breakOnComma = false) => {
     if (!text) return null;
     const tokens = String(text).split(/([。！？]+(?![。！？」』）)]))/).filter(Boolean);
     const sentences = [];
@@ -292,13 +311,120 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
         if (trimmed) sentences.push(trimmed);
       }
     }
-    if (sentences.length <= 1) return highlightKeywords(text);
-    return sentences.map((s, i) => (
-      <span key={i} className="summary-sentence" style={{ display: 'block', marginTop: i > 0 ? '4px' : 0 }}>
-        {highlightKeywords(s)}
+    if (sentences.length === 0) return highlightKeywords(text);
+    const blocks = [];
+    sentences.forEach((s, sIdx) => {
+      const subChunks = splitLongSentenceByComma(s, breakOnComma);
+      subChunks.forEach((chunk, cIdx) => {
+        blocks.push({
+          text: chunk,
+          isNewSentence: sIdx > 0 && cIdx === 0,
+          isCommaBreak: cIdx > 0
+        });
+      });
+    });
+    if (blocks.length <= 1) return highlightKeywords(blocks[0]?.text || text);
+    return blocks.map((b, i) => (
+      <span
+        key={i}
+        className="summary-sentence"
+        style={{
+          display: 'block',
+          marginTop: b.isNewSentence ? '6px' : (b.isCommaBreak ? '2px' : 0)
+        }}
+      >
+        {highlightKeywords(b.text)}
       </span>
     ));
   };
+
+  // 💬 らびたんのひとこと（丸アバター＋白吹き出しチャット風）
+  const renderRabiChatBubble = (commentText, keyProp) => (
+    <li
+      key={keyProp}
+      className="summary-rabi"
+      style={{
+        display: 'flex',
+        alignItems: 'flex-start',
+        gap: '12px',
+        marginTop: '18px',
+        padding: 0,
+        background: 'transparent',
+        border: 'none',
+        boxShadow: 'none'
+      }}
+    >
+      {/* 左側：らびたん丸アイコン */}
+      <div className="summary-rabi-avatar" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', flexShrink: 0, marginTop: '2px' }}>
+        <div style={{
+          width: '46px',
+          height: '46px',
+          borderRadius: '50%',
+          background: 'linear-gradient(135deg, #fdf2f8, #fce7f3)',
+          border: '2.5px solid #f472b6',
+          boxShadow: '0 3px 10px rgba(244, 114, 182, 0.25)',
+          overflow: 'hidden',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
+          <img
+            src="/favicon-144x144.png"
+            alt="らびたん"
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.parentElement.textContent = '🐰'; }}
+          />
+        </div>
+        <span style={{ fontSize: '0.7rem', fontWeight: '900', color: '#db2777', letterSpacing: '0.02em', whiteSpace: 'nowrap' }}>
+          らびたん
+        </span>
+      </div>
+
+      {/* 右側：真っ白で読みやすいチャット吹き出し */}
+      <div className="summary-rabi-bubble" style={{
+        position: 'relative',
+        flex: 1,
+        minWidth: 0,
+        background: '#ffffff',
+        border: '2px solid #fbcfe8',
+        borderRadius: '4px 18px 18px 18px',
+        padding: '13px 16px',
+        boxShadow: '0 4px 14px rgba(236, 72, 153, 0.08)'
+      }}>
+        {/* 吹き出しの左向きしっぽ */}
+        <span style={{
+          position: 'absolute',
+          top: '14px',
+          left: '-8px',
+          width: '12px',
+          height: '12px',
+          background: '#ffffff',
+          borderLeft: '2px solid #fbcfe8',
+          borderBottom: '2px solid #fbcfe8',
+          transform: 'rotate(45deg)'
+        }} />
+        <div className="summary-box-header" style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '7px' }}>
+          <span style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '4px',
+            background: 'linear-gradient(135deg, #fdf2f8, #fae8ff)',
+            border: '1px solid #fbcfe8',
+            color: '#be185d',
+            fontSize: '0.76rem',
+            fontWeight: '900',
+            padding: '2px 10px',
+            borderRadius: '999px'
+          }}>
+            💬 らびのひとこと
+          </span>
+        </div>
+        <div className="summary-rabi-text" style={{ color: '#1e293b', fontSize: '0.95rem', fontWeight: '400', lineHeight: '1.7', whiteSpace: 'normal' }}>
+          {renderSentences(commentText)}
+        </div>
+      </div>
+    </li>
+  );
 
   return (
     <div className="survey-description-container" style={{
@@ -496,34 +622,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
                   ))}
 
                   {/* らびのひとこと */}
-                  {summaryJson.rabi_comment && (
-                    <li className="summary-rabi" style={{
-                      display: 'block',
-                      marginTop: '16px',
-                      padding: '14px 20px',
-                      background: 'linear-gradient(135deg, #fff7ed 0%, #fdf4ff 50%, #f0fdf4 100%)',
-                      border: '1.5px solid #fed7aa',
-                      boxShadow: '0 4px 14px rgba(251, 146, 60, 0.10)',
-                      borderRadius: '20px',
-                      fontSize: '0.98rem',
-                      lineHeight: '1.6'
-                    }}>
-                      <div className="summary-box-header" style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
-                        <span style={{ fontSize: '1.25rem', flexShrink: 0, lineHeight: 1 }}>🐰</span>
-                        <strong style={{
-                          background: 'linear-gradient(90deg, #ea580c, #c026d3)',
-                          WebkitBackgroundClip: 'text',
-                          WebkitTextFillColor: 'transparent',
-                          fontWeight: '900'
-                        }}>
-                          らびのひとこと
-                        </strong>
-                      </div>
-                      <div className="summary-rabi-text" style={{ color: '#334155', fontWeight: '400', whiteSpace: 'normal' }}>
-                        {renderSentences(summaryJson.rabi_comment)}
-                      </div>
-                    </li>
-                  )}
+                  {summaryJson.rabi_comment && renderRabiChatBubble(summaryJson.rabi_comment)}
 
                   {/* 専門用語の解説（ある場合のみ） */}
                   {summaryJson.keyword_title && summaryJson.keyword_desc && (
@@ -561,34 +660,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
                     const isLabiThought = /らびの(ひとこと|感想|視点)[：:]/.test(point);
                     if (isLabiThought) {
                       const thoughtText = point.replace(/^.*らびの(ひとこと|感想|視点)[：:]\s*/, '').replace(/^\*\*|\*\*$/g, '');
-                      return (
-                        <li key={idx} className="summary-rabi" style={{
-                          display: 'block',
-                          marginTop: '16px',
-                          padding: '14px 20px',
-                          background: 'linear-gradient(135deg, #fff7ed 0%, #fdf4ff 50%, #f0fdf4 100%)',
-                          border: '1.5px solid #fed7aa',
-                          boxShadow: '0 4px 14px rgba(251, 146, 60, 0.10)',
-                          borderRadius: '20px',
-                          fontSize: '0.98rem',
-                          lineHeight: '1.6'
-                        }}>
-                          <div className="summary-box-header" style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
-                            <span style={{ fontSize: '1.25rem', flexShrink: 0, lineHeight: 1 }}>🐰</span>
-                            <strong style={{
-                              background: 'linear-gradient(90deg, #ea580c, #c026d3)',
-                              WebkitBackgroundClip: 'text',
-                              WebkitTextFillColor: 'transparent',
-                              fontWeight: '900'
-                            }}>
-                              らびのひとこと
-                            </strong>
-                          </div>
-                          <div className="summary-rabi-text" style={{ color: '#334155', fontWeight: '400', whiteSpace: 'normal' }}>
-                            {renderSentences(thoughtText)}
-                          </div>
-                        </li>
-                      );
+                      return renderRabiChatBubble(thoughtText, idx);
                     }
 
                     // 💡 用語解説（「〜とは：」を含む場合）の判定
