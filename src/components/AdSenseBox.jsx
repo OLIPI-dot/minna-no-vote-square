@@ -62,8 +62,10 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null, tags = [], ti
     <div className="rabi-recommend-wrapper" style={{ width: '100%' }}>
       <div className="rabi-recommend-card" style={{
         position: 'relative',
-        background: 'linear-gradient(135deg, #ffffff 0%, #fdf2f8 52%, #faf5ff 100%)',
-        border: '2px solid #fbcfe8',
+        background: isSidebar
+          ? 'linear-gradient(135deg, #ffffff 0%, #fdf2f8 52%, #faf5ff 100%)'
+          : 'linear-gradient(135deg, #ffffff 0%, #fffbeb 52%, #fdf2f8 100%)',
+        border: isSidebar ? '2px solid #fbcfe8' : '2px solid #fcd34d',
         borderRadius: '22px',
         display: 'flex',
         flexDirection: 'column',
@@ -72,7 +74,9 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null, tags = [], ti
         padding: isSidebar ? '28px 14px 18px 14px' : '16px 16px',
         color: '#475569',
         fontSize: '0.9rem',
-        boxShadow: '0 8px 24px rgba(236, 72, 153, 0.08)',
+        boxShadow: isSidebar
+          ? '0 8px 24px rgba(236, 72, 153, 0.08)'
+          : '0 8px 24px rgba(245, 158, 11, 0.10)',
         width: '100%',
         boxSizing: 'border-box',
         textAlign: 'center',
