@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 
-const ADMAX_ID = 'd7633f1399dbdfd1f5cb0214e11df16e';
+const ADMAX_TAG_ID = 'd7633f1399dbdfd1f5cb0214e11df16e';
+const ADMAX_CONTAINER_ID = `admax-banner-${ADMAX_TAG_ID}`;
 
 const NinjaAdMaxBox = () => {
   const loadedRef = useRef(false);
@@ -9,21 +10,23 @@ const NinjaAdMaxBox = () => {
     if (loadedRef.current) return;
     loadedRef.current = true;
 
-    window.admaxads = window.admaxads || [];
-    if (!window.admaxads.some((ad) => ad.admax_id === ADMAX_ID)) {
-      window.admaxads.push({ admax_id: ADMAX_ID, type: 'banner' });
-    }
+    // 🥷 忍者AdMax公式スクリプト (s.js) をReact SPAでもdocument.writeなしで安全に描画するらび！
+    window.admaxbanner = {
+      admax_id: ADMAX_CONTAINER_ID,
+      tag_id: ADMAX_TAG_ID,
+      type: 'b',
+      width: 300,
+      height: 250
+    };
 
     const script = document.createElement('script');
-    script.src = 'https://adm.shinobi.jp/st/t.js';
+    script.type = 'text/javascript';
     script.charset = 'utf-8';
+    script.src = 'https://adm.shinobi.jp/st/s.js';
     script.async = true;
     document.body.appendChild(script);
 
     return () => {
-      window.__admax_render__ = undefined;
-      window.__admax_tag__ = undefined;
-      window.admaxads = [];
       if (script.parentNode) script.parentNode.removeChild(script);
       loadedRef.current = false;
     };
@@ -86,8 +89,7 @@ const NinjaAdMaxBox = () => {
           }}
         >
           <div
-            className="admax-ads"
-            data-admax-id={ADMAX_ID}
+            id={ADMAX_CONTAINER_ID}
             style={{ display: 'inline-block', width: '300px', height: '250px' }}
           />
         </div>
