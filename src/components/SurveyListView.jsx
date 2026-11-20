@@ -363,8 +363,8 @@ const SurveyListView = ({
 
       {/* 🚥 カテゴリフィルターバー (横スクロール) */}
       <div className="category-filter-bar" style={{
-        display: 'flex', overflowX: 'auto', gap: '15px', padding: '15px 10px',
-        marginBottom: '20px', WebkitOverflowScrolling: 'touch',
+        display: 'flex', overflowX: 'auto', gap: '15px', padding: '22px 12px 16px 12px',
+        marginTop: '-6px', marginBottom: '20px', WebkitOverflowScrolling: 'touch',
         scrollSnapType: 'x proximity', borderBottom: '1px solid #f1f5f9'
       }}>
         {filterCategories.map(cat => (
@@ -471,8 +471,8 @@ const SurveyListView = ({
       {/* 🏷️ 話題のタグバー（おりぴさんリクエスト）：0件のときは表示しない */}
       {displayTags.length > 0 && (
       <div className="tag-filter-bar" style={{
-        display: 'flex', overflowX: 'auto', gap: '10px', padding: '0 10px 16px',
-        marginBottom: '5px', WebkitOverflowScrolling: 'touch',
+        display: 'flex', overflowX: 'auto', gap: '10px', padding: '8px 10px 16px',
+        marginTop: '-4px', marginBottom: '5px', WebkitOverflowScrolling: 'touch',
         scrollSnapType: 'x proximity',
         scrollbarWidth: 'thin'
       }}>
