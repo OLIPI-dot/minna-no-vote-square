@@ -336,20 +336,38 @@ const SurveyListView = ({
 
       {/* 📌 タブ切り替え */}
       <div className="tab-switcher">
-        <button className={sortMode === 'today' ? 'active' : ''} onClick={() => { setSortMode('today'); if (typeof setCurrentPage === 'function') setCurrentPage(1); }}>☀️ 今日の話題 {searchQuery && (searchStats?.sortModes?.today || 0) > 0 && <span className="tab-hit-badge">{searchStats.sortModes.today}</span>}</button>
-        <button className={sortMode === 'latest' ? 'active' : ''} onClick={() => { setSortMode('latest'); if (typeof setCurrentPage === 'function') setCurrentPage(1); }}>🆕 新着順 {searchQuery && (searchStats?.sortModes?.latest || 0) > 0 && <span className="tab-hit-badge">{searchStats.sortModes.latest}</span>}</button>
-        <button className={sortMode === 'popular' ? 'active' : ''} onClick={() => { setSortMode('popular'); if (typeof setCurrentPage === 'function') setCurrentPage(1); }}>🔥 人気 {searchQuery && (searchStats?.sortModes?.popular || 0) > 0 && <span className="tab-hit-badge">{searchStats.sortModes.popular}</span>}</button>
-        <button className={sortMode === 'watching' ? 'active' : ''} onClick={() => { setSortMode('watching'); if (typeof setCurrentPage === 'function') setCurrentPage(1); }}>⭐ ウォッチ中 {watchedIds.length > 0 && <span className="tab-hit-badge">{watchedIds.length}</span>}</button>
-        <button className={sortMode === 'ended' ? 'active' : ''} onClick={() => { setSortMode('ended'); if (typeof setCurrentPage === 'function') setCurrentPage(1); }}>📁 アーカイブ {searchQuery && (searchStats?.sortModes?.ended || 0) > 0 && <span className="tab-hit-badge">{searchStats.sortModes.ended}</span>}</button>
-        <button
-          className={sortMode === 'mine' ? 'active' : ''}
-          onClick={() => {
-            if (!user) return alert("👤 マイページはログインしていないと使えません🙇‍♀️\n上の「Googleでログイン」ボタンからログインしてね！");
-            setSortMode('mine');
+        {(() => {
+          const scrollToListHeader = () => {
+            setTimeout(() => {
+              const el = document.getElementById('survey-list-header-anchor');
+              if (el) {
+                const y = el.getBoundingClientRect().top + window.pageYOffset - 24;
+                window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+              }
+            }, 60);
+          };
+          const handleTabClick = (mode) => {
+            setSortMode(mode);
             if (typeof setCurrentPage === 'function') setCurrentPage(1);
-          }}
-        >👤 マイページ</button>
-
+            scrollToListHeader();
+          };
+          return (
+            <>
+              <button className={sortMode === 'today' ? 'active' : ''} onClick={() => handleTabClick('today')}>☀️ 今日の話題 {searchQuery && (searchStats?.sortModes?.today || 0) > 0 && <span className="tab-hit-badge">{searchStats.sortModes.today}</span>}</button>
+              <button className={sortMode === 'latest' ? 'active' : ''} onClick={() => handleTabClick('latest')}>🆕 新着順 {searchQuery && (searchStats?.sortModes?.latest || 0) > 0 && <span className="tab-hit-badge">{searchStats.sortModes.latest}</span>}</button>
+              <button className={sortMode === 'popular' ? 'active' : ''} onClick={() => handleTabClick('popular')}>🔥 人気 {searchQuery && (searchStats?.sortModes?.popular || 0) > 0 && <span className="tab-hit-badge">{searchStats.sortModes.popular}</span>}</button>
+              <button className={sortMode === 'watching' ? 'active' : ''} onClick={() => handleTabClick('watching')}>⭐ ウォッチ中 {watchedIds.length > 0 && <span className="tab-hit-badge">{watchedIds.length}</span>}</button>
+              <button className={sortMode === 'ended' ? 'active' : ''} onClick={() => handleTabClick('ended')}>📁 アーカイブ {searchQuery && (searchStats?.sortModes?.ended || 0) > 0 && <span className="tab-hit-badge">{searchStats.sortModes.ended}</span>}</button>
+              <button
+                className={sortMode === 'mine' ? 'active' : ''}
+                onClick={() => {
+                  if (!user) return alert("👤 マイページはログインしていないと使えません🙇‍♀️\n上の「Googleでログイン」ボタンからログインしてね！");
+                  handleTabClick('mine');
+                }}
+              >👤 マイページ</button>
+            </>
+          );
+        })()}
       </div>
 
       {sortMode === 'popular' && (
@@ -528,8 +546,8 @@ const SurveyListView = ({
       </div>
       )}
 
-      {/* ✨ あなたへのおすすめセクション (検索が確定するまでは表示を維持してガタつきを防ぐらび！) */}
-      {!debouncedSearchQuery && !filterTag && filterCategory === 'すべて' && (
+      {/* ✨ あなたへのおすすめセクション (新着トップ表示時のみ表示し、タブ切替時は一覧がすぐ見えるようにするらび！) */}
+      {!debouncedSearchQuery && !filterTag && filterCategory === 'すべて' && sortMode === 'latest' && (
         <>
           <TrendingHeadline
             surveys={trendingHeadlineSurveys}
@@ -543,7 +561,7 @@ const SurveyListView = ({
       )}
 
       {/* ⚖️ 公式・ユーザー切り替えタブ + レイアウト切替（1行統合・スマホ最適化） */}
-      <div className="official-tab-navigation" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 4px', marginBottom: '16px', borderBottom: '2px solid #f1f5f9', width: '100%', boxSizing: 'border-box', height: '44px', overflow: 'visible' }}>
+      <div id="survey-list-header-anchor" className="official-tab-navigation" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 4px', marginBottom: '16px', borderBottom: '2px solid #f1f5f9', width: '100%', boxSizing: 'border-box', height: '44px', overflow: 'visible' }}>
         {/* 左側：タブ（スマホでも見切れないよう最適化） */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '2px', flex: 1, minWidth: 0, overflowX: 'auto', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
         {!['mine', 'watching'].includes(sortMode) ? (
