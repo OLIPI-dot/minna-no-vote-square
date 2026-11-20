@@ -3803,7 +3803,7 @@ function App() {
           </div>
           <p style={{
             margin: '0 0 10px 0', fontSize: '1.05rem', color: '#db2777', fontWeight: '900',
-            display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px', flexWrap: 'wrap'
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', flexWrap: 'wrap'
           }}>
             <img
               src="/favicon-144x144.png"
