@@ -159,7 +159,17 @@ const SurveyDetailView = ({
   const [isAddingOption, setIsAddingOption] = React.useState(false);
   const [customOptionText, setCustomOptionText] = React.useState('');
   const [isSubmittingCustomOption, setIsSubmittingCustomOption] = React.useState(false);
+  const [showFloatingPresence, setShowFloatingPresence] = React.useState(false);
   const embedCode = `<iframe src="${window.location.origin}/embed/${currentSurvey?.id}" width="100%" height="400" frameborder="0" style="border:1px solid #e2e8f0; border-radius:12px; max-width:600px; display:block; margin: 0 auto;"></iframe>`;
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      setShowFloatingPresence(window.scrollY > 260);
+    };
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [currentSurvey?.id]);
 
   React.useEffect(() => {
     setIsAddingOption(false);
@@ -2113,6 +2123,55 @@ const SurveyDetailView = ({
           <span>← アンケート一覧（広場）に戻る</span>
         </button>
       </div>
+
+      {/* 👀 スクロール追従のリアルタイム視聴人数ピル（タップ透過・邪魔にならない右下配置） */}
+      <div
+        aria-live="polite"
+        style={{
+          position: 'fixed',
+          bottom: '18px',
+          right: '16px',
+          zIndex: 90,
+          pointerEvents: 'none',
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '6px',
+          padding: '6px 12px',
+          borderRadius: '999px',
+          background: 'rgba(236, 253, 245, 0.88)',
+          backdropFilter: 'blur(8px)',
+          WebkitBackdropFilter: 'blur(8px)',
+          border: '1.5px solid rgba(110, 231, 183, 0.85)',
+          color: '#047857',
+          fontSize: '0.78rem',
+          fontWeight: '800',
+          boxShadow: '0 4px 14px rgba(16, 185, 129, 0.14)',
+          opacity: showFloatingPresence ? 1 : 0,
+          transform: showFloatingPresence ? 'translateY(0)' : 'translateY(10px)',
+          transition: 'opacity 0.25s ease, transform 0.25s ease',
+          whiteSpace: 'nowrap'
+        }}
+      >
+        <span
+          style={{
+            width: '7px',
+            height: '7px',
+            borderRadius: '50%',
+            background: '#10b981',
+            boxShadow: '0 0 0 0 rgba(16, 185, 129, 0.55)',
+            animation: 'livePresencePulse 2s infinite',
+            flexShrink: 0
+          }}
+        />
+        <span>👀 {surveyOnlineCount}人チェック中</span>
+      </div>
+      <style>{`
+        @keyframes livePresencePulse {
+          0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.55); opacity: 1; }
+          70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); opacity: 0.85; }
+          100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); opacity: 1; }
+        }
+      `}</style>
 
     </div>
   );
