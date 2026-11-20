@@ -91,6 +91,39 @@ function FooterModals({
                 <li><strong>多彩なカテゴリ：</strong> エンタメ、グルメ、ビジネス、テクノロジーなど、12以上のジャンルを網羅。</li>
               </ul>
               <p>あなたの声が、誰かの新しい発見につながります。ぜひ、この広場を一緒に盛り上げてください！🌈✨</p>
+
+              <div style={{
+                marginTop: '18px',
+                padding: '16px 18px',
+                borderRadius: '18px',
+                background: 'linear-gradient(135deg, #fdf2f8 0%, #faf5ff 100%)',
+                border: '1.5px solid #fbcfe8'
+              }}>
+                <h4 style={{ color: '#db2777', marginTop: 0, marginBottom: '8px', fontSize: '0.98rem' }}>🥕 らびたん＆運営への応援について（OFUSE）</h4>
+                <p style={{ margin: '0 0 12px 0', fontSize: '0.9rem', lineHeight: '1.65', color: '#475569' }}>
+                  「みんなのアンケート広場（みんアケ）」は、個人プロジェクトとしてマイペースに運営・開発しています。もし「楽しかったよ」「応援してるよ！」と感じていただけたら、ファンレター送付サービス「OFUSE」から温かい応援メッセージを送っていただけると大変励みになります（AI要約の生成コストやサーバー運営費として大切に使わせていただきます）。
+                </p>
+                <div style={{ textAlign: 'center' }}>
+                  <a
+                    href="https://ofuse.me/olipi"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: 'inline-block',
+                      padding: '10px 20px',
+                      background: 'linear-gradient(135deg, #f43f5e, #ec4899)',
+                      color: '#ffffff',
+                      borderRadius: '999px',
+                      textDecoration: 'none',
+                      fontWeight: '800',
+                      fontSize: '0.88rem',
+                      boxShadow: '0 4px 12px rgba(236, 72, 153, 0.25)'
+                    }}
+                  >
+                    💗 OFUSEの応援ページを見る（外部サイト）
+                  </a>
+                </div>
+              </div>
             </div>
             <button onClick={() => setShowingAbout(false)} className="modal-close-btn">閉じる</button>
           </div>

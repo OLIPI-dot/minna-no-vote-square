@@ -3814,7 +3814,20 @@ function App() {
           border: '2px solid #fbcfe8', textAlign: 'center',
           boxShadow: '0 8px 24px rgba(236, 72, 153, 0.08)'
         }}>
-          <p style={{ margin: '0 0 16px 0', fontSize: '1.02rem', color: '#db2777', fontWeight: '900' }}>🐰 うさぎのらび ＆ おりぴプロジェクトを応援！ 🥕</p>
+          <div style={{
+            display: 'inline-block', marginBottom: '10px', padding: '4px 12px',
+            borderRadius: '999px', background: '#fce7f3', border: '1px solid #f9a8d4',
+            color: '#be185d', fontSize: '0.76rem', fontWeight: '900', letterSpacing: '0.04em'
+          }}>
+            💌 応援プロジェクト案内
+          </div>
+          <p style={{ margin: '0 0 10px 0', fontSize: '1.05rem', color: '#db2777', fontWeight: '900' }}>🐰 うさぎのらび ＆ おりぴプロジェクトを応援！ 🥕</p>
+          <p style={{
+            margin: '0 auto 18px auto', maxWidth: '600px', fontSize: '0.88rem',
+            lineHeight: '1.7', color: '#64748b', fontWeight: '600'
+          }}>
+            いつも「みんアケ」に遊びにきてくれてありがとうらび！いただいた応援レターは、AI要約のサーバー運営費やらびたんのにんじん代（新機能開発）として大切に使わせていただきます🥕✨
+          </p>
           <div style={{ display: 'flex', justifyContent: 'center', gap: '14px', flexWrap: 'wrap' }}>
             <a href="https://ofuse.me/olipi" target="_blank" rel="noopener noreferrer" style={{
               display: 'inline-block', padding: '12px 28px', background: 'linear-gradient(135deg, #f43f5e, #ec4899)', color: '#fff',
