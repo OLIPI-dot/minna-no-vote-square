@@ -374,30 +374,59 @@ const SurveyDetailView = ({
           );
         })()}
 
-        <div className="detail-meta-bar" style={{ marginBottom: '25px', display: 'flex', flexWrap: 'wrap', gap: '15px', justifyContent: 'center', alignItems: 'center' }}>
-          <span style={{ color: '#10b981', fontWeight: 'bold', background: 'rgba(16, 185, 129, 0.05)', padding: '4px 12px', borderRadius: '20px', display: 'flex', alignItems: 'center', gap: '4px' }}>👀 いま {surveyOnlineCount} 人がチェック中！</span>
-          <span style={{ background: '#f8fafc', padding: '4px 12px', borderRadius: '20px', color: '#64748b', display: 'flex', alignItems: 'center', gap: '4px' }}>👁️ {currentSurvey.view_count || 0} 閲覧</span>
-          <span style={{ background: '#f8fafc', padding: '4px 12px', borderRadius: '20px', color: '#64748b', display: 'flex', alignItems: 'center', gap: '4px' }}>👍 {currentSurvey.likes_count || 0} いいね</span>
-          <span style={{ background: '#f8fafc', padding: '4px 12px', borderRadius: '20px', color: '#64748b', display: 'flex', alignItems: 'center', gap: '4px' }}>
+        <div className="detail-meta-bar" style={{ marginBottom: '22px', display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'center', alignItems: 'center' }}>
+          <span style={{
+            color: '#059669', fontWeight: '800',
+            background: 'linear-gradient(180deg, #ecfdf5 0%, #d1fae5 100%)',
+            border: '1.5px solid #a7f3d0',
+            padding: '5px 14px', borderRadius: '999px',
+            display: 'inline-flex', alignItems: 'center', gap: '5px',
+            fontSize: '0.86rem',
+            boxShadow: '0 2px 8px rgba(16, 185, 129, 0.08)'
+          }}>👀 いま {surveyOnlineCount} 人がチェック中！</span>
+          <span style={{
+            background: 'linear-gradient(180deg, #ffffff 0%, #faf5ff 100%)',
+            border: '1.5px solid #e9d5ff',
+            padding: '5px 14px', borderRadius: '999px',
+            color: '#5b21b6', fontWeight: '700', fontSize: '0.86rem',
+            display: 'inline-flex', alignItems: 'center', gap: '5px',
+            boxShadow: '0 2px 8px rgba(139, 92, 246, 0.07)'
+          }}>👁️ {currentSurvey.view_count || 0} 閲覧</span>
+          <span style={{
+            background: 'linear-gradient(180deg, #ffffff 0%, #faf5ff 100%)',
+            border: '1.5px solid #e9d5ff',
+            padding: '5px 14px', borderRadius: '999px',
+            color: '#5b21b6', fontWeight: '700', fontSize: '0.86rem',
+            display: 'inline-flex', alignItems: 'center', gap: '5px',
+            boxShadow: '0 2px 8px rgba(139, 92, 246, 0.07)'
+          }}>👍 {currentSurvey.likes_count || 0} いいね</span>
+          <span style={{
+            background: 'linear-gradient(180deg, #ffffff 0%, #faf5ff 100%)',
+            border: '1.5px solid #e9d5ff',
+            padding: '5px 14px', borderRadius: '999px',
+            color: '#5b21b6', fontWeight: '800', fontSize: '0.86rem',
+            display: 'inline-flex', alignItems: 'center', gap: '5px',
+            boxShadow: '0 2px 8px rgba(139, 92, 246, 0.07)'
+          }}>
             🗳️ <AnimatedCounter value={isTotalVotes || 0} /> 票
           </span>
           {currentSurvey.category && (
             <span style={{
               background: (CATEGORY_ICON_STYLE[currentSurvey.category]?.color || '#3b82f6') + '15',
-              padding: '6px 16px',
-              borderRadius: '20px',
+              padding: '5px 16px',
+              borderRadius: '999px',
               color: CATEGORY_ICON_STYLE[currentSurvey.category]?.color || '#3b82f6',
               fontWeight: '900',
-              fontSize: '0.9rem',
+              fontSize: '0.88rem',
               border: `2px solid ${CATEGORY_ICON_STYLE[currentSurvey.category]?.color || '#3b82f6'}33`,
-              boxShadow: '0 4px 10px rgba(0,0,0,0.03)'
+              boxShadow: '0 3px 10px rgba(0,0,0,0.04)'
             }}>
               {CATEGORY_ICON_STYLE[currentSurvey.category]?.icon || '🏷️'} {currentSurvey.category}
             </span>
           )}
         </div>
         {currentSurvey.tags && currentSurvey.tags.length > 0 && (
-          <div className="detail-tags-row" style={{ marginTop: '25px', marginBottom: '15px', display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
+          <div className="detail-tags-row" style={{ marginTop: '18px', marginBottom: '16px', display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'center' }}>
             {currentSurvey.tags
               .filter(t => !t.startsWith('_STAMP:'))
               .map(t => {
@@ -411,17 +440,36 @@ const SurveyDetailView = ({
                   <span key={i} className="tag-bubble clickable" onClick={() => { setFilterTag(tagName); setActiveTab('all'); navigateTo('list'); }}
                     style={{
                       cursor: 'pointer',
-                      background: isLocked ? '#fef2f2' : '#f1f5f9',
-                      color: isLocked ? '#b91c1c' : '#475569',
+                      background: isLocked ? '#fef2f2' : 'linear-gradient(180deg, #ffffff 0%, #f5f3ff 100%)',
+                      color: isLocked ? '#b91c1c' : '#6d28d9',
                       padding: '5px 15px',
-                      borderRadius: '20px',
-                      fontSize: '0.85rem',
-                      fontWeight: 'bold',
-                      border: isLocked ? '1px solid #fecaca' : '1px solid #e2e8f0',
-                      transition: 'all 0.2s',
+                      borderRadius: '999px',
+                      fontSize: '0.84rem',
+                      fontWeight: '800',
+                      borderWidth: isLocked ? '1.5px' : '1.5px 1.5px 3px 1.5px',
+                      borderStyle: 'solid',
+                      borderColor: isLocked ? '#fecaca' : '#ddd6fe #ddd6fe #c4b5fd #ddd6fe',
+                      boxShadow: isLocked ? 'none' : '0 2px 6px rgba(124, 58, 237, 0.08)',
+                      transition: 'all 0.18s ease',
                       display: 'inline-flex',
                       alignItems: 'center',
                       gap: '4px'
+                    }}
+                    onMouseOver={e => {
+                      if (!isLocked) {
+                        e.currentTarget.style.transform = 'translateY(-1px)';
+                        e.currentTarget.style.background = 'linear-gradient(180deg, #fdf2f8 0%, #f5f3ff 100%)';
+                        e.currentTarget.style.borderColor = '#f472b6 #f472b6 #db2777 #f472b6';
+                        e.currentTarget.style.color = '#be185d';
+                      }
+                    }}
+                    onMouseOut={e => {
+                      if (!isLocked) {
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.background = 'linear-gradient(180deg, #ffffff 0%, #f5f3ff 100%)';
+                        e.currentTarget.style.borderColor = '#ddd6fe #ddd6fe #c4b5fd #ddd6fe';
+                        e.currentTarget.style.color = '#6d28d9';
+                      }
                     }}>
                     #{tagName}{isLocked && <span title="ロックされています (編集不可)" style={{ fontSize: '0.75rem' }}>🔒</span>}
                   </span>
@@ -429,8 +477,13 @@ const SurveyDetailView = ({
               })}
           </div>
         )}
-        <div className="deadline-info-block" style={{ marginTop: '30px' }}>
-          <div className="absolute-deadline" style={{ marginBottom: '4px', fontSize: '0.9rem', color: '#64748b' }}>
+        <div className="deadline-info-block" style={{ marginTop: '22px' }}>
+          <div className="absolute-deadline" style={{
+            marginBottom: '6px', fontSize: '0.86rem', color: '#6d28d9', fontWeight: '700',
+            background: 'linear-gradient(180deg, #ffffff 0%, #faf5ff 100%)',
+            border: '1.5px solid #e9d5ff', borderRadius: '999px', padding: '5px 16px',
+            boxShadow: '0 2px 6px rgba(139, 92, 246, 0.06)'
+          }}>
             {(() => {
               const isSource = !!currentSurvey.source_published_at;
               const dateToUse = currentSurvey.source_published_at || currentSurvey.created_at;
@@ -447,7 +500,12 @@ const SurveyDetailView = ({
           </div>
           {currentSurvey.deadline && (
             <>
-              <div className="absolute-deadline" style={{ marginBottom: '10px', fontSize: '0.9rem', color: '#64748b' }}>
+              <div className="absolute-deadline" style={{
+                marginBottom: '10px', fontSize: '0.86rem', color: '#6d28d9', fontWeight: '700',
+                background: 'linear-gradient(180deg, #ffffff 0%, #faf5ff 100%)',
+                border: '1.5px solid #e9d5ff', borderRadius: '999px', padding: '5px 16px',
+                boxShadow: '0 2px 6px rgba(139, 92, 246, 0.06)'
+              }}>
                 🏁 締切日：{(() => {
                   const d = new Date(currentSurvey.deadline);
                   const yyyy = d.getFullYear();
