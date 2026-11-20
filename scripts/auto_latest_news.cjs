@@ -696,21 +696,9 @@ async function startAutoPosting() {
                 if (sErr) throw sErr;
                 const surveyId = sData[0].id;
 
-                // 🌸 サクラ票（初期票）の生成ロジック
-                // 3〜7票をランダムに生成して選択肢に振り分けるらび！
-                // サクラ票を縮小: 0〜2票に変更（不自然さをなくし、ユーザーが第一号になれる余地を残す）
-                const totalSeedVotes = Math.floor(Math.random() * 3); 
-                const optionVotes = [0, 0, 0, 0];
-                for (let i = 0; i < totalSeedVotes; i++) {
-                    // 少し偏りを持たせるために、最初の2つの選択肢が選ばれやすくする
-                    const rnd = Math.random();
-                    let targetIdx = 0;
-                    if (rnd > 0.4) targetIdx = 1;
-                    if (rnd > 0.7) targetIdx = 2;
-                    if (rnd > 0.9) targetIdx = 3;
-                    if (targetIdx >= options.length) targetIdx = 0;
-                    optionVotes[targetIdx]++;
-                }
+                // 🌸 サクラ票（初期票）を解除：すべて0票スタートにして本物の投票だけを集計するらび！
+                const totalSeedVotes = 0;
+                const optionVotes = options.map(() => 0);
 
                 await supabase.from('options').insert(options.map((name, idx) => ({ 
                     survey_id: surveyId, 

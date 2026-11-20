@@ -1947,28 +1947,8 @@ function App() {
   };
 
   // 📥 アンケートデータを取得する (サーバーサイド・ページネーション & フィルタ対応)
-  // 🌸 サクラ（水増し）関数：ある程度人が増えたらこの関数の中身を return s; にするｗ
-  const applySakuraStats = (s) => {
-    if (!s || !s.id) return s;
-    const isIdNum = typeof s.id === 'number';
-    const idVal = isIdNum ? s.id : (String(s.id).charCodeAt(0) || 0);
-    const votes = s.total_votes || 0;
-    
-    // 閲覧数を自然な感じに盛る
-    // IDに応じてバラつきをもたせる（1〜30）
-    const randomBoost = ((idVal * 13) % 30) + 1;
-    // 投票数がある場合は、最低でも投票数の3〜5倍くらいの閲覧数にする
-    const minViews = votes > 0 ? (votes * 3 + randomBoost + 5) : randomBoost;
-    
-    const sakuraViews = Math.max(minViews, ((idVal * 7) % 30) + 8);
-    const sakuraLikes = ((idVal * 3) % 4);
-    
-    return {
-      ...s,
-      view_count: Math.max((s.view_count ?? 0), (s.view_count ?? 0) + sakuraViews),
-      likes_count: (s.likes_count ?? 0) + sakuraLikes
-    };
-  };
+  // 🌸 サクラ（水増し）解除：データベースの本物の数字をそのまま表示するらび！
+  const applySakuraStats = (s) => s;
 
   const fetchSurveys = async (currentUser, silent = false, page = 1, category = null, query = '', currentTab = 'official', sort = 'latest', pop = 'trending', tag = '') => {
     const myFetchId = ++surveyFetchRequestIdRef.current;
