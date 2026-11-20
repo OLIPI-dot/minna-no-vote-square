@@ -1232,7 +1232,7 @@ const SurveyListView = ({
             sortMode === 'mine'
               ? (totalMineCount || 0)
               : sortMode === 'watching'
-                ? (currentPage === 1 && filteredAndSortedSurveys.length < ITEMS_PER_PAGE ? filteredAndSortedSurveys.length : (watchedIds?.length || 0))
+                ? (currentPage === 1 && finalItems.length < ITEMS_PER_PAGE ? finalItems.length : (watchedIds?.length || 0))
                 : (activeTab === 'official' ? totalOfficialCount : totalUserCount)
           ) / ITEMS_PER_PAGE)}
           onPageChange={p => {
