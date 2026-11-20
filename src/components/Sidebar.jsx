@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 import AdSenseBox from './AdSenseBox';
+import NinjaAdMaxBox from './NinjaAdMaxBox';
 import SquareTimeline from './SquareTimeline';
 import RecentComments from './RecentComments';
 import RaidBossMiniGame from './RaidBossMiniGame';
@@ -498,6 +499,7 @@ const Sidebar = ({
 
       {/* 7. 広告 */}
       <AdSenseBox slot="sidebar_slot_placeholder" affiliateType="amazon" />
+      <NinjaAdMaxBox />
 
       <DictionaryModal 
         isOpen={isDictionaryOpen} 
