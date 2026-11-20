@@ -848,7 +848,8 @@ body {
 }
 
 /* 🖼️ 広告枠をリスト内に自然に挿入 */
-.survey-list .adsense-container-wrapper {
+.survey-list .adsense-container-wrapper,
+.survey-list .rabi-recommend-wrapper {
   grid-column: 1 / -1;
   width: 100%;
 }
@@ -3927,7 +3928,8 @@ button:active,
    🐰 AdSense & Sponsor Box Optimizations (CLS zero)
    ========================================================= */
 
-.adsense-container-wrapper {
+.adsense-container-wrapper,
+.rabi-recommend-wrapper {
   margin: 24px 0;
   text-align: center;
   position: relative;
@@ -3935,6 +3937,11 @@ button:active,
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.rabi-recommend-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(236, 72, 153, 0.14) !important;
 }
 
 /* 📱 スマホ時 (自動で縦長になりやすいので高めに予約) */

@@ -59,8 +59,8 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null, tags = [], ti
   const impressionUrl = `https://i.moshimo.com/af/i/impression?a_id=${MOSHIMO_RAKUTEN_A_ID}&p_id=${MOSHIMO_RAKUTEN_P_ID}&pc_id=${MOSHIMO_RAKUTEN_PC_ID}&pl_id=${impressionPlId}`;
 
   return (
-    <div className="adsense-container-wrapper" style={{ width: '100%' }}>
-      <div className="ads-placeholder" style={{
+    <div className="rabi-recommend-wrapper" style={{ width: '100%' }}>
+      <div className="rabi-recommend-card" style={{
         position: 'relative',
         background: 'linear-gradient(135deg, #ffffff 0%, #fdf2f8 52%, #faf5ff 100%)',
         border: '2px solid #fbcfe8',

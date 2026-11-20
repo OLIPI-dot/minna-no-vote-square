@@ -370,6 +370,7 @@ const SurveyListView = ({
         {filterCategories.map(cat => (
           <button
             key={cat}
+            className={`category-pill-btn ${filterCategory === cat ? 'active' : ''}`}
             style={{
               background: filterCategory === cat
                 ? (cat === 'すべて'
@@ -444,6 +445,26 @@ const SurveyListView = ({
             transition: all 0.3s;
           }
           .category-filter-bar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+          .tab-switcher button:not(.active):hover {
+            transform: translateY(-2px);
+            background: #f5f3ff !important;
+            color: #6d28d9 !important;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.14);
+          }
+          .category-pill-btn:not(.active):hover {
+            transform: translateY(-3px) scale(1.03) !important;
+            border-color: #f472b6 !important;
+            background: linear-gradient(180deg, #fdf2f8 0%, #f5f3ff 100%) !important;
+            color: #be185d !important;
+            box-shadow: 0 8px 18px rgba(236, 72, 153, 0.16) !important;
+          }
+          .tag-filter-bar .tag-bubble:not(.active):hover {
+            transform: translateY(-2px) !important;
+            background: linear-gradient(180deg, #fdf2f8 0%, #f5f3ff 100%) !important;
+            border-color: #f472b6 #f472b6 #db2777 #f472b6 !important;
+            color: #be185d !important;
+            box-shadow: 0 6px 14px rgba(236, 72, 153, 0.18) !important;
+          }
         `}</style>
       </div>
 
