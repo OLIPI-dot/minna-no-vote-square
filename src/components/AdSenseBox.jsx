@@ -69,7 +69,7 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null, tags = [], ti
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: isSidebar ? '18px 14px' : '22px 20px',
+        padding: isSidebar ? '28px 14px 18px 14px' : '28px 20px 22px 20px',
         color: '#475569',
         fontSize: '0.9rem',
         boxShadow: '0 8px 24px rgba(236, 72, 153, 0.08)',
@@ -112,22 +112,24 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null, tags = [], ti
             </button>
           </div>
         ) : (
-          <div style={{ position: 'relative', zIndex: 10, width: '100%', maxWidth: '560px' }}>
+          <>
             <span style={{
               position: 'absolute',
-              top: isSidebar ? '-8px' : '-10px',
-              right: isSidebar ? '-4px' : '-6px',
-              fontSize: '0.68rem',
+              top: '8px',
+              right: '12px',
+              fontSize: '0.66rem',
               fontWeight: '800',
               color: '#9d174d',
               background: '#fce7f3',
               border: '1px solid #f9a8d4',
               borderRadius: '999px',
               padding: '1px 8px',
-              letterSpacing: '0.04em'
+              letterSpacing: '0.04em',
+              zIndex: 11
             }}>
               PR
             </span>
+          <div style={{ position: 'relative', zIndex: 10, width: '100%', maxWidth: '560px' }}>
 
             <div style={{
               display: 'inline-flex',
@@ -235,6 +237,7 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null, tags = [], ti
               loading="lazy"
             />
           </div>
+          </>
         )}
       </div>
     </div>
