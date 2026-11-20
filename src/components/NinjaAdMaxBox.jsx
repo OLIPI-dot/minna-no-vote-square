@@ -1,31 +1,34 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 
-const NINJA_ADMAX_SRC = 'https://adm.shinobi.jp/s/d7633f1399dbdfd1f5cb0214e11df16e';
-
-const NINJA_ADMAX_SRCDOC = `<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="utf-8" />
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      width: 300px;
-      height: 250px;
-      overflow: hidden;
-      background: transparent;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-  </style>
-</head>
-<body>
-  <script src="${NINJA_ADMAX_SRC}"></script>
-</body>
-</html>`;
+const ADMAX_ID = 'd7633f1399dbdfd1f5cb0214e11df16e';
 
 const NinjaAdMaxBox = () => {
+  const loadedRef = useRef(false);
+
+  useEffect(() => {
+    if (loadedRef.current) return;
+    loadedRef.current = true;
+
+    window.admaxads = window.admaxads || [];
+    if (!window.admaxads.some((ad) => ad.admax_id === ADMAX_ID)) {
+      window.admaxads.push({ admax_id: ADMAX_ID, type: 'banner' });
+    }
+
+    const script = document.createElement('script');
+    script.src = 'https://adm.shinobi.jp/st/t.js';
+    script.charset = 'utf-8';
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      window.__admax_render__ = undefined;
+      window.__admax_tag__ = undefined;
+      window.admaxads = [];
+      if (script.parentNode) script.parentNode.removeChild(script);
+      loadedRef.current = false;
+    };
+  }, []);
+
   return (
     <div
       className="rabi-recommend-wrapper"
@@ -74,7 +77,7 @@ const NinjaAdMaxBox = () => {
           style={{
             width: '300px',
             maxWidth: '100%',
-            height: '250px',
+            minHeight: '250px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -82,22 +85,10 @@ const NinjaAdMaxBox = () => {
             borderRadius: '10px'
           }}
         >
-          <iframe
-            title="スポンサーリンク"
-            srcDoc={NINJA_ADMAX_SRCDOC}
-            width="300"
-            height="250"
-            scrolling="no"
-            frameBorder="0"
-            referrerPolicy="no-referrer-when-downgrade"
-            loading="lazy"
-            style={{
-              border: 'none',
-              width: '300px',
-              height: '250px',
-              display: 'block',
-              overflow: 'hidden'
-            }}
+          <div
+            className="admax-ads"
+            data-admax-id={ADMAX_ID}
+            style={{ display: 'inline-block', width: '300px', height: '250px' }}
           />
         </div>
       </div>
