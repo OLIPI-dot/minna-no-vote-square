@@ -69,7 +69,7 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null, tags = [], ti
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: isSidebar ? '28px 14px 18px 14px' : '28px 20px 22px 20px',
+        padding: isSidebar ? '28px 14px 18px 14px' : '16px 16px',
         color: '#475569',
         fontSize: '0.9rem',
         boxShadow: '0 8px 24px rgba(236, 72, 153, 0.08)',
@@ -220,200 +220,213 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null, tags = [], ti
               PR
             </span>
 
-            <div className="rabi-infeed-inner" style={{
+            <div className="rabi-infeed-wrap" style={{
               display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: '16px',
+              flexDirection: 'column',
+              gap: '10px',
               width: '100%',
               textAlign: 'left',
               position: 'relative',
               zIndex: 10
             }}>
-              {/* 📸 左サムネイル（記事カードとお揃いの比率・雰囲気！将来は商品写真にも差し替えOK） */}
-              <a
-                href={primaryKeyword ? buildMoshimoRakutenSearchUrl(primaryKeyword) : MOSHIMO_RAKUTEN_TOP_URL}
-                target="_blank"
-                rel="nofollow sponsored noopener noreferrer"
-                referrerPolicy="no-referrer-when-downgrade"
-                aria-label="楽天市場で関連アイテムをチェック"
-                style={{
-                  position: 'relative',
-                  flex: '0 0 auto',
-                  width: '148px',
-                  height: '98px',
-                  borderRadius: '14px',
-                  overflow: 'hidden',
-                  background: 'linear-gradient(135deg, #fce7f3 0%, #ede9fe 52%, #e0f2fe 100%)',
-                  border: '1.5px solid #f9a8d4',
-                  boxShadow: '0 4px 12px rgba(236, 72, 153, 0.12)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  textDecoration: 'none'
-                }}
-              >
-                <span style={{
-                  position: 'absolute',
-                  top: '6px',
-                  left: '6px',
-                  background: 'rgba(255, 255, 255, 0.94)',
-                  color: '#be185d',
-                  fontSize: '0.66rem',
-                  fontWeight: '900',
-                  padding: '2px 7px',
-                  borderRadius: '999px',
-                  boxShadow: '0 2px 5px rgba(0, 0, 0, 0.08)'
-                }}>
-                  🛍️ 楽天市場
-                </span>
-
-                <img
-                  src="/favicon-144x144.png"
-                  alt="らびたん"
-                  style={{
-                    width: '46px',
-                    height: '46px',
-                    borderRadius: '50%',
-                    border: '2px solid #f472b6',
-                    objectFit: 'cover',
-                    background: '#fff',
-                    boxShadow: '0 3px 10px rgba(236, 72, 153, 0.22)',
-                    marginBottom: '4px'
-                  }}
-                />
-
-                <span style={{
-                  position: 'absolute',
-                  bottom: '6px',
-                  left: '6px',
-                  right: '6px',
-                  background: 'rgba(15, 23, 42, 0.72)',
-                  color: '#ffffff',
-                  fontSize: '0.66rem',
-                  fontWeight: '800',
-                  padding: '2px 8px',
-                  borderRadius: '999px',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  textAlign: 'center'
-                }}>
-                  💬 {primaryKeyword ? `${primaryKeyword}グッズ…` : '推しグッズをチェック…'}
-                </span>
-              </a>
-
-              {/* 📝 右側：タイトル＋記事風サマリー枠＋アクションボタン */}
-              <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <div className="rabi-infeed-top" style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: '14px',
+                width: '100%'
+              }}>
+                {/* 📸 左サムネイル（スマホでも記事カードと同じ左配置！） */}
                 <a
                   href={primaryKeyword ? buildMoshimoRakutenSearchUrl(primaryKeyword) : MOSHIMO_RAKUTEN_TOP_URL}
                   target="_blank"
                   rel="nofollow sponsored noopener noreferrer"
                   referrerPolicy="no-referrer-when-downgrade"
+                  aria-label="楽天市場で関連アイテムをチェック"
+                  className="rabi-infeed-thumb"
                   style={{
-                    fontSize: '0.98rem',
-                    fontWeight: '900',
-                    color: '#1e293b',
-                    lineHeight: '1.4',
-                    textDecoration: 'none',
-                    paddingRight: '42px',
-                    display: 'block'
+                    position: 'relative',
+                    flex: '0 0 auto',
+                    width: '148px',
+                    height: '98px',
+                    borderRadius: '14px',
+                    overflow: 'hidden',
+                    background: 'linear-gradient(135deg, #fce7f3 0%, #ede9fe 52%, #e0f2fe 100%)',
+                    border: '1.5px solid #f9a8d4',
+                    boxShadow: '0 4px 12px rgba(236, 72, 153, 0.12)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    textDecoration: 'none'
                   }}
                 >
-                  {primaryKeyword
-                    ? `「${primaryKeyword}」の関連グッズ・コミック・人気アイテムを楽天市場でチェック！`
-                    : 'いま話題の推しグッズ・新作ゲーム・コミックを楽天市場でチェック！'}
+                  <span style={{
+                    position: 'absolute',
+                    top: '6px',
+                    left: '6px',
+                    background: 'rgba(255, 255, 255, 0.94)',
+                    color: '#be185d',
+                    fontSize: '0.64rem',
+                    fontWeight: '900',
+                    padding: '2px 7px',
+                    borderRadius: '999px',
+                    boxShadow: '0 2px 5px rgba(0, 0, 0, 0.08)'
+                  }}>
+                    🛍️ 楽天市場
+                  </span>
+
+                  <img
+                    src="/favicon-144x144.png"
+                    alt="らびたん"
+                    style={{
+                      width: '44px',
+                      height: '44px',
+                      borderRadius: '50%',
+                      border: '2px solid #f472b6',
+                      objectFit: 'cover',
+                      background: '#fff',
+                      boxShadow: '0 3px 10px rgba(236, 72, 153, 0.22)',
+                      marginBottom: '4px'
+                    }}
+                  />
+
+                  <span style={{
+                    position: 'absolute',
+                    bottom: '6px',
+                    left: '6px',
+                    right: '6px',
+                    background: 'rgba(15, 23, 42, 0.72)',
+                    color: '#ffffff',
+                    fontSize: '0.64rem',
+                    fontWeight: '800',
+                    padding: '2px 6px',
+                    borderRadius: '999px',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    textAlign: 'center'
+                  }}>
+                    💬 {primaryKeyword ? `${primaryKeyword}…` : '推しグッズ…'}
+                  </span>
                 </a>
 
-                <div style={{
-                  background: 'linear-gradient(135deg, #fffbeb 0%, #fdf2f8 100%)',
-                  border: '1px solid #fde68a',
-                  borderRadius: '10px',
-                  padding: '7px 11px',
-                  fontSize: '0.8rem',
-                  lineHeight: '1.5',
-                  color: '#475569',
-                  fontWeight: '600'
-                }}>
-                  <span style={{ color: '#be185d', fontWeight: '900' }}>💡 らびたんおすすめ！</span>{' '}
-                  {primaryKeyword
-                    ? `いま注目されている「${primaryKeyword}」の関連アイテムや売れ筋ランキングを楽天市場でサクッと探せるよ ▸`
-                    : 'みんなが気になっているトレンドアイテムや人気ランキングを楽天市場でのぞいてみようらび ▸'}
-                </div>
-
-                <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginTop: '2px' }}>
+                {/* 📝 右側：タイトル＋ボタン */}
+                <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   <a
                     href={primaryKeyword ? buildMoshimoRakutenSearchUrl(primaryKeyword) : MOSHIMO_RAKUTEN_TOP_URL}
                     target="_blank"
                     rel="nofollow sponsored noopener noreferrer"
                     referrerPolicy="no-referrer-when-downgrade"
+                    className="rabi-infeed-title"
                     style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '5px',
-                      padding: '6px 16px',
-                      background: 'linear-gradient(135deg, #e11d48, #ec4899)',
-                      color: '#ffffff',
-                      borderWidth: '1.5px 1.5px 3px 1.5px',
-                      borderStyle: 'solid',
-                      borderColor: '#f43f5e #f43f5e #9f1239 #f43f5e',
-                      borderRadius: '999px',
-                      textDecoration: 'none',
+                      fontSize: '0.96rem',
                       fontWeight: '900',
-                      fontSize: '0.8rem',
-                      boxShadow: '0 3px 10px rgba(225, 29, 72, 0.22)',
-                      transition: 'transform 0.18s ease'
+                      color: '#1e293b',
+                      lineHeight: '1.4',
+                      textDecoration: 'none',
+                      paddingRight: '38px',
+                      display: 'block'
                     }}
-                    onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-1px)'; }}
-                    onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; }}
                   >
-                    <span>🛒</span>
-                    <span>{primaryKeyword ? `楽天市場で「${primaryKeyword}」を見る ✨` : '楽天市場で人気アイテムを見る ✨'}</span>
+                    {primaryKeyword
+                      ? `「${primaryKeyword}」の関連グッズ・本を楽天市場でチェック！`
+                      : 'いま話題の推しグッズ・新作ゲーム・コミックを楽天市場でチェック！'}
                   </a>
 
-                  {extraKeywords.map((kw, i) => (
+                  <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '6px' }}>
                     <a
-                      key={i}
-                      href={buildMoshimoRakutenSearchUrl(kw)}
+                      href={primaryKeyword ? buildMoshimoRakutenSearchUrl(primaryKeyword) : MOSHIMO_RAKUTEN_TOP_URL}
                       target="_blank"
                       rel="nofollow sponsored noopener noreferrer"
                       referrerPolicy="no-referrer-when-downgrade"
                       style={{
                         display: 'inline-flex',
                         alignItems: 'center',
-                        gap: '3px',
-                        padding: '5px 12px',
-                        background: 'linear-gradient(180deg, #ffffff 0%, #faf5ff 100%)',
-                        color: '#6d28d9',
+                        gap: '5px',
+                        padding: '6px 14px',
+                        background: 'linear-gradient(135deg, #e11d48, #ec4899)',
+                        color: '#ffffff',
                         borderWidth: '1.5px 1.5px 3px 1.5px',
                         borderStyle: 'solid',
-                        borderColor: '#ddd6fe #ddd6fe #a78bfa #ddd6fe',
+                        borderColor: '#f43f5e #f43f5e #9f1239 #f43f5e',
                         borderRadius: '999px',
                         textDecoration: 'none',
-                        fontWeight: '800',
-                        fontSize: '0.76rem',
+                        fontWeight: '900',
+                        fontSize: '0.78rem',
+                        boxShadow: '0 3px 10px rgba(225, 29, 72, 0.22)',
                         transition: 'transform 0.18s ease'
                       }}
                       onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-1px)'; }}
                       onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; }}
                     >
-                      🔍 #{kw}
+                      <span>🛒</span>
+                      <span>{primaryKeyword ? `楽天で「${primaryKeyword}」を見る` : '楽天市場で見る ✨'}</span>
                     </a>
-                  ))}
+
+                    {extraKeywords.map((kw, i) => (
+                      <a
+                        key={i}
+                        href={buildMoshimoRakutenSearchUrl(kw)}
+                        target="_blank"
+                        rel="nofollow sponsored noopener noreferrer"
+                        referrerPolicy="no-referrer-when-downgrade"
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '3px',
+                          padding: '5px 10px',
+                          background: 'linear-gradient(180deg, #ffffff 0%, #faf5ff 100%)',
+                          color: '#6d28d9',
+                          borderWidth: '1.5px 1.5px 3px 1.5px',
+                          borderStyle: 'solid',
+                          borderColor: '#ddd6fe #ddd6fe #a78bfa #ddd6fe',
+                          borderRadius: '999px',
+                          textDecoration: 'none',
+                          fontWeight: '800',
+                          fontSize: '0.74rem',
+                          transition: 'transform 0.18s ease'
+                        }}
+                        onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-1px)'; }}
+                        onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; }}
+                      >
+                        🔍 #{kw}
+                      </a>
+                    ))}
+                  </div>
                 </div>
+              </div>
+
+              {/* 💡 下段：記事カードとお揃いの全幅クリーム説明ボックス */}
+              <div style={{
+                background: 'linear-gradient(135deg, #fffbeb 0%, #fdf2f8 100%)',
+                border: '1px solid #fde68a',
+                borderRadius: '10px',
+                padding: '7px 11px',
+                fontSize: '0.79rem',
+                lineHeight: '1.5',
+                color: '#475569',
+                fontWeight: '600'
+              }}>
+                <span style={{ color: '#be185d', fontWeight: '900' }}>💡 らびたんおすすめ！</span>{' '}
+                {primaryKeyword
+                  ? `いま注目されている「${primaryKeyword}」の関連アイテムや売れ筋ランキングを楽天市場でサクッと探せるよ ▸`
+                  : 'みんなが気になっているトレンドアイテムや人気ランキングを楽天市場でのぞいてみようらび ▸'}
               </div>
             </div>
 
             <style>{`
               @media (max-width: 600px) {
-                .rabi-infeed-inner {
-                  flex-direction: column !important;
-                  align-items: stretch !important;
-                  gap: 12px !important;
+                .rabi-infeed-top {
+                  gap: 10px !important;
+                  align-items: flex-start !important;
                 }
-                .rabi-infeed-inner > a:first-child {
-                  width: 100% !important;
+                .rabi-infeed-thumb {
+                  width: 104px !important;
                   height: 92px !important;
+                }
+                .rabi-infeed-title {
+                  font-size: 0.88rem !important;
+                  padding-right: 34px !important;
                 }
               }
             `}</style>
