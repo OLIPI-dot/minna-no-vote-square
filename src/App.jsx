@@ -3801,7 +3801,22 @@ function App() {
           }}>
             💌 応援プロジェクト案内
           </div>
-          <p style={{ margin: '0 0 10px 0', fontSize: '1.05rem', color: '#db2777', fontWeight: '900' }}>🐰 うさぎのらび ＆ おりぴプロジェクトを応援！ 🥕</p>
+          <p style={{
+            margin: '0 0 10px 0', fontSize: '1.05rem', color: '#db2777', fontWeight: '900',
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px', flexWrap: 'wrap'
+          }}>
+            <img
+              src="/favicon-144x144.png"
+              alt="らびたん"
+              style={{
+                width: '28px', height: '28px', borderRadius: '50%',
+                border: '2px solid #f472b6', objectFit: 'cover',
+                background: '#fff', boxShadow: '0 2px 6px rgba(236, 72, 153, 0.22)',
+                flexShrink: 0
+              }}
+            />
+            <span>うさぎのらび ＆ おりぴプロジェクトを応援！ 🥕</span>
+          </p>
           <p style={{
             margin: '0 auto 18px auto', maxWidth: '600px', fontSize: '0.88rem',
             lineHeight: '1.7', color: '#64748b', fontWeight: '600'
