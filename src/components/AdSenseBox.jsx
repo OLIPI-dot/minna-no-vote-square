@@ -1,31 +1,31 @@
 import React, { useState, useEffect } from 'react';
 
-const AdSenseBox = ({ slot, format = 'auto', affiliateType = null }) => {
-  // 🥕 おりぴさんの特別な紹介ID！
-  const ASSOCIATE_ID = 'olipivote-22';
+const MOSHIMO_RAKUTEN_A_ID = '5913984';
+const MOSHIMO_RAKUTEN_P_ID = '54';
+const MOSHIMO_RAKUTEN_PC_ID = '54';
+const MOSHIMO_RAKUTEN_DOKODEMO_PL_ID = '616';
+const MOSHIMO_RAKUTEN_TEXT_PL_ID = '621';
 
-  // ✨ おすすめ商品リスト
-  const RECOMMENDATIONS = [
-    { title: '【第2類医薬品】 by Amazon 鼻炎スプレーN 30mL × 5本', url: 'https://amzn.to/4raqnTr', image: 'https://m.media-amazon.com/images/I/71uk-JC-T4L._AC_SX679_.jpg', icon: '👃', category: 'おりぴ医薬品' },
-    { title: 'by Amazon キトサン加工綿棒 200本x10個', url: 'https://amzn.to/4slfYp4', image: 'https://m.media-amazon.com/images/I/71RDCcGMRkL._AC_SX679_PIbundle-10,TopRight,0,0_SH20_.jpg', icon: '🧹', category: 'おりぴ日用品' },
-    { title: 'ソフトパックティッシュ (320枚 72パック入)', url: 'https://amzn.to/4b6ZPMN', image: 'https://m.media-amazon.com/images/I/71F-kSQlPGL._AC_SX679_PIbundle-72,TopRight,0,0_SH20_.jpg', icon: '🧻', category: 'おりぴ日用品' },
-    { title: '山善 つっぱり式カーテンレール 3ポール', url: 'https://amzn.to/4ldgyCJ', image: 'https://m.media-amazon.com/images/I/610RqBHU+-S._AC_SY879_.jpg', icon: '🏠', category: 'おりぴ家具' },
-    { title: 'オーディオテクニカ AT8705 マイクアーム ロープロファイル', url: 'https://amzn.to/4cqLvkJ', image: 'https://m.media-amazon.com/images/I/51vcPonquOL._AC_SY879_.jpg', icon: '🎙️', category: 'おりぴ音響機器' },
-    { title: "D'Addario ダダリオ ブリッジピンプラー", url: 'https://amzn.to/4b3HArD', image: 'https://m.media-amazon.com/images/I/61iQnsDnENL._AC_SX679_.jpg', icon: '🎸', category: 'おりぴ楽器' },
-    { title: 'アストロプロダクツ 充電式 グルーガン', url: 'https://amzn.to/4bnSVnP', image: 'https://m.media-amazon.com/images/I/61E4pp-RS5L._AC_SX679_.jpg', icon: '🛠️', category: 'おりぴ工具' },
-    { title: '下村企販 バナナスタンド', url: 'https://amzn.to/4rfif4a', image: 'https://m.media-amazon.com/images/I/41SLnhzQXVL._AC_SY879_.jpg', icon: '🍌', category: 'おりぴキッチン' },
-    { title: 'ブテナロック 足洗いソープ', url: 'https://amzn.to/4rVg8ni', image: 'https://m.media-amazon.com/images/I/51U5qFjDPOL._AC_SY879_.jpg', icon: '🧼', category: 'おりぴ生活' },
-    { title: 'Logicool G ゲーミングヘッドセット', url: 'https://amzn.to/46HYQS0', image: 'https://m.media-amazon.com/images/I/71QEWj+ioXS._AC_SX679_.jpg', icon: '🎧', category: 'おりぴPC' },
-    { title: '味の素 冷凍ギョーザ 1kg', url: 'https://amzn.to/4b9MxiU', image: 'https://m.media-amazon.com/images/I/81bIZEBVGqL._AC_SX1000_.jpg', icon: '🥟', category: 'おりぴ食品' },
-    { title: 'UGREEN USB-C ケーブル 2M', url: 'https://amzn.to/40ekjhW', image: 'https://m.media-amazon.com/images/I/61DgZxJhEZL._AC_SY879_.jpg', icon: '🔌', category: 'おりぴPC' },
-    { title: 'LISEN USB-C ケーブル 2M', url: 'https://amzn.to/4aQsQO4', image: 'https://m.media-amazon.com/images/I/81eeRU5gwtL._AC_SX679_.jpg', icon: '🔌', category: 'おりぴPC' },
-    { title: 'Shark 自動ゴミ収集掃除機', url: 'https://amzn.to/4bgVp6q', image: 'https://m.media-amazon.com/images/I/51F7qXg9W+L._AC_SX679_.jpg', icon: '🧹', category: 'おりぴ家電' },
-    { title: 'SONY 65インチ 4Kブラビア', url: 'https://amzn.to/3N15HiU', image: 'https://m.media-amazon.com/images/I/61N0XNFinyL._AC_SY879_.jpg', icon: '📺', category: 'おりぴ家電' },
-    { title: 'by Amazon エナジードリンク', url: 'https://amzn.to/4rVsb47', image: 'https://m.media-amazon.com/images/I/81YLVVDtZRL._AC_SX679_.jpg', icon: '⚡', category: 'おりぴ飲物' }
-  ];
+const buildMoshimoRakutenSearchUrl = (keyword) => {
+  const targetUrl = `https://search.rakuten.co.jp/search/mall/${encodeURIComponent(keyword)}/`;
+  return `https://af.moshimo.com/af/c/click?a_id=${MOSHIMO_RAKUTEN_A_ID}&p_id=${MOSHIMO_RAKUTEN_P_ID}&pc_id=${MOSHIMO_RAKUTEN_PC_ID}&pl_id=${MOSHIMO_RAKUTEN_DOKODEMO_PL_ID}&url=${encodeURIComponent(targetUrl)}`;
+};
 
-  const [rec, setRec] = useState(() => RECOMMENDATIONS[Math.floor(Math.random() * RECOMMENDATIONS.length)]);
+const MOSHIMO_RAKUTEN_TOP_URL = `https://af.moshimo.com/af/c/click?a_id=${MOSHIMO_RAKUTEN_A_ID}&p_id=${MOSHIMO_RAKUTEN_P_ID}&pc_id=${MOSHIMO_RAKUTEN_PC_ID}&pl_id=${MOSHIMO_RAKUTEN_TEXT_PL_ID}`;
+
+const AdSenseBox = ({ slot, format = 'auto', affiliateType = null, tags = [], title = '', category = '' }) => {
   const [isAnimateHeart, setIsAnimateHeart] = useState(false);
+
+  // 🏷️ 記事のタグから楽天市場で検索しやすいキーワードを抽出するらび！
+  const cleanTags = (Array.isArray(tags) ? tags : [])
+    .map(t => String(t || '').trim())
+    .filter(t => t && !t.startsWith('_STAMP:') && !t.startsWith('comment:'))
+    .map(t => (t.startsWith('[L]') ? t.substring(3).trim() : t))
+    .filter(t => t.length >= 2 && t.length <= 16);
+
+  const primaryKeyword = cleanTags[0] || '';
+  const extraKeywords = cleanTags.slice(1, 3);
+  const isSidebar = String(slot || '').includes('sidebar');
 
   const handleSupport = () => {
     setIsAnimateHeart(true);
@@ -55,17 +55,28 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null }) => {
     return () => clearTimeout(timerId);
   }, []);
 
+  const impressionPlId = primaryKeyword ? MOSHIMO_RAKUTEN_DOKODEMO_PL_ID : MOSHIMO_RAKUTEN_TEXT_PL_ID;
+  const impressionUrl = `https://i.moshimo.com/af/i/impression?a_id=${MOSHIMO_RAKUTEN_A_ID}&p_id=${MOSHIMO_RAKUTEN_P_ID}&pc_id=${MOSHIMO_RAKUTEN_PC_ID}&pl_id=${impressionPlId}`;
+
   return (
-    <div className="adsense-container-wrapper">
+    <div className="adsense-container-wrapper" style={{ width: '100%' }}>
       <div className="ads-placeholder" style={{
-        background: 'linear-gradient(135deg, #fff5f7 0%, #ffffff 100%)',
-        border: '3px dashed #ec4899', borderRadius: '24px',
-        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-        padding: '28px', color: '#64748b', fontSize: '0.9rem',
-        boxShadow: '0 10px 40px rgba(236, 72, 153, 0.12)',
+        position: 'relative',
+        background: 'linear-gradient(135deg, #ffffff 0%, #fdf2f8 52%, #faf5ff 100%)',
+        border: '2px solid #fbcfe8',
+        borderRadius: '22px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: isSidebar ? '18px 14px' : '22px 20px',
+        color: '#475569',
+        fontSize: '0.9rem',
+        boxShadow: '0 8px 24px rgba(236, 72, 153, 0.08)',
         width: '100%',
-        height: '100%',
-        transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
+        boxSizing: 'border-box',
+        textAlign: 'center',
+        transition: 'all 0.25s ease'
       }}>
         {affiliateType === 'ofuse' ? (
           <div className="affiliate-content" style={{ position: 'relative', zIndex: 10 }}>
@@ -86,7 +97,7 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null }) => {
                 justifyContent: 'center',
                 transition: 'transform 0.2s ease',
                 WebkitTapHighlightColor: 'transparent',
-                marginTop: '12px' // Added to maintain similar spacing as original link
+                marginTop: '12px'
               }}
               onMouseDown={e => e.currentTarget.style.transform = 'scale(0.8)'}
               onMouseUp={e => e.currentTarget.style.transform = 'scale(1.1)'}
@@ -101,22 +112,131 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null }) => {
             </button>
           </div>
         ) : (
-          <div style={{ position: 'relative', zIndex: 10 }}>
-            <div style={{ fontSize: '1.5rem', marginBottom: '4px' }}>✨</div>
-            <div style={{ fontWeight: 'bold' }}>スポンサー枠</div>
-            <div style={{ fontSize: '0.75rem', opacity: 0.9, marginTop: '4px' }}>広場を一緒に盛り上げてくれる<br />スポンサーさんを募集中です！✨</div>
+          <div style={{ position: 'relative', zIndex: 10, width: '100%', maxWidth: '560px' }}>
+            <span style={{
+              position: 'absolute',
+              top: isSidebar ? '-8px' : '-10px',
+              right: isSidebar ? '-4px' : '-6px',
+              fontSize: '0.68rem',
+              fontWeight: '800',
+              color: '#9d174d',
+              background: '#fce7f3',
+              border: '1px solid #f9a8d4',
+              borderRadius: '999px',
+              padding: '1px 8px',
+              letterSpacing: '0.04em'
+            }}>
+              PR
+            </span>
+
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              fontSize: isSidebar ? '0.82rem' : '0.92rem',
+              fontWeight: '900',
+              color: '#be185d',
+              marginBottom: '6px'
+            }}>
+              <span>🛍️</span>
+              <span>
+                {primaryKeyword
+                  ? `「${primaryKeyword}」の関連グッズ・本をチェック！`
+                  : '話題のグッズ・ゲーム・本を楽天市場でチェック！'}
+              </span>
+            </div>
+
+            <p style={{
+              margin: '0 0 14px 0',
+              fontSize: isSidebar ? '0.76rem' : '0.83rem',
+              color: '#64748b',
+              lineHeight: '1.55',
+              fontWeight: '600'
+            }}>
+              {primaryKeyword
+                ? `いま話題の「${primaryKeyword}」関連アイテムを楽天市場で探せるよ🐰🥕`
+                : 'トレンドの推しグッズや新作ゲーム・コミックを楽天市場でのぞいてみようらび🐰🥕'}
+            </p>
+
+            <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '8px', alignItems: 'center' }}>
+              <a
+                href={primaryKeyword ? buildMoshimoRakutenSearchUrl(primaryKeyword) : MOSHIMO_RAKUTEN_TOP_URL}
+                target="_blank"
+                rel="nofollow sponsored noopener noreferrer"
+                referrerPolicy="no-referrer-when-downgrade"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '6px',
+                  padding: isSidebar ? '9px 16px' : '11px 24px',
+                  background: 'linear-gradient(135deg, #e11d48, #ec4899)',
+                  color: '#ffffff',
+                  borderWidth: '1.5px 1.5px 4px 1.5px',
+                  borderStyle: 'solid',
+                  borderColor: '#f43f5e #f43f5e #9f1239 #f43f5e',
+                  borderRadius: '999px',
+                  textDecoration: 'none',
+                  fontWeight: '900',
+                  fontSize: isSidebar ? '0.82rem' : '0.92rem',
+                  boxShadow: '0 4px 14px rgba(225, 29, 72, 0.24)',
+                  transition: 'transform 0.18s ease, box-shadow 0.18s ease'
+                }}
+                onMouseOver={e => {
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 7px 18px rgba(225, 29, 72, 0.32)';
+                }}
+                onMouseOut={e => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 4px 14px rgba(225, 29, 72, 0.24)';
+                }}
+              >
+                <span>🛒</span>
+                <span>{primaryKeyword ? `楽天市場で「${primaryKeyword}」を探す ✨` : '楽天市場で人気アイテムを見る ✨'}</span>
+              </a>
+
+              {!isSidebar && extraKeywords.map((kw, i) => (
+                <a
+                  key={i}
+                  href={buildMoshimoRakutenSearchUrl(kw)}
+                  target="_blank"
+                  rel="nofollow sponsored noopener noreferrer"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    padding: '8px 14px',
+                    background: 'linear-gradient(180deg, #ffffff 0%, #faf5ff 100%)',
+                    color: '#6d28d9',
+                    borderWidth: '1.5px 1.5px 3px 1.5px',
+                    borderStyle: 'solid',
+                    borderColor: '#ddd6fe #ddd6fe #a78bfa #ddd6fe',
+                    borderRadius: '999px',
+                    textDecoration: 'none',
+                    fontWeight: '800',
+                    fontSize: '0.8rem',
+                    transition: 'transform 0.18s ease'
+                  }}
+                  onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-1px)'; }}
+                  onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; }}
+                >
+                  🔍 #{kw}
+                </a>
+              ))}
+            </div>
+
+            <img
+              src={impressionUrl}
+              width="1"
+              height="1"
+              alt=""
+              style={{ border: 'none', position: 'absolute', opacity: 0, pointerEvents: 'none' }}
+              loading="lazy"
+            />
           </div>
         )}
       </div>
-      {/* AdSense審査が通るまでは、空白の枠が表示されないようにコメントアウトしておきます */}
-      {/* 
-      <ins className="adsbygoogle"
-        style={{ display: 'block', width: '100%' }}
-        data-ad-client="ca-pub-9429738476925701"
-        data-ad-slot={slot}
-        data-ad-format={format}
-        data-full-width-responsive="true"></ins>
-      */}
     </div>
   );
 };

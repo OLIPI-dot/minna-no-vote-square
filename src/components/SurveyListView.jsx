@@ -371,8 +371,12 @@ const SurveyListView = ({
           <button
             key={cat}
             style={{
-              background: filterCategory === cat ? (CATEGORY_ICON_STYLE[cat]?.color || '#8b5cf6') : 'white',
-              border: filterCategory === cat ? 'none' : '1px solid #e2e8f0',
+              background: filterCategory === cat
+                ? (cat === 'すべて'
+                  ? 'linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)'
+                  : (CATEGORY_ICON_STYLE[cat]?.color || '#8b5cf6'))
+                : 'linear-gradient(180deg, #ffffff 0%, #faf5ff 100%)',
+              border: filterCategory === cat ? 'none' : '1.5px solid #e9d5ff',
               padding: filterCategory === cat ? '12px 24px' : '10px 20px',
               minWidth: 'max-content', flexShrink: 0,
               display: 'flex', flexDirection: 'column', alignItems: 'center',
@@ -380,9 +384,11 @@ const SurveyListView = ({
               cursor: 'pointer', fontFamily: 'inherit',
               fontSize: filterCategory === cat ? '1rem' : '0.85rem',
               fontWeight: filterCategory === cat ? '900' : '700',
-              color: filterCategory === cat ? '#fff' : '#64748b',
+              color: filterCategory === cat ? '#fff' : '#5b21b6',
               transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
-              boxShadow: filterCategory === cat ? `0 10px 25px ${(CATEGORY_ICON_STYLE[cat]?.color || '#8b5cf6')}44` : 'none',
+              boxShadow: filterCategory === cat
+                ? (cat === 'すべて' ? '0 8px 20px rgba(139, 92, 246, 0.28)' : `0 10px 25px ${(CATEGORY_ICON_STYLE[cat]?.color || '#8b5cf6')}44`)
+                : '0 2px 6px rgba(139, 92, 246, 0.06)',
               transform: filterCategory === cat ? 'scale(1.05)' : 'scale(1)',
               whiteSpace: 'nowrap', scrollSnapAlign: 'center'
             }}
@@ -461,10 +467,12 @@ const SurveyListView = ({
               fontWeight: '900',
               whiteSpace: 'nowrap',
               transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-              background: filterTag === tag ? 'linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%)' : '#fff',
-              color: filterTag === tag ? '#fff' : '#64748b',
-              border: filterTag === tag ? 'none' : '1.5px solid #e2e8f0',
-              boxShadow: filterTag === tag ? '0 4px 12px rgba(76, 29, 149, 0.25)' : 'none',
+              background: filterTag === tag ? 'linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)' : 'linear-gradient(180deg, #ffffff 0%, #f5f3ff 100%)',
+              color: filterTag === tag ? '#fff' : '#6d28d9',
+              borderWidth: filterTag === tag ? '0px' : '1.5px 1.5px 3px 1.5px',
+              borderStyle: 'solid',
+              borderColor: filterTag === tag ? 'transparent' : '#ddd6fe #ddd6fe #c4b5fd #ddd6fe',
+              boxShadow: filterTag === tag ? '0 4px 12px rgba(139, 92, 246, 0.28)' : '0 2px 6px rgba(124, 58, 237, 0.08)',
               transform: filterTag === tag ? 'scale(1.05)' : 'scale(1)',
               scrollSnapAlign: 'start',
               flex: '0 0 auto'

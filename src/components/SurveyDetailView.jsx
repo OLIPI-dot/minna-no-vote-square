@@ -1809,9 +1809,15 @@ const SurveyDetailView = ({
         </div>
       </div>
 
-      {/* 🥕 広告/レコメンドエリア (らび＆おりぴ応援コーナー) */}
+      {/* 🥕 広告/レコメンドエリア (楽天市場・記事連動アフィリエイト) */}
       <div style={{ marginTop: '16px', marginBottom: '0px' }}>
-        <AdSenseBox slot="survey_detail_middle" affiliateType="amazon" />
+        <AdSenseBox
+          slot="survey_detail_middle"
+          affiliateType="rakuten"
+          tags={currentSurvey.tags}
+          title={titlePart}
+          category={currentSurvey.category}
+        />
       </div>
 
 {/* 🔥 関連アンケートセクション (回遊性アップ！) */}
