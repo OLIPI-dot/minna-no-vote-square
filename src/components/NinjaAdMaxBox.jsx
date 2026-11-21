@@ -262,10 +262,10 @@ const NinjaAdMaxBox = ({ slotId = 'sidebar', variant = 'sidebar' }) => {
                   marginTop: '2px'
                 }}
               >
-                <span>🗳️ -</span>
-                <span>👁️ -</span>
-                <span>👍 -</span>
-                <span>💬 1</span>
+                <span>🗳️ 9999</span>
+                <span>👁️ 99999</span>
+                <span>👍 7777</span>
+                <span>💬 777</span>
               </div>
             </div>
           </div>
