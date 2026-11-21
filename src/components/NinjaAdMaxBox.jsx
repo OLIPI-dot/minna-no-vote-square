@@ -120,32 +120,54 @@ const NinjaAdMaxBox = ({ slotId = 'sidebar', variant = 'sidebar' }) => {
             }}
           >
             {/* 📺 左側：記事サムネと同じ162px幅に揃えてタイトル開始位置をピタッと一致させる (スマホは原寸中央) */}
-            <div
-              className="rabi-admax-thumb-box"
-              style={{
-                flex: '0 0 auto',
-                width: '162px',
-                height: '135px',
-                overflow: 'hidden',
-                borderRadius: '10px',
-                border: '1px solid #e2e8f0',
-                background: '#f8fafc',
-                position: 'relative'
-              }}
-            >
+            <div style={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px' }}>
               <div
-                className="rabi-admax-scale-wrap"
+                className="rabi-admax-thumb-box"
                 style={{
-                  width: '300px',
-                  height: '250px',
-                  transform: 'scale(0.54)',
-                  transformOrigin: 'top left'
+                  width: '162px',
+                  height: '135px',
+                  overflow: 'hidden',
+                  borderRadius: '10px',
+                  border: '1px solid #e2e8f0',
+                  background: '#f8fafc',
+                  position: 'relative'
                 }}
               >
                 <div
-                  id={containerId}
-                  style={{ display: 'inline-block', width: '300px', height: '250px' }}
-                />
+                  className="rabi-admax-scale-wrap"
+                  style={{
+                    width: '300px',
+                    height: '250px',
+                    transform: 'scale(0.54)',
+                    transformOrigin: 'top left'
+                  }}
+                >
+                  <div
+                    id={containerId}
+                    style={{ display: 'inline-block', width: '300px', height: '250px' }}
+                  />
+                </div>
+              </div>
+              {/* 💬 広告本体に被らない位置に、記事カード風の擬似ネット民反応ピルをそっと配置 */}
+              <div
+                style={{
+                  width: '100%',
+                  maxWidth: '162px',
+                  background: 'rgba(15, 23, 42, 0.84)',
+                  color: '#ffffff',
+                  fontSize: '0.68rem',
+                  fontWeight: '800',
+                  padding: '3px 9px',
+                  borderRadius: '999px',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  textAlign: 'center',
+                  boxSizing: 'border-box',
+                  boxShadow: '0 2px 6px rgba(15, 23, 42, 0.16)'
+                }}
+              >
+                💬 これちょっと気になる…
               </div>
             </div>
 
@@ -226,6 +248,24 @@ const NinjaAdMaxBox = ({ slotId = 'sidebar', variant = 'sidebar' }) => {
                 >
                   🐰 広場応援
                 </span>
+              </div>
+
+              {/* 📊 記事カードとお揃いのミニステータス装飾行 */}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  fontSize: '0.78rem',
+                  fontWeight: '700',
+                  color: '#64748b',
+                  marginTop: '2px'
+                }}
+              >
+                <span>🗳️ -</span>
+                <span>👁️ -</span>
+                <span>👍 -</span>
+                <span>💬 1</span>
               </div>
             </div>
           </div>
