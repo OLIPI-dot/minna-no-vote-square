@@ -11,6 +11,12 @@ const NinjaAdMaxBox = () => {
     loadedRef.current = true;
 
     // 🥷 忍者AdMax公式スクリプト (s.js) をReact SPAでもdocument.writeなしで安全に描画するらび！
+    // 掲載確認用エンドポイント (/s/TAG_ID) にも正規のリファラ付きでアクセス通知を送る
+    fetch(`https://adm.shinobi.jp/s/${ADMAX_TAG_ID}`, {
+      mode: 'no-cors',
+      referrerPolicy: 'no-referrer-when-downgrade'
+    }).catch(() => {});
+
     window.admaxbanner = {
       admax_id: ADMAX_CONTAINER_ID,
       tag_id: ADMAX_TAG_ID,
