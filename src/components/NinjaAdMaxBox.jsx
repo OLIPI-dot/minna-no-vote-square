@@ -68,7 +68,7 @@ const NinjaAdMaxBox = ({ slotId = 'sidebar', variant = 'sidebar' }) => {
         className="rabi-recommend-wrapper"
         style={{
           width: '100%',
-          margin: '16px 0',
+          margin: '0',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center'
@@ -78,28 +78,29 @@ const NinjaAdMaxBox = ({ slotId = 'sidebar', variant = 'sidebar' }) => {
           className="rabi-recommend-card"
           style={{
             position: 'relative',
-            background: 'linear-gradient(135deg, #ffffff 0%, #faf5ff 52%, #fdf2f8 100%)',
-            border: '2px solid #e9d5ff',
-            borderRadius: '22px',
-            padding: '16px 18px',
-            boxShadow: '0 8px 24px rgba(139, 92, 246, 0.08)',
+            background: '#ffffff',
+            border: '1px solid #e9d5ff',
+            borderRadius: '12px',
+            padding: '14px 16px',
+            boxShadow: '0 2px 8px rgba(15, 23, 42, 0.03)',
             width: '100%',
             boxSizing: 'border-box',
-            overflow: 'hidden'
+            overflow: 'hidden',
+            transition: 'all 0.25s ease'
           }}
         >
           <span
             style={{
               position: 'absolute',
-              top: '10px',
+              top: '12px',
               right: '14px',
               fontSize: '0.68rem',
-              fontWeight: '900',
-              color: '#6d28d9',
-              background: '#f3e8ff',
-              border: '1px solid #d8b4fe',
-              borderRadius: '999px',
-              padding: '2px 9px',
+              fontWeight: '800',
+              color: '#94a3b8',
+              background: '#f8fafc',
+              border: '1px solid #e2e8f0',
+              borderRadius: '6px',
+              padding: '1px 7px',
               letterSpacing: '0.04em',
               zIndex: 11
             }}
@@ -112,36 +113,43 @@ const NinjaAdMaxBox = ({ slotId = 'sidebar', variant = 'sidebar' }) => {
             style={{
               display: 'flex',
               flexDirection: 'row',
-              alignItems: 'center',
-              gap: '18px',
+              alignItems: 'flex-start',
+              gap: '16px',
               width: '100%',
               textAlign: 'left'
             }}
           >
-            {/* 📺 左側：300x250 スポンサー広告フレーム */}
+            {/* 📺 左側：記事サムネに馴染むコンパクト表示 (PCは76%スケールで高さスッキリ、スマホは原寸中央) */}
             <div
+              className="rabi-admax-thumb-box"
               style={{
                 flex: '0 0 auto',
-                width: '300px',
-                maxWidth: '100%',
-                minHeight: '250px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
+                width: '228px',
+                height: '190px',
                 overflow: 'hidden',
-                borderRadius: '14px',
-                border: '1.5px solid #e9d5ff',
-                background: '#ffffff',
-                boxShadow: '0 3px 10px rgba(139, 92, 246, 0.08)'
+                borderRadius: '10px',
+                border: '1px solid #e2e8f0',
+                background: '#f8fafc',
+                position: 'relative'
               }}
             >
               <div
-                id={containerId}
-                style={{ display: 'inline-block', width: '300px', height: '250px' }}
-              />
+                className="rabi-admax-scale-wrap"
+                style={{
+                  width: '300px',
+                  height: '250px',
+                  transform: 'scale(0.76)',
+                  transformOrigin: 'top left'
+                }}
+              >
+                <div
+                  id={containerId}
+                  style={{ display: 'inline-block', width: '300px', height: '250px' }}
+                />
+              </div>
             </div>
 
-            {/* 📝 右側：記事カード風の案内エリア */}
+            {/* 📝 右側：記事カード(.survey-item-card)と完全にお揃いのレイアウト */}
             <div
               className="rabi-admax-infeed-info"
               style={{
@@ -149,81 +157,88 @@ const NinjaAdMaxBox = ({ slotId = 'sidebar', variant = 'sidebar' }) => {
                 minWidth: 0,
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '10px'
+                gap: '8px',
+                paddingTop: '2px'
               }}
             >
               <div
                 style={{
+                  fontSize: '0.98rem',
+                  fontWeight: '800',
+                  color: '#0f172a',
+                  lineHeight: '1.45',
+                  paddingRight: '42px',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '8px',
-                  paddingRight: '38px'
+                  gap: '7px'
                 }}
               >
                 <img
                   src="/favicon-144x144.png"
                   alt="らびたん"
                   style={{
-                    width: '28px',
-                    height: '28px',
+                    width: '22px',
+                    height: '22px',
                     borderRadius: '50%',
-                    border: '2px solid #f472b6',
+                    border: '1.5px solid #f472b6',
                     objectFit: 'cover',
                     background: '#fff',
                     flexShrink: 0
                   }}
                 />
-                <span
-                  style={{
-                    fontSize: '0.96rem',
-                    fontWeight: '900',
-                    color: '#4c1d95',
-                    lineHeight: '1.4'
-                  }}
-                >
-                  スポンサーからのピックアップ ✨
-                </span>
+                <span>スポンサーからのピックアップ情報</span>
               </div>
 
               <div
                 style={{
-                  background: 'linear-gradient(135deg, #fffbeb 0%, #fdf2f8 100%)',
-                  border: '1px solid #fde68a',
-                  borderRadius: '12px',
-                  padding: '9px 12px',
-                  fontSize: '0.82rem',
-                  lineHeight: '1.55',
-                  color: '#475569',
+                  background: 'linear-gradient(90deg, #faf5ff 0%, #fdf2f8 60%, #fffbeb 100%)',
+                  border: '1px solid #e9d5ff',
+                  borderRadius: '8px',
+                  padding: '6px 10px',
+                  fontSize: '0.78rem',
+                  lineHeight: '1.5',
+                  color: '#334155',
                   fontWeight: '600'
                 }}
               >
-                <span style={{ color: '#be185d', fontWeight: '900' }}>💡 らびたんより</span>{' '}
+                <span style={{ color: '#5b21b6', fontWeight: '800', marginRight: '4px' }}>💡 らびたんより</span>
                 いつも「みんアケ」に遊びにきてくれてありがとうらび！気になったものがあれば、ぜひチェックしてみてね🥕
+                <span style={{ color: '#7c3aed', fontWeight: '800', marginLeft: '3px' }}>▸</span>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '6px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '6px', marginTop: '2px' }}>
                 <span
                   style={{
-                    fontSize: '0.72rem',
+                    fontSize: '0.7rem',
                     fontWeight: '800',
-                    color: '#6d28d9',
-                    background: '#f5f3ff',
-                    border: '1px solid #ddd6fe',
-                    padding: '3px 10px',
+                    color: '#ffffff',
+                    background: 'linear-gradient(135deg, #ec4899, #f43f5e)',
+                    padding: '2px 8px',
                     borderRadius: '999px'
                   }}
                 >
-                  📢 スポンサー枠
+                  PR
                 </span>
                 <span
                   style={{
                     fontSize: '0.72rem',
-                    fontWeight: '800',
-                    color: '#be185d',
-                    background: '#fdf2f8',
-                    border: '1px solid #fbcfe8',
-                    padding: '3px 10px',
-                    borderRadius: '999px'
+                    fontWeight: '700',
+                    color: '#15803d',
+                    background: '#dcfce7',
+                    padding: '2px 8px',
+                    borderRadius: '6px'
+                  }}
+                >
+                  スポンサー
+                </span>
+                <span
+                  style={{
+                    fontSize: '0.72rem',
+                    fontWeight: '700',
+                    color: '#0369a1',
+                    background: '#e0f2fe',
+                    padding: '2px 8px',
+                    borderRadius: '6px'
                   }}
                 >
                   🐰 広場応援
@@ -238,6 +253,14 @@ const NinjaAdMaxBox = ({ slotId = 'sidebar', variant = 'sidebar' }) => {
                 flex-direction: column !important;
                 align-items: center !important;
                 gap: 12px !important;
+              }
+              .rabi-admax-thumb-box {
+                width: 300px !important;
+                max-width: 100% !important;
+                height: 250px !important;
+              }
+              .rabi-admax-scale-wrap {
+                transform: none !important;
               }
               .rabi-admax-infeed-info {
                 width: 100% !important;
