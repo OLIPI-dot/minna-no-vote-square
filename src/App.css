@@ -365,27 +365,37 @@ body {
 }
 
 .create-new-button {
-  display: block !important;
-  width: 100% !important;
-  background: var(--accent-gradient) !important;
-  color: #ffffff !important;
-  border: none !important;
-  padding: 18px !important;
-  border-radius: 20px !important;
-  font-size: 1.15rem !important;
-  font-weight: 900 !important;
-  cursor: pointer !important;
-  margin-top: 10px !important;
-  margin-bottom: 25px !important;
-  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.25) !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  background: linear-gradient(135deg, #7c3aed 0%, #a855f7 52%, #ec4899 100%);
+  color: #ffffff;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-bottom: 1px solid #581c87;
+  padding: 16px 20px;
+  border-radius: 999px;
+  font-size: 1.12rem;
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  margin-top: 10px;
+  margin-bottom: 28px;
+  box-shadow: 0 6px 0 #4c1d95, 0 10px 22px rgba(124, 58, 237, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  transition: transform 0.14s ease, box-shadow 0.14s ease, filter 0.14s ease;
+  text-shadow: 0 1px 3px rgba(76, 29, 149, 0.35);
 }
 
 .create-new-button:hover {
-  transform: translateY(-3px) scale(1.01);
-  box-shadow: 0 12px 35px rgba(99, 102, 241, 0.35) !important;
-  filter: brightness(1.1);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 0 #4c1d95, 0 14px 26px rgba(168, 85, 247, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  filter: brightness(1.05);
+}
+
+.create-new-button:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 #4c1d95, 0 4px 10px rgba(124, 58, 237, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 .search-container {
