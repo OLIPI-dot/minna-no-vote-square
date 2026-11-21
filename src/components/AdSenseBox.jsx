@@ -224,15 +224,26 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null, tags = [], ti
               PR
             </span>
 
-            <div className="rabi-infeed-wrap" style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '10px',
-              width: '100%',
-              textAlign: 'left',
-              position: 'relative',
-              zIndex: 10
-            }}>
+            <a
+              href={primaryKeyword ? buildMoshimoRakutenSearchUrl(primaryKeyword) : MOSHIMO_RAKUTEN_TOP_URL}
+              target="_blank"
+              rel="nofollow sponsored noopener noreferrer"
+              referrerPolicy="no-referrer-when-downgrade"
+              aria-label="楽天市場で関連アイテムをチェック"
+              className="rabi-infeed-wrap"
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '10px',
+                width: '100%',
+                textAlign: 'left',
+                textDecoration: 'none',
+                color: 'inherit',
+                cursor: 'pointer',
+                position: 'relative',
+                zIndex: 10
+              }}
+            >
               <div className="rabi-infeed-top" style={{
                 display: 'flex',
                 flexDirection: 'row',
@@ -241,12 +252,7 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null, tags = [], ti
                 width: '100%'
               }}>
                 {/* 📸 左サムネイル（スマホでも記事カードと同じ左配置！） */}
-                <a
-                  href={primaryKeyword ? buildMoshimoRakutenSearchUrl(primaryKeyword) : MOSHIMO_RAKUTEN_TOP_URL}
-                  target="_blank"
-                  rel="nofollow sponsored noopener noreferrer"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  aria-label="楽天市場で関連アイテムをチェック"
+                <div
                   className="rabi-infeed-thumb"
                   style={{
                     position: 'relative',
@@ -260,8 +266,7 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null, tags = [], ti
                     boxShadow: '0 4px 12px rgba(236, 72, 153, 0.12)',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center',
-                    textDecoration: 'none'
+                    justifyContent: 'center'
                   }}
                 >
                   <span style={{
@@ -312,89 +317,71 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null, tags = [], ti
                   }}>
                     💬 {primaryKeyword ? `${primaryKeyword}…` : '推しグッズ…'}
                   </span>
-                </a>
+                </div>
 
-                {/* 📝 右側：タイトル＋ボタン */}
-                <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  <a
-                    href={primaryKeyword ? buildMoshimoRakutenSearchUrl(primaryKeyword) : MOSHIMO_RAKUTEN_TOP_URL}
-                    target="_blank"
-                    rel="nofollow sponsored noopener noreferrer"
-                    referrerPolicy="no-referrer-when-downgrade"
+                {/* 📝 右側：他の記事と同じ構成（タイトル＋バッジ＋ステータス行） */}
+                <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '7px' }}>
+                  <div
                     className="rabi-infeed-title"
                     style={{
                       fontSize: '0.96rem',
                       fontWeight: '900',
                       color: '#1e293b',
                       lineHeight: '1.4',
-                      textDecoration: 'none',
-                      paddingRight: '38px',
-                      display: 'block'
+                      paddingRight: '38px'
                     }}
                   >
                     {primaryKeyword
                       ? `「${primaryKeyword}」の関連グッズ・本を楽天市場でチェック！`
                       : 'いま話題の推しグッズ・新作ゲーム・コミックを楽天市場でチェック！'}
-                  </a>
+                  </div>
 
                   <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '6px' }}>
-                    <a
-                      href={primaryKeyword ? buildMoshimoRakutenSearchUrl(primaryKeyword) : MOSHIMO_RAKUTEN_TOP_URL}
-                      target="_blank"
-                      rel="nofollow sponsored noopener noreferrer"
-                      referrerPolicy="no-referrer-when-downgrade"
-                      style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '5px',
-                        padding: '6px 14px',
-                        background: 'linear-gradient(135deg, #e11d48, #ec4899)',
-                        color: '#ffffff',
-                        borderWidth: '1.5px 1.5px 3px 1.5px',
-                        borderStyle: 'solid',
-                        borderColor: '#f43f5e #f43f5e #9f1239 #f43f5e',
-                        borderRadius: '999px',
-                        textDecoration: 'none',
-                        fontWeight: '900',
-                        fontSize: '0.78rem',
-                        boxShadow: '0 3px 10px rgba(225, 29, 72, 0.22)',
-                        transition: 'transform 0.18s ease'
-                      }}
-                      onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-1px)'; }}
-                      onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; }}
-                    >
-                      <span>🛒</span>
-                      <span>{primaryKeyword ? `楽天で「${primaryKeyword}」を見る` : '楽天市場で見る ✨'}</span>
-                    </a>
-
+                    <span style={{
+                      fontSize: '0.7rem',
+                      fontWeight: '800',
+                      color: '#ffffff',
+                      background: 'linear-gradient(135deg, #ec4899, #f43f5e)',
+                      padding: '2px 8px',
+                      borderRadius: '999px'
+                    }}>
+                      PR
+                    </span>
+                    <span style={{
+                      fontSize: '0.72rem',
+                      fontWeight: '700',
+                      color: '#15803d',
+                      background: '#dcfce7',
+                      padding: '2px 8px',
+                      borderRadius: '6px'
+                    }}>
+                      🛍️ 楽天市場
+                    </span>
+                    <span style={{
+                      fontSize: '0.72rem',
+                      fontWeight: '700',
+                      color: '#0369a1',
+                      background: '#e0f2fe',
+                      padding: '2px 8px',
+                      borderRadius: '6px'
+                    }}>
+                      🐰 おすすめ
+                    </span>
                     {extraKeywords.map((kw, i) => (
-                      <a
+                      <span
                         key={i}
-                        href={buildMoshimoRakutenSearchUrl(kw)}
-                        target="_blank"
-                        rel="nofollow sponsored noopener noreferrer"
-                        referrerPolicy="no-referrer-when-downgrade"
                         style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '3px',
-                          padding: '5px 10px',
-                          background: 'linear-gradient(180deg, #ffffff 0%, #faf5ff 100%)',
+                          fontSize: '0.72rem',
+                          fontWeight: '700',
                           color: '#6d28d9',
-                          borderWidth: '1.5px 1.5px 3px 1.5px',
-                          borderStyle: 'solid',
-                          borderColor: '#ddd6fe #ddd6fe #a78bfa #ddd6fe',
-                          borderRadius: '999px',
-                          textDecoration: 'none',
-                          fontWeight: '800',
-                          fontSize: '0.74rem',
-                          transition: 'transform 0.18s ease'
+                          background: '#f5f3ff',
+                          border: '1px solid #ddd6fe',
+                          padding: '1px 8px',
+                          borderRadius: '6px'
                         }}
-                        onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-1px)'; }}
-                        onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; }}
                       >
-                        🔍 #{kw}
-                      </a>
+                        #{kw}
+                      </span>
                     ))}
                   </div>
 
@@ -432,7 +419,7 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null, tags = [], ti
                   ? `いま注目されている「${primaryKeyword}」の関連アイテムや売れ筋ランキングを楽天市場でサクッと探せるよ ▸`
                   : 'みんなが気になっているトレンドアイテムや人気ランキングを楽天市場でのぞいてみようらび ▸'}
               </div>
-            </div>
+            </a>
 
             <style>{`
               @media (max-width: 600px) {
