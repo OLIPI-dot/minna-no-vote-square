@@ -4,6 +4,7 @@ import BattleMiniGame from './BattleMiniGame';
 import RecommendedSection from './RecommendedSection';
 import TrendingHeadline from './TrendingHeadline';
 import CategoryEyecatch from './CategoryEyecatch';
+import NinjaAdMaxBox from './NinjaAdMaxBox';
 
 const SurveyListView = ({
   searchQuery, setSearchQuery,
@@ -1232,6 +1233,10 @@ const SurveyListView = ({
                         </div>
                       )}
                     </div>
+
+                    {idx === 4 && (
+                      <NinjaAdMaxBox slotId={`list_infeed_p${currentPage}`} variant="infeed" />
+                    )}
 
                     {(idx + 1) % 9 === 0 && (
                       <AdSenseBox slot={`list_feed_slot_${Math.floor(idx / 9)}`} affiliateType="amazon" />
