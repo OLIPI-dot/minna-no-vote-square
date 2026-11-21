@@ -113,19 +113,19 @@ const NinjaAdMaxBox = ({ slotId = 'sidebar', variant = 'sidebar' }) => {
             style={{
               display: 'flex',
               flexDirection: 'row',
-              alignItems: 'flex-start',
+              alignItems: 'center',
               gap: '16px',
               width: '100%',
               textAlign: 'left'
             }}
           >
-            {/* 📺 左側：記事サムネに馴染むコンパクト表示 (PCは76%スケールで高さスッキリ、スマホは原寸中央) */}
+            {/* 📺 左側：記事サムネと同じ162px幅に揃えてタイトル開始位置をピタッと一致させる (スマホは原寸中央) */}
             <div
               className="rabi-admax-thumb-box"
               style={{
                 flex: '0 0 auto',
-                width: '228px',
-                height: '190px',
+                width: '162px',
+                height: '135px',
                 overflow: 'hidden',
                 borderRadius: '10px',
                 border: '1px solid #e2e8f0',
@@ -138,7 +138,7 @@ const NinjaAdMaxBox = ({ slotId = 'sidebar', variant = 'sidebar' }) => {
                 style={{
                   width: '300px',
                   height: '250px',
-                  transform: 'scale(0.76)',
+                  transform: 'scale(0.54)',
                   transformOrigin: 'top left'
                 }}
               >
@@ -157,8 +157,7 @@ const NinjaAdMaxBox = ({ slotId = 'sidebar', variant = 'sidebar' }) => {
                 minWidth: 0,
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '8px',
-                paddingTop: '2px'
+                gap: '8px'
               }}
             >
               <div
@@ -167,26 +166,10 @@ const NinjaAdMaxBox = ({ slotId = 'sidebar', variant = 'sidebar' }) => {
                   fontWeight: '800',
                   color: '#0f172a',
                   lineHeight: '1.45',
-                  paddingRight: '42px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '7px'
+                  paddingRight: '42px'
                 }}
               >
-                <img
-                  src="/favicon-144x144.png"
-                  alt="らびたん"
-                  style={{
-                    width: '22px',
-                    height: '22px',
-                    borderRadius: '50%',
-                    border: '1.5px solid #f472b6',
-                    objectFit: 'cover',
-                    background: '#fff',
-                    flexShrink: 0
-                  }}
-                />
-                <span>スポンサーからのピックアップ情報</span>
+                スポンサーからのピックアップ情報
               </div>
 
               <div
