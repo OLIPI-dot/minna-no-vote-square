@@ -307,9 +307,51 @@ const SurveyListView = ({
       </div>
 
       <button
+        type="button"
         className="create-new-button"
         onClick={() => user ? setView('create') : alert("🌟 広場をもっと楽しもう！\n\nアンケートを作るには、ログインが必要だよ。上の「Googleでログイン」から、らびと一緒に始めよう！🐰🥕")}
-      >✏️ 新しいアンケートを作る</button>
+        style={{
+          background: 'linear-gradient(135deg, #7c3aed 0%, #a855f7 52%, #ec4899 100%)',
+          borderWidth: '2px 2px 5px 2px',
+          borderStyle: 'solid',
+          borderColor: '#c084fc #c084fc #5b21b6 #c084fc',
+          borderRadius: '999px',
+          boxShadow: '0 6px 18px rgba(124, 58, 237, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.35)',
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '8px',
+          fontWeight: '900',
+          letterSpacing: '0.03em',
+          transition: 'transform 0.16s ease, box-shadow 0.16s ease'
+        }}
+        onMouseOver={e => {
+          e.currentTarget.style.transform = 'translateY(-2px)';
+          e.currentTarget.style.boxShadow = '0 10px 24px rgba(168, 85, 247, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.45)';
+        }}
+        onMouseOut={e => {
+          e.currentTarget.style.transform = 'translateY(0)';
+          e.currentTarget.style.boxShadow = '0 6px 18px rgba(124, 58, 237, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.35)';
+        }}
+        onMouseDown={e => {
+          e.currentTarget.style.transform = 'translateY(2px)';
+          e.currentTarget.style.boxShadow = '0 2px 8px rgba(124, 58, 237, 0.22)';
+        }}
+        onMouseUp={e => {
+          e.currentTarget.style.transform = 'translateY(-2px)';
+        }}
+      >
+        <span>✏️</span>
+        <span>新しいアンケートを作る</span>
+        <span style={{
+          background: 'rgba(255, 255, 255, 0.22)',
+          border: '1px solid rgba(255, 255, 255, 0.45)',
+          borderRadius: '999px',
+          padding: '1px 8px',
+          fontSize: '0.78rem',
+          fontWeight: '900'
+        }}>＋</span>
+      </button>
 
       {!user && <SiteConceptSection totalVotes={totalVotes} onLogin={handleGoogleLogin} />}
 
