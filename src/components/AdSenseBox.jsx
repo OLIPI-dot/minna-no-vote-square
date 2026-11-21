@@ -408,10 +408,10 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null, tags = [], ti
                     color: '#64748b',
                     marginTop: '2px'
                   }}>
-                    <span>🗳️ 9999</span>
-                    <span>👁️ 99999</span>
-                    <span>👍 7777</span>
-                    <span>💬 777</span>
+                    <span>🗳️ 214</span>
+                    <span>👁️ 2,385</span>
+                    <span>👍 67</span>
+                    <span>💬 24</span>
                   </div>
                 </div>
               </div>
