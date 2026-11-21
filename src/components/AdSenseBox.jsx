@@ -397,6 +397,22 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null, tags = [], ti
                       </a>
                     ))}
                   </div>
+
+                  {/* 📊 記事カードとお揃いのミニステータス装飾行 */}
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    fontSize: '0.78rem',
+                    fontWeight: '700',
+                    color: '#64748b',
+                    marginTop: '2px'
+                  }}>
+                    <span>🗳️ 9999</span>
+                    <span>👁️ 99999</span>
+                    <span>👍 7777</span>
+                    <span>💬 777</span>
+                  </div>
                 </div>
               </div>
 
