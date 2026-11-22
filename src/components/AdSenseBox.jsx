@@ -5,16 +5,39 @@ const MOSHIMO_RAKUTEN_P_ID = '54';
 const MOSHIMO_RAKUTEN_PC_ID = '54';
 const MOSHIMO_RAKUTEN_DOKODEMO_PL_ID = '616';
 const MOSHIMO_RAKUTEN_TEXT_PL_ID = '621';
+const MOSHIMO_RAKUTEN_EASYLINK_PL_ID = '27059';
 
 const buildMoshimoRakutenSearchUrl = (keyword) => {
   const targetUrl = `https://search.rakuten.co.jp/search/mall/${encodeURIComponent(keyword)}/`;
   return `https://af.moshimo.com/af/c/click?a_id=${MOSHIMO_RAKUTEN_A_ID}&p_id=${MOSHIMO_RAKUTEN_P_ID}&pc_id=${MOSHIMO_RAKUTEN_PC_ID}&pl_id=${MOSHIMO_RAKUTEN_DOKODEMO_PL_ID}&url=${encodeURIComponent(targetUrl)}`;
 };
 
+const buildMoshimoRakutenItemUrl = (targetUrl) => {
+  return `https://af.moshimo.com/af/c/click?a_id=${MOSHIMO_RAKUTEN_A_ID}&p_id=${MOSHIMO_RAKUTEN_P_ID}&pc_id=${MOSHIMO_RAKUTEN_PC_ID}&pl_id=${MOSHIMO_RAKUTEN_EASYLINK_PL_ID}&url=${encodeURIComponent(targetUrl)}`;
+};
+
+// 🎁 かんたんリンク公式データ（増やすだけで自動でランダム表示されるらび！）
+const FEATURED_RAKUTEN_ITEMS = [
+  {
+    id: 'PY9l2',
+    title: '【送料無料】フルタ製菓 チョコエッグ キッズプラス にじさんじ第2弾 10個入BOX',
+    shortLabel: 'にじさんじ食玩',
+    badge: '送料無料',
+    imageUrl: 'https://thumbnail.image.rakuten.co.jp/@0_mall/dagasi/cabinet/09212374/12334395/imgrc0142652827.jpg',
+    targetUrl: 'https://item.rakuten.co.jp/dagasi/sm-4902501270240/',
+    rabiNote: 'にじさんじ第2弾のチョコエッグ10個BOX！送料無料でまとめ買いできるから、推しが出るかワクワクしながら開けられるらび ▸',
+    tags: ['にじさんじ', 'チョコエッグ']
+  }
+];
+
 const MOSHIMO_RAKUTEN_TOP_URL = `https://af.moshimo.com/af/c/click?a_id=${MOSHIMO_RAKUTEN_A_ID}&p_id=${MOSHIMO_RAKUTEN_P_ID}&pc_id=${MOSHIMO_RAKUTEN_PC_ID}&pl_id=${MOSHIMO_RAKUTEN_TEXT_PL_ID}`;
 
 const AdSenseBox = ({ slot, format = 'auto', affiliateType = null, tags = [], title = '', category = '' }) => {
   const [isAnimateHeart, setIsAnimateHeart] = useState(false);
+  const [featuredItem] = useState(() => {
+    const idx = Math.floor(Math.random() * FEATURED_RAKUTEN_ITEMS.length);
+    return FEATURED_RAKUTEN_ITEMS[idx];
+  });
 
   // 🏷️ 記事のタグから楽天市場で検索しやすいキーワードを抽出するらび！
   const cleanTags = (Array.isArray(tags) ? tags : [])
@@ -55,7 +78,10 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null, tags = [], ti
     return () => clearTimeout(timerId);
   }, []);
 
-  const impressionPlId = primaryKeyword ? MOSHIMO_RAKUTEN_DOKODEMO_PL_ID : MOSHIMO_RAKUTEN_TEXT_PL_ID;
+  const useFeaturedProduct = Boolean(featuredItem) && (isSidebar || !primaryKeyword);
+  const impressionPlId = useFeaturedProduct
+    ? MOSHIMO_RAKUTEN_EASYLINK_PL_ID
+    : (primaryKeyword ? MOSHIMO_RAKUTEN_DOKODEMO_PL_ID : MOSHIMO_RAKUTEN_TEXT_PL_ID);
   const impressionUrl = `https://i.moshimo.com/af/i/impression?a_id=${MOSHIMO_RAKUTEN_A_ID}&p_id=${MOSHIMO_RAKUTEN_P_ID}&pc_id=${MOSHIMO_RAKUTEN_PC_ID}&pl_id=${impressionPlId}`;
 
   return (
@@ -138,28 +164,62 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null, tags = [], ti
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '6px',
-                fontSize: '0.82rem',
+                fontSize: '0.8rem',
                 fontWeight: '900',
                 color: '#be185d',
-                marginBottom: '6px'
+                marginBottom: '10px'
               }}>
                 <span>🛍️</span>
-                <span>話題のグッズ・ゲーム・本を楽天市場でチェック！</span>
+                <span>らびたん注目アイテム！</span>
               </div>
 
+              {featuredItem && (
+                <a
+                  href={buildMoshimoRakutenItemUrl(featuredItem.targetUrl)}
+                  target="_blank"
+                  rel="nofollow sponsored noopener noreferrer"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  style={{
+                    display: 'block',
+                    width: '100%',
+                    background: '#ffffff',
+                    borderRadius: '14px',
+                    border: '1.5px solid #fbcfe8',
+                    padding: '10px',
+                    marginBottom: '10px',
+                    boxSizing: 'border-box',
+                    boxShadow: '0 4px 12px rgba(236, 72, 153, 0.08)'
+                  }}
+                >
+                  <img
+                    src={featuredItem.imageUrl}
+                    alt={featuredItem.title}
+                    loading="lazy"
+                    style={{
+                      width: '100%',
+                      maxHeight: '140px',
+                      objectFit: 'contain',
+                      display: 'block',
+                      margin: '0 auto',
+                      borderRadius: '8px'
+                    }}
+                  />
+                </a>
+              )}
+
               <p style={{
-                margin: '0 0 14px 0',
-                fontSize: '0.76rem',
-                color: '#64748b',
-                lineHeight: '1.55',
-                fontWeight: '600'
+                margin: '0 0 12px 0',
+                fontSize: '0.78rem',
+                color: '#334155',
+                lineHeight: '1.5',
+                fontWeight: '800'
               }}>
-                トレンドの推しグッズや新作ゲーム・コミックを楽天市場でのぞいてみようらび🐰🥕
+                {featuredItem ? featuredItem.title : 'トレンドの推しグッズや新作ゲーム・コミックを楽天市場でのぞいてみようらび🐰🥕'}
               </p>
 
               <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '8px', alignItems: 'center' }}>
                 <a
-                  href={MOSHIMO_RAKUTEN_TOP_URL}
+                  href={featuredItem ? buildMoshimoRakutenItemUrl(featuredItem.targetUrl) : MOSHIMO_RAKUTEN_TOP_URL}
                   target="_blank"
                   rel="nofollow sponsored noopener noreferrer"
                   referrerPolicy="no-referrer-when-downgrade"
@@ -191,7 +251,7 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null, tags = [], ti
                   }}
                 >
                   <span>🛒</span>
-                  <span>楽天市場で人気アイテムを見る ✨</span>
+                  <span>楽天市場で見る ✨</span>
                 </a>
               </div>
 
@@ -225,11 +285,13 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null, tags = [], ti
             </span>
 
             <a
-              href={primaryKeyword ? buildMoshimoRakutenSearchUrl(primaryKeyword) : MOSHIMO_RAKUTEN_TOP_URL}
+              href={useFeaturedProduct
+                ? buildMoshimoRakutenItemUrl(featuredItem.targetUrl)
+                : (primaryKeyword ? buildMoshimoRakutenSearchUrl(primaryKeyword) : MOSHIMO_RAKUTEN_TOP_URL)}
               target="_blank"
               rel="nofollow sponsored noopener noreferrer"
               referrerPolicy="no-referrer-when-downgrade"
-              aria-label="楽天市場で関連アイテムをチェック"
+              aria-label={useFeaturedProduct ? featuredItem.title : '楽天市場で関連アイテムをチェック'}
               className="rabi-infeed-wrap"
               style={{
                 display: 'flex',
@@ -261,62 +323,83 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null, tags = [], ti
                     height: '98px',
                     borderRadius: '14px',
                     overflow: 'hidden',
-                    background: 'linear-gradient(135deg, #fce7f3 0%, #ede9fe 52%, #e0f2fe 100%)',
+                    background: useFeaturedProduct
+                      ? '#ffffff'
+                      : 'linear-gradient(135deg, #fce7f3 0%, #ede9fe 52%, #e0f2fe 100%)',
                     border: '1.5px solid #f9a8d4',
                     boxShadow: '0 4px 12px rgba(236, 72, 153, 0.12)',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center'
+                    justifyContent: 'center',
+                    padding: useFeaturedProduct ? '4px' : '0',
+                    boxSizing: 'border-box'
                   }}
                 >
                   <span style={{
                     position: 'absolute',
-                    top: '6px',
-                    left: '6px',
+                    top: '5px',
+                    left: '5px',
                     background: 'rgba(255, 255, 255, 0.94)',
                     color: '#be185d',
-                    fontSize: '0.64rem',
+                    fontSize: '0.62rem',
                     fontWeight: '900',
                     padding: '2px 7px',
                     borderRadius: '999px',
-                    boxShadow: '0 2px 5px rgba(0, 0, 0, 0.08)'
+                    boxShadow: '0 2px 5px rgba(0, 0, 0, 0.08)',
+                    zIndex: 2
                   }}>
                     🛍️ 楽天市場
                   </span>
 
-                  <img
-                    src="/favicon-144x144.png"
-                    alt="らびたん"
-                    style={{
-                      width: '44px',
-                      height: '44px',
-                      borderRadius: '50%',
-                      border: '2px solid #f472b6',
-                      objectFit: 'cover',
-                      background: '#fff',
-                      boxShadow: '0 3px 10px rgba(236, 72, 153, 0.22)',
-                      marginBottom: '4px'
-                    }}
-                  />
+                  {useFeaturedProduct ? (
+                    <img
+                      src={featuredItem.imageUrl}
+                      alt={featuredItem.title}
+                      loading="lazy"
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'contain',
+                        display: 'block'
+                      }}
+                    />
+                  ) : (
+                    <>
+                      <img
+                        src="/favicon-144x144.png"
+                        alt="らびたん"
+                        style={{
+                          width: '44px',
+                          height: '44px',
+                          borderRadius: '50%',
+                          border: '2px solid #f472b6',
+                          objectFit: 'cover',
+                          background: '#fff',
+                          boxShadow: '0 3px 10px rgba(236, 72, 153, 0.22)',
+                          marginBottom: '4px'
+                        }}
+                      />
 
-                  <span style={{
-                    position: 'absolute',
-                    bottom: '6px',
-                    left: '6px',
-                    right: '6px',
-                    background: 'rgba(15, 23, 42, 0.72)',
-                    color: '#ffffff',
-                    fontSize: '0.64rem',
-                    fontWeight: '800',
-                    padding: '2px 6px',
-                    borderRadius: '999px',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    textAlign: 'center'
-                  }}>
-                    💬 {primaryKeyword ? `${primaryKeyword}…` : '推しグッズ…'}
-                  </span>
+                      <span style={{
+                        position: 'absolute',
+                        bottom: '6px',
+                        left: '6px',
+                        right: '6px',
+                        background: 'rgba(15, 23, 42, 0.72)',
+                        color: '#ffffff',
+                        fontSize: '0.64rem',
+                        fontWeight: '800',
+                        padding: '2px 6px',
+                        borderRadius: '999px',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        textAlign: 'center'
+                      }}>
+                        💬 {primaryKeyword ? `${primaryKeyword}…` : '推しグッズ…'}
+                      </span>
+                    </>
+                  )}
                 </div>
 
                 {/* 📝 右側：他の記事と同じ構成（タイトル＋バッジ＋ステータス行） */}
@@ -331,9 +414,11 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null, tags = [], ti
                       paddingRight: '38px'
                     }}
                   >
-                    {primaryKeyword
-                      ? `「${primaryKeyword}」の関連グッズ・本を楽天市場でチェック！`
-                      : 'いま話題の推しグッズ・新作ゲーム・コミックを楽天市場でチェック！'}
+                    {useFeaturedProduct
+                      ? featuredItem.title
+                      : (primaryKeyword
+                        ? `「${primaryKeyword}」の関連グッズ・本を楽天市場でチェック！`
+                        : 'いま話題の推しグッズ・新作ゲーム・コミックを楽天市場でチェック！')}
                   </div>
 
                   <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '6px' }}>
@@ -365,9 +450,9 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null, tags = [], ti
                       padding: '2px 8px',
                       borderRadius: '6px'
                     }}>
-                      🐰 おすすめ
+                      🐰 {useFeaturedProduct && featuredItem.badge ? featuredItem.badge : 'おすすめ'}
                     </span>
-                    {extraKeywords.map((kw, i) => (
+                    {(useFeaturedProduct ? featuredItem.tags : extraKeywords).map((kw, i) => (
                       <span
                         key={i}
                         style={{
@@ -415,9 +500,11 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null, tags = [], ti
                 fontWeight: '600'
               }}>
                 <span style={{ color: '#be185d', fontWeight: '900' }}>💡 らびたんおすすめ！</span>{' '}
-                {primaryKeyword
-                  ? `いま注目されている「${primaryKeyword}」の関連アイテムや売れ筋ランキングを楽天市場でサクッと探せるよ ▸`
-                  : 'みんなが気になっているトレンドアイテムや人気ランキングを楽天市場でのぞいてみようらび ▸'}
+                {useFeaturedProduct
+                  ? featuredItem.rabiNote
+                  : (primaryKeyword
+                    ? `いま注目されている「${primaryKeyword}」の関連アイテムや売れ筋ランキングを楽天市場でサクッと探せるよ ▸`
+                    : 'みんなが気になっているトレンドアイテムや人気ランキングを楽天市場でのぞいてみようらび ▸')}
               </div>
             </a>
 
