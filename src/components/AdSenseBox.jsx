@@ -217,6 +217,46 @@ const FEATURED_RAKUTEN_ITEMS = [
     targetUrl: 'https://item.rakuten.co.jp/xiaomiofficial/m59630/',
     rabiNote: 'スマホもノートPCも超速で充電できるXiaomiの165Wハイパワーモデル！USB-Cケーブル一体型でスマートに持ち歩けるらび ▸',
     tags: ['Xiaomi', '急速充電']
+  },
+  {
+    id: 'WeE4Z',
+    title: '花王 めぐりズム 蒸気めぐるアイマスク 完熟ゆずの香り 12枚×12個入り（1ケース）',
+    shortLabel: 'めぐりズム 完熟ゆず',
+    badge: 'まとめ買い',
+    imageUrl: 'https://thumbnail.image.rakuten.co.jp/@0_mall/fujiyaku/cabinet/newsletter/contents/12489540/4901301460639-12_20.jpg',
+    targetUrl: 'https://item.rakuten.co.jp/fujiyaku/4901301460639-12/',
+    rabiNote: 'スマホやPCで疲れた目元をじんわりほぐす完熟ゆずの香り！たっぷり使える1ケースまとめ買いで毎晩のごほうびタイムに最高らび ▸',
+    tags: ['めぐりズム', 'アイケア']
+  },
+  {
+    id: 'SBAUe',
+    title: 'めぐりズム 蒸気めぐるアイマスク アソート6個セット（送料無料・6種の香り）',
+    shortLabel: 'めぐりズム 6種セット',
+    badge: '送料無料',
+    imageUrl: 'https://thumbnail.image.rakuten.co.jp/@0_mall/pupuhima/cabinet/h408100026164.jpg',
+    targetUrl: 'https://item.rakuten.co.jp/pupuhima/h408100026164/',
+    rabiNote: '無香料・ラベンダー・ひのき・金木犀・森林浴・ゆずの6種類を楽しめるアソートセット！その日の気分で選べるのが嬉しいらび ▸',
+    tags: ['めぐりズム', 'リラックス']
+  },
+  {
+    id: 'pWpzo',
+    title: '花王 めぐりズム メディカルアイマスク 5枚入り',
+    shortLabel: 'めぐりズム メディカル',
+    badge: 'お試しサイズ',
+    imageUrl: 'https://thumbnail.image.rakuten.co.jp/@0_mall/welpark/cabinet/202610shouhin04/4901301444585a.jpg',
+    targetUrl: 'https://item.rakuten.co.jp/welpark/4901301444585/',
+    rabiNote: 'しっかり疲れ目をケアしたいときに頼れるメディカルアイマスク！5枚入りだから気軽に試せて旅行や出張にもぴったりらび ▸',
+    tags: ['めぐりズム', '疲れ目ケア']
+  },
+  {
+    id: 'L0RGu',
+    title: '【ふるさと納税】めぐりズム 蒸気めぐるアイマスク 無香料 12箱セット（計144枚）',
+    shortLabel: 'めぐりズム ふるさと納税',
+    badge: 'ふるさと納税',
+    imageUrl: 'https://thumbnail.image.rakuten.co.jp/@0_mall/f062049-sakata/cabinet/8932/8932-30011050_01-01.jpg',
+    targetUrl: 'https://item.rakuten.co.jp/f062049-sakata/8932-30011050/',
+    rabiNote: '山形県酒田市のふるさと納税でめぐりズム無香料がたっぷり144枚！勉強・デスクワーク・就寝前の定番アイテムをお得にゲットらび ▸',
+    tags: ['めぐりズム', 'ふるさと納税']
   }
 ];
 
