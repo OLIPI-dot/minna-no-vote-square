@@ -167,6 +167,56 @@ const FEATURED_RAKUTEN_ITEMS = [
     targetUrl: 'https://item.rakuten.co.jp/f132098-machida/202510011/',
     rabiNote: '高音質で人気のオーディオテクニカ上位モデルがふるさと納税で手に入る！音楽や配信をじっくり楽しみたい人におすすめらび ▸',
     tags: ['オーディオテクニカ', 'ふるさと納税']
+  },
+  {
+    id: 'zKY36',
+    title: 'UGREEN モバイルバッテリー 軽量・小型 10000mAh（PD20W急速充電・USB-C）',
+    shortLabel: 'UGREEN 10000mAh',
+    badge: 'PD20W急速充電',
+    imageUrl: 'https://thumbnail.image.rakuten.co.jp/@0_mall/ugreen-gear/cabinet/13868535/14253878/imgrc0156791044.jpg',
+    targetUrl: 'https://item.rakuten.co.jp/ugreen-gear/25185/',
+    rabiNote: 'コンパクトなのに10000mAh大容量＆2台同時充電できるUGREENの定番バッテリー！バッテリー残量表示つきで安心らび ▸',
+    tags: ['UGREEN', 'モバイルバッテリー']
+  },
+  {
+    id: 'wpLRZ',
+    title: 'Anker Nano Power Bank 5000mAh 小型モバイルバッテリー（端子一体型）',
+    shortLabel: 'Anker Nano',
+    badge: '端子一体型',
+    imageUrl: 'https://thumbnail.image.rakuten.co.jp/@0_mall/anker/cabinet/deal/2611m2/a1645_11m2.jpg',
+    targetUrl: 'https://item.rakuten.co.jp/anker/a1645/',
+    rabiNote: 'ケーブル不要でスマホにそのまま挿せる超コンパクトなAnker Nano！ポケットに入れてお出かけできる大人気モデルらび ▸',
+    tags: ['Anker', 'モバイルバッテリー']
+  },
+  {
+    id: 'txfju',
+    title: '【ふるさと納税】MOTTERU モバイルバッテリー 大容量20000mAh 軽量・急速充電',
+    shortLabel: 'MOTTERU 20000mAh',
+    badge: 'ふるさと納税',
+    imageUrl: 'https://thumbnail.image.rakuten.co.jp/@0_mall/f142158-ebina/cabinet/henreihin6/mot-mb20001_sku.jpg',
+    targetUrl: 'https://item.rakuten.co.jp/f142158-ebina/36-0033/',
+    rabiNote: 'かわいいカラーと軽さで人気のMOTTERU大容量20000mAhモデル！普段使いから防災・旅行まで頼もしい1台らび ▸',
+    tags: ['MOTTERU', 'ふるさと納税']
+  },
+  {
+    id: '5J4eR',
+    title: '大容量22000mAh モバイルバッテリー（ケーブル内蔵・5台同時充電・LED残量表示）',
+    shortLabel: '22000mAhバッテリー',
+    badge: 'ケーブル内蔵',
+    imageUrl: 'https://thumbnail.image.rakuten.co.jp/@0_mall/osshoten/cabinet/b18-90.jpg',
+    targetUrl: 'https://item.rakuten.co.jp/osshoten/cdb-006-black-sz-001/',
+    rabiNote: 'ケーブル内蔵＆最大5台同時充電できるコスパ抜群の22000mAh大容量バッテリー！LED残量表示も見やすいらび ▸',
+    tags: ['大容量バッテリー', 'ケーブル内蔵']
+  },
+  {
+    id: 'xkk6T',
+    title: 'Xiaomi 165W Power Bank 10000 モバイルバッテリー（USB-Cケーブル一体型）',
+    shortLabel: 'Xiaomi 165W',
+    badge: '最大出力165W',
+    imageUrl: 'https://thumbnail.image.rakuten.co.jp/@0_mall/xiaomiofficial/cabinet/11417570/11417576/16.jpg',
+    targetUrl: 'https://item.rakuten.co.jp/xiaomiofficial/m59630/',
+    rabiNote: 'スマホもノートPCも超速で充電できるXiaomiの165Wハイパワーモデル！USB-Cケーブル一体型でスマートに持ち歩けるらび ▸',
+    tags: ['Xiaomi', '急速充電']
   }
 ];
 
