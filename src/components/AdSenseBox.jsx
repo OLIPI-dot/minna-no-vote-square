@@ -37,6 +37,16 @@ const FEATURED_RAKUTEN_ITEMS = [
     targetUrl: 'https://item.rakuten.co.jp/uriurishop/4902370553024/',
     rabiNote: 'いま大注目のNintendo Switch 2（日本語・国内専用）！最新の在庫や価格を楽天市場でサクッとチェックしてみようらび ▸',
     tags: ['Switch2', '任天堂']
+  },
+  {
+    id: 'jwGOR',
+    title: 'ふんばるず ちいかわ ハチワレ うさぎ 姿勢矯正・猫背サポートぬいぐるみ',
+    shortLabel: 'ちいかわ ふんばるず',
+    badge: '大人気グッズ',
+    imageUrl: 'https://thumbnail.image.rakuten.co.jp/@0_mall/monotoki/cabinet/image2/100000342_1.jpg',
+    targetUrl: 'https://item.rakuten.co.jp/monotoki/100000342-core/',
+    rabiNote: '机とお腹のあいだに挟んで猫背を防いでくれる話題の「ふんばるず」！ちいかわ・ハチワレ・うさぎから選べてデスクワークのお供に最高らび ▸',
+    tags: ['ちいかわ', 'ふんばるず']
   }
 ];
 
