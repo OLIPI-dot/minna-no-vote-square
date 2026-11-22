@@ -27,15 +27,30 @@ const FEATURED_RAKUTEN_ITEMS = [
     targetUrl: 'https://item.rakuten.co.jp/dagasi/sm-4902501270240/',
     rabiNote: 'にじさんじ第2弾のチョコエッグ10個BOX！送料無料でまとめ買いできるから、推しが出るかワクワクしながら開けられるらび ▸',
     tags: ['にじさんじ', 'チョコエッグ']
+  },
+  {
+    id: '4Sid8',
+    title: '【新品】Nintendo Switch 2 日本語・国内専用 BEE-S-KB6CA',
+    shortLabel: 'Nintendo Switch 2',
+    badge: '注目ゲーム機',
+    imageUrl: 'https://thumbnail.image.rakuten.co.jp/@0_mall/uriurishop/cabinet/2/4902370553024.jpg',
+    targetUrl: 'https://item.rakuten.co.jp/uriurishop/4902370553024/',
+    rabiNote: 'いま大注目のNintendo Switch 2（日本語・国内専用）！最新の在庫や価格を楽天市場でサクッとチェックしてみようらび ▸',
+    tags: ['Switch2', '任天堂']
   }
 ];
 
 const MOSHIMO_RAKUTEN_TOP_URL = `https://af.moshimo.com/af/c/click?a_id=${MOSHIMO_RAKUTEN_A_ID}&p_id=${MOSHIMO_RAKUTEN_P_ID}&pc_id=${MOSHIMO_RAKUTEN_PC_ID}&pl_id=${MOSHIMO_RAKUTEN_TEXT_PL_ID}`;
 
+// 🎲 同じページ内でサイドバーと記事一覧が別々の商品になりやすいように基準値を1回だけ決めるらび
+const SESSION_RANDOM_SEED = Math.floor(Math.random() * 100);
+
 const AdSenseBox = ({ slot, format = 'auto', affiliateType = null, tags = [], title = '', category = '' }) => {
   const [isAnimateHeart, setIsAnimateHeart] = useState(false);
+  const isSidebarSlot = String(slot || '').includes('sidebar');
   const [featuredItem] = useState(() => {
-    const idx = Math.floor(Math.random() * FEATURED_RAKUTEN_ITEMS.length);
+    const offset = isSidebarSlot ? 1 : 0;
+    const idx = (SESSION_RANDOM_SEED + offset) % FEATURED_RAKUTEN_ITEMS.length;
     return FEATURED_RAKUTEN_ITEMS[idx];
   });
 
