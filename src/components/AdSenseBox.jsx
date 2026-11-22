@@ -137,6 +137,36 @@ const FEATURED_RAKUTEN_ITEMS = [
     targetUrl: 'https://item.rakuten.co.jp/kishi-gum/dicom21414/',
     rabiNote: 'お祭りやパーティー、お部屋の壁飾りにも楽しいちいかわお面6枚セット！みんなでワイワイ盛り上がれるらび ▸',
     tags: ['ちいかわ', 'お面']
+  },
+  {
+    id: 'qz2gk',
+    title: 'ソニー SONY フルワイヤレスイヤホン WF-C510BC（ブラック）',
+    shortLabel: 'SONY WF-C510',
+    badge: '人気ガジェット',
+    imageUrl: 'https://thumbnail.image.rakuten.co.jp/@0_mall/r-kojima/cabinet/n0000001212/4548736161429_1.jpg',
+    targetUrl: 'https://item.rakuten.co.jp/r-kojima/4548736161429/',
+    rabiNote: 'コンパクトで音質もバッチリなソニーの定番ワイヤレスイヤホン！通勤・通学や動画視聴のお供に大人気らび ▸',
+    tags: ['SONY', 'ワイヤレスイヤホン']
+  },
+  {
+    id: 'jhFiQ',
+    title: 'Anker Soundcore C50i オープンイヤー型ワイヤレスイヤホン（イヤーカフ・IP55防水）',
+    shortLabel: 'Anker Soundcore',
+    badge: '最大28時間再生',
+    imageUrl: 'https://thumbnail.image.rakuten.co.jp/@0_mall/anker/cabinet/tmb/d/d1101_normal.jpg',
+    targetUrl: 'https://item.rakuten.co.jp/anker/d1101/',
+    rabiNote: '耳をふさがず快適に聴けるAnkerのイヤーカフ型ワイヤレスイヤホン！IP55防水＆マルチポイント対応で便利すぎるらび ▸',
+    tags: ['Anker', 'イヤーカフ']
+  },
+  {
+    id: 'bIG8F',
+    title: '【ふるさと納税】オーディオテクニカ 完全ワイヤレスイヤホン ATH-TWX9MK2 BK',
+    shortLabel: 'オーテク ATH-TWX9MK2',
+    badge: 'ふるさと納税',
+    imageUrl: 'https://thumbnail.image.rakuten.co.jp/@0_mall/f132098-machida/cabinet/08437159/12502660/imgrc0082807194.jpg',
+    targetUrl: 'https://item.rakuten.co.jp/f132098-machida/202510011/',
+    rabiNote: '高音質で人気のオーディオテクニカ上位モデルがふるさと納税で手に入る！音楽や配信をじっくり楽しみたい人におすすめらび ▸',
+    tags: ['オーディオテクニカ', 'ふるさと納税']
   }
 ];
 
