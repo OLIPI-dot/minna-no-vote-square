@@ -47,6 +47,96 @@ const FEATURED_RAKUTEN_ITEMS = [
     targetUrl: 'https://item.rakuten.co.jp/monotoki/100000342-core/',
     rabiNote: '机とお腹のあいだに挟んで猫背を防いでくれる話題の「ふんばるず」！ちいかわ・ハチワレ・うさぎから選べてデスクワークのお供に最高らび ▸',
     tags: ['ちいかわ', 'ふんばるず']
+  },
+  {
+    id: 'D7rP9',
+    title: '【iFace公式】ちいかわ First Class iPhoneケース（耐衝撃ハード）',
+    shortLabel: 'ちいかわ iFace',
+    badge: '公式アイテム',
+    imageUrl: 'https://thumbnail.image.rakuten.co.jp/@0_mall/keitai/cabinet/item/41_7/41-9531.jpg',
+    targetUrl: 'https://item.rakuten.co.jp/keitai/41-9531/',
+    rabiNote: '定番人気のiFace公式ちいかわスマホケース！しっかり耐衝撃で持ちやすく、毎日ちいかわ達と一緒にいられるらび ▸',
+    tags: ['ちいかわ', 'iFace']
+  },
+  {
+    id: 'l1TmU',
+    title: 'ちいかわ 節分だ！！マスコット（ハチワレ・うさぎ 鬼コスチューム）',
+    shortLabel: 'ちいかわマスコット',
+    badge: '送料無料',
+    imageUrl: 'https://thumbnail.image.rakuten.co.jp/@0_mall/maisonmiracolo/cabinet/12803847/12803851/14092032/imgrc0121255949.jpg',
+    targetUrl: 'https://item.rakuten.co.jp/maisonmiracolo/ck_stb_y/',
+    rabiNote: '鬼コスチューム姿がかわいすぎる「節分だ！！」マスコット！バッグチャームやプレゼントにもぴったりらび ▸',
+    tags: ['ちいかわ', 'マスコット']
+  },
+  {
+    id: 'yqzFl',
+    title: 'ちいかわゴルフ ヘッドカバー FW ニット（2026モデル）',
+    shortLabel: 'ちいかわゴルフ',
+    badge: '2026モデル',
+    imageUrl: 'https://thumbnail.image.rakuten.co.jp/@0_mall/g-zone/cabinet/z6/301980251264-01.jpg',
+    targetUrl: 'https://item.rakuten.co.jp/g-zone/301980251264-01/',
+    rabiNote: 'ゴルフバッグが一気に華やかになるちいかわニットヘッドカバー！コースでもみんなの視線を集めちゃうらび ▸',
+    tags: ['ちいかわ', 'ゴルフ']
+  },
+  {
+    id: 'yffgY',
+    title: 'ちいかわ ハンドタオル・ウォッシュタオル（全28柄・綿100%）',
+    shortLabel: 'ちいかわタオル',
+    badge: '全28柄',
+    imageUrl: 'https://thumbnail.image.rakuten.co.jp/@0_mall/toshindai/cabinet/05389453/imgrc0095034366.jpg',
+    targetUrl: 'https://item.rakuten.co.jp/toshindai/1308/',
+    rabiNote: '綿100%で使いやすくて絵柄もたっぷり選べるちいかわハンドタオル！普段使いにもプチギフトにも大活躍らび ▸',
+    tags: ['ちいかわ', 'タオル']
+  },
+  {
+    id: 'ElUN3',
+    title: 'ちいかわ ジュエリーデコステッカー シール（ハチワレ・うさぎ・モモンガ）',
+    shortLabel: 'ちいかわデコシール',
+    badge: 'キラキラ仕様',
+    imageUrl: 'https://thumbnail.image.rakuten.co.jp/@0_mall/penport/cabinet/14/22914_1.jpg',
+    targetUrl: 'https://item.rakuten.co.jp/penport/22914/',
+    rabiNote: 'キラキラ可愛いジュエリーデコステッカー！スマホケースやノートを推しキャラで可愛くカスタムできるらび ▸',
+    tags: ['ちいかわ', 'シール']
+  },
+  {
+    id: '9lDd3',
+    title: 'ちいかわ ボンボンドロップシール ミニ（ぷっくり立体デコシール）',
+    shortLabel: 'ボンボンドロップシール',
+    badge: 'ぷっくり立体',
+    imageUrl: 'https://thumbnail.image.rakuten.co.jp/@0_mall/timekeeper/cabinet/26102906.jpg',
+    targetUrl: 'https://item.rakuten.co.jp/timekeeper/j4901770054162/',
+    rabiNote: 'つやつやぷっくり感がたまらないボンボンドロップシールのミニサイズ！手帳やスマホのワンポイントにぴったりらび ▸',
+    tags: ['ちいかわ', '立体シール']
+  },
+  {
+    id: '6ogZm',
+    title: 'VIAGE『ちいかわ』コレクション ビューティアップ ナイトブラ（楽天限定カラー）',
+    shortLabel: 'VIAGE×ちいかわ',
+    badge: '楽天限定カラー',
+    imageUrl: 'https://thumbnail.image.rakuten.co.jp/@0_mall/ho-br/cabinet/thumb/1342_c_260929.jpg',
+    targetUrl: 'https://item.rakuten.co.jp/ho-br/1342/',
+    rabiNote: '累計1,200万枚突破の人気ナイトブラVIAGEとちいかわのコラボ！楽天限定カラーのかわいいデザインをチェックらび ▸',
+    tags: ['ちいかわ', 'VIAGE']
+  },
+  {
+    id: 'JdXmV',
+    title: 'ちいかわ オイテミルライト シリコンルームライト（USB充電・送料無料）',
+    shortLabel: 'ちいかわルームライト',
+    badge: '送料無料',
+    imageUrl: 'https://thumbnail.image.rakuten.co.jp/@0_mall/e-kurashi/cabinet/main-img/020/main-r7o21_a.jpg',
+    targetUrl: 'https://item.rakuten.co.jp/e-kurashi/r7o21/',
+    rabiNote: 'ぷにっと優しいシリコン素材のちいかわルームライト！Type-C充電対応でお部屋や枕元をほっこり照らしてくれるらび ▸',
+    tags: ['ちいかわ', 'ルームライト']
+  },
+  {
+    id: 'A8c91',
+    title: 'キャラクター お面 ちいかわ（6枚セット）イベント・お祭り景品',
+    shortLabel: 'ちいかわお面',
+    badge: '6枚セット',
+    imageUrl: 'https://thumbnail.image.rakuten.co.jp/@0_mall/kishi-gum/cabinet/b_ec/branding6/dicom21414_01.jpg',
+    targetUrl: 'https://item.rakuten.co.jp/kishi-gum/dicom21414/',
+    rabiNote: 'お祭りやパーティー、お部屋の壁飾りにも楽しいちいかわお面6枚セット！みんなでワイワイ盛り上がれるらび ▸',
+    tags: ['ちいかわ', 'お面']
   }
 ];
 
