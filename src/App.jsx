@@ -310,8 +310,14 @@ function App() {
   const surveyFetchRequestIdRef = useRef(0); // 📋 一覧フェッチのリクエストID（古いレスポンスの競合上書き防止）
   const lastPopStateTimeRef = useRef(0); // 🛡️ popstate直後の誤爆クリック防止用タイムスタンプ
 
-  // 📡 リアルタイム人数 & 来場カウンター
+  // 📡 リアルタイム人数 & 来場カウンター & キリ番
   const getJstDateStr = (ms = Date.now()) => new Date(ms + 9 * 3600 * 1000).toISOString().slice(0, 10);
+  const isKiribanNumber = (n) => {
+    const num = Number(n) || 0;
+    if (num <= 0) return false;
+    if (num % 50 === 0) return true;
+    return num >= 111 && /^(\d)\1+$/.test(String(num));
+  };
   const parseSiteCounter = (rawName) => {
     if (!rawName || !String(rawName).startsWith('[[SITE_COUNTER:')) return null;
     try {
@@ -327,8 +333,13 @@ function App() {
   };
   const [globalOnlineCount, setGlobalOnlineCount] = useState(1);
   const [siteVisitorStats, setSiteVisitorStats] = useState(() => ({ today: 0, total: 0, date: getJstDateStr() }));
+  const [myKiribanHit, setMyKiribanHit] = useState(() => {
+    try { return Number(sessionStorage.getItem('min_ake_my_kiriban') || 0) || null; } catch { return null; }
+  });
   const siteCounterRowIdRef = useRef(null);
   const siteCounterIncrementQueueRef = useRef(Promise.resolve());
+  const addExpRef = useRef(null);
+  const addTicketsRef = useRef(null);
   const applyParsedSiteCounter = useCallback((parsed) => {
     if (!parsed) return;
     setSiteVisitorStats({
@@ -361,6 +372,28 @@ function App() {
 
         setSiteVisitorStats({ today: nextToday, total: nextTotal, date: todayJst });
 
+        if (isKiribanNumber(nextTotal)) {
+          setMyKiribanHit(nextTotal);
+          try {
+            sessionStorage.setItem('min_ake_my_kiriban', String(nextTotal));
+          } catch {}
+          try {
+            const rewardKey = `min_ake_kiriban_rewarded_${nextTotal}`;
+            if (!localStorage.getItem(rewardKey)) {
+              localStorage.setItem(rewardKey, '1');
+              if (addExpRef.current) addExpRef.current(50);
+              if (addTicketsRef.current) addTicketsRef.current(1);
+              confetti({
+                particleCount: 160,
+                spread: 100,
+                origin: { y: 0.6 },
+                colors: ['#f59e0b', '#ec4899', '#8b5cf6', '#10b981', '#3b82f6'],
+                zIndex: 9999
+              });
+            }
+          } catch {}
+        }
+
         await supabase
           .from('options')
           .update({ name: nextName })
@@ -369,7 +402,7 @@ function App() {
         console.warn('⚠️ site visitor counter increment failed:', err);
       }
     });
-    siteCounterIncrementQueueRef.current = task.catch(() => {});
+    siteCounterIncrementQueueRef.current = task.catch(() => { });
     return task;
   }, []);
   const manualUpdatesRef = useRef({}); // 🛡️ { [surveyId]: timestamp } アンケートごとの更新ガード
@@ -624,10 +657,10 @@ function App() {
       setUser(currentUser);
       const localExp = parseInt(localStorage.getItem('min_ake_exp') || '0', 10);
       const localTickets = parseInt(localStorage.getItem('min_ake_tickets') || '0', 10);
-      
+
       const localLastLogin = localStorage.getItem('min_ake_last_login') || '';
       const TICKET_FIX_VER = '20261028_ticket_fix_v2';
-      
+
       if (currentUser) {
         const dbExp = currentUser.user_metadata?.vote_exp || 0;
         const hasDbTickets = typeof currentUser.user_metadata?.gacha_tickets === 'number';
@@ -637,10 +670,10 @@ function App() {
         const dbInventory = currentUser.user_metadata?.custom_inventory;
         const dbAcquiredItems = currentUser.user_metadata?.custom_acquired_items;
         const dbEncounteredEnemies = currentUser.user_metadata?.custom_encountered_enemies;
-        
+
         // JSTでの今日の日付を取得
         const todayStr = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
-        
+
         let newTotalExp = Math.max(dbExp, localExp, 0);
         // 🎫 チケットは消費して減ることもあるため、Math.maxで古いローカル値を復活させない！
         // （直近8秒以内にガチャ等で増減した場合はローカル最新値を優先し、通常時はクラウド値を正とする）
@@ -674,11 +707,11 @@ function App() {
         // 🛡️ パトロール回数のアカウント同期（無限周回・ゲスト周回対策）
         const dbPatrolDate = currentUser.user_metadata?.daily_patrol_date || '';
         const dbPatrolCount = dbPatrolDate === todayStr ? (currentUser.user_metadata?.daily_patrol_count || 0) : 0;
-        
+
         let localPatrolData = {};
-        try { localPatrolData = JSON.parse(localStorage.getItem('daily_patrols_v2') || '{}'); } catch(e){}
+        try { localPatrolData = JSON.parse(localStorage.getItem('daily_patrols_v2') || '{}'); } catch (e) { }
         const localPatrolCount = localPatrolData.date === todayStr ? (localPatrolData.count || 0) : 0;
-        
+
         // クラウドとローカルで大きい方を採用（不正な巻き戻しを完全に防止）
         const syncedPatrolCount = Math.max(dbPatrolCount, localPatrolCount);
         if (syncedPatrolCount > dbPatrolCount || dbPatrolDate !== todayStr) {
@@ -694,7 +727,7 @@ function App() {
         const dbDungeonBest = currentUser.user_metadata?.dungeon_best_floor || 1;
 
         let localDungeonData = {};
-        try { localDungeonData = JSON.parse(localStorage.getItem('daily_dungeon_attempts_v1') || '{}'); } catch(e){}
+        try { localDungeonData = JSON.parse(localStorage.getItem('daily_dungeon_attempts_v1') || '{}'); } catch (e) { }
         const localDungeonRemaining = localDungeonData.date === todayStr ? (typeof localDungeonData.remaining === 'number' ? localDungeonData.remaining : 3) : 3;
         const localDungeonBest = parseInt(localStorage.getItem('minique_dungeon_best') || '1', 10);
 
@@ -717,7 +750,7 @@ function App() {
 
         // 🛡️ 装備のクラウド同期
         let localEquip = null;
-        try { localEquip = JSON.parse(localStorage.getItem('min_ake_equipment') || '{}'); } catch(e){}
+        try { localEquip = JSON.parse(localStorage.getItem('min_ake_equipment') || '{}'); } catch (e) { }
         const hasLocalEquip = localEquip && (localEquip.weapon || localEquip.armor || localEquip.accessory || localEquip.partner);
         const hasDbEquip = dbEquipment && (dbEquipment.weapon || dbEquipment.armor || dbEquipment.accessory || dbEquipment.partner);
 
@@ -757,7 +790,7 @@ function App() {
 
         // 🎒 インベントリのクラウド同期
         let localInv = [];
-        try { localInv = JSON.parse(localStorage.getItem('min_ake_inventory') || '[]'); } catch(e){}
+        try { localInv = JSON.parse(localStorage.getItem('min_ake_inventory') || '[]'); } catch (e) { }
         const hasLocalInv = Array.isArray(localInv) && localInv.length > 0;
         const hasDbInv = Array.isArray(dbInventory) && dbInventory.length > 0;
 
@@ -827,7 +860,7 @@ function App() {
           updates.custom_encountered_enemies = encounteredEnemies;
           shouldUpdate = true;
         }
-        
+
         // 🎁 1日1回のアクセスボーナス判定！（タイムライン化に伴いalertは非表示にし、裏で安全に付与）
         if (lastLoginDate !== todayStr && !hasProcessedLoginBonus.current) {
           hasProcessedLoginBonus.current = true;
@@ -845,7 +878,7 @@ function App() {
         if (currentUser.user_metadata && shouldUpdate) {
           Object.assign(currentUser.user_metadata, updates);
         }
-        
+
         setUserExp(newTotalExp);
         setGachaTickets(newTotalTickets);
         isAuthLoaded.current = true;
@@ -1124,12 +1157,12 @@ function App() {
       color = '#78350f';
     }
 
-    return { 
-      level: currentLevel, 
-      title: title, 
+    return {
+      level: currentLevel,
+      title: title,
       color: color,
       textShadow: textShadow,
-      next: currentLevel >= 255 ? null : nextExpThreshold 
+      next: currentLevel >= 255 ? null : nextExpThreshold
     };
   };
 
@@ -1189,6 +1222,9 @@ function App() {
     });
   };
 
+  addExpRef.current = addExp;
+  addTicketsRef.current = addTickets;
+
   useEffect(() => {
     window.addTicketsGlobal = addTickets;
     return () => {
@@ -1202,11 +1238,11 @@ function App() {
     const dailyActionsStr = localStorage.getItem('daily_actions_v2') || '{}';
     let dailyActions;
     try { dailyActions = JSON.parse(dailyActionsStr); } catch { dailyActions = {}; }
-    
+
     if (dailyActions.date !== todayStr) {
-       dailyActions = { date: todayStr, viewed: [], voted: [] };
+      dailyActions = { date: todayStr, viewed: [], voted: [] };
     }
-    
+
     if (actionType === 'view') {
       // 記事を開くだけのEXP付与は廃止（みんクエを遊ばない人の邪魔になるため）
       return;
@@ -1214,7 +1250,7 @@ function App() {
       if (!dailyActions.voted.includes(surveyId) && dailyActions.voted.length < 3) {
         dailyActions.voted.push(surveyId);
         localStorage.setItem('daily_actions_v2', JSON.stringify(dailyActions));
-        
+
         // 投票ボーナス：EXPとガチャチケを付与
         addExp(3);
         addTickets(1);
@@ -1538,7 +1574,7 @@ function App() {
 
       // 編集・削除用のランダムな鍵を生成
       const editKey = Math.random().toString(36).substring(2);
-      
+
       // ID生成用のクライアント指紋（日替わりID用）
       let clientFp = localStorage.getItem('client_fp');
       if (!clientFp) {
@@ -1711,12 +1747,12 @@ function App() {
         .from('comments')
         .update({ content: '[[DELETED]]' })
         .eq('id', commentId);
-      
+
       // 管理者以外はedit_keyで認証する
       if (!isAdmin) {
         query = query.eq('edit_key', key);
       }
-      
+
       const { data, error } = await query.select();
 
       if (error || !data || data.length === 0) {
@@ -1779,10 +1815,10 @@ function App() {
     const pageTitle = (currentSurvey && currentSurvey.title)
       ? `${currentSurvey.title} - みんアケ🐰🥕 | みんなのアンケート広場`
       : (view === 'details'
-          ? 'アンケート詳細 - みんアケ🐰🥕 | みんなのアンケート広場'
-          : (view === 'list'
-              ? 'みんアケ🐰🥕 | みんなのアンケート広場 | 匿名で気軽に投票・本音が集まるアンケートコミュニティ'
-              : 'アンケート作成 - みんアケ🐰🥕 | みんなのアンケート広場'));
+        ? 'アンケート詳細 - みんアケ🐰🥕 | みんなのアンケート広場'
+        : (view === 'list'
+          ? 'みんアケ🐰🥕 | みんなのアンケート広場 | 匿名で気軽に投票・本音が集まるアンケートコミュニティ'
+          : 'アンケート作成 - みんアケ🐰🥕 | みんなのアンケート広場'));
 
     const metaKeywords = currentSurvey
       ? `${currentSurvey.category || 'アンケート'}, ${Array.isArray(currentSurvey.tags) ? currentSurvey.tags.join(', ') : (currentSurvey.tags || '')}, みんアケ, みんあけ, アンケート, みんなのアンケート, 投票, みんなのアンケート広場`
@@ -1965,7 +2001,7 @@ function App() {
 
       currentViewRef.current = 'details';
       let { data: sv, error: svError } = await supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count').eq('id', surveyId).maybeSingle();
-      
+
       // 🛡️ 一時的な通信エラーの場合は400ms後に1回リトライ！
       if ((svError || !sv) && (myReqId === detailRequestIdRef.current && currentViewRef.current !== 'list')) {
         console.warn("⚠️ loadFromUrl: Detail fetch failed, retrying in 400ms...", svError);
@@ -2339,7 +2375,7 @@ function App() {
         if (s && s.id) uniqueMap.set(String(s.id), s);
       });
       let allSurveys = Array.from(uniqueMap.values());
-      
+
       // 🚨 必ず created_at の降順（最新が上）になるようにソート（popular以外の場合）
       if (sort !== 'popular') {
         allSurveys.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
@@ -2529,7 +2565,7 @@ function App() {
         setOptions([]);
         setVotedOption(null);
         setAdjacentSurveys({ prev: null, next: null });
-        
+
         // 🔗 URL からタブ・ページ状態を復元
         setSortMode(params.get('tab') || 'latest');
         const p = parseInt(params.get('page'), 10);
@@ -2546,7 +2582,7 @@ function App() {
       }
     };
     window.addEventListener('popstate', handlePopState);
-    
+
     // 🛡️ 初回マウント時、または詳細画面にいる時のみ loadFromUrl を実行する（一覧表示中に勝手に詳細をフェッチさせない）
     const isDetailUrl = window.location.pathname.startsWith('/s/') || new URLSearchParams(window.location.search).has('id');
     if (isInitialMountRef.current || isDetailUrl) {
@@ -2583,7 +2619,7 @@ function App() {
         if (listUrl.pathname.startsWith('/s/')) listUrl.pathname = '/';
         const safeListUrl = (listUrl.pathname || '/') + (listUrl.search || '') + (listUrl.hash || '');
         window.history.replaceState({ ...window.history.state, view: 'list', scrollY: currentScroll }, '', safeListUrl);
-        
+
         const detailUrl = new URL(window.location.href);
         detailUrl.searchParams.delete('id');
         detailUrl.searchParams.delete('s');
@@ -2680,7 +2716,7 @@ function App() {
       url.searchParams.delete('s');
       if (url.pathname.startsWith('/s/')) url.pathname = '/';
       const safeListUrl = (url.pathname || '/') + (url.search || '') + (url.hash || '');
-      
+
       try {
         window.history.pushState({ view: 'list' }, '', safeListUrl);
       } catch (e) {
@@ -2928,7 +2964,7 @@ function App() {
       localStorage.setItem('watched_surveys', JSON.stringify(next));
       return next;
     });
-    
+
     // 🏆 経験値を付与！
     addExp(10);
 
@@ -3045,7 +3081,7 @@ function App() {
         if (!myAdded.includes(insertedOpt.id)) {
           localStorage.setItem('my_added_options', JSON.stringify([...myAdded, insertedOpt.id]));
         }
-      } catch {}
+      } catch { }
 
       // 選択肢追加ボーナスEXP (+5)
       addExp(5);
@@ -3064,7 +3100,7 @@ function App() {
     let myAdded = [];
     try {
       myAdded = JSON.parse(localStorage.getItem('my_added_options') || '[]');
-    } catch {}
+    } catch { }
     const isMyAdded = myAdded.includes(opt.id);
     const canDelete = isMyAdded || isAdmin || (user && currentSurvey.user_id === user.id);
     if (!canDelete) return;
@@ -3095,7 +3131,7 @@ function App() {
           return next;
         });
       }
-    } catch {}
+    } catch { }
 
     const nextOpts = options.filter(o => o.id !== opt.id);
     const newTotal = nextOpts.reduce((sum, o) => sum + (Number(o.votes) || 0), 0);
@@ -3213,12 +3249,12 @@ function App() {
     } else {
       try {
         localStorage.removeItem(`voted_survey_${surveyId}`);
-      } catch {}
+      } catch { }
       setWatchedIds(prev => {
         const next = prev.filter(id => String(id) !== String(surveyId));
         try {
           localStorage.setItem('watched_surveys', JSON.stringify(next));
-        } catch {}
+        } catch { }
         return next;
       });
       setSurveys(prev => prev.filter(s => s.id !== surveyId));
@@ -3483,9 +3519,9 @@ function App() {
         : [];
       const articleTags = Array.isArray(currentSurvey.tags)
         ? currentSurvey.tags
-            .filter(t => !t.startsWith('_STAMP:') && !t.startsWith('[L]') && t.length >= 2 && t.length <= 15)
-            .map(t => t.replace(/\s+/g, ''))
-            .slice(0, 3)
+          .filter(t => !t.startsWith('_STAMP:') && !t.startsWith('[L]') && t.length >= 2 && t.length <= 15)
+          .map(t => t.replace(/\s+/g, ''))
+          .slice(0, 3)
         : [];
       const allHashtags = [...baseTags, ...categoryTag, ...articleTags].join(',');
 
@@ -3918,6 +3954,7 @@ function App() {
               navigateTo={navigateTo}
               globalOnlineCount={globalOnlineCount}
               siteVisitorStats={siteVisitorStats}
+              myKiribanHit={myKiribanHit}
               formatWithDay={formatWithDay}
               AnimatedCounter={AnimatedCounter}
               userExp={userExp}
@@ -4078,7 +4115,7 @@ function App() {
       </Suspense>
 
       {/* 🐰 左下追従の「みんアケ」透かしロゴ (クリックでトップへ + キラキラ) */}
-      <WatermarkLogo 
+      <WatermarkLogo
         onClick={() => {
           navigateTo('list');
           window.scrollTo({ top: 0, behavior: 'smooth' });

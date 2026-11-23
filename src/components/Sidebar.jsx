@@ -18,6 +18,30 @@ const getCatColor = (cat) => {
   return style?.color || '#cbd5e1';
 };
 
+const isKiribanNumber = (n) => {
+  const num = Number(n) || 0;
+  if (num <= 0) return false;
+  if (num % 50 === 0) return true;
+  return num >= 111 && /^(\d)\1+$/.test(String(num));
+};
+
+const getNextKiribanNumber = (total) => {
+  const num = Math.max(0, Number(total) || 0);
+  const next50 = Math.floor(num / 50) * 50 + 50;
+  let nextRep = Infinity;
+  const startDigits = Math.max(3, String(num).length);
+  for (let len = startDigits; len <= startDigits + 1 && nextRep === Infinity; len++) {
+    for (let d = 1; d <= 9; d++) {
+      const candidate = Number(String(d).repeat(len));
+      if (candidate > num) {
+        nextRep = candidate;
+        break;
+      }
+    }
+  }
+  return Math.min(next50, nextRep);
+};
+
 const Sidebar = ({ 
   liveSurveys, 
   popularSurveys, 
@@ -27,6 +51,7 @@ const Sidebar = ({
   navigateTo, 
   globalOnlineCount, 
   siteVisitorStats = { today: 0, total: 0 },
+  myKiribanHit = null,
   formatWithDay, 
   AnimatedCounter,
   userExp,
@@ -167,6 +192,69 @@ const Sidebar = ({
             </div>
           </div>
         )}
+        {(() => {
+          const total = Number(siteVisitorStats?.total) || 0;
+          if (total <= 0 && !myKiribanHit) return null;
+          const isCurrentKiriban = isKiribanNumber(total);
+          const nextKiriban = getNextKiribanNumber(total);
+          const remaining = Math.max(1, nextKiriban - total);
+
+          if (myKiribanHit) {
+            return (
+              <div style={{
+                marginTop: '10px',
+                padding: '9px 10px',
+                borderRadius: '12px',
+                background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fce7f3 100%)',
+                border: '1.5px solid #f59e0b',
+                boxShadow: '0 4px 12px rgba(245, 158, 11, 0.22)',
+                textAlign: 'center',
+                color: '#92400e'
+              }}>
+                <div style={{ fontSize: '0.82rem', fontWeight: '900', lineHeight: 1.4 }}>
+                  🎉 祝・キリ番達成！あなたは累計 <span style={{ color: '#be185d', fontSize: '0.96rem' }}>{myKiribanHit}</span> 人目の来場者です！
+                </div>
+                <div style={{ fontSize: '0.73rem', fontWeight: '800', color: '#b45309', marginTop: '3px' }}>
+                  🎁 記念ボーナス：＋50 EXP ＆ ガチャチケット1枚 GET✨
+                </div>
+              </div>
+            );
+          }
+
+          if (isCurrentKiriban) {
+            return (
+              <div style={{
+                marginTop: '10px',
+                padding: '8px 10px',
+                borderRadius: '12px',
+                background: 'linear-gradient(135deg, #fef3c7 0%, #fce7f3 100%)',
+                border: '1.5px solid #fbbf24',
+                textAlign: 'center',
+                fontSize: '0.8rem',
+                fontWeight: '900',
+                color: '#b45309'
+              }}>
+                🎊 祝・累計 {total} 人キリ番達成中！
+              </div>
+            );
+          }
+
+          return (
+            <div style={{
+              marginTop: '10px',
+              padding: '6px 10px',
+              borderRadius: '10px',
+              background: 'rgba(255, 255, 255, 0.72)',
+              border: '1px dashed #c4b5fd',
+              textAlign: 'center',
+              fontSize: '0.76rem',
+              fontWeight: '800',
+              color: '#5b21b6'
+            }}>
+              🎯 次のキリ番（{nextKiriban}人目）まで あと <span style={{ color: '#db2777', fontWeight: '900' }}>{remaining}</span> 人！🎁
+            </div>
+          );
+        })()}
       </div>
 
       {/* 2. 🔥 人気ランキング */}
