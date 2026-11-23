@@ -1228,7 +1228,7 @@ function App() {
         console.log("🔄 initDetailView: Fetching details for survey:", currentSurvey.id);
 
         // 1. オプションと投票状況の取得
-        const { data: optData, error: optError } = await supabase.from('options').select('*').eq('survey_id', currentSurvey.id).order('id', { ascending: true });
+        const { data: optData, error: optError } = await supabase.from('options').select('*').eq('survey_id', currentSurvey.id).neq('name', '[[DELETED]]').order('id', { ascending: true });
         if (optError) {
           console.error("❌ initDetailView: Error fetching options:", optError);
         } else if (optData) {
@@ -1905,7 +1905,7 @@ function App() {
       (async () => {
         try {
           const [{ data: preOpts }, { data: pData }, { data: nData }] = await Promise.all([
-            supabase.from('options').select('*').eq('survey_id', sv.id).order('id', { ascending: true }),
+            supabase.from('options').select('*').eq('survey_id', sv.id).neq('name', '[[DELETED]]').order('id', { ascending: true }),
             supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count').eq('visibility', 'public').lt('created_at', sv.created_at).order('created_at', { ascending: false }).limit(1).maybeSingle(),
             supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count').eq('visibility', 'public').gt('created_at', sv.created_at).order('created_at', { ascending: true }).limit(1).maybeSingle()
           ]);
@@ -2485,7 +2485,7 @@ function App() {
             setIsTimeUp(mappedSv.deadline && new Date(mappedSv.deadline) < new Date());
           }
         }
-        const { data: preOpts } = await supabase.from('options').select('*').eq('survey_id', survey.id).order('id', { ascending: true });
+        const { data: preOpts } = await supabase.from('options').select('*').eq('survey_id', survey.id).neq('name', '[[DELETED]]').order('id', { ascending: true });
         if (myDetailReqId !== detailRequestIdRef.current || currentViewRef.current !== 'details') return;
         if (preOpts) {
           setOptions(preOpts);
@@ -2925,8 +2925,14 @@ function App() {
     const cleanLabel = String(opt.name || '').replace(/^\u200B+/, '').trim();
     if (!window.confirm(`追加された選択肢「${cleanLabel}」を削除しますか？🐰`)) return;
 
-    const { error } = await supabase.from('options').delete().eq('id', opt.id);
-    if (error) {
+    manualUpdatesRef.current[String(currentSurvey.id)] = Date.now();
+    const { data, error } = await supabase
+      .from('options')
+      .update({ name: '[[DELETED]]', votes: 0 })
+      .eq('id', opt.id)
+      .select();
+
+    if (error || !data || data.length === 0) {
       console.error('❌ Custom option delete error:', error);
       alert('選択肢の削除に失敗しました🐰💦');
       return;
