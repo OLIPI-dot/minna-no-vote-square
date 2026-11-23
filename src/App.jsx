@@ -331,14 +331,10 @@ function App() {
   const siteCounterIncrementQueueRef = useRef(Promise.resolve());
   const applyParsedSiteCounter = useCallback((parsed) => {
     if (!parsed) return;
-    const todayJst = getJstDateStr();
-    setSiteVisitorStats(prev => {
-      const sameDay = prev.date === todayJst;
-      return {
-        today: sameDay ? Math.max(prev.today || 0, parsed.today || 0) : (parsed.today || 0),
-        total: Math.max(prev.total || 0, parsed.total || 0),
-        date: todayJst
-      };
+    setSiteVisitorStats({
+      today: parsed.today || 0,
+      total: parsed.total || 0,
+      date: getJstDateStr()
     });
   }, []);
   const incrementSiteVisitorCounter = useCallback(() => {
@@ -2070,7 +2066,6 @@ function App() {
       if (Date.now() - lastView > VIEW_COOLDOWN_MS) {
         localStorage.setItem(viewKey, Date.now().toString());
         grantActionExp('view', sv.id); // 🌟 みんクエEXP付与
-        incrementSiteVisitorCounter();
         supabase.rpc('increment_survey_view', { survey_id_arg: sv.id }).then(({ data: newViews }) => {
           if (newViews !== undefined) {
             setCurrentSurvey(prev => prev && prev.id === sv.id ? { ...prev, view_count: prev.view_count + 1 } : prev);
@@ -2665,7 +2660,6 @@ function App() {
       if (Date.now() - lastView > VIEW_COOLDOWN_MS) {
         localStorage.setItem(viewKey, Date.now().toString());
         grantActionExp('view', survey.id); // 🌟 みんクエEXP付与
-        incrementSiteVisitorCounter();
         supabase.rpc('increment_survey_view', { survey_id_arg: survey.id }).then(({ data: newViews }) => {
           if (myDetailReqId !== detailRequestIdRef.current || currentViewRef.current !== 'details') return;
           if (newViews !== undefined) {
