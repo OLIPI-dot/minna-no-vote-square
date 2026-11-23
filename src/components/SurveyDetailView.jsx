@@ -160,14 +160,15 @@ const SurveyDetailView = ({
   const [customOptionText, setCustomOptionText] = React.useState('');
   const [isSubmittingCustomOption, setIsSubmittingCustomOption] = React.useState(false);
   const [showFloatingPresence, setShowFloatingPresence] = React.useState(false);
-  const [showFloatingVoteJump, setShowFloatingVoteJump] = React.useState(true);
+  const [showFloatingVoteJump, setShowFloatingVoteJump] = React.useState(false);
   const embedCode = `<iframe src="${window.location.origin}/embed/${currentSurvey?.id}" width="100%" height="400" frameborder="0" style="border:1px solid #e2e8f0; border-radius:12px; max-width:600px; display:block; margin: 0 auto;"></iframe>`;
 
   React.useEffect(() => {
     const handleScroll = () => {
+      const scrolled = window.scrollY > 200;
       setShowFloatingPresence(window.scrollY > 260);
       const voteTarget = document.getElementById('survey-vote-section') || document.getElementById('survey-options-anchor');
-      if (voteTarget) {
+      if (scrolled && voteTarget) {
         const rect = voteTarget.getBoundingClientRect();
         setShowFloatingVoteJump(rect.top > window.innerHeight * 0.72);
       } else {
@@ -2207,34 +2208,45 @@ const SurveyDetailView = ({
           }}
           style={{
             pointerEvents: showFloatingVoteJump ? 'auto' : 'none',
-            background: 'linear-gradient(135deg, #7c3aed 0%, #ec4899 100%)',
-            color: '#ffffff',
-            borderWidth: '1.5px 1.5px 4px 1.5px',
-            borderStyle: 'solid',
-            borderColor: '#d8b4fe #d8b4fe #5b21b6 #d8b4fe',
-            padding: '8px 16px',
+            background: 'rgba(250, 245, 255, 0.90)',
+            backdropFilter: 'blur(8px)',
+            WebkitBackdropFilter: 'blur(8px)',
+            color: '#6d28d9',
+            border: '1.5px solid rgba(192, 132, 252, 0.85)',
+            padding: '6px 13px',
             borderRadius: '999px',
-            fontSize: '0.84rem',
-            fontWeight: '900',
+            fontSize: '0.78rem',
+            fontWeight: '800',
             cursor: 'pointer',
             display: 'inline-flex',
             alignItems: 'center',
-            gap: '5px',
-            boxShadow: '0 6px 18px rgba(124, 58, 237, 0.28)',
+            gap: '6px',
+            boxShadow: '0 4px 14px rgba(139, 92, 246, 0.16)',
             opacity: showFloatingVoteJump ? 1 : 0,
-            transform: showFloatingVoteJump ? 'translateY(0)' : 'translateY(12px)',
-            transition: 'opacity 0.22s ease, transform 0.22s ease, box-shadow 0.16s ease',
+            transform: showFloatingVoteJump ? 'translateY(0)' : 'translateY(10px)',
+            transition: 'opacity 0.25s ease, transform 0.25s ease, background 0.18s ease, box-shadow 0.18s ease',
             whiteSpace: 'nowrap'
           }}
           onMouseOver={e => {
-            e.currentTarget.style.transform = 'translateY(-2px)';
-            e.currentTarget.style.boxShadow = '0 8px 22px rgba(236, 72, 153, 0.34)';
+            e.currentTarget.style.background = 'rgba(243, 232, 255, 0.98)';
+            e.currentTarget.style.boxShadow = '0 6px 18px rgba(168, 85, 247, 0.24)';
           }}
           onMouseOut={e => {
-            e.currentTarget.style.transform = showFloatingVoteJump ? 'translateY(0)' : 'translateY(12px)';
-            e.currentTarget.style.boxShadow = '0 6px 18px rgba(124, 58, 237, 0.28)';
+            e.currentTarget.style.background = 'rgba(250, 245, 255, 0.90)';
+            e.currentTarget.style.boxShadow = '0 4px 14px rgba(139, 92, 246, 0.16)';
           }}
         >
+          <span
+            style={{
+              width: '7px',
+              height: '7px',
+              borderRadius: '50%',
+              background: '#ec4899',
+              boxShadow: '0 0 0 0 rgba(236, 72, 153, 0.55)',
+              animation: 'liveVotePulse 2s infinite',
+              flexShrink: 0
+            }}
+          />
           <span>{votedOption || isTimeUp ? '📊 投票結果を見る ↓' : '🗳️ すぐ投票する ↓'}</span>
         </button>
 
@@ -2280,6 +2292,11 @@ const SurveyDetailView = ({
           0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.55); opacity: 1; }
           70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); opacity: 0.85; }
           100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); opacity: 1; }
+        }
+        @keyframes liveVotePulse {
+          0% { box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.55); opacity: 1; }
+          70% { box-shadow: 0 0 0 6px rgba(236, 72, 153, 0); opacity: 0.85; }
+          100% { box-shadow: 0 0 0 0 rgba(236, 72, 153, 0); opacity: 1; }
         }
       `}</style>
 
