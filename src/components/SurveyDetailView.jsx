@@ -186,7 +186,7 @@ const SurveyDetailView = ({
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-  
+
   if (!currentSurvey) return <div className="empty-msg">読み込み中...</div>;
 
   // 🎨 スタンプリアクションの集計ロジックらび！
@@ -434,6 +434,40 @@ const SurveyDetailView = ({
               {CATEGORY_ICON_STYLE[currentSurvey.category]?.icon || '🏷️'} {currentSurvey.category}
             </span>
           )}
+          <button
+            type="button"
+            onClick={() => {
+              const target = document.getElementById('survey-vote-section') || document.getElementById('survey-options-anchor');
+              if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }}
+            style={{
+              background: 'linear-gradient(135deg, #7c3aed 0%, #ec4899 100%)',
+              color: '#ffffff',
+              borderWidth: '1.5px 1.5px 3.5px 1.5px',
+              borderStyle: 'solid',
+              borderColor: '#c084fc #c084fc #6d28d9 #c084fc',
+              padding: '5px 15px',
+              borderRadius: '999px',
+              fontSize: '0.84rem',
+              fontWeight: '900',
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '5px',
+              boxShadow: '0 4px 12px rgba(124, 58, 237, 0.22)',
+              transition: 'transform 0.14s ease, box-shadow 0.14s ease'
+            }}
+            onMouseOver={e => {
+              e.currentTarget.style.transform = 'translateY(-1.5px)';
+              e.currentTarget.style.boxShadow = '0 6px 16px rgba(236, 72, 153, 0.28)';
+            }}
+            onMouseOut={e => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(124, 58, 237, 0.22)';
+            }}
+          >
+            <span>{votedOption || isTimeUp ? '📊 投票結果を見る ↓' : '🗳️ すぐ投票する ↓'}</span>
+          </button>
         </div>
         {currentSurvey.tags && currentSurvey.tags.length > 0 && (
           <div className="detail-tags-row" style={{ marginTop: '18px', marginBottom: '16px', display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'center' }}>
@@ -501,7 +535,7 @@ const SurveyDetailView = ({
               const yyyy = d.getFullYear();
               const mm = String(d.getMonth() + 1).padStart(2, '0');
               const dd = String(d.getDate()).padStart(2, '0');
-              const day = ['日','月','火','水','木','金','土'][d.getDay()];
+              const day = ['日', '月', '火', '水', '木', '金', '土'][d.getDay()];
               const hh = String(d.getHours()).padStart(2, '0');
               const min = String(d.getMinutes()).padStart(2, '0');
               const formatted = `${yyyy}/${mm}/${dd}(${day}) ${hh}:${min}`;
@@ -521,7 +555,7 @@ const SurveyDetailView = ({
                   const yyyy = d.getFullYear();
                   const mm = String(d.getMonth() + 1).padStart(2, '0');
                   const dd = String(d.getDate()).padStart(2, '0');
-                  const day = ['日','月','火','水','木','金','土'][d.getDay()];
+                  const day = ['日', '月', '火', '水', '木', '金', '土'][d.getDay()];
                   const hh = String(d.getHours()).padStart(2, '0');
                   const min = String(d.getMinutes()).padStart(2, '0');
                   return `${yyyy}/${mm}/${dd}(${day}) ${hh}:${min}`;
@@ -538,173 +572,173 @@ const SurveyDetailView = ({
         renderCommentContent={renderCommentContent}
         isTimeUp={isTimeUp}
       >
-      {/* 💬 みんなのガヤ（ピックアップコメント複数表示 - やさしいパステルカード版） */}
-      {pickupComments.length > 0 && (
-        <div style={{
-          background: 'linear-gradient(135deg, #faf5ff 0%, #f8fafc 100%)',
-          border: '2px solid #e9d5ff',
-          borderRadius: '20px',
-          padding: '18px 18px',
-          margin: '0 0 30px 0',
-          position: 'relative',
-          boxShadow: '0 6px 18px rgba(168, 85, 247, 0.07)'
-        }}>
-          <div style={{ 
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            marginBottom: '14px',
-            borderBottom: '1px dashed #d8b4fe',
-            paddingBottom: '10px'
+        {/* 💬 みんなのガヤ（ピックアップコメント複数表示 - やさしいパステルカード版） */}
+        {pickupComments.length > 0 && (
+          <div style={{
+            background: 'linear-gradient(135deg, #faf5ff 0%, #f8fafc 100%)',
+            border: '2px solid #e9d5ff',
+            borderRadius: '20px',
+            padding: '18px 18px',
+            margin: '0 0 30px 0',
+            position: 'relative',
+            boxShadow: '0 6px 18px rgba(168, 85, 247, 0.07)'
           }}>
-            <span style={{
-              display: 'inline-flex',
+            <div style={{
+              display: 'flex',
               alignItems: 'center',
-              gap: '6px',
-              background: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
-              color: '#ffffff',
-              padding: '4px 14px',
-              borderRadius: '999px',
-              fontSize: '0.85rem',
-              fontWeight: '900',
-              boxShadow: '0 3px 10px rgba(236, 72, 153, 0.25)'
+              gap: '8px',
+              marginBottom: '14px',
+              borderBottom: '1px dashed #d8b4fe',
+              paddingBottom: '10px'
             }}>
-              💬 ネット民の反応
-            </span>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {pickupComments.map((comment, i) => {
-              const d = new Date(currentSurvey.created_at || Date.now());
-              d.setMinutes(d.getMinutes() + i * 3 + 2);
-              const yyyy = d.getFullYear();
-              const mm = String(d.getMonth() + 1).padStart(2, '0');
-              const dd = String(d.getDate()).padStart(2, '0');
-              const day = ['日','月','火','水','木','金','土'][d.getDay()];
-              const hh = String(d.getHours()).padStart(2, '0');
-              const min = String(d.getMinutes()).padStart(2, '0');
-              const ss = String(d.getSeconds()).padStart(2, '0');
-              const ms = String(d.getMilliseconds()).padStart(2, '0').substring(0, 2);
-              
-              const isNum = typeof currentSurvey.id === 'number';
-              const idVal = isNum ? currentSurvey.id : (String(currentSurvey.id).charCodeAt(0) || 123);
-              const hash = (idVal * 9876543) ^ (i * 123456789) ^ (i * 777777);
-              const idBase = Math.abs(hash).toString(36).padEnd(8, 'X') + 'A1B2C3D4';
-              const chId = 'ID:' + idBase.substring(0, 8).toUpperCase();
-
-              return (
-                <div key={i} style={{
-                  fontSize: '15px',
-                  color: '#1e293b',
-                  lineHeight: '1.55',
-                  textAlign: 'left',
-                  wordBreak: 'break-all',
-                  background: '#ffffff',
-                  borderRadius: '14px',
-                  padding: '12px 14px',
-                  border: '1px solid #ede9fe',
-                  boxShadow: '0 2px 6px rgba(15, 23, 42, 0.03)'
-                }}>
-                  <div style={{ marginBottom: '6px', fontSize: '0.84rem', color: '#64748b' }}>
-                    {i + 1} 名前：<span style={{ color: '#15803d', fontWeight: 'bold' }}>名無しの広場民</span> ：{yyyy}/{mm}/{dd}({day}) {hh}:{min}:{ss}.{ms} <br className="mobile-only-br" />{chId}
-                  </div>
-                  <div style={{ marginLeft: '2em', wordBreak: 'break-word', whiteSpace: 'pre-wrap', letterSpacing: 'normal', textAlign: 'left', color: '#0f172a' }}>
-                    {comment}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-      {/* 🚀 第1号ボーナスの演出 */}
-      {!votedOption && !isTimeUp && isTotalVotes === 0 && (
-        <div style={{
-          background: 'linear-gradient(135deg, #fffbeb, #fef3c7)',
-          border: '2px dashed #fbbf24',
-          borderRadius: '16px',
-          padding: '16px 20px',
-          margin: '0 0 24px 0',
-          textAlign: 'center',
-          color: '#b45309',
-          animation: 'pulse-glow 2s infinite'
-        }}>
-          <div style={{ fontSize: '1.2rem', marginBottom: '4px' }}>🐰 <strong>まだ誰も投票してないらび！</strong> 🥕</div>
-          <div style={{ fontSize: '0.95rem' }}>あなたの記念すべき1票で、最初の結果が決まるよ！気軽にポチッとしてみてね✨</div>
-        </div>
-      )}
-
-      {/* ❓ 投票の問いかけ（選択肢だけだと何のアンケートか分からないため、選択肢の上に表示） */}
-      {(() => {
-        const m = String(descPart || currentSurvey.description || '').match(/\[\[SUMMARY:([\s\S]*?)\]\]/);
-        if (!m) return null;
-        let question = '';
-        try {
-          question = String(JSON.parse(m[1].trim()).survey_question || '')
-            .replace(/\s*[（(]\s*\d+\s*(?:文字|字)\s*[）)]/g, '')
-            .trim();
-        } catch { return null; }
-        if (!question) return null;
-        return (
-          <div className="survey-question-banner-wrap" style={{ position: 'relative', margin: '28px 0 22px 0' }}>
-            <div className="survey-question-banner" style={{
-              position: 'relative',
-              overflow: 'hidden',
-              padding: '16px 18px 15px 18px',
-              background: 'linear-gradient(135deg, #faf5ff 0%, #fdf2f8 50%, #eff6ff 100%)',
-              border: '2px solid #c084fc',
-              borderRadius: '18px',
-              textAlign: 'center',
-              boxShadow: '0 8px 22px rgba(168, 85, 247, 0.16)'
-            }}>
-              <div className="survey-question-shimmer" />
-              <div style={{
+              <span style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '5px',
+                gap: '6px',
                 background: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
                 color: '#ffffff',
-                fontSize: '0.74rem',
-                fontWeight: 900,
-                padding: '3px 12px',
+                padding: '4px 14px',
                 borderRadius: '999px',
-                marginBottom: '8px',
-                letterSpacing: '0.04em',
-                boxShadow: '0 2px 8px rgba(236, 72, 153, 0.3)'
+                fontSize: '0.85rem',
+                fontWeight: '900',
+                boxShadow: '0 3px 10px rgba(236, 72, 153, 0.25)'
               }}>
-                <span>🐰 みんなに質問！あなたはどう思う？👇</span>
-              </div>
-              <div style={{
-                fontWeight: 900,
-                fontSize: '1.12rem',
-                lineHeight: 1.5,
-                color: '#4c1d95',
-                wordBreak: 'break-word',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px'
-              }}>
-                <span className="survey-question-icon" style={{ display: 'inline-block', fontSize: '1.3rem', flexShrink: 0 }}>🗳️</span>
-                <span>{question}</span>
-              </div>
+                💬 ネット民の反応
+              </span>
             </div>
-            {/* 吹き出しの下向き三角しっぽ */}
-            <div style={{
-              width: '14px',
-              height: '14px',
-              background: '#fdf2f8',
-              borderRight: '2px solid #c084fc',
-              borderBottom: '2px solid #c084fc',
-              transform: 'rotate(45deg)',
-              margin: '-8px auto 0 auto',
-              position: 'relative',
-              zIndex: 2
-            }} />
-          </div>
-        );
-      })()}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {pickupComments.map((comment, i) => {
+                const d = new Date(currentSurvey.created_at || Date.now());
+                d.setMinutes(d.getMinutes() + i * 3 + 2);
+                const yyyy = d.getFullYear();
+                const mm = String(d.getMonth() + 1).padStart(2, '0');
+                const dd = String(d.getDate()).padStart(2, '0');
+                const day = ['日', '月', '火', '水', '木', '金', '土'][d.getDay()];
+                const hh = String(d.getHours()).padStart(2, '0');
+                const min = String(d.getMinutes()).padStart(2, '0');
+                const ss = String(d.getSeconds()).padStart(2, '0');
+                const ms = String(d.getMilliseconds()).padStart(2, '0').substring(0, 2);
 
-      <div className="options-container" style={{ margin: '20px 0 40px 0' }}>
+                const isNum = typeof currentSurvey.id === 'number';
+                const idVal = isNum ? currentSurvey.id : (String(currentSurvey.id).charCodeAt(0) || 123);
+                const hash = (idVal * 9876543) ^ (i * 123456789) ^ (i * 777777);
+                const idBase = Math.abs(hash).toString(36).padEnd(8, 'X') + 'A1B2C3D4';
+                const chId = 'ID:' + idBase.substring(0, 8).toUpperCase();
+
+                return (
+                  <div key={i} style={{
+                    fontSize: '15px',
+                    color: '#1e293b',
+                    lineHeight: '1.55',
+                    textAlign: 'left',
+                    wordBreak: 'break-all',
+                    background: '#ffffff',
+                    borderRadius: '14px',
+                    padding: '12px 14px',
+                    border: '1px solid #ede9fe',
+                    boxShadow: '0 2px 6px rgba(15, 23, 42, 0.03)'
+                  }}>
+                    <div style={{ marginBottom: '6px', fontSize: '0.84rem', color: '#64748b' }}>
+                      {i + 1} 名前：<span style={{ color: '#15803d', fontWeight: 'bold' }}>名無しの広場民</span> ：{yyyy}/{mm}/{dd}({day}) {hh}:{min}:{ss}.{ms} <br className="mobile-only-br" />{chId}
+                    </div>
+                    <div style={{ marginLeft: '2em', wordBreak: 'break-word', whiteSpace: 'pre-wrap', letterSpacing: 'normal', textAlign: 'left', color: '#0f172a' }}>
+                      {comment}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+        {/* 🚀 第1号ボーナスの演出 */}
+        {!votedOption && !isTimeUp && isTotalVotes === 0 && (
+          <div style={{
+            background: 'linear-gradient(135deg, #fffbeb, #fef3c7)',
+            border: '2px dashed #fbbf24',
+            borderRadius: '16px',
+            padding: '16px 20px',
+            margin: '0 0 24px 0',
+            textAlign: 'center',
+            color: '#b45309',
+            animation: 'pulse-glow 2s infinite'
+          }}>
+            <div style={{ fontSize: '1.2rem', marginBottom: '4px' }}>🐰 <strong>まだ誰も投票してないらび！</strong> 🥕</div>
+            <div style={{ fontSize: '0.95rem' }}>あなたの記念すべき1票で、最初の結果が決まるよ！気軽にポチッとしてみてね✨</div>
+          </div>
+        )}
+
+        {/* ❓ 投票の問いかけ（選択肢だけだと何のアンケートか分からないため、選択肢の上に表示） */}
+        {(() => {
+          const m = String(descPart || currentSurvey.description || '').match(/\[\[SUMMARY:([\s\S]*?)\]\]/);
+          if (!m) return null;
+          let question = '';
+          try {
+            question = String(JSON.parse(m[1].trim()).survey_question || '')
+              .replace(/\s*[（(]\s*\d+\s*(?:文字|字)\s*[）)]/g, '')
+              .trim();
+          } catch { return null; }
+          if (!question) return null;
+          return (
+            <div id="survey-vote-section" className="survey-question-banner-wrap" style={{ position: 'relative', margin: '28px 0 22px 0' }}>
+              <div className="survey-question-banner" style={{
+                position: 'relative',
+                overflow: 'hidden',
+                padding: '16px 18px 15px 18px',
+                background: 'linear-gradient(135deg, #faf5ff 0%, #fdf2f8 50%, #eff6ff 100%)',
+                border: '2px solid #c084fc',
+                borderRadius: '18px',
+                textAlign: 'center',
+                boxShadow: '0 8px 22px rgba(168, 85, 247, 0.16)'
+              }}>
+                <div className="survey-question-shimmer" />
+                <div style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '5px',
+                  background: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
+                  color: '#ffffff',
+                  fontSize: '0.74rem',
+                  fontWeight: 900,
+                  padding: '3px 12px',
+                  borderRadius: '999px',
+                  marginBottom: '8px',
+                  letterSpacing: '0.04em',
+                  boxShadow: '0 2px 8px rgba(236, 72, 153, 0.3)'
+                }}>
+                  <span>🐰 みんなに質問！あなたはどう思う？👇</span>
+                </div>
+                <div style={{
+                  fontWeight: 900,
+                  fontSize: '1.12rem',
+                  lineHeight: 1.5,
+                  color: '#4c1d95',
+                  wordBreak: 'break-word',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px'
+                }}>
+                  <span className="survey-question-icon" style={{ display: 'inline-block', fontSize: '1.3rem', flexShrink: 0 }}>🗳️</span>
+                  <span>{question}</span>
+                </div>
+              </div>
+              {/* 吹き出しの下向き三角しっぽ */}
+              <div style={{
+                width: '14px',
+                height: '14px',
+                background: '#fdf2f8',
+                borderRight: '2px solid #c084fc',
+                borderBottom: '2px solid #c084fc',
+                transform: 'rotate(45deg)',
+                margin: '-8px auto 0 auto',
+                position: 'relative',
+                zIndex: 2
+              }} />
+            </div>
+          );
+        })()}
+
+      <div id="survey-options-anchor" className="options-container" style={{ margin: '20px 0 40px 0' }}>
         {options.length > 0 ? (() => {
           const uniquePositiveVotes = [...new Set(options.map(o => Number(o.votes) || 0).filter(v => v > 0))].sort((a, b) => b - a);
           const RANK_PALETTES = {
@@ -772,23 +806,23 @@ const SurveyDetailView = ({
             }
           ];
 
-          return options.map((opt, index) => {
-            const perc = isTotalVotes > 0 ? Math.round((opt.votes / isTotalVotes) * 100) : 0;
-            const voteCount = Number(opt.votes) || 0;
-            const voteRank = voteCount > 0 ? uniquePositiveVotes.indexOf(voteCount) + 1 : 0;
-            const palette = RANK_PALETTES[voteRank] || DEFAULT_PALETTE;
-            const isMyVote = String(votedOption) === String(opt.id);
-            const isUserAdded = (opt.name || '').startsWith('\u200B') || (currentSurvey.is_official && index >= 4);
-            const cleanName = (opt.name || '').replace(/^\u200B/, '');
-            const strippedLabel = cleanName.replace(/^\d+\.\s*/, '');
-            let isMyAdded = false;
-            try {
-              const myAddedIds = JSON.parse(localStorage.getItem('my_added_options') || '[]');
-              isMyAdded = myAddedIds.includes(opt.id);
-            } catch {}
+            return options.map((opt, index) => {
+              const perc = isTotalVotes > 0 ? Math.round((opt.votes / isTotalVotes) * 100) : 0;
+              const voteCount = Number(opt.votes) || 0;
+              const voteRank = voteCount > 0 ? uniquePositiveVotes.indexOf(voteCount) + 1 : 0;
+              const palette = RANK_PALETTES[voteRank] || DEFAULT_PALETTE;
+              const isMyVote = String(votedOption) === String(opt.id);
+              const isUserAdded = (opt.name || '').startsWith('\u200B') || (currentSurvey.is_official && index >= 4);
+              const cleanName = (opt.name || '').replace(/^\u200B/, '');
+              const strippedLabel = cleanName.replace(/^\d+\.\s*/, '');
+              let isMyAdded = false;
+              try {
+                const myAddedIds = JSON.parse(localStorage.getItem('my_added_options') || '[]');
+                isMyAdded = myAddedIds.includes(opt.id);
+              } catch { }
 
-            const showResult = Boolean(votedOption || isTimeUp);
-            const borderEdge = isMyVote ? '2px solid #8b5cf6' : `1px solid ${palette.cardBorder}`;
+              const showResult = Boolean(votedOption || isTimeUp);
+              const borderEdge = isMyVote ? '2px solid #8b5cf6' : `1px solid ${palette.cardBorder}`;
 
             return (
               <div
@@ -857,187 +891,211 @@ const SurveyDetailView = ({
                         )}
                       </span>
                       <span className="vote-count-meta" style={{ display: 'inline-flex', flexDirection: 'row', alignItems: 'baseline', gap: '5px', color: '#64748b', marginLeft: 'auto' }}>
-                        <span className="vote-count-perc" style={{ fontSize: '1.2rem', fontWeight: '900', color: palette.textColor, opacity: 1 }}>
-                          {perc}%
+                          <span className="vote-count-perc" style={{ fontSize: '1.2rem', fontWeight: '900', color: palette.textColor, opacity: 1 }}>
+                            {perc}%
+                          </span>
+                          <span className="vote-count-num" style={{ fontSize: '0.82rem', fontWeight: '700', color: '#64748b' }}>
+                            (<AnimatedCounter value={voteCount} />票)
+                          </span>
                         </span>
-                        <span className="vote-count-num" style={{ fontSize: '0.82rem', fontWeight: '700', color: '#64748b' }}>
-                          (<AnimatedCounter value={voteCount} />票)
-                        </span>
-                      </span>
-                    </div>
-                    <div className="result-bar-bg" style={{ height: '16px', background: '#f1f5f9', borderRadius: '999px', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
-                      <div className="result-bar-fill" style={{
-                        width: `${perc}%`,
-                        minWidth: voteCount > 0 ? '8px' : '0',
-                        height: '100%',
-                        background: palette.barBg,
-                        borderRadius: '999px',
-                        transition: 'width 0.9s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                        boxShadow: voteRank === 1 ? '0 0 10px rgba(236, 72, 153, 0.35)' : 'none'
-                      }}></div>
-                    </div>
-                  </>
-                ) : (() => {
-                  const optTheme = isUserAdded
-                    ? OPTION_COLOR_THEMES[3]
-                    : OPTION_COLOR_THEMES[index % OPTION_COLOR_THEMES.length];
-                  return (
-                <button className="option-button" onClick={() => handleVote(opt)} style={{
-                  width: '100%',
-                  padding: '15px 18px',
-                  marginBottom: 0,
-                  borderRadius: '18px',
-                  borderWidth: '2px 2px 5px 2px',
-                  borderStyle: 'solid',
-                  borderColor: `${optTheme.border} ${optTheme.border} ${optTheme.borderBottom} ${optTheme.border}`,
-                  background: optTheme.bg,
-                  boxShadow: optTheme.shadow,
-                  fontSize: '1.05rem',
-                  fontWeight: '800',
-                  color: '#1e293b',
-                  cursor: 'pointer',
-                  transition: 'all 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-                  textAlign: 'left',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  gap: '12px',
-                  flexWrap: 'wrap'
-                }} onMouseOver={e => {
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                  e.currentTarget.style.borderColor = optTheme.hoverBorder;
-                  e.currentTarget.style.borderBottomColor = optTheme.hoverBorderBottom;
-                  e.currentTarget.style.color = optTheme.hoverText;
-                  e.currentTarget.style.background = optTheme.hoverBg;
-                  e.currentTarget.style.boxShadow = optTheme.hoverShadow;
-                }} onMouseOut={e => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.borderColor = optTheme.border;
-                  e.currentTarget.style.borderBottomColor = optTheme.borderBottom;
-                  e.currentTarget.style.color = '#1e293b';
-                  e.currentTarget.style.background = optTheme.bg;
-                  e.currentTarget.style.boxShadow = optTheme.shadow;
-                }}>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: '1 1 200px', minWidth: 0 }}>
-                    <span style={{
-                      flex: '0 0 auto',
-                      width: '28px',
-                      height: '28px',
-                      borderRadius: '50%',
-                      background: optTheme.badgeBg,
-                      color: '#ffffff',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '0.88rem',
-                      fontWeight: '900',
-                      boxShadow: optTheme.badgeShadow
-                    }}>
-                      {index + 1}
-                    </span>
-                    <span style={{ lineHeight: 1.45, wordBreak: 'break-word' }}>{strippedLabel}</span>
-                  </span>
-                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', flexShrink: 0, marginLeft: 'auto' }}>
-                    {isUserAdded && (
-                      <span style={{
-                        fontSize: '0.72rem',
-                        background: '#fef3c7',
-                        color: '#b45309',
-                        border: '1px solid #fcd34d',
-                        padding: '3px 8px',
-                        borderRadius: '999px',
+                      </div>
+                      <div className="result-bar-bg" style={{ height: '16px', background: '#f1f5f9', borderRadius: '999px', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
+                        <div className="result-bar-fill" style={{
+                          width: `${perc}%`,
+                          minWidth: voteCount > 0 ? '8px' : '0',
+                          height: '100%',
+                          background: palette.barBg,
+                          borderRadius: '999px',
+                          transition: 'width 0.9s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                          boxShadow: voteRank === 1 ? '0 0 10px rgba(236, 72, 153, 0.35)' : 'none'
+                        }}></div>
+                      </div>
+                    </>
+                  ) : (() => {
+                    const optTheme = isUserAdded
+                      ? OPTION_COLOR_THEMES[3]
+                      : OPTION_COLOR_THEMES[index % OPTION_COLOR_THEMES.length];
+                    return (
+                      <button className="option-button" onClick={() => handleVote(opt)} style={{
+                        width: '100%',
+                        padding: '15px 18px',
+                        marginBottom: 0,
+                        borderRadius: '18px',
+                        borderWidth: '2px 2px 5px 2px',
+                        borderStyle: 'solid',
+                        borderColor: `${optTheme.border} ${optTheme.border} ${optTheme.borderBottom} ${optTheme.border}`,
+                        background: optTheme.bg,
+                        boxShadow: optTheme.shadow,
+                        fontSize: '1.05rem',
                         fontWeight: '800',
-                        flexShrink: 0
+                        color: '#1e293b',
+                        cursor: 'pointer',
+                        transition: 'all 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                        textAlign: 'left',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: '12px',
+                        flexWrap: 'wrap'
+                      }} onMouseOver={e => {
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                        e.currentTarget.style.borderColor = optTheme.hoverBorder;
+                        e.currentTarget.style.borderBottomColor = optTheme.hoverBorderBottom;
+                        e.currentTarget.style.color = optTheme.hoverText;
+                        e.currentTarget.style.background = optTheme.hoverBg;
+                        e.currentTarget.style.boxShadow = optTheme.hoverShadow;
+                      }} onMouseOut={e => {
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.borderColor = optTheme.border;
+                        e.currentTarget.style.borderBottomColor = optTheme.borderBottom;
+                        e.currentTarget.style.color = '#1e293b';
+                        e.currentTarget.style.background = optTheme.bg;
+                        e.currentTarget.style.boxShadow = optTheme.shadow;
                       }}>
-                        🙋 みんなが追加
-                      </span>
-                    )}
-                    <span style={{
-                      background: optTheme.btnBg,
-                      color: '#ffffff',
-                      padding: '6px 12px',
-                      borderRadius: '999px',
-                      fontSize: '0.78rem',
-                      fontWeight: '900',
-                      letterSpacing: '0.03em',
-                      boxShadow: optTheme.badgeShadow,
-                      whiteSpace: 'nowrap',
-                      flexShrink: 0
-                    }}>
-                      投票 ▶
-                    </span>
-                  </span>
-                </button>
-                  );
-                })()}
-              </div>
-            );
-          });
-        })() : (
-          <div className="options-loading" style={{ textAlign: 'center', padding: '30px', color: '#94a3b8', fontStyle: 'italic' }}>
-            🗳️ 投票項目を読み込み中らび...✨
-          </div>
-        )}
-
-        {/* ➕ 自分の選択肢を追加して投票する参加型フォーム（未投票 ＆ 受付中 ＆ 14枠未満） */}
-        {!votedOption && !isTimeUp && options.length > 0 && options.length < 14 && typeof handleAddCustomOption === 'function' && (
-          <div style={{ marginTop: '18px' }}>
-            {!isAddingOption ? (
-              <button
-                type="button"
-                onClick={() => setIsAddingOption(true)}
-                style={{
-                  width: '100%',
-                  padding: '14px 20px',
-                  borderRadius: '16px',
-                  border: '2px dashed #cbd5e1',
-                  background: '#f8fafc',
-                  color: '#475569',
-                  fontSize: '0.95rem',
-                  fontWeight: '800',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '8px',
-                  transition: 'all 0.2s'
-                }}
-                onMouseOver={e => {
-                  e.currentTarget.style.borderColor = '#7c3aed';
-                  e.currentTarget.style.color = '#7c3aed';
-                  e.currentTarget.style.background = '#f5f3ff';
-                }}
-                onMouseOut={e => {
-                  e.currentTarget.style.borderColor = '#cbd5e1';
-                  e.currentTarget.style.color = '#475569';
-                  e.currentTarget.style.background = '#f8fafc';
-                }}
-              >
-                <span>➕ ピンとくる選択肢がない？自分の選択肢を追加して1票入れる！（あと{14 - options.length}枠）</span>
-              </button>
-            ) : (
-              <div style={{
-                padding: '18px 20px',
-                borderRadius: '18px',
-                border: '2px solid #ddd6fe',
-                background: 'linear-gradient(135deg, #f5f3ff, #faf5ff)',
-                boxShadow: '0 8px 20px rgba(124, 58, 237, 0.08)'
-              }}>
-                <div style={{ fontSize: '0.9rem', fontWeight: '800', color: '#5b21b6', marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span>🙋 新しい選択肢を追加して投票するらび！（最大35文字）</span>
-                  <span style={{ fontSize: '0.78rem', color: '#7c3aed', fontWeight: 'bold' }}>残り {14 - options.length} 枠</span>
+                        <span style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: '1 1 200px', minWidth: 0 }}>
+                          <span style={{
+                            flex: '0 0 auto',
+                            width: '28px',
+                            height: '28px',
+                            borderRadius: '50%',
+                            background: optTheme.badgeBg,
+                            color: '#ffffff',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '0.88rem',
+                            fontWeight: '900',
+                            boxShadow: optTheme.badgeShadow
+                          }}>
+                            {index + 1}
+                          </span>
+                          <span style={{ lineHeight: 1.45, wordBreak: 'break-word' }}>{strippedLabel}</span>
+                        </span>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', flexShrink: 0, marginLeft: 'auto' }}>
+                          {isUserAdded && (
+                            <span style={{
+                              fontSize: '0.72rem',
+                              background: '#fef3c7',
+                              color: '#b45309',
+                              border: '1px solid #fcd34d',
+                              padding: '3px 8px',
+                              borderRadius: '999px',
+                              fontWeight: '800',
+                              flexShrink: 0
+                            }}>
+                              🙋 みんなが追加
+                            </span>
+                          )}
+                          <span style={{
+                            background: optTheme.btnBg,
+                            color: '#ffffff',
+                            padding: '6px 12px',
+                            borderRadius: '999px',
+                            fontSize: '0.78rem',
+                            fontWeight: '900',
+                            letterSpacing: '0.03em',
+                            boxShadow: optTheme.badgeShadow,
+                            whiteSpace: 'nowrap',
+                            flexShrink: 0
+                          }}>
+                            投票 ▶
+                          </span>
+                        </span>
+                      </button>
+                    );
+                  })()}
                 </div>
-                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-                  <input
-                    type="text"
-                    value={customOptionText}
-                    onChange={e => setCustomOptionText(e.target.value)}
-                    maxLength={35}
-                    placeholder="例: いや、〇〇だと思う！"
-                    disabled={isSubmittingCustomOption}
-                    onKeyDown={async e => {
-                      if (e.key === 'Enter' && !isSubmittingCustomOption) {
-                        e.preventDefault();
+              );
+            });
+          })() : (
+            <div className="options-loading" style={{ textAlign: 'center', padding: '30px', color: '#94a3b8', fontStyle: 'italic' }}>
+              🗳️ 投票項目を読み込み中らび...✨
+            </div>
+          )}
+
+          {/* ➕ 自分の選択肢を追加して投票する参加型フォーム（未投票 ＆ 受付中 ＆ 14枠未満） */}
+          {!votedOption && !isTimeUp && options.length > 0 && options.length < 14 && typeof handleAddCustomOption === 'function' && (
+            <div style={{ marginTop: '18px' }}>
+              {!isAddingOption ? (
+                <button
+                  type="button"
+                  onClick={() => setIsAddingOption(true)}
+                  style={{
+                    width: '100%',
+                    padding: '14px 20px',
+                    borderRadius: '16px',
+                    border: '2px dashed #cbd5e1',
+                    background: '#f8fafc',
+                    color: '#475569',
+                    fontSize: '0.95rem',
+                    fontWeight: '800',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    transition: 'all 0.2s'
+                  }}
+                  onMouseOver={e => {
+                    e.currentTarget.style.borderColor = '#7c3aed';
+                    e.currentTarget.style.color = '#7c3aed';
+                    e.currentTarget.style.background = '#f5f3ff';
+                  }}
+                  onMouseOut={e => {
+                    e.currentTarget.style.borderColor = '#cbd5e1';
+                    e.currentTarget.style.color = '#475569';
+                    e.currentTarget.style.background = '#f8fafc';
+                  }}
+                >
+                  <span>➕ ピンとくる選択肢がない？自分の選択肢を追加して1票入れる！（あと{14 - options.length}枠）</span>
+                </button>
+              ) : (
+                <div style={{
+                  padding: '18px 20px',
+                  borderRadius: '18px',
+                  border: '2px solid #ddd6fe',
+                  background: 'linear-gradient(135deg, #f5f3ff, #faf5ff)',
+                  boxShadow: '0 8px 20px rgba(124, 58, 237, 0.08)'
+                }}>
+                  <div style={{ fontSize: '0.9rem', fontWeight: '800', color: '#5b21b6', marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span>🙋 新しい選択肢を追加して投票するらび！（最大35文字）</span>
+                    <span style={{ fontSize: '0.78rem', color: '#7c3aed', fontWeight: 'bold' }}>残り {14 - options.length} 枠</span>
+                  </div>
+                  <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                    <input
+                      type="text"
+                      value={customOptionText}
+                      onChange={e => setCustomOptionText(e.target.value)}
+                      maxLength={35}
+                      placeholder="例: いや、〇〇だと思う！"
+                      disabled={isSubmittingCustomOption}
+                      onKeyDown={async e => {
+                        if (e.key === 'Enter' && !isSubmittingCustomOption) {
+                          e.preventDefault();
+                          setIsSubmittingCustomOption(true);
+                          const ok = await handleAddCustomOption(customOptionText);
+                          setIsSubmittingCustomOption(false);
+                          if (ok) {
+                            setCustomOptionText('');
+                            setIsAddingOption(false);
+                          }
+                        }
+                      }}
+                      style={{
+                        flex: '1 1 220px',
+                        padding: '12px 16px',
+                        borderRadius: '12px',
+                        border: '2px solid #c4b5fd',
+                        fontSize: '0.98rem',
+                        background: '#fff',
+                        color: '#1e293b',
+                        outline: 'none'
+                      }}
+                    />
+                    <button
+                      type="button"
+                      disabled={isSubmittingCustomOption || !customOptionText.trim()}
+                      onClick={async () => {
                         setIsSubmittingCustomOption(true);
                         const ok = await handleAddCustomOption(customOptionText);
                         setIsSubmittingCustomOption(false);
@@ -1045,75 +1103,51 @@ const SurveyDetailView = ({
                           setCustomOptionText('');
                           setIsAddingOption(false);
                         }
-                      }
-                    }}
-                    style={{
-                      flex: '1 1 220px',
-                      padding: '12px 16px',
-                      borderRadius: '12px',
-                      border: '2px solid #c4b5fd',
-                      fontSize: '0.98rem',
-                      background: '#fff',
-                      color: '#1e293b',
-                      outline: 'none'
-                    }}
-                  />
-                  <button
-                    type="button"
-                    disabled={isSubmittingCustomOption || !customOptionText.trim()}
-                    onClick={async () => {
-                      setIsSubmittingCustomOption(true);
-                      const ok = await handleAddCustomOption(customOptionText);
-                      setIsSubmittingCustomOption(false);
-                      if (ok) {
-                        setCustomOptionText('');
+                      }}
+                      style={{
+                        padding: '12px 20px',
+                        borderRadius: '12px',
+                        border: 'none',
+                        background: (!customOptionText.trim() || isSubmittingCustomOption) ? '#cbd5e1' : 'linear-gradient(135deg, #7c3aed, #ec4899)',
+                        color: '#fff',
+                        fontWeight: '900',
+                        fontSize: '0.95rem',
+                        cursor: (!customOptionText.trim() || isSubmittingCustomOption) ? 'not-allowed' : 'pointer',
+                        boxShadow: (!customOptionText.trim() || isSubmittingCustomOption) ? 'none' : '0 4px 12px rgba(124, 58, 237, 0.25)',
+                        whiteSpace: 'nowrap'
+                      }}
+                    >
+                      {isSubmittingCustomOption ? '追加中...' : '🗳️ 追加して1票入れる！'}
+                    </button>
+                    <button
+                      type="button"
+                      disabled={isSubmittingCustomOption}
+                      onClick={() => {
                         setIsAddingOption(false);
-                      }
-                    }}
-                    style={{
-                      padding: '12px 20px',
-                      borderRadius: '12px',
-                      border: 'none',
-                      background: (!customOptionText.trim() || isSubmittingCustomOption) ? '#cbd5e1' : 'linear-gradient(135deg, #7c3aed, #ec4899)',
-                      color: '#fff',
-                      fontWeight: '900',
-                      fontSize: '0.95rem',
-                      cursor: (!customOptionText.trim() || isSubmittingCustomOption) ? 'not-allowed' : 'pointer',
-                      boxShadow: (!customOptionText.trim() || isSubmittingCustomOption) ? 'none' : '0 4px 12px rgba(124, 58, 237, 0.25)',
-                      whiteSpace: 'nowrap'
-                    }}
-                  >
-                    {isSubmittingCustomOption ? '追加中...' : '🗳️ 追加して1票入れる！'}
-                  </button>
-                  <button
-                    type="button"
-                    disabled={isSubmittingCustomOption}
-                    onClick={() => {
-                      setIsAddingOption(false);
-                      setCustomOptionText('');
-                    }}
-                    style={{
-                      padding: '12px 14px',
-                      borderRadius: '12px',
-                      border: '1px solid #cbd5e1',
-                      background: '#fff',
-                      color: '#64748b',
-                      fontWeight: 'bold',
-                      fontSize: '0.85rem',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    閉じる
-                  </button>
+                        setCustomOptionText('');
+                      }}
+                      style={{
+                        padding: '12px 14px',
+                        borderRadius: '12px',
+                        border: '1px solid #cbd5e1',
+                        background: '#fff',
+                        color: '#64748b',
+                        fontWeight: 'bold',
+                        fontSize: '0.85rem',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      閉じる
+                    </button>
+                  </div>
+                  <div style={{ fontSize: '0.78rem', color: '#64748b', marginTop: '8px' }}>
+                    💡 追加した選択肢は他の人の画面にも表示されて、みんなも投票できるようになるよ！（＋15 EXP獲得✨）
+                  </div>
                 </div>
-                <div style={{ fontSize: '0.78rem', color: '#64748b', marginTop: '8px' }}>
-                  💡 追加した選択肢は他の人の画面にも表示されて、みんなも投票できるようになるよ！（＋15 EXP獲得✨）
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
+              )}
+            </div>
+          )}
+        </div>
       </SurveyDescription>
 
       {/* 🚀 投票直後のシェア導線（新機能！） */}
@@ -1155,7 +1189,7 @@ const SurveyDetailView = ({
             </svg>
             Xでシェアする
           </button>
-          
+
           <button onClick={() => setShowEmbedModal(true)} style={{
             background: 'white',
             color: '#3b82f6',
@@ -1188,8 +1222,8 @@ const SurveyDetailView = ({
             <p style={{ fontSize: '0.9rem', color: '#64748b', marginBottom: '16px' }}>
               以下のコードをコピーして、ご自身のブログ（WordPressなど）のHTML編集画面に貼り付けてください。
             </p>
-            <textarea 
-              readOnly 
+            <textarea
+              readOnly
               value={embedCode}
               style={{ width: '100%', height: '100px', padding: '12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.85rem', color: '#334155', fontFamily: 'monospace', resize: 'none', marginBottom: '16px', boxSizing: 'border-box' }}
               onClick={e => e.target.select()}
@@ -1198,12 +1232,12 @@ const SurveyDetailView = ({
               <button onClick={() => setShowEmbedModal(false)} style={{ padding: '8px 16px', background: '#f1f5f9', color: '#64748b', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>
                 閉じる
               </button>
-              <button 
+              <button
                 onClick={() => {
                   navigator.clipboard.writeText(embedCode);
                   alert('コピーしました！🐰');
                   setShowEmbedModal(false);
-                }} 
+                }}
                 style={{ padding: '8px 16px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}
               >
                 コードをコピー
@@ -1472,11 +1506,11 @@ const SurveyDetailView = ({
       </div>
 
       {/* 💬 コメント（掲示板）セクション */}
-      <div className="comment-section-area" id="comments" style={{ 
-        marginTop: '46px', 
-        padding: '24px 20px', 
-        background: 'linear-gradient(135deg, #faf5ff 0%, #fdf2f8 50%, #f8fafc 100%)', 
-        border: '2px solid #e9d5ff', 
+      <div className="comment-section-area" id="comments" style={{
+        marginTop: '46px',
+        padding: '24px 20px',
+        background: 'linear-gradient(135deg, #faf5ff 0%, #fdf2f8 50%, #f8fafc 100%)',
+        border: '2px solid #e9d5ff',
         borderRadius: '24px',
         boxShadow: '0 8px 24px rgba(168, 85, 247, 0.07)'
       }}>
@@ -1528,7 +1562,7 @@ const SurveyDetailView = ({
               <strong>本当に書き込みますか？</strong>
             </div>
             <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-              <button 
+              <button
                 onClick={() => {
                   handlePostComment();
                   setIsConfirmingPost(false);
@@ -1547,7 +1581,7 @@ const SurveyDetailView = ({
               >
                 {isPostingComment ? '送信中...' : '本当に書き込む'}
               </button>
-              <button 
+              <button
                 onClick={() => setIsConfirmingPost(false)}
                 style={{
                   padding: '10px 20px',
@@ -1567,26 +1601,26 @@ const SurveyDetailView = ({
           <div style={{ marginBottom: '28px', padding: '16px', background: '#ffffff', border: '2px solid #e9d5ff', borderRadius: '18px', boxShadow: '0 4px 12px rgba(15, 23, 42, 0.03)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px', fontSize: '0.9rem', fontWeight: '800', color: '#475569' }}>
               <span>名前：</span>
-              <input 
-                type="text" 
-                placeholder="名無しの広場民" 
-                value={commentName} 
-                onChange={e => setCommentName(e.target.value)} 
+              <input
+                type="text"
+                placeholder="名無しの広場民"
+                value={commentName}
+                onChange={e => setCommentName(e.target.value)}
                 style={{ padding: '6px 12px', border: '1.5px solid #cbd5e1', borderRadius: '12px', width: '210px', maxWidth: '100%', fontSize: '0.92rem' }}
               />
             </div>
             <div style={{ display: 'flex', alignItems: 'stretch', gap: '10px', flexWrap: 'wrap' }}>
-              <textarea 
-                placeholder="記事の感想やあなたの意見を書いてみてね🐰✨" 
-                value={commentContent} 
-                onChange={e => setCommentContent(e.target.value)} 
+              <textarea
+                placeholder="記事の感想やあなたの意見を書いてみてね🐰✨"
+                value={commentContent}
+                onChange={e => setCommentContent(e.target.value)}
                 style={{ flex: '1 1 220px', minHeight: '82px', padding: '10px 12px', border: '1.5px solid #cbd5e1', borderRadius: '12px', resize: 'vertical', fontFamily: 'inherit', fontSize: '0.95rem' }}
               />
-              <button 
-                onClick={() => setIsConfirmingPost(true)} 
+              <button
+                onClick={() => setIsConfirmingPost(true)}
                 disabled={isPostingComment || !commentContent.trim()}
-                style={{ 
-                  padding: '10px 20px', 
+                style={{
+                  padding: '10px 20px',
                   background: (isPostingComment || !commentContent.trim()) ? '#e2e8f0' : 'linear-gradient(135deg, #7c3aed, #ec4899)',
                   color: (isPostingComment || !commentContent.trim()) ? '#94a3b8' : '#ffffff',
                   border: 'none',
@@ -1604,7 +1638,7 @@ const SurveyDetailView = ({
             </div>
           </div>
         )}
-        
+
         <div className="comments-list" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           {comments.length > 0 ? comments.slice((currentCommentPage - 1) * 50, currentCommentPage * 50).map((c, idx) => {
             const absoluteIndex = (currentCommentPage - 1) * 50 + idx;
@@ -1612,26 +1646,26 @@ const SurveyDetailView = ({
             const stableResNum = absoluteIndex + 1;
             const isMyComment = myCommentKeys[c.id] || (user && c.user_id === user.id);
             const isLabi = c.user_name?.includes('らび');
-            
+
             // 2ch風の日付とID
             const d = new Date(c.created_at);
             const yyyy = d.getFullYear();
             const mm = String(d.getMonth() + 1).padStart(2, '0');
             const dd = String(d.getDate()).padStart(2, '0');
-            const day = ['日','月','火','水','木','金','土'][d.getDay()];
+            const day = ['日', '月', '火', '水', '木', '金', '土'][d.getDay()];
             const hh = String(d.getHours()).padStart(2, '0');
             const min = String(d.getMinutes()).padStart(2, '0');
             const ss = String(d.getSeconds()).padStart(2, '0');
             const ms = String(d.getMilliseconds()).padStart(2, '0').substring(0, 2);
-            
+
             // ID生成 (トリップがあればそれをベースに、なければUUIDをハッシュ化)
             const authorName = c.user_name || '名無しの広場民';
             const trip = authorName.includes('◆') ? authorName.split('◆')[1] : null;
             let generatedId = '';
-            
+
             // 日付文字列 (YYYYMMDD) を使って、日替わりIDにする
             const dateSeed = `${yyyy}${mm}${dd}`;
-            
+
             if (c.avatar_url && c.avatar_url.length > 5) {
               // avatar_url に格納された client_fp を使う
               const seed = c.avatar_url + dateSeed + c.survey_id;
@@ -1713,7 +1747,7 @@ const SurveyDetailView = ({
                       </button>
                     );
                   })}
-                  
+
                   <div className="stamp-picker-container" style={{ position: 'relative' }}>
                     <button
                       style={{
@@ -1867,7 +1901,7 @@ const SurveyDetailView = ({
         />
       </div>
 
-{/* 🔥 関連アンケートセクション (回遊性アップ！) */}
+      {/* 🔥 関連アンケートセクション (回遊性アップ！) */}
       {relatedSurveys && relatedSurveys.length > 0 && (
         <div className="related-surveys-section" style={{
           marginTop: '24px',
@@ -1992,10 +2026,10 @@ const SurveyDetailView = ({
       {/* 🚀 前後のアンケートへのナビゲーション（存在感＆立体ボタン風にアップグレードらび！） */}
       {(adjacentSurveys.prev || adjacentSurveys.next) && (
         <div className="adjacent-nav-section" style={{ marginTop: '44px' }}>
-          <div className="adjacent-nav-grid" style={{ 
-            display: 'grid', 
-            gridTemplateColumns: (adjacentSurveys.prev && adjacentSurveys.next) ? 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))' : '1fr', 
-            gap: '16px' 
+          <div className="adjacent-nav-grid" style={{
+            display: 'grid',
+            gridTemplateColumns: (adjacentSurveys.prev && adjacentSurveys.next) ? 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))' : '1fr',
+            gap: '16px'
           }}>
             {(() => {
               const NAV_STYLES = {
