@@ -713,6 +713,64 @@ const SurveyDetailView = ({
             3: { medal: '🥉', accent: '#10b981', barBg: 'linear-gradient(90deg, #10b981, #0d9488)', badgeBg: 'linear-gradient(135deg, #10b981, #0d9488)', textColor: '#047857', cardBorder: '#a7f3d0' },
           };
           const DEFAULT_PALETTE = { medal: null, accent: '#cbd5e1', barBg: 'linear-gradient(90deg, #a78bfa, #c4b5fd)', badgeBg: '#94a3b8', textColor: '#475569', cardBorder: '#e2e8f0' };
+          const OPTION_COLOR_THEMES = [
+            {
+              border: '#f9a8d4',
+              borderBottom: '#ec4899',
+              hoverBorder: '#ec4899',
+              hoverBorderBottom: '#be185d',
+              bg: 'linear-gradient(180deg, #ffffff 0%, #fdf2f8 100%)',
+              hoverBg: 'linear-gradient(180deg, #fdf2f8 0%, #fce7f3 100%)',
+              shadow: '0 4px 12px rgba(236, 72, 153, 0.12)',
+              hoverShadow: '0 8px 18px rgba(236, 72, 153, 0.22)',
+              hoverText: '#be185d',
+              badgeBg: 'linear-gradient(135deg, #f43f5e, #ec4899)',
+              btnBg: 'linear-gradient(135deg, #f43f5e, #ec4899)',
+              badgeShadow: '0 2px 6px rgba(236, 72, 153, 0.28)'
+            },
+            {
+              border: '#c4b5fd',
+              borderBottom: '#7c3aed',
+              hoverBorder: '#7c3aed',
+              hoverBorderBottom: '#5b21b6',
+              bg: 'linear-gradient(180deg, #ffffff 0%, #f5f3ff 100%)',
+              hoverBg: 'linear-gradient(180deg, #f5f3ff 0%, #ede9fe 100%)',
+              shadow: '0 4px 12px rgba(124, 58, 237, 0.12)',
+              hoverShadow: '0 8px 18px rgba(124, 58, 237, 0.22)',
+              hoverText: '#5b21b6',
+              badgeBg: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+              btnBg: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+              badgeShadow: '0 2px 6px rgba(124, 58, 237, 0.28)'
+            },
+            {
+              border: '#7dd3fc',
+              borderBottom: '#0284c7',
+              hoverBorder: '#0284c7',
+              hoverBorderBottom: '#0369a1',
+              bg: 'linear-gradient(180deg, #ffffff 0%, #ecfeff 100%)',
+              hoverBg: 'linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 100%)',
+              shadow: '0 4px 12px rgba(2, 132, 199, 0.12)',
+              hoverShadow: '0 8px 18px rgba(2, 132, 199, 0.22)',
+              hoverText: '#0369a1',
+              badgeBg: 'linear-gradient(135deg, #0ea5e9, #0284c7)',
+              btnBg: 'linear-gradient(135deg, #0ea5e9, #0284c7)',
+              badgeShadow: '0 2px 6px rgba(2, 132, 199, 0.28)'
+            },
+            {
+              border: '#fcd34d',
+              borderBottom: '#d97706',
+              hoverBorder: '#d97706',
+              hoverBorderBottom: '#b45309',
+              bg: 'linear-gradient(180deg, #ffffff 0%, #fffbeb 100%)',
+              hoverBg: 'linear-gradient(180deg, #fffbeb 0%, #fef3c7 100%)',
+              shadow: '0 4px 12px rgba(217, 119, 6, 0.13)',
+              hoverShadow: '0 8px 18px rgba(217, 119, 6, 0.22)',
+              hoverText: '#92400e',
+              badgeBg: 'linear-gradient(135deg, #f59e0b, #ea580c)',
+              btnBg: 'linear-gradient(135deg, #f59e0b, #ea580c)',
+              badgeShadow: '0 2px 6px rgba(217, 119, 6, 0.28)'
+            }
+          ];
 
           return options.map((opt, index) => {
             const perc = isTotalVotes > 0 ? Math.round((opt.votes / isTotalVotes) * 100) : 0;
@@ -819,7 +877,11 @@ const SurveyDetailView = ({
                       }}></div>
                     </div>
                   </>
-                ) : (
+                ) : (() => {
+                  const optTheme = isUserAdded
+                    ? OPTION_COLOR_THEMES[3]
+                    : OPTION_COLOR_THEMES[index % OPTION_COLOR_THEMES.length];
+                  return (
                 <button className="option-button" onClick={() => handleVote(opt)} style={{
                   width: '100%',
                   padding: '15px 18px',
@@ -827,13 +889,9 @@ const SurveyDetailView = ({
                   borderRadius: '18px',
                   borderWidth: '2px 2px 5px 2px',
                   borderStyle: 'solid',
-                  borderColor: isUserAdded ? '#f59e0b #f59e0b #d97706 #f59e0b' : '#c4b5fd #c4b5fd #8b5cf6 #c4b5fd',
-                  background: isUserAdded
-                    ? 'linear-gradient(180deg, #ffffff 0%, #fffbeb 100%)'
-                    : 'linear-gradient(180deg, #ffffff 0%, #faf5ff 100%)',
-                  boxShadow: isUserAdded
-                    ? '0 4px 12px rgba(245, 158, 11, 0.14)'
-                    : '0 4px 12px rgba(124, 58, 237, 0.10)',
+                  borderColor: `${optTheme.border} ${optTheme.border} ${optTheme.borderBottom} ${optTheme.border}`,
+                  background: optTheme.bg,
+                  boxShadow: optTheme.shadow,
                   fontSize: '1.05rem',
                   fontWeight: '800',
                   color: '#1e293b',
@@ -847,26 +905,18 @@ const SurveyDetailView = ({
                   flexWrap: 'wrap'
                 }} onMouseOver={e => {
                   e.currentTarget.style.transform = 'translateY(-2px)';
-                  e.currentTarget.style.borderColor = isUserAdded ? '#d97706' : '#7c3aed';
-                  e.currentTarget.style.borderBottomColor = isUserAdded ? '#b45309' : '#6d28d9';
-                  e.currentTarget.style.color = isUserAdded ? '#92400e' : '#5b21b6';
-                  e.currentTarget.style.background = isUserAdded
-                    ? 'linear-gradient(180deg, #fffbeb 0%, #fef3c7 100%)'
-                    : 'linear-gradient(180deg, #faf5ff 0%, #ede9fe 100%)';
-                  e.currentTarget.style.boxShadow = isUserAdded
-                    ? '0 8px 18px rgba(245, 158, 11, 0.22)'
-                    : '0 8px 18px rgba(124, 58, 237, 0.20)';
+                  e.currentTarget.style.borderColor = optTheme.hoverBorder;
+                  e.currentTarget.style.borderBottomColor = optTheme.hoverBorderBottom;
+                  e.currentTarget.style.color = optTheme.hoverText;
+                  e.currentTarget.style.background = optTheme.hoverBg;
+                  e.currentTarget.style.boxShadow = optTheme.hoverShadow;
                 }} onMouseOut={e => {
                   e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.borderColor = isUserAdded ? '#f59e0b' : '#c4b5fd';
-                  e.currentTarget.style.borderBottomColor = isUserAdded ? '#d97706' : '#8b5cf6';
+                  e.currentTarget.style.borderColor = optTheme.border;
+                  e.currentTarget.style.borderBottomColor = optTheme.borderBottom;
                   e.currentTarget.style.color = '#1e293b';
-                  e.currentTarget.style.background = isUserAdded
-                    ? 'linear-gradient(180deg, #ffffff 0%, #fffbeb 100%)'
-                    : 'linear-gradient(180deg, #ffffff 0%, #faf5ff 100%)';
-                  e.currentTarget.style.boxShadow = isUserAdded
-                    ? '0 4px 12px rgba(245, 158, 11, 0.14)'
-                    : '0 4px 12px rgba(124, 58, 237, 0.10)';
+                  e.currentTarget.style.background = optTheme.bg;
+                  e.currentTarget.style.boxShadow = optTheme.shadow;
                 }}>
                   <span style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: '1 1 200px', minWidth: 0 }}>
                     <span style={{
@@ -874,16 +924,14 @@ const SurveyDetailView = ({
                       width: '28px',
                       height: '28px',
                       borderRadius: '50%',
-                      background: isUserAdded
-                        ? 'linear-gradient(135deg, #f59e0b, #d97706)'
-                        : 'linear-gradient(135deg, #8b5cf6, #ec4899)',
+                      background: optTheme.badgeBg,
                       color: '#ffffff',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       fontSize: '0.88rem',
                       fontWeight: '900',
-                      boxShadow: '0 2px 6px rgba(124, 58, 237, 0.25)'
+                      boxShadow: optTheme.badgeShadow
                     }}>
                       {index + 1}
                     </span>
@@ -905,16 +953,14 @@ const SurveyDetailView = ({
                       </span>
                     )}
                     <span style={{
-                      background: isUserAdded
-                        ? 'linear-gradient(135deg, #f59e0b, #ea580c)'
-                        : 'linear-gradient(135deg, #7c3aed, #ec4899)',
+                      background: optTheme.btnBg,
                       color: '#ffffff',
                       padding: '6px 12px',
                       borderRadius: '999px',
                       fontSize: '0.78rem',
                       fontWeight: '900',
                       letterSpacing: '0.03em',
-                      boxShadow: '0 2px 8px rgba(124, 58, 237, 0.25)',
+                      boxShadow: optTheme.badgeShadow,
                       whiteSpace: 'nowrap',
                       flexShrink: 0
                     }}>
@@ -922,7 +968,8 @@ const SurveyDetailView = ({
                     </span>
                   </span>
                 </button>
-              )}
+                  );
+                })()}
               </div>
             );
           });
