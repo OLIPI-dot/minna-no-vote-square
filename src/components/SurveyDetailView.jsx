@@ -869,7 +869,7 @@ const SurveyDetailView = ({
               isMyAdded = myAddedIds.includes(opt.id);
             } catch {}
 
-            const canDeleteCustomOption = isUserAdded && Boolean(isAdmin || (user && currentSurvey?.user_id === user.id)) && typeof handleDeleteCustomOption === 'function';
+            const canDeleteCustomOption = isUserAdded && Boolean(isMyAdded || isAdmin || (user && currentSurvey?.user_id === user.id)) && typeof handleDeleteCustomOption === 'function';
             const showResult = Boolean(votedOption || isTimeUp);
             const borderEdge = isMyVote ? '2px solid #8b5cf6' : `1px solid ${palette.cardBorder}`;
 

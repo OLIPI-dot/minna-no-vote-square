@@ -2915,7 +2915,12 @@ function App() {
 
   const handleDeleteCustomOption = async (opt) => {
     if (!currentSurvey || !opt) return;
-    const canDelete = isAdmin || (user && currentSurvey.user_id === user.id);
+    let myAdded = [];
+    try {
+      myAdded = JSON.parse(localStorage.getItem('my_added_options') || '[]');
+    } catch {}
+    const isMyAdded = myAdded.includes(opt.id);
+    const canDelete = isMyAdded || isAdmin || (user && currentSurvey.user_id === user.id);
     if (!canDelete) return;
     const cleanLabel = String(opt.name || '').replace(/^\u200B+/, '').trim();
     if (!window.confirm(`追加された選択肢「${cleanLabel}」を削除しますか？🐰`)) return;
@@ -2926,6 +2931,14 @@ function App() {
       alert('選択肢の削除に失敗しました🐰💦');
       return;
     }
+
+    try {
+      localStorage.setItem('my_added_options', JSON.stringify(myAdded.filter(id => id !== opt.id)));
+      if (String(votedOption) === String(opt.id)) {
+        localStorage.removeItem(`voted_survey_${currentSurvey.id}`);
+        setVotedOption(null);
+      }
+    } catch {}
 
     const nextOpts = options.filter(o => o.id !== opt.id);
     const newTotal = nextOpts.reduce((sum, o) => sum + (Number(o.votes) || 0), 0);
