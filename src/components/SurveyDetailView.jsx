@@ -2192,17 +2192,18 @@ const SurveyDetailView = ({
         </button>
       </div>
 
-      {/* 🗳️⚡＆👀 スクロール追従の右下フローティングエリア */}
+      {/* 🗳️⚡＆👀 スクロール追従の左下フローティングエリア（TOPへボタンの上） */}
       <div
+        className="floating-detail-stack"
         style={{
           position: 'fixed',
-          bottom: '18px',
-          right: '16px',
+          bottom: '78px',
+          left: '24px',
           zIndex: 90,
           pointerEvents: 'none',
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'flex-end',
+          alignItems: 'flex-start',
           gap: '8px'
         }}
       >
@@ -2410,6 +2411,12 @@ const SurveyDetailView = ({
           0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.55); opacity: 1; }
           70% { box-shadow: 0 0 0 6px rgba(245, 158, 11, 0); opacity: 0.85; }
           100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); opacity: 1; }
+        }
+        @media (max-width: 768px) {
+          .floating-detail-stack {
+            bottom: 64px !important;
+            left: 12px !important;
+          }
         }
         @media (max-width: 767px) {
           .floating-pc-nav {
