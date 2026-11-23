@@ -2860,9 +2860,9 @@ function App() {
     });
   };
 
-  // ➕ みんなが自分の選択肢を追加してそのまま1票入れる参加型機能らび！
+  // ➕ みんなが自分の選択肢を追加できる参加型機能（追加後に好きな選択肢へ投票できるらび！）
   const handleAddCustomOption = async (customText) => {
-    if (!currentSurvey || isTimeUp || votedOption || isVotingProcessingRef.current) return false;
+    if (!currentSurvey || isTimeUp || isVotingProcessingRef.current) return false;
     const cleanText = (customText || '').trim().replace(/^[1-9１-９][.．\s]+/, '').trim();
     if (!cleanText) {
       alert('追加したい選択肢を入力してね🐰🥕');
@@ -2909,7 +2909,10 @@ function App() {
         return false;
       }
 
-      // 自分が追加した選択肢IDを記録（バッジ表示用）
+      manualUpdatesRef.current[String(currentSurvey.id)] = Date.now();
+      setOptions(prev => prev.some(o => o.id === insertedOpt.id) ? prev : [...prev, insertedOpt]);
+
+      // 自分が追加した選択肢IDを記録（バッジ・削除判定用）
       try {
         const myAdded = JSON.parse(localStorage.getItem('my_added_options') || '[]');
         if (!myAdded.includes(insertedOpt.id)) {
@@ -2920,9 +2923,7 @@ function App() {
       // 選択肢追加ボーナスEXP (+5)
       addExp(5);
 
-      // ガードを一旦解除してそのまま handleVote で1票投じるらび！
       isVotingProcessingRef.current = false;
-      await handleVote(insertedOpt);
       return true;
     } catch (err) {
       console.error('❌ handleAddCustomOption exception:', err);

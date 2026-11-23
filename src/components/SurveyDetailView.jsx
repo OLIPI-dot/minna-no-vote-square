@@ -1047,15 +1047,15 @@ const SurveyDetailView = ({
                     {isUserAdded && (
                       <span style={{
                         fontSize: '0.72rem',
-                        background: '#fef3c7',
-                        color: '#b45309',
-                        border: '1px solid #fcd34d',
+                        background: isMyAdded ? '#f3e8ff' : '#fef3c7',
+                        color: isMyAdded ? '#6d28d9' : '#b45309',
+                        border: isMyAdded ? '1px solid #d8b4fe' : '1px solid #fcd34d',
                         padding: '3px 8px',
                         borderRadius: '999px',
                         fontWeight: '800',
                         flexShrink: 0
                       }}>
-                        🙋 みんなが追加
+                        {isMyAdded ? '✨ あなたが追加' : '🙋 みんなが追加'}
                       </span>
                     )}
                     {canDeleteCustomOption && (
@@ -1117,8 +1117,8 @@ const SurveyDetailView = ({
           </div>
         )}
 
-        {/* ➕ 自分の選択肢を追加して投票する参加型フォーム（未投票 ＆ 受付中 ＆ 24枠未満） */}
-        {!votedOption && !isTimeUp && options.length > 0 && options.length < 24 && typeof handleAddCustomOption === 'function' && (
+        {/* ➕ 自分の選択肢を追加する参加型フォーム（受付中 ＆ 24枠未満） */}
+        {!isTimeUp && options.length > 0 && options.length < 24 && typeof handleAddCustomOption === 'function' && (
           <div style={{ marginTop: '18px' }}>
             {!isAddingOption ? (
               <button
@@ -1155,8 +1155,8 @@ const SurveyDetailView = ({
                   e.currentTarget.style.transform = 'translateY(0)';
                 }}
               >
-                <span>💡 おもしろい項目や第5の本音を追加して1票入れる！（あと{24 - options.length}枠）</span>
-                <span style={{ fontSize: '0.78rem', fontWeight: '700', color: '#9333ea' }}>✨ あなたが追加した項目には、あとから来たみんなも投票できるようになるよ！</span>
+                <span>💡 おもしろい項目や第5の本音を選択肢に追加する！（あと{24 - options.length}枠）</span>
+                <span style={{ fontSize: '0.78rem', fontWeight: '700', color: '#9333ea' }}>✨ 追加した項目は上のリストに並んで、あなたやみんなが投票できるようになるよ！</span>
               </button>
             ) : (
               <div style={{
@@ -1167,7 +1167,7 @@ const SurveyDetailView = ({
                 boxShadow: '0 8px 20px rgba(124, 58, 237, 0.08)'
               }}>
                 <div style={{ fontSize: '0.9rem', fontWeight: '800', color: '#5b21b6', marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span>🙋 おもしろい項目や第5の本音を追加して投票しよう！（最大35文字）</span>
+                  <span>🙋 おもしろい項目や第5の本音を選択肢に追加しよう！（最大35文字）</span>
                   <span style={{ fontSize: '0.78rem', color: '#7c3aed', fontWeight: 'bold' }}>残り {24 - options.length} 枠</span>
                 </div>
                 <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
@@ -1226,7 +1226,7 @@ const SurveyDetailView = ({
                       whiteSpace: 'nowrap'
                     }}
                   >
-                    {isSubmittingCustomOption ? '追加中...' : '🗳️ 追加して1票入れる！'}
+                    {isSubmittingCustomOption ? '追加中...' : '➕ 選択肢を追加する'}
                   </button>
                   <button
                     type="button"
@@ -1250,7 +1250,7 @@ const SurveyDetailView = ({
                   </button>
                 </div>
                 <div style={{ fontSize: '0.78rem', color: '#64748b', marginTop: '8px' }}>
-                  💡 追加した選択肢は他の人の画面にも表示されて、みんなも投票できるようになるよ！（＋15 EXP獲得✨）
+                  💡 追加すると上の選択肢リストに並ぶよ！追加したあとに好きな項目へポチッと投票してね（追加ボーナス＋5 EXP✨）
                 </div>
               </div>
             )}
