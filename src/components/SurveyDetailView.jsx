@@ -1132,7 +1132,9 @@ const SurveyDetailView = ({
       </SurveyDescription>
 
       {/* 🚀 投票直後のシェア導線（新機能！） */}
-      {votedOption && (
+      {votedOption && (() => {
+        const nextSurveyCandidate = adjacentSurveys?.next || adjacentSurveys?.prev || (Array.isArray(relatedSurveys) && relatedSurveys[0]) || null;
+        return (
         <div className="vote-success-share-banner" style={{
           marginTop: '24px',
           padding: '24px',
@@ -1148,6 +1150,85 @@ const SurveyDetailView = ({
           <div style={{ fontSize: '0.88rem', color: '#475569', marginBottom: '16px', background: '#ffffff', display: 'inline-block', padding: '8px 16px', borderRadius: '20px', border: '1px solid #cbd5e1', fontWeight: 'bold' }}>
             ⭐ トップ画面の<span style={{ color: '#7c3aed' }}>「ウォッチ中」</span>に自動保存したよ！あとでまたみんなの結果を見に来てね🐰
           </div>
+
+          {nextSurveyCandidate && (
+            <button
+              type="button"
+              onClick={() => navigateTo('details', nextSurveyCandidate)}
+              style={{
+                width: '100%',
+                maxWidth: '520px',
+                margin: '0 auto 18px auto',
+                padding: '15px 18px',
+                background: 'linear-gradient(135deg, #faf5ff 0%, #fdf2f8 50%, #eff6ff 100%)',
+                borderWidth: '2px 2px 5px 2px',
+                borderStyle: 'solid',
+                borderColor: '#c084fc #c084fc #7c3aed #c084fc',
+                borderRadius: '20px',
+                boxShadow: '0 8px 20px rgba(124, 58, 237, 0.14)',
+                cursor: 'pointer',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '8px',
+                textAlign: 'center',
+                transition: 'transform 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.18s ease'
+              }}
+              onMouseOver={e => {
+                e.currentTarget.style.transform = 'translateY(-3px)';
+                e.currentTarget.style.boxShadow = '0 12px 26px rgba(124, 58, 237, 0.22)';
+              }}
+              onMouseOut={e => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 8px 20px rgba(124, 58, 237, 0.14)';
+              }}
+            >
+              <span style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '5px',
+                background: 'linear-gradient(135deg, #7c3aed, #ec4899)',
+                color: '#ffffff',
+                fontSize: '0.76rem',
+                fontWeight: '900',
+                padding: '4px 12px',
+                borderRadius: '999px',
+                letterSpacing: '0.02em',
+                boxShadow: '0 2px 8px rgba(124, 58, 237, 0.25)'
+              }}>
+                🐰 続けてもう1問！次のアンケートにも投票してみない？
+              </span>
+              <span style={{
+                fontSize: '1.02rem',
+                fontWeight: '900',
+                color: '#1e293b',
+                lineHeight: 1.45,
+                wordBreak: 'break-word',
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden'
+              }}>
+                {nextSurveyCandidate.title}
+              </span>
+              <span style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px',
+                background: '#ffffff',
+                color: '#6d28d9',
+                border: '1.5px solid #c4b5fd',
+                fontSize: '0.84rem',
+                fontWeight: '900',
+                padding: '5px 14px',
+                borderRadius: '999px',
+                boxShadow: '0 2px 6px rgba(124, 58, 237, 0.10)'
+              }}>
+                👉 この記事に投票しにいく ▶
+              </span>
+            </button>
+          )}
+
           <button onClick={() => handleShareResult('x')} style={{
             background: '#000000',
             color: 'white',
@@ -1190,7 +1271,8 @@ const SurveyDetailView = ({
             🔗 ブログに埋め込む
           </button>
         </div>
-      )}
+        );
+      })()}
 
       {/* 埋め込みコードモーダル */}
       {showEmbedModal && (
