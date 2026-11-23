@@ -4285,3 +4285,29 @@ button:active,
     row-gap: 3px !important;
   }
 }
+
+/* ✨ 投票選択肢が 1, 2, 3, 4 と順番にポンポン登場するアニメーション */
+@keyframes optionPopIn {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.97);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(-2px) scale(1.01);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.option-button-wrapper.option-pop-in {
+  animation: optionPopIn 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .option-button-wrapper.option-pop-in {
+    animation: none;
+  }
+}
