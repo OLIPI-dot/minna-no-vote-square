@@ -257,6 +257,51 @@ const SurveyDetailView = ({
     ? currentSurvey.title.split('||')[1].trim()
     : (currentSurvey.description || '');
 
+  // 🏆 多数派・少数派ジャッジ（投票後にあなたの立ち位置を診断！）
+  const voteJudgment = (() => {
+    if (!votedOption || !Array.isArray(options) || options.length === 0) return null;
+    const myOpt = options.find(o => String(o.id) === String(votedOption));
+    const totalV = Math.max(Number(isTotalVotes) || 0, options.reduce((acc, o) => acc + (Number(o.votes) || 0), 0));
+    const myVotes = Number(myOpt?.votes) || 0;
+    const maxVotes = options.reduce((max, o) => Math.max(max, Number(o.votes) || 0), 0);
+    const myPerc = totalV > 0 ? Math.round((myVotes / totalV) * 100) : 100;
+
+    if (totalV <= 1) {
+      return {
+        title: '👑 診断結果：記念すべき【最初の1票（基準をつくる人）】！',
+        desc: 'あなたの1票が最初の基準になりました！あとから来るみんなが同じ意見になるか楽しみらび🐰✨',
+        bg: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)',
+        border: '#f59e0b',
+        color: '#b45309'
+      };
+    }
+    if (myVotes === maxVotes && myPerc >= 40) {
+      return {
+        title: `🎉 診断結果：あなたは【多数派（全体の${myPerc}%）】でした！`,
+        desc: 'みんなと息ぴったり！いま一番多くの人があなたと同じ意見を選んでいるらび🐰✨',
+        bg: 'linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%)',
+        border: '#ec4899',
+        color: '#be185d'
+      };
+    }
+    if (myVotes === maxVotes || myPerc >= 25) {
+      return {
+        title: `⚡ 診断結果：意見が割れる【大接戦派（全体の${myPerc}%）】！`,
+        desc: 'みんなが迷う注目ポイントをチョイス！これからどっちが多数派になるか目が離せないらび🐰✨',
+        bg: 'linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%)',
+        border: '#8b5cf6',
+        color: '#6d28d9'
+      };
+    }
+    return {
+      title: `🌟 診断結果：あなたは【少数派のレア視点（全体の${myPerc}%）】！`,
+      desc: 'みんなとはひと味ちがう独自の視点！こういう貴重な本音が集まるのがみんアケの面白いところらび🐰✨',
+      bg: 'linear-gradient(135deg, #ecfeff 0%, #e0f2fe 100%)',
+      border: '#0ea5e9',
+      color: '#0369a1'
+    };
+  })();
+
   // 💬 ガヤ（コメント）タグを探す
   const commentTags = currentSurvey.tags?.filter(t => String(t).startsWith('comment:')) || [];
   const pickupComments = commentTags.map(t => t.replace('comment:', ''));
@@ -701,7 +746,26 @@ const SurveyDetailView = ({
                   borderRadius: '999px',
                   boxShadow: '0 2px 6px rgba(124, 58, 237, 0.08)'
                 }}>
-                  <span>🔒 完全匿名・ログイン不要！1タップでみんなの結果が見られます✨</span>
+                  <span>🔍 あなたの意見は多数派？少数派？1タップで診断！（匿名・ログイン不要）</span>
+                </div>
+              )}
+              {votedOption && voteJudgment && (
+                <div style={{
+                  marginTop: '12px',
+                  padding: '10px 14px',
+                  background: voteJudgment.bg,
+                  border: `2px solid ${voteJudgment.border}`,
+                  borderRadius: '14px',
+                  color: voteJudgment.color,
+                  boxShadow: '0 4px 12px rgba(15, 23, 42, 0.06)',
+                  animation: 'fadeInUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+                }}>
+                  <div style={{ fontWeight: '900', fontSize: '0.94rem', lineHeight: 1.4, marginBottom: '4px' }}>
+                    {voteJudgment.title}
+                  </div>
+                  <div style={{ fontWeight: '700', fontSize: '0.8rem', lineHeight: 1.45, color: '#334155' }}>
+                    {voteJudgment.desc}
+                  </div>
                 </div>
               )}
             </div>
@@ -1146,6 +1210,22 @@ const SurveyDetailView = ({
           textAlign: 'center',
           animation: 'fadeInUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
         }}>
+          {voteJudgment && (
+            <div style={{
+              display: 'inline-block',
+              marginBottom: '12px',
+              padding: '6px 14px',
+              borderRadius: '999px',
+              background: voteJudgment.bg,
+              border: `1.5px solid ${voteJudgment.border}`,
+              color: voteJudgment.color,
+              fontSize: '0.84rem',
+              fontWeight: '900',
+              boxShadow: '0 2px 8px rgba(15, 23, 42, 0.05)'
+            }}>
+              {voteJudgment.title}
+            </div>
+          )}
           <h4 style={{ fontSize: '1.2rem', fontWeight: '900', color: '#0f172a', marginBottom: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
             <span>🎉</span> 投票ありがとう！結果をみんなにシェアしよう！
           </h4>
