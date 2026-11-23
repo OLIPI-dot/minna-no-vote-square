@@ -561,7 +561,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
       }}>
         {/* ⚡ 要約・注目ポイントカード (目を引くリッチデザイン＆高ジャンプ率！) */}
         {showSummaryCard && (
-          <div className="summary-card" style={{
+          <div id="survey-summary-section" className="summary-card" style={{
             background: 'linear-gradient(135deg, #ffffff 0%, #faf5ff 50%, #f0fdf4 100%)',
             borderRadius: '24px',
             padding: '26px 30px',

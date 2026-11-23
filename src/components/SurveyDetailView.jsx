@@ -160,19 +160,25 @@ const SurveyDetailView = ({
   const [customOptionText, setCustomOptionText] = React.useState('');
   const [isSubmittingCustomOption, setIsSubmittingCustomOption] = React.useState(false);
   const [showFloatingPresence, setShowFloatingPresence] = React.useState(false);
-  const [showFloatingVoteJump, setShowFloatingVoteJump] = React.useState(false);
+  const [floatingJumpMode, setFloatingJumpMode] = React.useState('none'); // 'none' | 'vote' | 'summary'
   const embedCode = `<iframe src="${window.location.origin}/embed/${currentSurvey?.id}" width="100%" height="400" frameborder="0" style="border:1px solid #e2e8f0; border-radius:12px; max-width:600px; display:block; margin: 0 auto;"></iframe>`;
 
   React.useEffect(() => {
     const handleScroll = () => {
       const scrolled = window.scrollY > 200;
       setShowFloatingPresence(window.scrollY > 260);
+      if (!scrolled) {
+        setFloatingJumpMode('none');
+        return;
+      }
       const voteTarget = document.getElementById('survey-vote-section') || document.getElementById('survey-options-anchor');
-      if (scrolled && voteTarget) {
-        const rect = voteTarget.getBoundingClientRect();
-        setShowFloatingVoteJump(rect.top > window.innerHeight * 0.72);
+      const summaryTarget = document.getElementById('survey-summary-section');
+      if (voteTarget && voteTarget.getBoundingClientRect().top > window.innerHeight * 0.72) {
+        setFloatingJumpMode('vote');
+      } else if (summaryTarget && summaryTarget.getBoundingClientRect().bottom < 120) {
+        setFloatingJumpMode('summary');
       } else {
-        setShowFloatingVoteJump(false);
+        setFloatingJumpMode('none');
       }
     };
     handleScroll();
@@ -2186,7 +2192,7 @@ const SurveyDetailView = ({
         </button>
       </div>
 
-      {/* 🗳️＆👀 スクロール追従の右下フローティングエリア */}
+      {/* 🗳️⚡＆👀 スクロール追従の右下フローティングエリア */}
       <div
         style={{
           position: 'fixed',
@@ -2203,16 +2209,23 @@ const SurveyDetailView = ({
         <button
           type="button"
           onClick={() => {
-            const target = document.getElementById('survey-vote-section') || document.getElementById('survey-options-anchor');
-            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            if (floatingJumpMode === 'summary') {
+              const summaryTarget = document.getElementById('survey-summary-section');
+              if (summaryTarget) summaryTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+              const target = document.getElementById('survey-vote-section') || document.getElementById('survey-options-anchor');
+              if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
           }}
           style={{
-            pointerEvents: showFloatingVoteJump ? 'auto' : 'none',
-            background: 'rgba(250, 245, 255, 0.90)',
+            pointerEvents: floatingJumpMode !== 'none' ? 'auto' : 'none',
+            background: floatingJumpMode === 'summary' ? 'rgba(255, 251, 235, 0.92)' : 'rgba(250, 245, 255, 0.90)',
             backdropFilter: 'blur(8px)',
             WebkitBackdropFilter: 'blur(8px)',
-            color: '#6d28d9',
-            border: '1.5px solid rgba(192, 132, 252, 0.85)',
+            color: floatingJumpMode === 'summary' ? '#b45309' : '#6d28d9',
+            border: floatingJumpMode === 'summary'
+              ? '1.5px solid rgba(251, 191, 36, 0.85)'
+              : '1.5px solid rgba(192, 132, 252, 0.85)',
             padding: '6px 13px',
             borderRadius: '999px',
             fontSize: '0.78rem',
@@ -2221,19 +2234,25 @@ const SurveyDetailView = ({
             display: 'inline-flex',
             alignItems: 'center',
             gap: '6px',
-            boxShadow: '0 4px 14px rgba(139, 92, 246, 0.16)',
-            opacity: showFloatingVoteJump ? 1 : 0,
-            transform: showFloatingVoteJump ? 'translateY(0)' : 'translateY(10px)',
+            boxShadow: floatingJumpMode === 'summary'
+              ? '0 4px 14px rgba(245, 158, 11, 0.16)'
+              : '0 4px 14px rgba(139, 92, 246, 0.16)',
+            opacity: floatingJumpMode !== 'none' ? 1 : 0,
+            transform: floatingJumpMode !== 'none' ? 'translateY(0)' : 'translateY(10px)',
             transition: 'opacity 0.25s ease, transform 0.25s ease, background 0.18s ease, box-shadow 0.18s ease',
             whiteSpace: 'nowrap'
           }}
           onMouseOver={e => {
-            e.currentTarget.style.background = 'rgba(243, 232, 255, 0.98)';
-            e.currentTarget.style.boxShadow = '0 6px 18px rgba(168, 85, 247, 0.24)';
+            e.currentTarget.style.background = floatingJumpMode === 'summary' ? 'rgba(254, 243, 199, 0.98)' : 'rgba(243, 232, 255, 0.98)';
+            e.currentTarget.style.boxShadow = floatingJumpMode === 'summary'
+              ? '0 6px 18px rgba(245, 158, 11, 0.24)'
+              : '0 6px 18px rgba(168, 85, 247, 0.24)';
           }}
           onMouseOut={e => {
-            e.currentTarget.style.background = 'rgba(250, 245, 255, 0.90)';
-            e.currentTarget.style.boxShadow = '0 4px 14px rgba(139, 92, 246, 0.16)';
+            e.currentTarget.style.background = floatingJumpMode === 'summary' ? 'rgba(255, 251, 235, 0.92)' : 'rgba(250, 245, 255, 0.90)';
+            e.currentTarget.style.boxShadow = floatingJumpMode === 'summary'
+              ? '0 4px 14px rgba(245, 158, 11, 0.16)'
+              : '0 4px 14px rgba(139, 92, 246, 0.16)';
           }}
         >
           <span
@@ -2241,13 +2260,19 @@ const SurveyDetailView = ({
               width: '7px',
               height: '7px',
               borderRadius: '50%',
-              background: '#ec4899',
-              boxShadow: '0 0 0 0 rgba(236, 72, 153, 0.55)',
-              animation: 'liveVotePulse 2s infinite',
+              background: floatingJumpMode === 'summary' ? '#f59e0b' : '#ec4899',
+              boxShadow: floatingJumpMode === 'summary'
+                ? '0 0 0 0 rgba(245, 158, 11, 0.55)'
+                : '0 0 0 0 rgba(236, 72, 153, 0.55)',
+              animation: floatingJumpMode === 'summary' ? 'liveSummaryPulse 2s infinite' : 'liveVotePulse 2s infinite',
               flexShrink: 0
             }}
           />
-          <span>{votedOption || isTimeUp ? '📊 投票結果を見る ↓' : '🗳️ すぐ投票する ↓'}</span>
+          <span>
+            {floatingJumpMode === 'summary'
+              ? '⚡ 要約を見る ↑'
+              : (votedOption || isTimeUp ? '📊 投票結果を見る ↓' : '🗳️ すぐ投票する ↓')}
+          </span>
         </button>
 
         <div
@@ -2297,6 +2322,11 @@ const SurveyDetailView = ({
           0% { box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.55); opacity: 1; }
           70% { box-shadow: 0 0 0 6px rgba(236, 72, 153, 0); opacity: 0.85; }
           100% { box-shadow: 0 0 0 0 rgba(236, 72, 153, 0); opacity: 1; }
+        }
+        @keyframes liveSummaryPulse {
+          0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.55); opacity: 1; }
+          70% { box-shadow: 0 0 0 6px rgba(245, 158, 11, 0); opacity: 0.85; }
+          100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); opacity: 1; }
         }
       `}</style>
 
