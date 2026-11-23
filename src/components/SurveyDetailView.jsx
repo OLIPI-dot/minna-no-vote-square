@@ -795,7 +795,7 @@ const SurveyDetailView = ({
                 key={opt.id}
                 className={showResult ? "result-bar-container" : "option-button-wrapper"}
                 style={showResult ? {
-                  marginBottom: '14px',
+                  marginBottom: '18px',
                   background: isMyVote ? 'linear-gradient(180deg, #ffffff 0%, #faf5ff 100%)' : '#ffffff',
                   padding: '14px 16px',
                   borderRadius: '16px',
@@ -804,7 +804,7 @@ const SurveyDetailView = ({
                   borderBottom: borderEdge,
                   borderLeft: `5px solid ${palette.accent}`,
                   boxShadow: isMyVote ? '0 6px 18px rgba(124, 58, 237, 0.14)' : '0 4px 12px rgba(15, 23, 42, 0.04)'
-                } : { marginBottom: '14px' }}
+                } : { marginBottom: '22px' }}
               >
                 {showResult ? (
                   <>
