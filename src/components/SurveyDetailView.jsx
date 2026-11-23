@@ -173,7 +173,7 @@ const SurveyDetailView = ({
       }
       const voteTarget = document.getElementById('survey-vote-section') || document.getElementById('survey-options-anchor');
       const summaryTarget = document.getElementById('survey-summary-section');
-      if (voteTarget && voteTarget.getBoundingClientRect().top > window.innerHeight * 0.72) {
+      if (voteTarget && voteTarget.getBoundingClientRect().top > window.innerHeight * 0.92) {
         setFloatingJumpMode('vote');
       } else if (summaryTarget && summaryTarget.getBoundingClientRect().bottom < 120) {
         setFloatingJumpMode('summary');
@@ -2210,6 +2210,7 @@ const SurveyDetailView = ({
         {/* 🗳️ すぐ投票する / ⚡ 要約を見る（入れ替わりピル） */}
         <button
           type="button"
+          className={`floating-jump-pill ${floatingJumpMode !== 'none' ? 'is-visible' : ''}`}
           onClick={() => {
             if (floatingJumpMode === 'summary') {
               const summaryTarget = document.getElementById('survey-summary-section');
@@ -2221,7 +2222,7 @@ const SurveyDetailView = ({
           }}
           style={{
             pointerEvents: floatingJumpMode !== 'none' ? 'auto' : 'none',
-            background: floatingJumpMode === 'summary' ? 'rgba(255, 251, 235, 0.92)' : 'rgba(250, 245, 255, 0.90)',
+            background: floatingJumpMode === 'summary' ? 'rgba(255, 251, 235, 0.76)' : 'rgba(250, 245, 255, 0.76)',
             backdropFilter: 'blur(8px)',
             WebkitBackdropFilter: 'blur(8px)',
             color: floatingJumpMode === 'summary' ? '#b45309' : '#6d28d9',
@@ -2251,7 +2252,7 @@ const SurveyDetailView = ({
               : '0 6px 18px rgba(168, 85, 247, 0.24)';
           }}
           onMouseOut={e => {
-            e.currentTarget.style.background = floatingJumpMode === 'summary' ? 'rgba(255, 251, 235, 0.92)' : 'rgba(250, 245, 255, 0.90)';
+            e.currentTarget.style.background = floatingJumpMode === 'summary' ? 'rgba(255, 251, 235, 0.76)' : 'rgba(250, 245, 255, 0.76)';
             e.currentTarget.style.boxShadow = floatingJumpMode === 'summary'
               ? '0 4px 14px rgba(245, 158, 11, 0.16)'
               : '0 4px 14px rgba(139, 92, 246, 0.16)';
@@ -2361,6 +2362,7 @@ const SurveyDetailView = ({
         {/* 👀 リアルタイム視聴人数ピル */}
         <div
           aria-live="polite"
+          className={`floating-presence-pill ${showFloatingPresence ? 'is-visible' : ''}`}
           style={{
             pointerEvents: 'none',
             display: 'inline-flex',
@@ -2368,7 +2370,7 @@ const SurveyDetailView = ({
             gap: '6px',
             padding: '6px 12px',
             borderRadius: '999px',
-            background: 'rgba(236, 253, 245, 0.88)',
+            background: 'rgba(236, 253, 245, 0.76)',
             backdropFilter: 'blur(8px)',
             WebkitBackdropFilter: 'blur(8px)',
             border: '1.5px solid rgba(110, 231, 183, 0.85)',
@@ -2414,8 +2416,26 @@ const SurveyDetailView = ({
         }
         @media (max-width: 768px) {
           .floating-detail-stack {
-            bottom: 64px !important;
-            left: 12px !important;
+            bottom: 58px !important;
+            left: 10px !important;
+            gap: 6px !important;
+          }
+          .floating-jump-pill,
+          .floating-presence-pill {
+            padding: 4px 10px !important;
+            font-size: 0.72rem !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+          }
+          .floating-jump-pill.is-visible {
+            opacity: 0.42 !important;
+          }
+          .floating-jump-pill.is-visible:hover,
+          .floating-jump-pill.is-visible:active {
+            opacity: 0.95 !important;
+          }
+          .floating-presence-pill.is-visible {
+            opacity: 0.32 !important;
           }
         }
         @media (max-width: 767px) {
