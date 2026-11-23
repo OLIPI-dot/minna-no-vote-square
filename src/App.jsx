@@ -310,8 +310,72 @@ function App() {
   const surveyFetchRequestIdRef = useRef(0); // 📋 一覧フェッチのリクエストID（古いレスポンスの競合上書き防止）
   const lastPopStateTimeRef = useRef(0); // 🛡️ popstate直後の誤爆クリック防止用タイムスタンプ
 
-  // 📡 リアルタイム人数
+  // 📡 リアルタイム人数 & 来場カウンター
+  const getJstDateStr = (ms = Date.now()) => new Date(ms + 9 * 3600 * 1000).toISOString().slice(0, 10);
+  const parseSiteCounter = (rawName) => {
+    if (!rawName || !String(rawName).startsWith('[[SITE_COUNTER:')) return null;
+    try {
+      const jsonStr = String(rawName).slice('[[SITE_COUNTER:'.length, -2);
+      const parsed = JSON.parse(jsonStr);
+      const todayJst = getJstDateStr();
+      const total = Math.max(0, Number(parsed.total) || 0);
+      const today = parsed.date === todayJst ? Math.max(0, Number(parsed.today) || 0) : 0;
+      return { total, today, date: parsed.date || todayJst };
+    } catch {
+      return null;
+    }
+  };
   const [globalOnlineCount, setGlobalOnlineCount] = useState(1);
+  const [siteVisitorStats, setSiteVisitorStats] = useState(() => ({ today: 0, total: 0, date: getJstDateStr() }));
+  const siteCounterRowIdRef = useRef(null);
+  const siteCounterIncrementQueueRef = useRef(Promise.resolve());
+  const applyParsedSiteCounter = useCallback((parsed) => {
+    if (!parsed) return;
+    const todayJst = getJstDateStr();
+    setSiteVisitorStats(prev => {
+      const sameDay = prev.date === todayJst;
+      return {
+        today: sameDay ? Math.max(prev.today || 0, parsed.today || 0) : (parsed.today || 0),
+        total: Math.max(prev.total || 0, parsed.total || 0),
+        date: todayJst
+      };
+    });
+  }, []);
+  const incrementSiteVisitorCounter = useCallback(() => {
+    const task = siteCounterIncrementQueueRef.current.then(async () => {
+      try {
+        let query = supabase.from('options').select('id, name');
+        if (siteCounterRowIdRef.current) {
+          query = query.eq('id', siteCounterRowIdRef.current);
+        } else {
+          query = query.like('name', '[[SITE_COUNTER:%').limit(1);
+        }
+        const { data: row, error } = await query.maybeSingle();
+        if (error || !row) return;
+
+        siteCounterRowIdRef.current = row.id;
+        const parsed = parseSiteCounter(row.name);
+        if (!parsed) return;
+
+        const todayJst = getJstDateStr();
+        const nextTotal = parsed.total + 1;
+        const nextToday = (parsed.date === todayJst ? parsed.today : 0) + 1;
+        const nextPayload = { total: nextTotal, today: nextToday, date: todayJst };
+        const nextName = `[[SITE_COUNTER:${JSON.stringify(nextPayload)}]]`;
+
+        setSiteVisitorStats({ today: nextToday, total: nextTotal, date: todayJst });
+
+        await supabase
+          .from('options')
+          .update({ name: nextName })
+          .eq('id', row.id);
+      } catch (err) {
+        console.warn('⚠️ site visitor counter increment failed:', err);
+      }
+    });
+    siteCounterIncrementQueueRef.current = task.catch(() => {});
+    return task;
+  }, []);
   const manualUpdatesRef = useRef({}); // 🛡️ { [surveyId]: timestamp } アンケートごとの更新ガード
   const [surveyOnlineCount, setSurveyOnlineCount] = useState(2);
 
@@ -1205,6 +1269,7 @@ function App() {
     // 投票があったらリアルタイムで合算し直す
     const channel = supabase.channel('total-votes-sync')
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'options' }, (payload) => {
+        if (String(payload?.new?.name || '').startsWith('[[SITE_COUNTER:')) return;
         // payload.new.votes と payload.old.votes の差分で計算してもいいが、
         // 確実性のために合算し直す（秒間数百件でなければ問題なし）
         fetchTotalVotes();
@@ -1213,6 +1278,57 @@ function App() {
 
     return () => { channel.unsubscribe(); };
   }, []);
+
+  // 🐾 今日の訪れた数・累計来場数カウンターの取得＆リアルタイム購読
+  useEffect(() => {
+    let isMounted = true;
+    const VISIT_COOLDOWN_MS = 30 * 60 * 1000;
+
+    const initVisitorCounter = async () => {
+      const { data: row, error } = await supabase
+        .from('options')
+        .select('id, name')
+        .like('name', '[[SITE_COUNTER:%')
+        .limit(1)
+        .maybeSingle();
+
+      if (!isMounted || error || !row) return;
+      siteCounterRowIdRef.current = row.id;
+      const parsed = parseSiteCounter(row.name);
+      if (parsed) {
+        applyParsedSiteCounter(parsed);
+      }
+
+      try {
+        const lastVisitTs = parseInt(localStorage.getItem('min_ake_last_visit_ts') || '0', 10);
+        if (Date.now() - lastVisitTs > VISIT_COOLDOWN_MS) {
+          localStorage.setItem('min_ake_last_visit_ts', String(Date.now()));
+          await incrementSiteVisitorCounter();
+        }
+      } catch {
+        // ignore localStorage errors
+      }
+    };
+
+    initVisitorCounter();
+
+    const counterChannel = supabase
+      .channel('site-visitor-counter-sync')
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'options' }, (payload) => {
+        const newName = payload?.new?.name;
+        if (newName && String(newName).startsWith('[[SITE_COUNTER:')) {
+          siteCounterRowIdRef.current = payload.new.id;
+          const parsed = parseSiteCounter(newName);
+          if (parsed) applyParsedSiteCounter(parsed);
+        }
+      })
+      .subscribe();
+
+    return () => {
+      isMounted = false;
+      counterChannel.unsubscribe();
+    };
+  }, [applyParsedSiteCounter, incrementSiteVisitorCounter]);
 
 
 
@@ -1229,7 +1345,7 @@ function App() {
 
         // 1. オプションと投票状況の取得
         const { data: optData, error: optError } = await supabase.from('options').select('*').eq('survey_id', currentSurvey.id).neq('name', '[[DELETED]]').order('id', { ascending: true });
-        const cleanOpts = (optData || []).filter(o => o && o.name !== '[[DELETED]]');
+        const cleanOpts = (optData || []).filter(o => o && !String(o.name || '').startsWith('[['));
         const sId = String(currentSurvey.id);
         const lastUpdate = manualUpdatesRef.current[sId];
         const isRecentManualVote = Boolean(lastUpdate && Date.now() - lastUpdate < 15000);
@@ -1921,7 +2037,7 @@ function App() {
             supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count').eq('visibility', 'public').gt('created_at', sv.created_at).order('created_at', { ascending: true }).limit(1).maybeSingle()
           ]);
           if (preOpts) {
-            const cleanOpts = preOpts.filter(o => o && o.name !== '[[DELETED]]');
+            const cleanOpts = preOpts.filter(o => o && !String(o.name || '').startsWith('[['));
             setOptions(cleanOpts);
             const storedVote = localStorage.getItem(`voted_survey_${sv.id}`);
             if (storedVote && cleanOpts.length > 0 && !cleanOpts.some(o => String(o.id) === String(storedVote))) {
@@ -1954,6 +2070,7 @@ function App() {
       if (Date.now() - lastView > VIEW_COOLDOWN_MS) {
         localStorage.setItem(viewKey, Date.now().toString());
         grantActionExp('view', sv.id); // 🌟 みんクエEXP付与
+        incrementSiteVisitorCounter();
         supabase.rpc('increment_survey_view', { survey_id_arg: sv.id }).then(({ data: newViews }) => {
           if (newViews !== undefined) {
             setCurrentSurvey(prev => prev && prev.id === sv.id ? { ...prev, view_count: prev.view_count + 1 } : prev);
@@ -2511,7 +2628,7 @@ function App() {
         if (myDetailReqId !== detailRequestIdRef.current || currentViewRef.current !== 'details') return;
         let storedVote = localStorage.getItem(`voted_survey_${survey.id}`);
         if (preOpts) {
-          const cleanOpts = preOpts.filter(o => o && o.name !== '[[DELETED]]');
+          const cleanOpts = preOpts.filter(o => o && !String(o.name || '').startsWith('[['));
           setOptions(cleanOpts);
           if (storedVote && cleanOpts.length > 0 && !cleanOpts.some(o => String(o.id) === String(storedVote))) {
             localStorage.removeItem(`voted_survey_${survey.id}`);
@@ -2548,6 +2665,7 @@ function App() {
       if (Date.now() - lastView > VIEW_COOLDOWN_MS) {
         localStorage.setItem(viewKey, Date.now().toString());
         grantActionExp('view', survey.id); // 🌟 みんクエEXP付与
+        incrementSiteVisitorCounter();
         supabase.rpc('increment_survey_view', { survey_id_arg: survey.id }).then(({ data: newViews }) => {
           if (myDetailReqId !== detailRequestIdRef.current || currentViewRef.current !== 'details') return;
           if (newViews !== undefined) {
@@ -3805,6 +3923,7 @@ function App() {
               setShowAllEndingSoon={setShowAllEndingSoon}
               navigateTo={navigateTo}
               globalOnlineCount={globalOnlineCount}
+              siteVisitorStats={siteVisitorStats}
               formatWithDay={formatWithDay}
               AnimatedCounter={AnimatedCounter}
               userExp={userExp}

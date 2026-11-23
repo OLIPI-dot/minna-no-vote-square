@@ -854,7 +854,7 @@ const SurveyDetailView = ({
             }
           ];
 
-          return options.filter(o => o && o.name !== '[[DELETED]]').map((opt, index) => {
+          return options.filter(o => o && o.name !== '[[DELETED]]' && !String(o.name).startsWith('[[')).map((opt, index) => {
             const perc = isTotalVotes > 0 ? Math.round((opt.votes / isTotalVotes) * 100) : 0;
             const voteCount = Number(opt.votes) || 0;
             const voteRank = voteCount > 0 ? uniquePositiveVotes.indexOf(voteCount) + 1 : 0;

@@ -26,6 +26,7 @@ const Sidebar = ({
   setShowAllEndingSoon, 
   navigateTo, 
   globalOnlineCount, 
+  siteVisitorStats = { today: 0, total: 0 },
   formatWithDay, 
   AnimatedCounter,
   userExp,
@@ -129,6 +130,43 @@ const Sidebar = ({
           <span style={{ position: 'relative', display: 'inline-block', width: '10px', height: '10px', background: '#10b981', borderRadius: '50%', boxShadow: '0 0 8px #10b981' }}></span>
           いま {globalOnlineCount} 人が広場にいます 🐰✨
         </div>
+        {siteVisitorStats && (siteVisitorStats.total > 0 || siteVisitorStats.today > 0) && (
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: '8px',
+            marginTop: '12px'
+          }}>
+            <div style={{
+              background: 'rgba(255, 255, 255, 0.88)',
+              border: '1px solid #e9d5ff',
+              borderRadius: '12px',
+              padding: '8px 10px',
+              textAlign: 'center',
+              boxShadow: '0 2px 6px rgba(124, 58, 237, 0.06)'
+            }}>
+              <div style={{ fontSize: '0.72rem', fontWeight: '800', color: '#7c3aed', marginBottom: '2px' }}>☀️ 今日訪れた数</div>
+              <div style={{ fontSize: '1.12rem', fontWeight: '900', color: '#4c1d95', lineHeight: 1.2 }}>
+                <AnimatedCounter value={siteVisitorStats.today || 0} />
+                <span style={{ fontSize: '0.72rem', fontWeight: '700', marginLeft: '2px', color: '#6b21a8' }}>人</span>
+              </div>
+            </div>
+            <div style={{
+              background: 'rgba(255, 255, 255, 0.88)',
+              border: '1px solid #e9d5ff',
+              borderRadius: '12px',
+              padding: '8px 10px',
+              textAlign: 'center',
+              boxShadow: '0 2px 6px rgba(124, 58, 237, 0.06)'
+            }}>
+              <div style={{ fontSize: '0.72rem', fontWeight: '800', color: '#db2777', marginBottom: '2px' }}>🐾 累計来場数</div>
+              <div style={{ fontSize: '1.12rem', fontWeight: '900', color: '#831843', lineHeight: 1.2 }}>
+                <AnimatedCounter value={siteVisitorStats.total || 0} />
+                <span style={{ fontSize: '0.72rem', fontWeight: '700', marginLeft: '2px', color: '#9d174d' }}>人</span>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* 2. 🔥 人気ランキング */}
