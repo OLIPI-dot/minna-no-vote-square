@@ -2862,8 +2862,8 @@ function App() {
       alert('ちくちく言葉やNGワードが含まれているみたい。やさしい言葉で書いてね🐰🥕');
       return false;
     }
-    if (options.length >= 14) {
-      alert('このアンケートの選択肢追加枠（最大14個まで）はいっぱいだよ🐰💦');
+    if (options.length >= 24) {
+      alert('このアンケートの選択肢追加枠（最大24個まで）はいっぱいだよ🐰💦');
       return false;
     }
     const isDuplicate = options.some(o => {

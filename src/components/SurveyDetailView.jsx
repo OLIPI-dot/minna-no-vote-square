@@ -1060,8 +1060,8 @@ const SurveyDetailView = ({
           </div>
         )}
 
-        {/* ➕ 自分の選択肢を追加して投票する参加型フォーム（未投票 ＆ 受付中 ＆ 14枠未満） */}
-        {!votedOption && !isTimeUp && options.length > 0 && options.length < 14 && typeof handleAddCustomOption === 'function' && (
+        {/* ➕ 自分の選択肢を追加して投票する参加型フォーム（未投票 ＆ 受付中 ＆ 24枠未満） */}
+        {!votedOption && !isTimeUp && options.length > 0 && options.length < 24 && typeof handleAddCustomOption === 'function' && (
           <div style={{ marginTop: '18px' }}>
             {!isAddingOption ? (
               <button
@@ -1070,31 +1070,36 @@ const SurveyDetailView = ({
                 style={{
                   width: '100%',
                   padding: '14px 20px',
-                  borderRadius: '16px',
-                  border: '2px dashed #cbd5e1',
-                  background: '#f8fafc',
-                  color: '#475569',
+                  borderRadius: '18px',
+                  border: '2px dashed #c084fc',
+                  background: 'linear-gradient(135deg, #faf5ff 0%, #fdf2f8 100%)',
+                  color: '#6d28d9',
                   fontSize: '0.95rem',
                   fontWeight: '800',
                   cursor: 'pointer',
                   display: 'flex',
+                  flexDirection: 'column',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  gap: '8px',
+                  gap: '4px',
+                  boxShadow: '0 4px 12px rgba(168, 85, 247, 0.08)',
                   transition: 'all 0.2s'
                 }}
                 onMouseOver={e => {
-                  e.currentTarget.style.borderColor = '#7c3aed';
-                  e.currentTarget.style.color = '#7c3aed';
-                  e.currentTarget.style.background = '#f5f3ff';
+                  e.currentTarget.style.borderColor = '#9333ea';
+                  e.currentTarget.style.color = '#6d28d9';
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #f3e8ff 0%, #fce7f3 100%)';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
                 }}
                 onMouseOut={e => {
-                  e.currentTarget.style.borderColor = '#cbd5e1';
-                  e.currentTarget.style.color = '#475569';
-                  e.currentTarget.style.background = '#f8fafc';
+                  e.currentTarget.style.borderColor = '#c084fc';
+                  e.currentTarget.style.color = '#6d28d9';
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #faf5ff 0%, #fdf2f8 100%)';
+                  e.currentTarget.style.transform = 'translateY(0)';
                 }}
               >
-                <span>➕ ピンとくる選択肢がない？自分の選択肢を追加して1票入れる！（あと{14 - options.length}枠）</span>
+                <span>💡 おもしろい項目や第5の本音を追加して1票入れる！（あと{24 - options.length}枠）</span>
+                <span style={{ fontSize: '0.78rem', fontWeight: '700', color: '#9333ea' }}>✨ あなたが追加した項目には、あとから来たみんなも投票できるようになるよ！</span>
               </button>
             ) : (
               <div style={{
@@ -1105,8 +1110,8 @@ const SurveyDetailView = ({
                 boxShadow: '0 8px 20px rgba(124, 58, 237, 0.08)'
               }}>
                 <div style={{ fontSize: '0.9rem', fontWeight: '800', color: '#5b21b6', marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span>🙋 新しい選択肢を追加して投票するらび！（最大35文字）</span>
-                  <span style={{ fontSize: '0.78rem', color: '#7c3aed', fontWeight: 'bold' }}>残り {14 - options.length} 枠</span>
+                  <span>🙋 おもしろい項目や第5の本音を追加して投票しよう！（最大35文字）</span>
+                  <span style={{ fontSize: '0.78rem', color: '#7c3aed', fontWeight: 'bold' }}>残り {24 - options.length} 枠</span>
                 </div>
                 <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                   <input
@@ -1114,7 +1119,7 @@ const SurveyDetailView = ({
                     value={customOptionText}
                     onChange={e => setCustomOptionText(e.target.value)}
                     maxLength={35}
-                    placeholder="例: いや、〇〇だと思う！"
+                    placeholder="例: いや、〇〇だと思う！／斜め上の第5の選択肢✨"
                     disabled={isSubmittingCustomOption}
                     onKeyDown={async e => {
                       if (e.key === 'Enter' && !isSubmittingCustomOption) {
