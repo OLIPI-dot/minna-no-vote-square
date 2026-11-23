@@ -91,6 +91,7 @@ const SurveyDetailView = ({
   setOptions,
   handleVote,
   handleAddCustomOption,
+  handleDeleteCustomOption,
   handleLikeSurvey,
   handleShareResult,
   likedSurveys,
@@ -868,6 +869,7 @@ const SurveyDetailView = ({
               isMyAdded = myAddedIds.includes(opt.id);
             } catch {}
 
+            const canDeleteCustomOption = isUserAdded && Boolean(isAdmin || (user && currentSurvey?.user_id === user.id)) && typeof handleDeleteCustomOption === 'function';
             const showResult = Boolean(votedOption || isTimeUp);
             const borderEdge = isMyVote ? '2px solid #8b5cf6' : `1px solid ${palette.cardBorder}`;
 
@@ -935,6 +937,29 @@ const SurveyDetailView = ({
                           }}>
                             {isMyAdded ? '✨ あなたが追加' : '🙋 みんなが追加'}
                           </span>
+                        )}
+                        {canDeleteCustomOption && (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteCustomOption(opt);
+                            }}
+                            title="この追加選択肢を削除"
+                            style={{
+                              fontSize: '0.72rem',
+                              background: '#fef2f2',
+                              color: '#dc2626',
+                              border: '1px solid #fecaca',
+                              padding: '2px 8px',
+                              borderRadius: '999px',
+                              fontWeight: '800',
+                              cursor: 'pointer',
+                              lineHeight: 1.2
+                            }}
+                          >
+                            🗑️ 削除
+                          </button>
                         )}
                       </span>
                       <span className="vote-count-meta" style={{ display: 'inline-flex', flexDirection: 'row', alignItems: 'baseline', gap: '5px', color: '#64748b', marginLeft: 'auto' }}>
@@ -1031,6 +1056,38 @@ const SurveyDetailView = ({
                         flexShrink: 0
                       }}>
                         🙋 みんなが追加
+                      </span>
+                    )}
+                    {canDeleteCustomOption && (
+                      <span
+                        role="button"
+                        tabIndex={0}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleDeleteCustomOption(opt);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleDeleteCustomOption(opt);
+                          }
+                        }}
+                        title="この追加選択肢を削除"
+                        style={{
+                          fontSize: '0.72rem',
+                          background: '#fef2f2',
+                          color: '#dc2626',
+                          border: '1px solid #fecaca',
+                          padding: '3px 8px',
+                          borderRadius: '999px',
+                          fontWeight: '800',
+                          cursor: 'pointer',
+                          flexShrink: 0
+                        }}
+                      >
+                        🗑️ 削除
                       </span>
                     )}
                     <span style={{

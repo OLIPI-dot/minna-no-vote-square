@@ -2913,6 +2913,28 @@ function App() {
     }
   };
 
+  const handleDeleteCustomOption = async (opt) => {
+    if (!currentSurvey || !opt) return;
+    const canDelete = isAdmin || (user && currentSurvey.user_id === user.id);
+    if (!canDelete) return;
+    const cleanLabel = String(opt.name || '').replace(/^\u200B+/, '').trim();
+    if (!window.confirm(`追加された選択肢「${cleanLabel}」を削除しますか？🐰`)) return;
+
+    const { error } = await supabase.from('options').delete().eq('id', opt.id);
+    if (error) {
+      console.error('❌ Custom option delete error:', error);
+      alert('選択肢の削除に失敗しました🐰💦');
+      return;
+    }
+
+    const nextOpts = options.filter(o => o.id !== opt.id);
+    const newTotal = nextOpts.reduce((sum, o) => sum + (Number(o.votes) || 0), 0);
+    setOptions(nextOpts);
+    setCurrentSurvey(prev => prev ? { ...prev, total_votes: newTotal } : prev);
+    setSurveys(prev => prev.map(s => String(s.id) === String(currentSurvey.id) ? { ...s, total_votes: newTotal } : s));
+    await supabase.from('surveys').update({ total_votes: newTotal }).eq('id', currentSurvey.id);
+  };
+
   const handleLikeSurvey = async () => {
     if (!currentSurvey) return;
 
@@ -3644,6 +3666,7 @@ function App() {
                   isTotalVotes={options.reduce((sum, o) => sum + (o.votes || 0), 0)}
                   handleVote={handleVote}
                   handleAddCustomOption={handleAddCustomOption}
+                  handleDeleteCustomOption={handleDeleteCustomOption}
                   handleLikeSurvey={handleLikeSurvey}
                   handleShareResult={handleShareResult}
                   likedSurveys={likedSurveys}
