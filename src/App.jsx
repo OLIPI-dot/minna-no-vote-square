@@ -1229,21 +1229,27 @@ function App() {
 
         // 1. オプションと投票状況の取得
         const { data: optData, error: optError } = await supabase.from('options').select('*').eq('survey_id', currentSurvey.id).neq('name', '[[DELETED]]').order('id', { ascending: true });
+        const cleanOpts = (optData || []).filter(o => o && o.name !== '[[DELETED]]');
+        const sId = String(currentSurvey.id);
+        const lastUpdate = manualUpdatesRef.current[sId];
+        const isRecentManualVote = Boolean(lastUpdate && Date.now() - lastUpdate < 15000);
         if (optError) {
           console.error("❌ initDetailView: Error fetching options:", optError);
         } else if (optData) {
-          const sId = String(currentSurvey.id);
-          const lastUpdate = manualUpdatesRef.current[sId];
-          if (lastUpdate && Date.now() - lastUpdate < 15000) {
+          if (isRecentManualVote) {
             console.log("🛡️ initDetailView: Guarding options against stale DB data for survey:", sId);
             // 🗳️ 直近で投票された場合は、DBから来た「古い0票」で上書きしないらび！
           } else {
-            console.log("✅ initDetailView: Fetched options count:", optData.length);
-            setOptions(optData);
+            console.log("✅ initDetailView: Fetched options count:", cleanOpts.length);
+            setOptions(cleanOpts);
           }
         }
 
-        const voted = localStorage.getItem(`voted_survey_${currentSurvey.id}`);
+        let voted = localStorage.getItem(`voted_survey_${currentSurvey.id}`);
+        if (voted && !isRecentManualVote && cleanOpts.length > 0 && !cleanOpts.some(o => String(o.id) === String(voted))) {
+          localStorage.removeItem(`voted_survey_${currentSurvey.id}`);
+          voted = null;
+        }
         console.log("🗳️ initDetailView: Voted status:", voted);
         setVotedOption(voted);
 
@@ -1910,8 +1916,14 @@ function App() {
             supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count').eq('visibility', 'public').gt('created_at', sv.created_at).order('created_at', { ascending: true }).limit(1).maybeSingle()
           ]);
           if (preOpts) {
-            setOptions(preOpts);
-            const realVotes = preOpts.reduce((sum, o) => sum + (o.votes || 0), 0);
+            const cleanOpts = preOpts.filter(o => o && o.name !== '[[DELETED]]');
+            setOptions(cleanOpts);
+            const storedVote = localStorage.getItem(`voted_survey_${sv.id}`);
+            if (storedVote && cleanOpts.length > 0 && !cleanOpts.some(o => String(o.id) === String(storedVote))) {
+              localStorage.removeItem(`voted_survey_${sv.id}`);
+              setVotedOption(null);
+            }
+            const realVotes = cleanOpts.reduce((sum, o) => sum + (o.votes || 0), 0);
             if (sv.total_votes !== realVotes) {
               console.warn(`⚠️ 投票数のズレを検知: DB[${sv.total_votes}] vs 実際[${realVotes}]。自動修復します...`);
               supabase.from('surveys').update({ total_votes: realVotes }).eq('id', sv.id).then();
@@ -2487,9 +2499,15 @@ function App() {
         }
         const { data: preOpts } = await supabase.from('options').select('*').eq('survey_id', survey.id).neq('name', '[[DELETED]]').order('id', { ascending: true });
         if (myDetailReqId !== detailRequestIdRef.current || currentViewRef.current !== 'details') return;
+        let storedVote = localStorage.getItem(`voted_survey_${survey.id}`);
         if (preOpts) {
-          setOptions(preOpts);
-          const realVotes = preOpts.reduce((sum, o) => sum + (o.votes || 0), 0);
+          const cleanOpts = preOpts.filter(o => o && o.name !== '[[DELETED]]');
+          setOptions(cleanOpts);
+          if (storedVote && cleanOpts.length > 0 && !cleanOpts.some(o => String(o.id) === String(storedVote))) {
+            localStorage.removeItem(`voted_survey_${survey.id}`);
+            storedVote = null;
+          }
+          const realVotes = cleanOpts.reduce((sum, o) => sum + (o.votes || 0), 0);
           if (survey.total_votes !== realVotes) {
             console.warn(`⚠️ 投票数のズレを検知: DB[${survey.total_votes}] vs 実際[${realVotes}]。自動修復します...`);
             supabase.from('surveys').update({ total_votes: realVotes }).eq('id', survey.id).then();
@@ -2498,7 +2516,7 @@ function App() {
             setPopularSurveys(prev => prev.map(s => s.id === survey.id ? { ...s, total_votes: realVotes } : s));
           }
         }
-        setVotedOption(localStorage.getItem(`voted_survey_${survey.id}`));
+        setVotedOption(storedVote);
         try {
           const [prevRes, nextRes] = await Promise.all([
             supabase.from('surveys').select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count').eq('visibility', 'public').lt('created_at', survey.created_at).order('created_at', { ascending: false }).limit(1).maybeSingle(),
