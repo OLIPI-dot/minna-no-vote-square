@@ -1425,8 +1425,10 @@ function App() {
 
         // 3. リアルタイム購読 (オプション)
         activeOptionsChannel = supabase.channel(`opts-${currentSurvey.id}`)
-          .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'options', filter: `survey_id=eq.${currentSurvey.id}` }, () => {
-            initDetailView(); // 更新があったら再取得（再帰的ですが購読は重複しません）
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'options', filter: `survey_id=eq.${currentSurvey.id}` }, (payload) => {
+            const changedName = payload?.new?.name || payload?.old?.name || '';
+            if (String(changedName).startsWith('[[SITE_COUNTER:')) return;
+            initDetailView(); // 更新・追加があったら再取得（再帰的ですが購読は重複しません）
           })
           .subscribe();
 

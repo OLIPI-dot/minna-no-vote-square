@@ -13,7 +13,7 @@ const EmbedView = ({ surveyId }) => {
       const { data: s } = await supabase.from('surveys').select('*').eq('id', surveyId).single();
       const { data: opts } = await supabase.from('options').select('*').eq('survey_id', surveyId).order('id');
       if (s) setSurvey(s);
-      if (opts) setOptions(opts);
+      if (opts) setOptions(opts.filter(o => o && !String(o.name || '').startsWith('[[')));
       setLoading(false);
     };
     fetchSurvey();
@@ -86,7 +86,7 @@ const EmbedView = ({ surveyId }) => {
                 )}
                 
                 <span style={{ position: 'relative', zIndex: 1, fontWeight: 'bold', color: '#334155', fontSize: '0.95rem' }}>
-                  {opt.name} {isVoted && '✅'}
+                  {String(opt.name || '').replace(/^\u200B/, '')} {isVoted && '✅'}
                 </span>
                 
                 {votedOption && (

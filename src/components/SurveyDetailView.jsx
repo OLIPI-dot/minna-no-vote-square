@@ -680,13 +680,17 @@ const SurveyDetailView = ({
       {/* ❓ 投票の問いかけ（選択肢だけだと何のアンケートか分からないため、選択肢の上に表示） */}
       {(() => {
         const m = String(descPart || currentSurvey.description || '').match(/\[\[SUMMARY:([\s\S]*?)\]\]/);
-        if (!m) return null;
         let question = '';
-        try {
-          question = String(JSON.parse(m[1].trim()).survey_question || '')
-            .replace(/\s*[（(]\s*\d+\s*(?:文字|字)\s*[）)]/g, '')
-            .trim();
-        } catch { return null; }
+        if (m) {
+          try {
+            question = String(JSON.parse(m[1].trim()).survey_question || '')
+              .replace(/\s*[（(]\s*\d+\s*(?:文字|字)\s*[）)]/g, '')
+              .trim();
+          } catch {}
+        }
+        if (!question) {
+          question = String(titlePart || currentSurvey.title || '').trim();
+        }
         if (!question) return null;
         return (
           <div id="survey-vote-section" className="survey-question-banner-wrap" style={{ position: 'relative', margin: '28px 0 22px 0' }}>
