@@ -631,23 +631,6 @@ const SurveyDetailView = ({
           </div>
         </div>
       )}
-      {/* 🚀 第1号ボーナスの演出 */}
-      {!votedOption && !isTimeUp && isTotalVotes === 0 && (
-        <div style={{
-          background: 'linear-gradient(135deg, #fffbeb, #fef3c7)',
-          border: '2px dashed #fbbf24',
-          borderRadius: '16px',
-          padding: '16px 20px',
-          margin: '0 0 24px 0',
-          textAlign: 'center',
-          color: '#b45309',
-          animation: 'pulse-glow 2s infinite'
-        }}>
-          <div style={{ fontSize: '1.2rem', marginBottom: '4px' }}>🐰 <strong>まだ誰も投票してないらび！</strong> 🥕</div>
-          <div style={{ fontSize: '0.95rem' }}>あなたの記念すべき1票で、最初の結果が決まるよ！気軽にポチッとしてみてね✨</div>
-        </div>
-      )}
-
       {/* ❓ 投票の問いかけ（選択肢だけだと何のアンケートか分からないため、選択肢の上に表示） */}
       {(() => {
         const m = String(descPart || currentSurvey.description || '').match(/\[\[SUMMARY:([\s\S]*?)\]\]/);
@@ -702,6 +685,25 @@ const SurveyDetailView = ({
                 <span className="survey-question-icon" style={{ display: 'inline-block', fontSize: '1.3rem', flexShrink: 0 }}>🗳️</span>
                 <span>{question}</span>
               </div>
+              {!votedOption && !isTimeUp && (
+                <div style={{
+                  marginTop: '10px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '5px',
+                  background: 'rgba(255, 255, 255, 0.88)',
+                  border: '1.5px solid #e9d5ff',
+                  color: '#6d28d9',
+                  fontSize: '0.78rem',
+                  fontWeight: '800',
+                  padding: '4px 12px',
+                  borderRadius: '999px',
+                  boxShadow: '0 2px 6px rgba(124, 58, 237, 0.08)'
+                }}>
+                  <span>🔒 完全匿名・ログイン不要！1タップでみんなの結果が見られます✨</span>
+                </div>
+              )}
             </div>
             {/* 吹き出しの下向き三角しっぽ */}
             <div style={{
