@@ -2192,7 +2192,7 @@ const SurveyDetailView = ({
         </button>
       </div>
 
-      {/* 🗳️⚡＆👀 スクロール追従の左下フローティングエリア（TOPへボタンの上） */}
+      {/* 🗳️⚡ スクロール追従の左下ボタンコーナー（TOPへボタンの上） */}
       <div
         className="floating-detail-stack"
         style={{
@@ -2358,45 +2358,49 @@ const SurveyDetailView = ({
             )}
           </div>
         )}
+      </div>
 
-        {/* 👀 リアルタイム視聴人数ピル */}
-        <div
-          aria-live="polite"
-          className={`floating-presence-pill ${showFloatingPresence ? 'is-visible' : ''}`}
+      {/* 👀 リアルタイム視聴人数ピル（右下・表示専用コーナー） */}
+      <div
+        aria-live="polite"
+        className={`floating-presence-pill ${showFloatingPresence ? 'is-visible' : ''}`}
+        style={{
+          position: 'fixed',
+          bottom: '18px',
+          right: '16px',
+          zIndex: 90,
+          pointerEvents: 'none',
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '6px',
+          padding: '6px 12px',
+          borderRadius: '999px',
+          background: 'rgba(236, 253, 245, 0.76)',
+          backdropFilter: 'blur(8px)',
+          WebkitBackdropFilter: 'blur(8px)',
+          border: '1.5px solid rgba(110, 231, 183, 0.85)',
+          color: '#047857',
+          fontSize: '0.78rem',
+          fontWeight: '800',
+          boxShadow: '0 4px 14px rgba(16, 185, 129, 0.14)',
+          opacity: showFloatingPresence ? 0.82 : 0,
+          transform: showFloatingPresence ? 'translateY(0)' : 'translateY(10px)',
+          transition: 'opacity 0.25s ease, transform 0.25s ease',
+          whiteSpace: 'nowrap'
+        }}
+      >
+        <span
           style={{
-            pointerEvents: 'none',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '6px',
-            padding: '6px 12px',
-            borderRadius: '999px',
-            background: 'rgba(236, 253, 245, 0.76)',
-            backdropFilter: 'blur(8px)',
-            WebkitBackdropFilter: 'blur(8px)',
-            border: '1.5px solid rgba(110, 231, 183, 0.85)',
-            color: '#047857',
-            fontSize: '0.78rem',
-            fontWeight: '800',
-            boxShadow: '0 4px 14px rgba(16, 185, 129, 0.14)',
-            opacity: showFloatingPresence ? 1 : 0,
-            transform: showFloatingPresence ? 'translateY(0)' : 'translateY(10px)',
-            transition: 'opacity 0.25s ease, transform 0.25s ease',
-            whiteSpace: 'nowrap'
+            width: '7px',
+            height: '7px',
+            borderRadius: '50%',
+            background: '#10b981',
+            boxShadow: '0 0 0 0 rgba(16, 185, 129, 0.55)',
+            animation: 'livePresencePulse 2s infinite',
+            flexShrink: 0
           }}
-        >
-          <span
-            style={{
-              width: '7px',
-              height: '7px',
-              borderRadius: '50%',
-              background: '#10b981',
-              boxShadow: '0 0 0 0 rgba(16, 185, 129, 0.55)',
-              animation: 'livePresencePulse 2s infinite',
-              flexShrink: 0
-            }}
-          />
-          <span>👀 {surveyOnlineCount}人チェック中</span>
-        </div>
+        />
+        <span>👀 {surveyOnlineCount}人チェック中</span>
       </div>
       <style>{`
         @keyframes livePresencePulse {
@@ -2433,6 +2437,10 @@ const SurveyDetailView = ({
           .floating-jump-pill.is-visible:hover,
           .floating-jump-pill.is-visible:active {
             opacity: 0.95 !important;
+          }
+          .floating-presence-pill {
+            bottom: 12px !important;
+            right: 10px !important;
           }
           .floating-presence-pill.is-visible {
             opacity: 0.32 !important;
