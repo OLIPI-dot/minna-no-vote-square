@@ -1249,6 +1249,11 @@ function App() {
         if (voted && !isRecentManualVote && cleanOpts.length > 0 && !cleanOpts.some(o => String(o.id) === String(voted))) {
           localStorage.removeItem(`voted_survey_${currentSurvey.id}`);
           voted = null;
+          setWatchedIds(prev => {
+            const next = prev.filter(id => String(id) !== String(currentSurvey.id));
+            localStorage.setItem('watched_surveys', JSON.stringify(next));
+            return next;
+          });
         }
         console.log("🗳️ initDetailView: Voted status:", voted);
         setVotedOption(voted);
@@ -1922,6 +1927,11 @@ function App() {
             if (storedVote && cleanOpts.length > 0 && !cleanOpts.some(o => String(o.id) === String(storedVote))) {
               localStorage.removeItem(`voted_survey_${sv.id}`);
               setVotedOption(null);
+              setWatchedIds(prev => {
+                const next = prev.filter(id => String(id) !== String(sv.id));
+                localStorage.setItem('watched_surveys', JSON.stringify(next));
+                return next;
+              });
             }
             const realVotes = cleanOpts.reduce((sum, o) => sum + (o.votes || 0), 0);
             if (sv.total_votes !== realVotes) {
@@ -2506,6 +2516,11 @@ function App() {
           if (storedVote && cleanOpts.length > 0 && !cleanOpts.some(o => String(o.id) === String(storedVote))) {
             localStorage.removeItem(`voted_survey_${survey.id}`);
             storedVote = null;
+            setWatchedIds(prev => {
+              const next = prev.filter(id => String(id) !== String(survey.id));
+              localStorage.setItem('watched_surveys', JSON.stringify(next));
+              return next;
+            });
           }
           const realVotes = cleanOpts.reduce((sum, o) => sum + (o.votes || 0), 0);
           if (survey.total_votes !== realVotes) {
@@ -2962,6 +2977,11 @@ function App() {
       if (String(votedOption) === String(opt.id)) {
         localStorage.removeItem(`voted_survey_${currentSurvey.id}`);
         setVotedOption(null);
+        setWatchedIds(prev => {
+          const next = prev.filter(id => String(id) !== String(currentSurvey.id));
+          localStorage.setItem('watched_surveys', JSON.stringify(next));
+          return next;
+        });
       }
     } catch {}
 
@@ -3079,6 +3099,16 @@ function App() {
       console.error("Survey delete error:", error);
       alert('😿 アンケートの削除に失敗しました。');
     } else {
+      try {
+        localStorage.removeItem(`voted_survey_${surveyId}`);
+      } catch {}
+      setWatchedIds(prev => {
+        const next = prev.filter(id => String(id) !== String(surveyId));
+        try {
+          localStorage.setItem('watched_surveys', JSON.stringify(next));
+        } catch {}
+        return next;
+      });
       setSurveys(prev => prev.filter(s => s.id !== surveyId));
       navigateTo('list');
       alert('🗑️ アンケートを完全に削除しました！');
