@@ -2206,6 +2206,7 @@ const SurveyDetailView = ({
           gap: '8px'
         }}
       >
+        {/* 🗳️ すぐ投票する / ⚡ 要約を見る（入れ替わりピル） */}
         <button
           type="button"
           onClick={() => {
@@ -2275,6 +2276,88 @@ const SurveyDetailView = ({
           </span>
         </button>
 
+        {/* 💻 PC専用：前の記事・次の記事ピル（スマホでは非表示にして記事を邪魔しない） */}
+        {(adjacentSurveys.prev || adjacentSurveys.next) && (
+          <div
+            className="floating-pc-nav"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              opacity: showFloatingPresence ? 1 : 0,
+              transform: showFloatingPresence ? 'translateY(0)' : 'translateY(10px)',
+              transition: 'opacity 0.25s ease, transform 0.25s ease',
+              pointerEvents: showFloatingPresence ? 'auto' : 'none'
+            }}
+          >
+            {adjacentSurveys.prev && (
+              <button
+                type="button"
+                title={adjacentSurveys.prev.title}
+                onClick={() => navigateTo('details', adjacentSurveys.prev)}
+                style={{
+                  background: 'rgba(240, 249, 255, 0.90)',
+                  backdropFilter: 'blur(8px)',
+                  WebkitBackdropFilter: 'blur(8px)',
+                  color: '#0369a1',
+                  border: '1.5px solid rgba(125, 211, 252, 0.85)',
+                  padding: '6px 12px',
+                  borderRadius: '999px',
+                  fontSize: '0.76rem',
+                  fontWeight: '800',
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 14px rgba(14, 165, 233, 0.14)',
+                  transition: 'background 0.18s ease, box-shadow 0.18s ease',
+                  whiteSpace: 'nowrap'
+                }}
+                onMouseOver={e => {
+                  e.currentTarget.style.background = 'rgba(224, 242, 254, 0.98)';
+                  e.currentTarget.style.boxShadow = '0 6px 18px rgba(14, 165, 233, 0.22)';
+                }}
+                onMouseOut={e => {
+                  e.currentTarget.style.background = 'rgba(240, 249, 255, 0.90)';
+                  e.currentTarget.style.boxShadow = '0 4px 14px rgba(14, 165, 233, 0.14)';
+                }}
+              >
+                ◀ 前の記事
+              </button>
+            )}
+            {adjacentSurveys.next && (
+              <button
+                type="button"
+                title={adjacentSurveys.next.title}
+                onClick={() => navigateTo('details', adjacentSurveys.next)}
+                style={{
+                  background: 'rgba(240, 249, 255, 0.90)',
+                  backdropFilter: 'blur(8px)',
+                  WebkitBackdropFilter: 'blur(8px)',
+                  color: '#0369a1',
+                  border: '1.5px solid rgba(125, 211, 252, 0.85)',
+                  padding: '6px 12px',
+                  borderRadius: '999px',
+                  fontSize: '0.76rem',
+                  fontWeight: '800',
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 14px rgba(14, 165, 233, 0.14)',
+                  transition: 'background 0.18s ease, box-shadow 0.18s ease',
+                  whiteSpace: 'nowrap'
+                }}
+                onMouseOver={e => {
+                  e.currentTarget.style.background = 'rgba(224, 242, 254, 0.98)';
+                  e.currentTarget.style.boxShadow = '0 6px 18px rgba(14, 165, 233, 0.22)';
+                }}
+                onMouseOut={e => {
+                  e.currentTarget.style.background = 'rgba(240, 249, 255, 0.90)';
+                  e.currentTarget.style.boxShadow = '0 4px 14px rgba(14, 165, 233, 0.14)';
+                }}
+              >
+                次の記事 ▶
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* 👀 リアルタイム視聴人数ピル */}
         <div
           aria-live="polite"
           style={{
@@ -2327,6 +2410,11 @@ const SurveyDetailView = ({
           0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.55); opacity: 1; }
           70% { box-shadow: 0 0 0 6px rgba(245, 158, 11, 0); opacity: 0.85; }
           100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); opacity: 1; }
+        }
+        @media (max-width: 767px) {
+          .floating-pc-nav {
+            display: none !important;
+          }
         }
       `}</style>
 
