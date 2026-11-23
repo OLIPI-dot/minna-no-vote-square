@@ -326,13 +326,14 @@ function App() {
       const todayJst = getJstDateStr();
       const total = Math.max(0, Number(parsed.total) || 0);
       const today = parsed.date === todayJst ? Math.max(0, Number(parsed.today) || 0) : 0;
-      return { total, today, date: parsed.date || todayJst };
+      const history = Array.isArray(parsed.history) ? parsed.history : [];
+      return { total, today, date: parsed.date || todayJst, history };
     } catch {
       return null;
     }
   };
   const [globalOnlineCount, setGlobalOnlineCount] = useState(1);
-  const [siteVisitorStats, setSiteVisitorStats] = useState(() => ({ today: 0, total: 0, date: getJstDateStr() }));
+  const [siteVisitorStats, setSiteVisitorStats] = useState(() => ({ today: 0, total: 0, date: getJstDateStr(), history: [] }));
   const [myKiribanHit, setMyKiribanHit] = useState(() => {
     try { return Number(sessionStorage.getItem('min_ake_my_kiriban') || 0) || null; } catch { return null; }
   });
@@ -345,7 +346,8 @@ function App() {
     setSiteVisitorStats({
       today: parsed.today || 0,
       total: parsed.total || 0,
-      date: getJstDateStr()
+      date: getJstDateStr(),
+      history: Array.isArray(parsed.history) ? parsed.history : []
     });
   }, []);
   const incrementSiteVisitorCounter = useCallback(() => {
@@ -367,10 +369,15 @@ function App() {
         const todayJst = getJstDateStr();
         const nextTotal = parsed.total + 1;
         const nextToday = (parsed.date === todayJst ? parsed.today : 0) + 1;
-        const nextPayload = { total: nextTotal, today: nextToday, date: todayJst };
+        const curHistory = Array.isArray(parsed.history) ? parsed.history : [];
+        let nextHistory = curHistory;
+        if (isKiribanNumber(nextTotal) && !curHistory.some(h => Number(h.num) === nextTotal)) {
+          nextHistory = [{ num: nextTotal, date: todayJst.replace(/-/g, '/') }, ...curHistory].slice(0, 10);
+        }
+        const nextPayload = { total: nextTotal, today: nextToday, date: todayJst, history: nextHistory };
         const nextName = `[[SITE_COUNTER:${JSON.stringify(nextPayload)}]]`;
 
-        setSiteVisitorStats({ today: nextToday, total: nextTotal, date: todayJst });
+        setSiteVisitorStats({ today: nextToday, total: nextTotal, date: todayJst, history: nextHistory });
 
         if (isKiribanNumber(nextTotal)) {
           setMyKiribanHit(nextTotal);

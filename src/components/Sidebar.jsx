@@ -76,6 +76,7 @@ const Sidebar = ({
   const [tempHn, setTempHn] = useState('');
   const [isDictionaryOpen, setIsDictionaryOpen] = useState(false);
   const [isStatusOpen, setIsStatusOpen] = useState(false);
+  const [isKiribanHistoryOpen, setIsKiribanHistoryOpen] = useState(false);
 
   useEffect(() => {
     // ☁️ 1. まずSupabaseに保存されたカスタムネームがあるか確認
@@ -252,6 +253,76 @@ const Sidebar = ({
               color: '#5b21b6'
             }}>
               🎯 次のキリ番（{nextKiriban}人目）まで あと <span style={{ color: '#db2777', fontWeight: '900' }}>{remaining}</span> 人！🎁
+            </div>
+          );
+        })()}
+        {(() => {
+          const total = Number(siteVisitorStats?.total) || 0;
+          const rawHistory = Array.isArray(siteVisitorStats?.history) ? siteVisitorStats.history : [];
+          const historyList = rawHistory.length > 0
+            ? rawHistory
+            : (total >= 900 ? [{ num: 900, date: '2026/11/23' }] : []);
+          if (historyList.length === 0) return null;
+          const latest = historyList[0];
+
+          return (
+            <div style={{ marginTop: '8px' }}>
+              <button
+                type="button"
+                onClick={() => setIsKiribanHistoryOpen(prev => !prev)}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: '6px',
+                  padding: '6px 10px',
+                  borderRadius: '10px',
+                  background: 'rgba(255, 255, 255, 0.78)',
+                  border: '1px solid #ddd6fe',
+                  color: '#5b21b6',
+                  fontSize: '0.73rem',
+                  fontWeight: '800',
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  transition: 'background 0.15s'
+                }}
+              >
+                <span style={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  🏆 直近のキリ番：{latest.num}人目（{latest.date} 達成🎉）
+                </span>
+                <span style={{ flexShrink: 0, fontSize: '0.7rem', color: '#7c3aed', fontWeight: '900' }}>
+                  📜 履歴({historyList.length}) {isKiribanHistoryOpen ? '▲' : '▼'}
+                </span>
+              </button>
+              {isKiribanHistoryOpen && (
+                <div style={{
+                  marginTop: '6px',
+                  padding: '8px 10px',
+                  borderRadius: '10px',
+                  background: 'rgba(255, 255, 255, 0.92)',
+                  border: '1px solid #e9d5ff',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '4px'
+                }}>
+                  {historyList.map((item, idx) => (
+                    <div key={`${item.num}-${idx}`} style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      fontSize: '0.74rem',
+                      fontWeight: '700',
+                      color: '#4c1d95',
+                      padding: '2px 0',
+                      borderBottom: idx < historyList.length - 1 ? '1px dashed #ede9fe' : 'none'
+                    }}>
+                      <span>🎊 {item.num}人目</span>
+                      <span style={{ color: '#6b7280', fontSize: '0.71rem' }}>{item.date} 達成</span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           );
         })()}
