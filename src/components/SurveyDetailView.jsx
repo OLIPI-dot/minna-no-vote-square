@@ -2222,7 +2222,7 @@ const SurveyDetailView = ({
           }}
           style={{
             pointerEvents: floatingJumpMode !== 'none' ? 'auto' : 'none',
-            background: floatingJumpMode === 'summary' ? 'rgba(255, 251, 235, 0.76)' : 'rgba(250, 245, 255, 0.76)',
+            background: floatingJumpMode === 'summary' ? 'rgba(255, 251, 235, 0.92)' : 'rgba(250, 245, 255, 0.90)',
             backdropFilter: 'blur(8px)',
             WebkitBackdropFilter: 'blur(8px)',
             color: floatingJumpMode === 'summary' ? '#b45309' : '#6d28d9',
@@ -2252,7 +2252,7 @@ const SurveyDetailView = ({
               : '0 6px 18px rgba(168, 85, 247, 0.24)';
           }}
           onMouseOut={e => {
-            e.currentTarget.style.background = floatingJumpMode === 'summary' ? 'rgba(255, 251, 235, 0.76)' : 'rgba(250, 245, 255, 0.76)';
+            e.currentTarget.style.background = floatingJumpMode === 'summary' ? 'rgba(255, 251, 235, 0.92)' : 'rgba(250, 245, 255, 0.90)';
             e.currentTarget.style.boxShadow = floatingJumpMode === 'summary'
               ? '0 4px 14px rgba(245, 158, 11, 0.16)'
               : '0 4px 14px rgba(139, 92, 246, 0.16)';
@@ -2375,7 +2375,7 @@ const SurveyDetailView = ({
           gap: '6px',
           padding: '6px 12px',
           borderRadius: '999px',
-          background: 'rgba(236, 253, 245, 0.76)',
+          background: 'rgba(236, 253, 245, 0.88)',
           backdropFilter: 'blur(8px)',
           WebkitBackdropFilter: 'blur(8px)',
           border: '1.5px solid rgba(110, 231, 183, 0.85)',
@@ -2383,7 +2383,7 @@ const SurveyDetailView = ({
           fontSize: '0.78rem',
           fontWeight: '800',
           boxShadow: '0 4px 14px rgba(16, 185, 129, 0.14)',
-          opacity: showFloatingPresence ? 0.82 : 0,
+          opacity: showFloatingPresence ? 0.92 : 0,
           transform: showFloatingPresence ? 'translateY(0)' : 'translateY(10px)',
           transition: 'opacity 0.25s ease, transform 0.25s ease',
           whiteSpace: 'nowrap'
@@ -2419,35 +2419,9 @@ const SurveyDetailView = ({
           100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); opacity: 1; }
         }
         @media (max-width: 768px) {
-          .floating-detail-stack {
-            bottom: 58px !important;
-            left: 10px !important;
-            gap: 6px !important;
-          }
-          .floating-jump-pill,
-          .floating-presence-pill {
-            padding: 4px 10px !important;
-            font-size: 0.72rem !important;
-            backdrop-filter: none !important;
-            -webkit-backdrop-filter: none !important;
-          }
-          .floating-jump-pill.is-visible {
-            opacity: 0.42 !important;
-          }
-          .floating-jump-pill.is-visible:hover,
-          .floating-jump-pill.is-visible:active {
-            opacity: 0.95 !important;
-          }
-          .floating-presence-pill {
-            bottom: 12px !important;
-            right: 10px !important;
-          }
-          .floating-presence-pill.is-visible {
-            opacity: 0.32 !important;
-          }
-        }
-        @media (max-width: 767px) {
-          .floating-pc-nav {
+          .floating-detail-stack,
+          .floating-presence-pill,
+          .watermark-logo {
             display: none !important;
           }
         }
