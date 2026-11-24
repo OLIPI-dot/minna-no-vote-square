@@ -3,6 +3,7 @@ import AnimatedCounter from './AnimatedCounter';
 import SurveyDescription from './SurveyDescription';
 import CategoryEyecatch from './CategoryEyecatch';
 import RecommendedSection from './RecommendedSection';
+import NinjaAdMaxBox from './NinjaAdMaxBox';
 
 const VideoPlayer = ({ entry, idx }) => {
   const [isPlaying, setIsPlaying] = React.useState(false);
@@ -1716,9 +1717,18 @@ const SurveyDetailView = ({
         </button>
       </div>
 
+      {/* 🥷 スポンサーPR枠（投票・シェアボタン下 ／ コメント欄の上） */}
+      <div style={{ marginTop: '28px' }}>
+        <NinjaAdMaxBox
+          key={`detail_admax_${currentSurvey.id}`}
+          slotId={`detail_${currentSurvey.id}`}
+          variant="infeed"
+        />
+      </div>
+
       {/* 💬 コメント（掲示板）セクション */}
       <div className="comment-section-area" id="comments" style={{ 
-        marginTop: '46px', 
+        marginTop: '32px', 
         padding: '24px 20px', 
         background: 'linear-gradient(135deg, #faf5ff 0%, #fdf2f8 50%, #f8fafc 100%)', 
         border: '2px solid #e9d5ff', 
