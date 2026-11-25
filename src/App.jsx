@@ -1322,14 +1322,20 @@ function App() {
   useEffect(() => {
     let isMounted = true;
     const VISIT_COOLDOWN_MS = 30 * 60 * 1000;
+    let lastFetchTs = 0;
 
-    const initVisitorCounter = async () => {
-      const { data: row, error } = await supabase
-        .from('options')
-        .select('id, name')
-        .like('name', '[[SITE_COUNTER:%')
-        .limit(1)
-        .maybeSingle();
+    const syncVisitorCounter = async (allowIncrement = true) => {
+      const now = Date.now();
+      if (now - lastFetchTs < 4000) return;
+      lastFetchTs = now;
+
+      let query = supabase.from('options').select('id, name');
+      if (siteCounterRowIdRef.current) {
+        query = query.eq('id', siteCounterRowIdRef.current);
+      } else {
+        query = query.like('name', '[[SITE_COUNTER:%').limit(1);
+      }
+      const { data: row, error } = await query.maybeSingle();
 
       if (!isMounted || error || !row) return;
       siteCounterRowIdRef.current = row.id;
@@ -1338,18 +1344,36 @@ function App() {
         applyParsedSiteCounter(parsed);
       }
 
-      try {
-        const lastVisitTs = parseInt(localStorage.getItem('min_ake_last_visit_ts') || '0', 10);
-        if (Date.now() - lastVisitTs > VISIT_COOLDOWN_MS) {
-          localStorage.setItem('min_ake_last_visit_ts', String(Date.now()));
-          await incrementSiteVisitorCounter();
+      if (allowIncrement) {
+        try {
+          const lastVisitTs = parseInt(localStorage.getItem('min_ake_last_visit_ts') || '0', 10);
+          if (Date.now() - lastVisitTs > VISIT_COOLDOWN_MS) {
+            localStorage.setItem('min_ake_last_visit_ts', String(Date.now()));
+            await incrementSiteVisitorCounter();
+          }
+        } catch {
+          // ignore localStorage errors
         }
-      } catch {
-        // ignore localStorage errors
       }
     };
 
-    initVisitorCounter();
+    syncVisitorCounter(true);
+
+    const handleVisibilityOrFocus = () => {
+      if (typeof document === 'undefined' || document.visibilityState === 'visible') {
+        syncVisitorCounter(true);
+      }
+    };
+
+    window.addEventListener('focus', handleVisibilityOrFocus);
+    document.addEventListener('visibilitychange', handleVisibilityOrFocus);
+
+    // 画面を開いて見守っている間も60秒おきに最新値を静かに同期（自動水増しはしないよう allowIncrement=false）
+    const pollTimer = setInterval(() => {
+      if (typeof document === 'undefined' || document.visibilityState === 'visible') {
+        syncVisitorCounter(false);
+      }
+    }, 60000);
 
     const counterChannel = supabase
       .channel('site-visitor-counter-sync')
@@ -1365,6 +1389,9 @@ function App() {
 
     return () => {
       isMounted = false;
+      window.removeEventListener('focus', handleVisibilityOrFocus);
+      document.removeEventListener('visibilitychange', handleVisibilityOrFocus);
+      clearInterval(pollTimer);
       counterChannel.unsubscribe();
     };
   }, [applyParsedSiteCounter, incrementSiteVisitorCounter]);
