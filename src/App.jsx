@@ -337,37 +337,55 @@ function App() {
   const [myKiribanHit, setMyKiribanHit] = useState(() => {
     try { return Number(sessionStorage.getItem('min_ake_my_kiriban') || 0) || null; } catch { return null; }
   });
-  const siteCounterRowIdRef = useRef(null);
+  const siteCounterRowIdRef = useRef(96236);
+  const siteCounterMaxTotalRef = useRef(0);
   const siteCounterIncrementQueueRef = useRef(Promise.resolve());
   const addExpRef = useRef(null);
   const addTicketsRef = useRef(null);
   const applyParsedSiteCounter = useCallback((parsed) => {
     if (!parsed) return;
-    setSiteVisitorStats({
-      today: parsed.today || 0,
-      total: parsed.total || 0,
-      date: getJstDateStr(),
-      history: Array.isArray(parsed.history) ? parsed.history : []
+    if (parsed.total > siteCounterMaxTotalRef.current) {
+      siteCounterMaxTotalRef.current = parsed.total;
+    }
+    setSiteVisitorStats(prev => {
+      // 古いキャッシュ応答で画面の表示が巻き戻るのを防止
+      if (prev && prev.total > parsed.total) return prev;
+      return {
+        today: parsed.today || 0,
+        total: parsed.total || 0,
+        date: getJstDateStr(),
+        history: Array.isArray(parsed.history) ? parsed.history : []
+      };
     });
   }, []);
   const incrementSiteVisitorCounter = useCallback(() => {
     const task = siteCounterIncrementQueueRef.current.then(async () => {
       try {
-        let query = supabase.from('options').select('id, name');
-        if (siteCounterRowIdRef.current) {
-          query = query.eq('id', siteCounterRowIdRef.current);
-        } else {
-          query = query.like('name', '[[SITE_COUNTER:%').limit(1);
+        // Primary Key (id=96236) で直接取得して options テーブル全体の LIKE フルスキャン（Disk IO消費）を防止
+        let { data: row, error } = await supabase
+          .from('options')
+          .select('id, name')
+          .eq('id', siteCounterRowIdRef.current || 96236)
+          .maybeSingle();
+        if (!row && !error) {
+          const fb = await supabase.from('options').select('id, name').like('name', '[[SITE_COUNTER:%').limit(1).maybeSingle();
+          row = fb.data;
+          error = fb.error;
         }
-        const { data: row, error } = await query.maybeSingle();
         if (error || !row) return;
 
         siteCounterRowIdRef.current = row.id;
         const parsed = parseSiteCounter(row.name);
         if (!parsed) return;
 
+        // 🛡️ もしブラウザキャッシュ等で既知の最大値より古い値が返ってきた場合は上書きを中止して巻き戻りを完全防止！
+        if (parsed.total < siteCounterMaxTotalRef.current) {
+          return;
+        }
+
         const todayJst = getJstDateStr();
         const nextTotal = parsed.total + 1;
+        siteCounterMaxTotalRef.current = nextTotal;
         const nextToday = (parsed.date === todayJst ? parsed.today : 0) + 1;
         const curHistory = Array.isArray(parsed.history) ? parsed.history : [];
         let nextHistory = curHistory;
@@ -401,10 +419,13 @@ function App() {
           } catch {}
         }
 
+        // 🛡️ 楽観的ロック (.eq('name', row.name)) を付けることで、
+        // 古いタブや古いキャッシュを持つ端末がDBの新しいカウンター値を古い値で上書きするのをDB側でも完全ブロック！
         await supabase
           .from('options')
           .update({ name: nextName })
-          .eq('id', row.id);
+          .eq('id', row.id)
+          .eq('name', row.name);
       } catch (err) {
         console.warn('⚠️ site visitor counter increment failed:', err);
       }
@@ -1294,11 +1315,10 @@ function App() {
     return () => { channel.unsubscribe(); };
   }, []);
 
-  // 📊 サイト全体の総投票数を取得・同期する魔法
+  // 📊 サイト全体の総投票数を取得・同期する魔法（Disk IO節約のため常時WAL監視をやめ、60秒おきの軽量チェックに統一）
   useEffect(() => {
     const fetchTotalVotes = async () => {
-      // DB側の関数 get_total_votes() で、今あるアンケートの票だけを合計して受け取る
-      // （以前は options を全件取得していたが、Supabaseの1000件上限で正しく数えられなかった）
+      if (typeof document !== 'undefined' && document.visibilityState !== 'visible') return;
       const { data, error } = await supabase.rpc('get_total_votes');
       if (!error && data !== null && data !== undefined) {
         setTotalVotes(Number(data) || 0);
@@ -1308,21 +1328,12 @@ function App() {
     };
 
     fetchTotalVotes();
+    const pollTimer = setInterval(fetchTotalVotes, 60000);
 
-    // 投票があったらリアルタイムで合算し直す
-    const channel = supabase.channel('total-votes-sync')
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'options' }, (payload) => {
-        if (String(payload?.new?.name || '').startsWith('[[SITE_COUNTER:')) return;
-        // payload.new.votes と payload.old.votes の差分で計算してもいいが、
-        // 確実性のために合算し直す（秒間数百件でなければ問題なし）
-        fetchTotalVotes();
-      })
-      .subscribe();
-
-    return () => { channel.unsubscribe(); };
+    return () => { clearInterval(pollTimer); };
   }, []);
 
-  // 🐾 今日の訪れた数・累計来場数カウンターの取得＆リアルタイム購読
+  // 🐾 今日の訪れた数・累計来場数カウンターの取得＆60秒同期（Disk IO節約のため options テーブル全体の常時WAL監視を廃止）
   useEffect(() => {
     let isMounted = true;
     const VISIT_COOLDOWN_MS = 30 * 60 * 1000;
@@ -1379,24 +1390,11 @@ function App() {
       }
     }, 60000);
 
-    const counterChannel = supabase
-      .channel('site-visitor-counter-sync')
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'options' }, (payload) => {
-        const newName = payload?.new?.name;
-        if (newName && String(newName).startsWith('[[SITE_COUNTER:')) {
-          siteCounterRowIdRef.current = payload.new.id;
-          const parsed = parseSiteCounter(newName);
-          if (parsed) applyParsedSiteCounter(parsed);
-        }
-      })
-      .subscribe();
-
     return () => {
       isMounted = false;
       window.removeEventListener('focus', handleVisibilityOrFocus);
       document.removeEventListener('visibilitychange', handleVisibilityOrFocus);
       clearInterval(pollTimer);
-      counterChannel.unsubscribe();
     };
   }, [applyParsedSiteCounter, incrementSiteVisitorCounter]);
 
@@ -3047,6 +3045,7 @@ function App() {
 
     setOptions(updatedOptions);
     setCurrentSurvey(updatedSurvey);
+    setTotalVotes(prev => (Number(prev) || 0) + 1);
     const mapper = s => String(s.id) === String(currentSurvey.id) ? updatedSurvey : s;
     setSurveys(prev => prev.map(mapper));
     setPopularSurveys(prev => prev.map(mapper));
