@@ -789,8 +789,9 @@ function App() {
           };
           setEquipment(finalEquip);
           localStorage.setItem('min_ake_equipment', JSON.stringify(finalEquip));
-          if (JSON.stringify(finalEquip) !== JSON.stringify(dbEquipment)) {
-            updates.custom_equipment = toSlimEquipment(finalEquip);
+          const slimFinalEquip = toSlimEquipment(finalEquip);
+          if (JSON.stringify(slimFinalEquip) !== JSON.stringify(toSlimEquipment(dbEquipment))) {
+            updates.custom_equipment = slimFinalEquip;
             shouldUpdate = true;
           }
         }
@@ -1035,20 +1036,19 @@ function App() {
       // ⚠️ USER_UPDATEDなどの内部更新でhandleAuthExpを呼ぶと、
       // 自身のupdateUser完了通知でローカルの最新Stateが巻き戻ってしまうため、
       // SIGNED_IN（ログイン時）やSIGNED_OUT（ログアウト時）のみ実行する！
+      // また、onAuthStateChangeコールバック内で同期的にSupabase APIを呼ぶとロック競合を起こすため setTimeout で次ティックへ逃がす。
       if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
-        handleAuthExp(session?.user ?? null);
+        setTimeout(() => {
+          handleAuthExp(session?.user ?? null);
+        }, 0);
       }
     });
 
     supabase.auth.getSession().then(({ data: { session }, error }) => {
       if (error) console.error('getSession error:', error);
       if (session?.user) {
-        // 🔄 サーバーから最新のユーザー情報を取得して1回で確実に同期（並行実行による先祖返り防止）
-        supabase.auth.getUser().then(({ data: { user: latestUser } }) => {
-          handleAuthExp(latestUser || session.user);
-        }).catch(() => {
-          handleAuthExp(session.user);
-        });
+        // 先にローカルセッションのユーザーを即座に反映し、裏で最新メタデータを1回だけ取得
+        handleAuthExp(session.user);
       } else {
         handleAuthExp(null);
       }
@@ -1056,12 +1056,16 @@ function App() {
       console.error('getSession catch:', err);
     });
 
-    // 🔄 タブ復帰時（スマホ画面を開いた時やタブを切り替えた時）に最新データを自動同期！
+    // 🔄 タブ復帰時（スマホ画面を開いた時やタブを切り替えた時）に最新データを自動同期（過度な通信を防ぐため60秒クールダウン付き）
+    let lastAuthFocusSyncTs = Date.now();
     const handleVisibilityOrFocus = () => {
       if (document.visibilityState === 'visible') {
+        const now = Date.now();
+        if (now - lastAuthFocusSyncTs < 60000) return;
+        lastAuthFocusSyncTs = now;
         supabase.auth.getUser().then(({ data: { user: latestUser } }) => {
           if (latestUser) handleAuthExp(latestUser);
-        });
+        }).catch(() => {});
       }
     };
     window.addEventListener('focus', handleVisibilityOrFocus);
@@ -2177,10 +2181,20 @@ function App() {
       let count = 0;
 
       // 🚀 Early Fetch (index.htmlで開始したリクエスト) を活用するらび！
-      if (isFirstLoad && window.__INITIAL_DATA_PROMISE__) {
-        console.log("⚡ fetchSurveys: Using EARLY FETCH data from window.__INITIAL_DATA_PROMISE__");
+      // 初回マウント直後に user が null → ログインユーザーへ変化して fetchSurveys が2回走っても、
+      // 15秒間は Early Fetch の結果を再利用できるようにして通信の二重発生＆空画面を防止する！
+      if (isFirstLoad && (window.__INITIAL_DATA_PROMISE__ || (window.__EARLY_FETCH_CACHE__ && Date.now() - window.__EARLY_FETCH_CACHE__.ts < 15000))) {
+        console.log("⚡ fetchSurveys: Using EARLY FETCH data");
         try {
-          const earlyResult = await window.__INITIAL_DATA_PROMISE__;
+          let earlyResult = null;
+          if (window.__EARLY_FETCH_CACHE__ && Date.now() - window.__EARLY_FETCH_CACHE__.ts < 15000) {
+            earlyResult = window.__EARLY_FETCH_CACHE__.data;
+          } else if (window.__INITIAL_DATA_PROMISE__) {
+            earlyResult = await window.__INITIAL_DATA_PROMISE__;
+            if (Array.isArray(earlyResult) && earlyResult.length > 0) {
+              window.__EARLY_FETCH_CACHE__ = { data: earlyResult, ts: Date.now() };
+            }
+          }
           if (Array.isArray(earlyResult) && earlyResult.length > 0) {
             const now = new Date();
             // 期限切れを弾いても十分な件数がある場合のみ信頼するらび！
@@ -2194,10 +2208,11 @@ function App() {
         } catch (e) {
           console.warn("Early fetch failed, fallback to standard query:", e);
         }
-        window.__INITIAL_DATA_PROMISE__ = null; // 一度使ったらクリア
+        window.__INITIAL_DATA_PROMISE__ = null;
       }
-      const email = user?.email || user?.user_metadata?.email || '';
-      const isActuallyAdmin = user && ADMIN_EMAILS.includes(email);
+      const targetUser = currentUser || user;
+      const email = targetUser?.email || targetUser?.user_metadata?.email || '';
+      const isActuallyAdmin = targetUser && ADMIN_EMAILS.includes(email);
       console.log("🛡️ isAdmin Check (fetchSurveys):", { email, isActuallyAdmin });
       const ITEMS_PER_PAGE = viewMode === 'grid' ? 40 : 20;
       const start = (page - 1) * ITEMS_PER_PAGE;
@@ -2396,11 +2411,13 @@ function App() {
       let mine = [];
       if (currentUser && page === 1 && !category && !query && !tag && sort !== 'mine' && sort !== 'watching') {
         console.log("🔍 fetchSurveys: STAGE 2 - Fetching private/limited surveys for user:", currentUser.id);
-        let mQuery = supabase.from('surveys').select('id,title,category,visibility,created_at,deadline,is_official,total_votes,likes_count,view_count,comment_count').neq('visibility', 'public');
-        if (!isActuallyAdmin) {
-          mQuery = mQuery.eq('user_id', currentUser.id);
-        }
-        const { data: mData, error: mError } = await mQuery.order('created_at', { ascending: false }).limit(20);
+        const { data: mData, error: mError } = await supabase
+          .from('surveys')
+          .select('id,title,category,visibility,created_at,deadline,is_official,total_votes,likes_count,view_count,comment_count')
+          .eq('user_id', currentUser.id)
+          .neq('visibility', 'public')
+          .order('created_at', { ascending: false })
+          .limit(20);
         if (mError) console.error("❌ fetchSurveys: PRIVATE FETCH ERROR:", mError);
         if (mData) mine = mData;
       }
@@ -2486,11 +2503,16 @@ function App() {
       setSurveys(prev => (prev && prev.length > 0 ? prev : []));
     } finally {
       if (safetyTimeoutId) clearTimeout(safetyTimeoutId);
-      if (!silent) setIsLoading(false);
+      // 🛡️ 途中で新しいリクエストに追い越された古いリクエストが、勝手に isLoading=false にして「該当なし」を一瞬出してしまうのを防止！
+      if (!silent && myFetchId === surveyFetchRequestIdRef.current) {
+        setIsLoading(false);
+      }
     }
   };
 
   // 📡 サイドバー専用のグローバル取得魔法！ (どのページにいても広場全体の活気を届けるらび！)
+  // ⚡ サイドバーやおすすめ枠では巨大な本文(description)は使わないため除外し、通信量を約800KB削減して爆速化！
+  const SIDEBAR_SELECT_COLS = 'id,title,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count';
   const fetchSidebarData = async () => {
     try {
       console.log("📡 fetchSidebarData: Fetching global sidebar data...");
@@ -2500,7 +2522,7 @@ function App() {
       // 1. 新着 (最新10件)
       const { data: latest } = await supabase
         .from('surveys')
-        .select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count')
+        .select(SIDEBAR_SELECT_COLS)
         .eq('visibility', 'public')
         .not('tags', 'cs', '{"お知らせ"}')
         .order('created_at', { ascending: false })
@@ -2510,7 +2532,7 @@ function App() {
       const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
       let { data: popularRaw } = await supabase
         .from('surveys')
-        .select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count')
+        .select(SIDEBAR_SELECT_COLS)
         .eq('visibility', 'public')
         .not('tags', 'cs', '{"お知らせ"}')
         .gte('created_at', thirtyDaysAgo)
@@ -2534,7 +2556,7 @@ function App() {
       if (!popular || popular.length < 5) {
         const { data: fallbackPopularRaw } = await supabase
           .from('surveys')
-          .select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count')
+          .select(SIDEBAR_SELECT_COLS)
           .eq('visibility', 'public')
           .not('tags', 'cs', '{"お知らせ"}')
           .or(`deadline.is.null,deadline.gt.${now.toISOString()}`) // 終了済みは除外
@@ -2548,7 +2570,7 @@ function App() {
       // 3. もうすぐ終了 (24時間以内。全件取得！)
       const { data: ending } = await supabase
         .from('surveys')
-        .select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count')
+        .select(SIDEBAR_SELECT_COLS)
         .eq('visibility', 'public')
         .gt('deadline', now.toISOString())
         .lte('deadline', next24h.toISOString())

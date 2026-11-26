@@ -9,7 +9,10 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     autoRefreshToken: true,
     detectSessionInUrl: true,
     flowType: 'pkce',
-    lock: false,
+    // 🛡️ @supabase/auth-js は `lock: false` だと falsy 判定されて navigatorLock にフォールバックし、
+    // タブ切り替えやトークン更新時に 10秒デッドロック（NavigatorLockAcquireTimeoutError）を起こすため、
+    // 必ず関数を渡してブラウザの Web Locks API デッドロックを完全に回避する！
+    lock: async (_name, _acquireTimeout, fn) => await fn(),
   },
 });
 
