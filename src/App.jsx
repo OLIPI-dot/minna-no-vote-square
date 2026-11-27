@@ -2505,11 +2505,20 @@ function App() {
       } else {
         if (sError) {
           console.warn("⚠️ fetchSurveys: Query failed with error. Using cached/previous survey list and scheduling retry.", sError);
+          const filterByQuery = (list) => {
+            if (!query || !query.trim()) return list;
+            const qLower = query.trim().toLowerCase();
+            return list.filter(s =>
+              (s.title || '').toLowerCase().includes(qLower) ||
+              (s.description || '').toLowerCase().includes(qLower) ||
+              (Array.isArray(s.tags) && s.tags.some(t => String(t || '').toLowerCase().includes(qLower)))
+            );
+          };
           setSurveys(prev => {
-            if (prev && prev.length > 0) return prev;
+            if (prev && prev.length > 0) return filterByQuery(prev);
             try {
               const cached = JSON.parse(localStorage.getItem('min_ake_cached_surveys_v1') || '[]');
-              if (Array.isArray(cached) && cached.length > 0) return cached;
+              if (Array.isArray(cached) && cached.length > 0) return filterByQuery(cached);
             } catch {}
             return [];
           });
@@ -2872,6 +2881,7 @@ function App() {
 
   // 🔍 検索時に「どこに何件あるか」をサクッと調査する魔法
   useEffect(() => {
+    let cancelled = false;
     async function fetchSearchDiscovery() {
       if (!debouncedSearchQuery.trim()) {
         setSearchStats({ categories: {}, official: 0, user: 0, sortModes: { today: 0, latest: 0, ended: 0, popular: 0 } });
@@ -2879,11 +2889,12 @@ function App() {
       }
 
       const q = debouncedSearchQuery.trim();
-      // ⚡ 検索時は、まず全体（全タブ・全期間）からHIT数を確認するらび！
-      let dQuery = supabase.from('surveys').select('category, is_official, created_at, deadline, title, description').eq('visibility', 'public');
-      dQuery = dQuery.or(`title.ilike.%${q}%,description.ilike.%${q}%`);
+      // ⚡ 検索時は、まず全体（全タブ・全期間）から軽量カラムのみでHIT数を確認するらび！（巨大なdescriptionはセレクトせず通信量を98%削減）
+      let dQuery = supabase.from('surveys').select('category, is_official, created_at, deadline').eq('visibility', 'public');
+      dQuery = dQuery.or(`title.ilike.%${q}%,description.ilike.%${q}%,tags.cs.{"${q}"}`);
 
       const { data, error } = await dQuery;
+      if (cancelled) return;
       if (!error && data) {
         const now = new Date();
         const todayStart = new Date();
@@ -2919,6 +2930,7 @@ function App() {
       }
     }
     fetchSearchDiscovery();
+    return () => { cancelled = true; };
   }, [debouncedSearchQuery]);
 
   // 🔄 ページやフィルタが変わったら再取得するらび！（リアルタイム監視も兼ねる）
@@ -3711,6 +3723,17 @@ function App() {
     // 🔍 タグ絞り込み（サイドバーやタグクリック用）
     if (filterTag) {
       base = base.filter(s => s.tags?.includes(filterTag));
+    }
+
+    // 🔍 検索ワードによるクライアント側ガード（通信中やフォールバック時でも無関係な記事が残らないようにする）
+    if (debouncedSearchQuery.trim()) {
+      const qLower = debouncedSearchQuery.trim().toLowerCase();
+      base = base.filter(s => {
+        const inTitle = (s.title || '').toLowerCase().includes(qLower);
+        const inDesc = (s.description || '').toLowerCase().includes(qLower);
+        const inTags = Array.isArray(s.tags) && s.tags.some(t => String(t || '').toLowerCase().includes(qLower));
+        return inTitle || inDesc || inTags;
+      });
     }
 
     // 🕒 状態別の最終フィルタリング

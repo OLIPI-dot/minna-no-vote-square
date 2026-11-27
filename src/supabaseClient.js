@@ -55,21 +55,48 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     detectSessionInUrl: true,
     flowType: 'pkce',
     // 🛡️ @supabase/auth-js は `lock: false` だと falsy 判定されて navigatorLock にフォールバックし、
-    // タブ切り替えやトークン更新時に 10秒デッドロック（NavigatorLockAcquireTimeoutError）を起こすため、
-    // 必ず関数を渡してブラウザの Web Locks API デッドロックを完全に回避する！
-    lock: async (_name, _acquireTimeout, fn) => await fn(),
+    // さらに GoTrueClient._acquireLock の内部キュー(pendingInLock)は再入呼び出し時に自己デッドロックを起こすため、
+    // 初回ロック時に _acquireLock 自体を再入安全な関数へ置き換えてデッドロックを完全に根絶する！
+    lock: async function (_name, _acquireTimeout, fn) {
+      if (this && typeof this === 'object' && this._acquireLock) {
+        this._acquireLock = async (_timeout, innerFn) => {
+          const prev = this.lockAcquired;
+          this.lockAcquired = true;
+          try {
+            return await innerFn();
+          } finally {
+            this.lockAcquired = prev;
+          }
+        };
+      }
+      return await fn();
+    },
   },
   global: {
     fetch: resilientFetch,
   },
 });
 
+if (supabase?.auth) {
+  supabase.auth._acquireLock = async (_timeout, innerFn) => {
+    const prev = supabase.auth.lockAcquired;
+    supabase.auth.lockAcquired = true;
+    try {
+      return await innerFn();
+    } finally {
+      supabase.auth.lockAcquired = prev;
+    }
+  };
+}
+
 // 🚀 スマホでお昼などに数時間ぶりアクセスした際、1時間有効のJWTが期限切れになっていると、
 // supabase-js 標準の _getAccessToken() が `/auth/v1/token` の更新通信が終わるまで
 // すべてのデータベース取得（記事一覧・タイムライン・新着コメント・ランキング）をブロックしてしまう問題を解消！
-// 有効なトークンがあれば0msで即返し、期限切れの場合は裏で更新を走らせつつ0msで公開キー(anon)を返して画面を即座に表示させる。
+// ⚠️ SupabaseClient コンストラクタは `this._getAccessToken.bind(this)` を先にバインドし、
+// その内部で `if (this.accessToken) return await this.accessToken()` を呼ぶ仕組みになっているため、
+// `supabase.accessToken` と `supabase._getAccessToken` の両方に高速トークン取得関数をセットする！
 let lastBgRefreshTs = 0;
-supabase._getAccessToken = async () => {
+const getFastAccessToken = async () => {
   try {
     if (typeof window !== 'undefined' && window.localStorage) {
       let raw = window.localStorage.getItem('sb-ssmkasmtdnojdicdpdfg-auth-token');
@@ -105,6 +132,8 @@ supabase._getAccessToken = async () => {
   }
   return supabaseAnonKey;
 };
+supabase.accessToken = getFastAccessToken;
+supabase._getAccessToken = getFastAccessToken;
 
 // 🛡️ user_metadata 更新の競合（先祖返り・上書き消失）を完全防止するマイクロバッチ＆直列キュー
 if (supabase?.auth?.updateUser) {
