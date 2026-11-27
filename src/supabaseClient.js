@@ -3,46 +3,91 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-// 📱 スマホでスリープ復帰時やモバイル回線切替時に古いソケットが固まったり、
-// 期限切れJWT(401)で記事一覧・タイムラインが全滅するのを防ぐ高耐久カスタムfetch
+// 📱 スマホ・iPad Safariでスリープ復帰時や古いセッション残存時、または外部ドメインブロック時でも
+// 記事一覧・人気ランキング・タイムラインが確実に読み込める高耐久カスタムfetch
 const resilientFetch = async (input, init = {}) => {
   const urlStr = typeof input === 'string' ? input : (input?.url || String(input));
   const method = (init?.method || 'GET').toUpperCase();
-  const isRestGet = urlStr.includes('/rest/v1/') && (method === 'GET' || method === 'HEAD');
+  const isRest = urlStr.includes('/rest/v1/');
+  const isRestGet = isRest && (method === 'GET' || method === 'HEAD');
+  // マイアンケート取得(user_id=eq.)以外の公開GETや公開RPCは、端末に残った古い・巨大なJWTで失敗しないよう常に公開キー(anon)で通信する
+  const isPublicRead = (isRestGet && !urlStr.includes('user_id=eq.')) ||
+    urlStr.includes('/rest/v1/rpc/get_total_votes') ||
+    urlStr.includes('/rest/v1/rpc/increment_survey_view');
 
-  const doFetchWithTimeout = async (overrideHeaders, timeoutMs = 8500) => {
+  const buildAnonHeaders = () => {
+    const h = new Headers(init?.headers || {});
+    h.set('apikey', supabaseAnonKey);
+    h.set('Authorization', `Bearer ${supabaseAnonKey}`);
+    return h;
+  };
+
+  const toSameOriginProxyUrl = (targetUrl) => {
+    if (typeof window === 'undefined') return null;
+    if (targetUrl.includes('/rest/v1/')) {
+      const idx = targetUrl.indexOf('/rest/v1/');
+      return '/sb-rest/' + targetUrl.substring(idx + '/rest/v1/'.length);
+    }
+    return null;
+  };
+
+  const doFetchWithTimeout = async (targetUrl, overrideHeaders, timeoutMs = 8000) => {
     const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
     const timer = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
     try {
-      const mergedInit = {
-        ...init,
-        headers: overrideHeaders || init.headers,
-        ...(controller && !init.signal ? { signal: controller.signal } : {})
+      // Safari / WebKit で body: undefined や signal: undefined をそのまま渡すと失敗するケースを防ぐためクリーンな init を組み立てる
+      const cleanInit = {
+        method,
+        headers: overrideHeaders || init?.headers
       };
-      return await fetch(input, mergedInit);
+      if (method !== 'GET' && method !== 'HEAD' && init?.body !== undefined) {
+        cleanInit.body = init.body;
+      }
+      if (init?.credentials) cleanInit.credentials = init.credentials;
+      if (init?.mode) cleanInit.mode = init.mode;
+      if (init?.cache) cleanInit.cache = init.cache;
+      if (init?.signal) {
+        cleanInit.signal = init.signal;
+      } else if (controller) {
+        cleanInit.signal = controller.signal;
+      }
+      return await fetch(targetUrl, cleanInit);
     } finally {
       if (timer) clearTimeout(timer);
     }
   };
 
+  const initialHeaders = isPublicRead ? buildAnonHeaders() : (init?.headers || undefined);
+
   try {
-    const res = await doFetchWithTimeout(null, isRestGet ? 8000 : 12000);
-    // 🛡️ ログイントークン期限切れ(401/403)で公開記事やタイムラインが読めなくなった場合、即座に公開キー(anon)で再取得！
-    if (isRestGet && (res.status === 401 || res.status === 403)) {
-      const retryHeaders = new Headers(init.headers || {});
-      retryHeaders.set('apikey', supabaseAnonKey);
-      retryHeaders.set('Authorization', `Bearer ${supabaseAnonKey}`);
-      return await doFetchWithTimeout(retryHeaders, 8000);
+    const res = await doFetchWithTimeout(urlStr, initialHeaders, isRestGet ? 7500 : 12000);
+    // 🛡️ トークンエラー(400/401/403/431)や異常応答時は公開キー＆同一オリジン中継で即リカバリー！
+    if (isRestGet && !res.ok) {
+      const anonHeaders = buildAnonHeaders();
+      const proxyUrl = toSameOriginProxyUrl(urlStr);
+      if (proxyUrl) {
+        try {
+          const proxyRes = await doFetchWithTimeout(proxyUrl, anonHeaders, 8000);
+          if (proxyRes.ok) return proxyRes;
+        } catch {}
+      }
+      return await doFetchWithTimeout(urlStr, anonHeaders, 8000);
     }
     return res;
   } catch (err) {
-    // 📱 スマホのバックグラウンド復帰直後の一時的な通信切断・タイムアウト時は公開キーで1回自動リトライ
-    if (isRestGet) {
-      await new Promise(r => setTimeout(r, 350));
-      const retryHeaders = new Headers(init.headers || {});
-      retryHeaders.set('apikey', supabaseAnonKey);
-      retryHeaders.set('Authorization', `Bearer ${supabaseAnonKey}`);
-      return await doFetchWithTimeout(retryHeaders, 9000);
+    // 📱 iPad Safari のコンテンツブロッカー・ITP・回線切替等で直接通信が失敗した場合、同一オリジン(/sb-rest/)経由で自動リトライ！
+    if (isRest) {
+      const retryHeaders = isRestGet || isPublicRead ? buildAnonHeaders() : (init?.headers || undefined);
+      const proxyUrl = toSameOriginProxyUrl(urlStr);
+      if (proxyUrl) {
+        try {
+          return await doFetchWithTimeout(proxyUrl, retryHeaders, 8500);
+        } catch {}
+      }
+      if (isRestGet) {
+        await new Promise(r => setTimeout(r, 250));
+        return await doFetchWithTimeout(urlStr, retryHeaders, 8500);
+      }
     }
     throw err;
   }

@@ -46,6 +46,14 @@
       "destination": "/api/og-injector"
     },
     {
+      "source": "/sb-rest/:path*",
+      "destination": "https://ssmkasmtdnojdicdpdfg.supabase.co/rest/v1/:path*"
+    },
+    {
+      "source": "/sb-auth/:path*",
+      "destination": "https://ssmkasmtdnojdicdpdfg.supabase.co/auth/v1/:path*"
+    },
+    {
       "source": "/s/:id",
       "destination": "/api/og-injector?s=:id"
     },

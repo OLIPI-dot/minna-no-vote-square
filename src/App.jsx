@@ -2348,6 +2348,13 @@ function App() {
           try {
             localStorage.setItem('min_ake_cached_surveys_v1', JSON.stringify(updatedList.slice(0, 20)));
           } catch {}
+          // サイドバーの人気ランキングや新着がまだ空の場合、取得済みの公式トップ記事から即座に初期表示を埋める
+          setLiveSurveys(prev => (prev && prev.length > 0 ? prev : updatedList.slice(0, 10)));
+          setPopularSurveys(prev => {
+            if (prev && prev.length > 0) return prev;
+            const calcScore = (item) => (Number(item.total_votes || 0) * 10) + (Number(item.likes_count || 0) * 5) + Number(item.view_count || 0);
+            return [...updatedList].sort((a, b) => calcScore(b) - calcScore(a)).slice(0, 10);
+          });
         }
       } else {
         if (sError) {
@@ -2456,21 +2463,26 @@ function App() {
   };
 
   // 初回ロード時と、10分おきにサイドバーを更新する魔法
+  const mountTimestampRef = useRef(Date.now());
+  const surveysCountRef = useRef(0);
+  const popularCountRef = useRef(0);
+  surveysCountRef.current = surveys.length;
+  popularCountRef.current = popularSurveys.length;
+
   useEffect(() => {
     fetchSidebarData();
     const interval = setInterval(fetchSidebarData, 10 * 60 * 1000);
     const handleRecover = () => {
+      // 🛡️ iPad/iOS Safari では初回ロード完了直後にも pageshow が発火するため、マウント直後4秒間は初回フェッチを邪魔しない！
+      if (Date.now() - mountTimestampRef.current < 4000) return;
       if (typeof document === 'undefined' || document.visibilityState === 'visible') {
-        setPopularSurveys(prev => {
-          if (!prev || prev.length === 0) fetchSidebarData();
-          return prev;
-        });
-        setSurveys(prev => {
-          if (!prev || prev.length === 0) {
-            fetchSurveys(user, false, currentPage, filterCategory, debouncedSearchQuery, activeTab, sortMode, popularMode, filterTag);
-          }
-          return prev;
-        });
+        if (popularCountRef.current === 0) {
+          fetchSidebarData();
+        }
+        if (surveysCountRef.current === 0) {
+          const st = latestFilterStateRef.current;
+          fetchSurveys(st.user, false, st.currentPage, st.filterCategory, st.debouncedSearchQuery, st.activeTab, st.sortMode, st.popularMode, st.filterTag);
+        }
       }
     };
     window.addEventListener('online', handleRecover);
