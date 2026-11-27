@@ -640,19 +640,21 @@ const Sidebar = ({
               />
             </div>
 
-            <div style={{ display: miniqueTab === 'raid' ? 'block' : 'none' }}>
-              <RaidBossMiniGame 
-                userLevel={levelInfo?.level || 1}
-                userExp={userExp}
-                addExp={addExp}
-                gachaTickets={gachaTickets}
-                addTickets={addTickets}
-                equipment={equipment}
-                user={user}
-                hn={hn}
-                globalOnlineCount={globalOnlineCount}
-              />
-            </div>
+            {miniqueTab === 'raid' && (
+              <div>
+                <RaidBossMiniGame 
+                  userLevel={levelInfo?.level || 1}
+                  userExp={userExp}
+                  addExp={addExp}
+                  gachaTickets={gachaTickets}
+                  addTickets={addTickets}
+                  equipment={equipment}
+                  user={user}
+                  hn={hn}
+                  globalOnlineCount={globalOnlineCount}
+                />
+              </div>
+            )}
 
             <div style={{ display: miniqueTab === 'gacha' ? 'block' : 'none' }}>
               <GachaMiniGame 

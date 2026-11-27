@@ -174,8 +174,12 @@ function App() {
   const [totalOfficialCount, setTotalOfficialCount] = useState(0); // 📊 公式の総件数
   const [totalUserCount, setTotalUserCount] = useState(0); // 📊 ユーザー投稿の総件数
   const [totalMineCount, setTotalMineCount] = useState(0); // 📊 マイアンケートの総件数
-  const [liveSurveys, setLiveSurveys] = useState([]);
-  const [popularSurveys, setPopularSurveys] = useState([]);
+  const [liveSurveys, setLiveSurveys] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('min_ake_cached_live_v1') || '[]'); } catch { return []; }
+  });
+  const [popularSurveys, setPopularSurveys] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('min_ake_cached_popular_v1') || '[]'); } catch { return []; }
+  });
   const [endingSoonSurveys, setEndingSoonSurveys] = useState([]);
   const [showAllEndingSoon, setShowAllEndingSoon] = useState(false);
   const [totalVotes, setTotalVotes] = useState(0); // 📊 サイト全体の総投票数
@@ -214,40 +218,43 @@ function App() {
     }
   });
 
-  // 🧹 ウォッチ中リストの自動お掃除（締切から3日以上経過した記事や削除済み記事を自動で整理らび！）
+  // 🧹 ウォッチ中リストの自動お掃除（初回表示の回線を圧迫しないよう2秒遅らせて裏で整理らび！）
   useEffect(() => {
-    try {
-      const currentWatched = JSON.parse(localStorage.getItem('watched_surveys') || '[]')
-        .map(id => Number(id))
-        .filter(n => !isNaN(n) && n > 0);
-      if (currentWatched.length === 0) return;
+    const timer = setTimeout(() => {
+      try {
+        const currentWatched = JSON.parse(localStorage.getItem('watched_surveys') || '[]')
+          .map(id => Number(id))
+          .filter(n => !isNaN(n) && n > 0);
+        if (currentWatched.length === 0) return;
 
-      const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
-      const tenDaysAgo = new Date(Date.now() - 10 * 24 * 60 * 60 * 1000);
+        const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
+        const tenDaysAgo = new Date(Date.now() - 10 * 24 * 60 * 60 * 1000);
 
-      supabase
-        .from('surveys')
-        .select('id, deadline, created_at')
-        .in('id', currentWatched)
-        .then(({ data, error }) => {
-          if (error || !data) return;
-          const validSet = new Set(
-            data
-              .filter(sv => {
-                if (sv.deadline) return new Date(sv.deadline) >= threeDaysAgo;
-                return new Date(sv.created_at) >= tenDaysAgo;
-              })
-              .map(sv => Number(sv.id))
-          );
-          const cleaned = currentWatched.filter(id => validSet.has(Number(id)));
-          if (cleaned.length !== currentWatched.length) {
-            setWatchedIds(cleaned);
-            localStorage.setItem('watched_surveys', JSON.stringify(cleaned));
-          }
-        });
-    } catch {
-      // ignore
-    }
+        supabase
+          .from('surveys')
+          .select('id, deadline, created_at')
+          .in('id', currentWatched)
+          .then(({ data, error }) => {
+            if (error || !data) return;
+            const validSet = new Set(
+              data
+                .filter(sv => {
+                  if (sv.deadline) return new Date(sv.deadline) >= threeDaysAgo;
+                  return new Date(sv.created_at) >= tenDaysAgo;
+                })
+                .map(sv => Number(sv.id))
+            );
+            const cleaned = currentWatched.filter(id => validSet.has(Number(id)));
+            if (cleaned.length !== currentWatched.length) {
+              setWatchedIds(cleaned);
+              localStorage.setItem('watched_surveys', JSON.stringify(cleaned));
+            }
+          });
+      } catch {
+        // ignore
+      }
+    }, 2000);
+    return () => clearTimeout(timer);
   }, []);
   const [deadline, setDeadline] = useState('');
   const [isTimeUp, setIsTimeUp] = useState(false);
@@ -2488,17 +2495,44 @@ function App() {
             return newS;
           });
         });
+
+        // 📱 4G/5G電波不良時のバックアップ用に、公式トップ一覧の最新20件をローカルにキャッシュ保存
+        if (page === 1 && (!category || category === 'すべて') && !query && !tag && currentTab === 'official' && sort === 'latest') {
+          try {
+            localStorage.setItem('min_ake_cached_surveys_v1', JSON.stringify(updatedList.slice(0, 20)));
+          } catch {}
+        }
       } else {
         if (sError) {
-          console.warn("⚠️ fetchSurveys: Query failed with error. Preserving previous survey list to prevent blank screen.", sError);
-          setSurveys(prev => (prev && prev.length > 0 ? prev : []));
+          console.warn("⚠️ fetchSurveys: Query failed with error. Using cached/previous survey list and scheduling retry.", sError);
+          setSurveys(prev => {
+            if (prev && prev.length > 0) return prev;
+            try {
+              const cached = JSON.parse(localStorage.getItem('min_ake_cached_surveys_v1') || '[]');
+              if (Array.isArray(cached) && cached.length > 0) return cached;
+            } catch {}
+            return [];
+          });
+          // 4G/5G回線で通信エラーになった場合は3.5秒後に自動でサイレント再取得
+          setTimeout(() => {
+            if (myFetchId === surveyFetchRequestIdRef.current) {
+              fetchSurveys(currentUser, true, page, category, query, currentTab, sort, pop, tag);
+            }
+          }, 3500);
         } else {
           setSurveys([]);
         }
       }
     } catch (err) {
       console.error("❌ fetchSurveys CRASHED:", err);
-      setSurveys(prev => (prev && prev.length > 0 ? prev : []));
+      setSurveys(prev => {
+        if (prev && prev.length > 0) return prev;
+        try {
+          const cached = JSON.parse(localStorage.getItem('min_ake_cached_surveys_v1') || '[]');
+          if (Array.isArray(cached) && cached.length > 0) return cached;
+        } catch {}
+        return [];
+      });
     } finally {
       if (safetyTimeoutId) clearTimeout(safetyTimeoutId);
       // 🛡️ 途中で新しいリクエストに追い越された古いリクエストが、勝手に isLoading=false にして「該当なし」を一瞬出してしまうのを防止！
@@ -2535,8 +2569,8 @@ function App() {
         .not('tags', 'cs', '{"お知らせ"}')
         .gte('created_at', thirtyDaysAgo)
         .or(`deadline.is.null,deadline.gt.${now.toISOString()}`) // 終了済みは除外
-        .order('created_at', { ascending: false }) // 最新200件からスコア計算するらび！
-        .limit(200);
+        .order('created_at', { ascending: false }) // 最新100件からスコア計算して通信量を半減！
+        .limit(100);
 
       const calcTotalScore = (item) => {
         const votes = Number(item.total_votes || 0);
@@ -2559,7 +2593,7 @@ function App() {
           .not('tags', 'cs', '{"お知らせ"}')
           .or(`deadline.is.null,deadline.gt.${now.toISOString()}`) // 終了済みは除外
           .order('created_at', { ascending: false })
-          .limit(200);
+          .limit(100);
         if (fallbackPopularRaw) {
           popular = fallbackPopularRaw.map(applySakuraStats).sort((a, b) => calcTotalScore(b) - calcTotalScore(a)).slice(0, 10);
         }
@@ -2574,8 +2608,15 @@ function App() {
         .lte('deadline', next24h.toISOString())
         .order('deadline', { ascending: true });
 
-      if (latest) setLiveSurveys(latest.map(applySakuraStats));
-      if (popular) setPopularSurveys(popular); // already mapped above
+      if (latest && latest.length > 0) {
+        const mappedLatest = latest.map(applySakuraStats);
+        setLiveSurveys(mappedLatest);
+        try { localStorage.setItem('min_ake_cached_live_v1', JSON.stringify(mappedLatest)); } catch {}
+      }
+      if (popular && popular.length > 0) {
+        setPopularSurveys(popular);
+        try { localStorage.setItem('min_ake_cached_popular_v1', JSON.stringify(popular)); } catch {}
+      }
       if (ending) setEndingSoonSurveys(ending.map(applySakuraStats));
 
       console.log(`✅ fetchSidebarData: Done. (Live:${latest?.length}, Popular:${popular?.length}, Ending:${ending?.length})`);
@@ -2584,9 +2625,9 @@ function App() {
     }
   };
 
-  // 初回ロード時と、10分おきにサイドバーを更新する魔法（＋スマホのスリープ復帰・電波復帰時に空なら即リカバリー）
+  // 初回ロード時（メイン記事一覧の通信を優先するため350msだけずらして実行）と、10分おきにサイドバーを更新する魔法
   useEffect(() => {
-    fetchSidebarData();
+    const initTimer = setTimeout(fetchSidebarData, 350);
     const interval = setInterval(fetchSidebarData, 10 * 60 * 1000);
     const handleRecover = () => {
       if (typeof document === 'undefined' || document.visibilityState === 'visible') {
@@ -2606,6 +2647,7 @@ function App() {
     window.addEventListener('pageshow', handleRecover);
     document.addEventListener('visibilitychange', handleRecover);
     return () => {
+      clearTimeout(initTimer);
       clearInterval(interval);
       window.removeEventListener('online', handleRecover);
       window.removeEventListener('pageshow', handleRecover);

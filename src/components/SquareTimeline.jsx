@@ -17,7 +17,9 @@ function timeAgo(dateStr) {
 }
 
 const SquareTimeline = () => {
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('min_ake_cached_timeline_v1') || '[]'); } catch { return []; }
+  });
   const [inputText, setInputText] = useState('');
   const [name, setName] = useState('');
   const [selectedAvatar, setSelectedAvatar] = useState('🐰');
@@ -26,13 +28,19 @@ const SquareTimeline = () => {
     const saved = localStorage.getItem('timeline_liked_ids');
     return saved ? new Set(JSON.parse(saved)) : new Set();
   });
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(() => {
+    try {
+      const cached = JSON.parse(localStorage.getItem('min_ake_cached_timeline_v1') || '[]');
+      return !(Array.isArray(cached) && cached.length > 0);
+    } catch { return true; }
+  });
   const [lastPostTime, setLastPostTime] = useState(0); // スパム防止
   const [timelineTab, setTimelineTab] = useState('chat'); // 'chat' | 'news' | 'all'
   const scrollRef = useRef(null);
 
-  // 🔄 初回データ取得
+  // 🔄 初回データ取得（4G/5G回線で記事一覧を優先するため300ms遅らせ、キャッシュがあれば0秒表示＆失敗時自動リトライ）
   useEffect(() => {
+    let retryTimer = null;
     const fetchPosts = async () => {
       const { data, error } = await supabase
         .from('timeline_posts')
@@ -41,13 +49,16 @@ const SquareTimeline = () => {
         .order('created_at', { ascending: false })
         .limit(30);
 
-      if (!error && data) {
+      if (!error && Array.isArray(data) && data.length > 0) {
         setPosts(data);
+        try { localStorage.setItem('min_ake_cached_timeline_v1', JSON.stringify(data)); } catch {}
+      } else if (error) {
+        retryTimer = setTimeout(fetchPosts, 3500);
       }
       setIsLoading(false);
     };
 
-    fetchPosts();
+    const initTimer = setTimeout(fetchPosts, 300);
 
     // 📱 スマホでスリープ復帰・回線復帰したときにタイムラインが空なら自動で再取得
     const handleWakeOrOnline = () => {
@@ -83,6 +94,8 @@ const SquareTimeline = () => {
       .subscribe();
 
     return () => {
+      clearTimeout(initTimer);
+      if (retryTimer) clearTimeout(retryTimer);
       window.removeEventListener('online', fetchPosts);
       document.removeEventListener('visibilitychange', handleWakeOrOnline);
       supabase.removeChannel(channel);

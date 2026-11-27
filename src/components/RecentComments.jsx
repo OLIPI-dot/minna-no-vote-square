@@ -33,7 +33,9 @@ const SHOW_COUNT = 5;
 
 // 💬 新着コメント（どの記事にどんなコメントがついたかを紹介）
 const RecentComments = ({ navigateTo }) => {
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('min_ake_cached_recent_comments_v1') || '[]'); } catch { return []; }
+  });
 
   useEffect(() => {
     let cancelled = false;
@@ -51,10 +53,10 @@ const RecentComments = ({ navigateTo }) => {
       const surveyIds = [...new Set(valid.map(c => c.survey_id))];
       if (surveyIds.length === 0) { setItems([]); return; }
 
-      // 2. コメントがついた記事の情報を取得（公開中のものだけ）
+      // 2. コメントがついた記事の情報を取得（公開中のものだけ・descriptionは除外して通信軽量化）
       const { data: svs } = await supabase
         .from('surveys')
-        .select('id,title,description,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count')
+        .select('id,title,category,tags,visibility,image_url,likes_count,total_votes,is_official,created_at,deadline,source_published_at,view_count,comment_count')
         .in('id', surveyIds)
         .eq('visibility', 'public');
       if (cancelled || !Array.isArray(svs)) return;
@@ -73,9 +75,10 @@ const RecentComments = ({ navigateTo }) => {
         if (result.length >= SHOW_COUNT) break;
       }
       setItems(result);
+      try { localStorage.setItem('min_ake_cached_recent_comments_v1', JSON.stringify(result)); } catch {}
     };
 
-    load();
+    const initTimer = setTimeout(load, 600);
     // 🔄 3分ごとにそっと更新＋スマホの回線復帰時に再取得
     const timer = setInterval(load, 3 * 60 * 1000);
     const handleWakeOrOnline = () => {
@@ -90,6 +93,7 @@ const RecentComments = ({ navigateTo }) => {
     document.addEventListener('visibilitychange', handleWakeOrOnline);
     return () => {
       cancelled = true;
+      clearTimeout(initTimer);
       clearInterval(timer);
       window.removeEventListener('online', load);
       document.removeEventListener('visibilitychange', handleWakeOrOnline);
