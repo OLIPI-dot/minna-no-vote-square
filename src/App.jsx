@@ -197,7 +197,9 @@ function App() {
   });
   const [endingSoonSurveys, setEndingSoonSurveys] = useState([]);
   const [showAllEndingSoon, setShowAllEndingSoon] = useState(false);
-  const [totalVotes, setTotalVotes] = useState(0); // 📊 サイト全体の総投票数
+  const [totalVotes, setTotalVotes] = useState(() => {
+    try { return Number(localStorage.getItem('min_ake_cached_total_votes_v1')) || 0; } catch { return 0; }
+  }); // 📊 サイト全体の総投票数
   const [surveyTitle, setSurveyTitle] = useState('');
   const [surveyImage, setSurveyImage] = useState('');
   const [surveyCategory, setSurveyCategory] = useState('');
@@ -1224,7 +1226,9 @@ function App() {
       if (typeof document !== 'undefined' && document.visibilityState !== 'visible') return;
       const { data, error } = await supabase.rpc('get_total_votes');
       if (!error && data !== null && data !== undefined) {
-        setTotalVotes(Number(data) || 0);
+        const num = Number(data) || 0;
+        setTotalVotes(num);
+        try { localStorage.setItem('min_ake_cached_total_votes_v1', String(num)); } catch {}
       } else if (error) {
         console.warn('⚠️ get_total_votes error:', error.message);
       }
@@ -2404,27 +2408,23 @@ function App() {
       const next24h = new Date(now.getTime() + 24 * 60 * 60 * 1000);
       const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
 
-      // ⚡ 新着10件は人気計算用の最新100件(popularRaw)の先頭10件と完全に同一なのでクエリを統合し、もうすぐ終了(ending)と並列取得！
-      const [{ data: popularRaw }, { data: ending }] = await Promise.all([
-        supabase
-          .from('surveys')
-          .select(SIDEBAR_SELECT_COLS)
-          .eq('visibility', 'public')
-          .not('tags', 'cs', '{"お知らせ"}')
-          .gte('created_at', thirtyDaysAgo)
-          .or(`deadline.is.null,deadline.gt.${now.toISOString()}`)
-          .order('created_at', { ascending: false })
-          .limit(100),
-        supabase
-          .from('surveys')
-          .select(SIDEBAR_SELECT_COLS)
-          .eq('visibility', 'public')
-          .gt('deadline', now.toISOString())
-          .lte('deadline', next24h.toISOString())
-          .order('deadline', { ascending: true })
-      ]);
+      // ⚡ 新着10件・人気10件・もうすぐ終了(24h以内)はすべて直近30日のアクティブ記事一覧(popularRaw)から一括抽出できるため、クエリを1本に統合してDB負荷と待ち時間を大幅削減！
+      const { data: popularRaw } = await supabase
+        .from('surveys')
+        .select(SIDEBAR_SELECT_COLS)
+        .eq('visibility', 'public')
+        .not('tags', 'cs', '{"お知らせ"}')
+        .gte('created_at', thirtyDaysAgo)
+        .or(`deadline.is.null,deadline.gt.${now.toISOString()}`)
+        .order('created_at', { ascending: false })
+        .limit(150);
 
       const latest = Array.isArray(popularRaw) ? popularRaw.slice(0, 10) : [];
+      const ending = Array.isArray(popularRaw)
+        ? popularRaw
+            .filter(s => s.deadline && new Date(s.deadline) > now && new Date(s.deadline) <= next24h)
+            .sort((a, b) => new Date(a.deadline) - new Date(b.deadline))
+        : [];
 
       const calcTotalScore = (item) => {
         const votes = Number(item.total_votes || 0);
