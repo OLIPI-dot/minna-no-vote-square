@@ -17,10 +17,14 @@ function escapeHtml(unsafe) {
 
 // 🌸 [[SUMMARY: ...]] から構造化データを抽出するヘルパー
 function extractSummaryData(rawDesc) {
-  if (!rawDesc) return { points: [], rabiComment: '', plainText: '' };
+  if (!rawDesc) return { points: [], rabiComment: '', keywordTitle: '', keywordDesc: '', surveyQuestion: '', netizenComments: [], plainText: '' };
 
   const points = [];
   let rabiComment = '';
+  let keywordTitle = '';
+  let keywordDesc = '';
+  let surveyQuestion = '';
+  let netizenComments = [];
   let plainText = '';
 
   if (rawDesc.includes('[[SUMMARY:')) {
@@ -40,6 +44,12 @@ function extractSummaryData(rawDesc) {
         if (json.rabi_comment) {
           rabiComment = json.rabi_comment;
         }
+        if (json.keyword_title) keywordTitle = json.keyword_title;
+        if (json.keyword_desc) keywordDesc = json.keyword_desc;
+        if (json.survey_question) surveyQuestion = json.survey_question;
+        if (Array.isArray(json.netizen_comments)) {
+          netizenComments = json.netizen_comments.filter(Boolean);
+        }
       }
     } catch (e) {
       // JSONパース失敗時はフォールバック
@@ -57,7 +67,7 @@ function extractSummaryData(rawDesc) {
     .replace(/\s+/g, ' ')
     .trim();
 
-  return { points, rabiComment, plainText };
+  return { points, rabiComment, keywordTitle, keywordDesc, surveyQuestion, netizenComments, plainText };
 }
 
 // 🌸 Google検索やSNSで最もクリックされやすい魅力的な要約文を生成する
@@ -179,10 +189,13 @@ export default async function handler(req, res) {
     }
 
     // 4. 構造化データ（DiscussionForumPosting）を生成してGoogle検索に記事・投票・コメントを伝える
-    const { points, rabiComment, plainText } = extractSummaryData(survey.description);
+    const { points, rabiComment, keywordTitle, keywordDesc, surveyQuestion, netizenComments, plainText } = extractSummaryData(survey.description);
     const bodyTextForSchema = [
       ...points.map(p => `${p.title}: ${p.desc}`),
+      keywordTitle && keywordDesc ? `${keywordTitle}（意味・読み方解説）: ${keywordDesc}` : '',
       rabiComment,
+      surveyQuestion ? `アンケートテーマ: ${surveyQuestion}` : '',
+      ...netizenComments,
       plainText
     ].filter(Boolean).join(' ') || cleanDesc;
 
@@ -288,8 +301,16 @@ export default async function handler(req, res) {
       ? `<section><h2>らびたんのコメント</h2><p>${escapeHtml(rabiComment)}</p></section>`
       : '';
 
+    const keywordHtml = (keywordTitle && keywordDesc)
+      ? `<section><h2>注目ワード・読み方・意味解説：${escapeHtml(keywordTitle)}</h2><p>${escapeHtml(keywordDesc)}</p></section>`
+      : '';
+
+    const netizenHtml = Array.isArray(netizenComments) && netizenComments.length > 0
+      ? `<section><h2>ネットの反応・声</h2><ul>${netizenComments.map(nc => `<li>${escapeHtml(nc)}</li>`).join('')}</ul></section>`
+      : '';
+
     const optionsHtml = Array.isArray(options) && options.length > 0
-      ? `<section><h2>投票の選択肢（現在 合計${Number(survey.total_votes) || 0}票）</h2><ul>${options.map(o => {
+      ? `<section><h2>${escapeHtml(surveyQuestion || '投票の選択肢')}（現在 合計${Number(survey.total_votes) || 0}票）</h2><ul>${options.map(o => {
         const optName = escapeHtml((o.name || '').replace(/^\u200B/, ''));
         const optVotes = Number(o.votes) || 0;
         return `<li>${optName}（${optVotes}票）</li>`;
@@ -330,8 +351,10 @@ export default async function handler(req, res) {
       ${survey.category ? `<p>カテゴリ: ${escapeHtml(survey.category)}</p>` : ''}
       ${tagsHtml}
       ${pointsHtml}
+      ${keywordHtml}
       ${rabiHtml}
       ${optionsHtml}
+      ${netizenHtml}
       ${commentsHtml}
       ${relatedCategoryHtml}
       ${recentSurveysHtml}
