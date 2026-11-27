@@ -332,129 +332,10 @@ function App() {
   const surveyFetchRequestIdRef = useRef(0); // 📋 一覧フェッチのリクエストID（古いレスポンスの競合上書き防止）
   const lastPopStateTimeRef = useRef(0); // 🛡️ popstate直後の誤爆クリック防止用タイムスタンプ
 
-  // 📡 リアルタイム人数 & 来場カウンター & キリ番
-  const getJstDateStr = (ms = Date.now()) => new Date(ms + 9 * 3600 * 1000).toISOString().slice(0, 10);
-  const isKiribanNumber = (n) => {
-    const num = Number(n) || 0;
-    if (num <= 0) return false;
-    if (num % 50 === 0) return true;
-    return num >= 111 && /^(\d)\1+$/.test(String(num));
-  };
-  const parseSiteCounter = (rawName) => {
-    if (!rawName || !String(rawName).startsWith('[[SITE_COUNTER:')) return null;
-    try {
-      const jsonStr = String(rawName).slice('[[SITE_COUNTER:'.length, -2);
-      const parsed = JSON.parse(jsonStr);
-      const todayJst = getJstDateStr();
-      const total = Math.max(0, Number(parsed.total) || 0);
-      const today = parsed.date === todayJst ? Math.max(0, Number(parsed.today) || 0) : 0;
-      const history = Array.isArray(parsed.history) ? parsed.history : [];
-      return { total, today, date: parsed.date || todayJst, history };
-    } catch {
-      return null;
-    }
-  };
+  // 📡 リアルタイム人数
   const [globalOnlineCount, setGlobalOnlineCount] = useState(1);
-  const [siteVisitorStats, setSiteVisitorStats] = useState(() => ({ today: 0, total: 0, date: getJstDateStr(), history: [] }));
-  const [myKiribanHit, setMyKiribanHit] = useState(() => {
-    try { return Number(sessionStorage.getItem('min_ake_my_kiriban') || 0) || null; } catch { return null; }
-  });
-  const siteCounterRowIdRef = useRef(96236);
-  const siteCounterMaxTotalRef = useRef(0);
-  const siteCounterIncrementQueueRef = useRef(Promise.resolve());
   const addExpRef = useRef(null);
   const addTicketsRef = useRef(null);
-  const applyParsedSiteCounter = useCallback((parsed) => {
-    if (!parsed) return;
-    if (parsed.total > siteCounterMaxTotalRef.current) {
-      siteCounterMaxTotalRef.current = parsed.total;
-    }
-    setSiteVisitorStats(prev => {
-      // 古いキャッシュ応答で画面の表示が巻き戻るのを防止
-      if (prev && prev.total > parsed.total) return prev;
-      return {
-        today: parsed.today || 0,
-        total: parsed.total || 0,
-        date: getJstDateStr(),
-        history: Array.isArray(parsed.history) ? parsed.history : []
-      };
-    });
-  }, []);
-  const incrementSiteVisitorCounter = useCallback(() => {
-    const task = siteCounterIncrementQueueRef.current.then(async () => {
-      try {
-        // Primary Key (id=96236) で直接取得して options テーブル全体の LIKE フルスキャン（Disk IO消費）を防止
-        let { data: row, error } = await supabase
-          .from('options')
-          .select('id, name')
-          .eq('id', siteCounterRowIdRef.current || 96236)
-          .maybeSingle();
-        if (!row && !error) {
-          const fb = await supabase.from('options').select('id, name').like('name', '[[SITE_COUNTER:%').limit(1).maybeSingle();
-          row = fb.data;
-          error = fb.error;
-        }
-        if (error || !row) return;
-
-        siteCounterRowIdRef.current = row.id;
-        const parsed = parseSiteCounter(row.name);
-        if (!parsed) return;
-
-        // 🛡️ もしブラウザキャッシュ等で既知の最大値より古い値が返ってきた場合は上書きを中止して巻き戻りを完全防止！
-        if (parsed.total < siteCounterMaxTotalRef.current) {
-          return;
-        }
-
-        const todayJst = getJstDateStr();
-        const nextTotal = parsed.total + 1;
-        siteCounterMaxTotalRef.current = nextTotal;
-        const nextToday = (parsed.date === todayJst ? parsed.today : 0) + 1;
-        const curHistory = Array.isArray(parsed.history) ? parsed.history : [];
-        let nextHistory = curHistory;
-        if (isKiribanNumber(nextTotal) && !curHistory.some(h => Number(h.num) === nextTotal)) {
-          nextHistory = [{ num: nextTotal, date: todayJst.replace(/-/g, '/') }, ...curHistory].slice(0, 10);
-        }
-        const nextPayload = { total: nextTotal, today: nextToday, date: todayJst, history: nextHistory };
-        const nextName = `[[SITE_COUNTER:${JSON.stringify(nextPayload)}]]`;
-
-        setSiteVisitorStats({ today: nextToday, total: nextTotal, date: todayJst, history: nextHistory });
-
-        if (isKiribanNumber(nextTotal)) {
-          setMyKiribanHit(nextTotal);
-          try {
-            sessionStorage.setItem('min_ake_my_kiriban', String(nextTotal));
-          } catch {}
-          try {
-            const rewardKey = `min_ake_kiriban_rewarded_${nextTotal}`;
-            if (!localStorage.getItem(rewardKey)) {
-              localStorage.setItem(rewardKey, '1');
-              if (addExpRef.current) addExpRef.current(50);
-              if (addTicketsRef.current) addTicketsRef.current(1);
-              confetti({
-                particleCount: 160,
-                spread: 100,
-                origin: { y: 0.6 },
-                colors: ['#f59e0b', '#ec4899', '#8b5cf6', '#10b981', '#3b82f6'],
-                zIndex: 9999
-              });
-            }
-          } catch {}
-        }
-
-        // 🛡️ 楽観的ロック (.eq('name', row.name)) を付けることで、
-        // 古いタブや古いキャッシュを持つ端末がDBの新しいカウンター値を古い値で上書きするのをDB側でも完全ブロック！
-        await supabase
-          .from('options')
-          .update({ name: nextName })
-          .eq('id', row.id)
-          .eq('name', row.name);
-      } catch (err) {
-        console.warn('⚠️ site visitor counter increment failed:', err);
-      }
-    });
-    siteCounterIncrementQueueRef.current = task.catch(() => { });
-    return task;
-  }, []);
   const manualUpdatesRef = useRef({}); // 🛡️ { [surveyId]: timestamp } アンケートごとの更新ガード
   const [surveyOnlineCount, setSurveyOnlineCount] = useState(2);
 
@@ -1354,73 +1235,6 @@ function App() {
 
     return () => { clearInterval(pollTimer); };
   }, []);
-
-  // 🐾 今日の訪れた数・累計来場数カウンターの取得＆60秒同期（Disk IO節約のため options テーブル全体の常時WAL監視を廃止）
-  useEffect(() => {
-    let isMounted = true;
-    const VISIT_COOLDOWN_MS = 30 * 60 * 1000;
-    let lastFetchTs = 0;
-
-    const syncVisitorCounter = async (allowIncrement = true) => {
-      const now = Date.now();
-      if (now - lastFetchTs < 4000) return;
-      lastFetchTs = now;
-
-      let query = supabase.from('options').select('id, name');
-      if (siteCounterRowIdRef.current) {
-        query = query.eq('id', siteCounterRowIdRef.current);
-      } else {
-        query = query.like('name', '[[SITE_COUNTER:%').limit(1);
-      }
-      const { data: row, error } = await query.maybeSingle();
-
-      if (!isMounted || error || !row) return;
-      siteCounterRowIdRef.current = row.id;
-      const parsed = parseSiteCounter(row.name);
-      if (parsed) {
-        applyParsedSiteCounter(parsed);
-      }
-
-      if (allowIncrement) {
-        try {
-          const lastVisitTs = parseInt(localStorage.getItem('min_ake_last_visit_ts') || '0', 10);
-          if (Date.now() - lastVisitTs > VISIT_COOLDOWN_MS) {
-            localStorage.setItem('min_ake_last_visit_ts', String(Date.now()));
-            await incrementSiteVisitorCounter();
-          }
-        } catch {
-          // ignore localStorage errors
-        }
-      }
-    };
-
-    syncVisitorCounter(true);
-
-    const handleVisibilityOrFocus = () => {
-      if (typeof document === 'undefined' || document.visibilityState === 'visible') {
-        syncVisitorCounter(true);
-      }
-    };
-
-    window.addEventListener('focus', handleVisibilityOrFocus);
-    document.addEventListener('visibilitychange', handleVisibilityOrFocus);
-
-    // 画面を開いて見守っている間も60秒おきに最新値を静かに同期（自動水増しはしないよう allowIncrement=false）
-    const pollTimer = setInterval(() => {
-      if (typeof document === 'undefined' || document.visibilityState === 'visible') {
-        syncVisitorCounter(false);
-      }
-    }, 60000);
-
-    return () => {
-      isMounted = false;
-      window.removeEventListener('focus', handleVisibilityOrFocus);
-      document.removeEventListener('visibilitychange', handleVisibilityOrFocus);
-      clearInterval(pollTimer);
-    };
-  }, [applyParsedSiteCounter, incrementSiteVisitorCounter]);
-
-
 
   // 💬 詳細画面のデータ取得＆リアルタイム購読ロジック
   useEffect(() => {
@@ -4151,8 +3965,6 @@ function App() {
               setShowAllEndingSoon={setShowAllEndingSoon}
               navigateTo={navigateTo}
               globalOnlineCount={globalOnlineCount}
-              siteVisitorStats={siteVisitorStats}
-              myKiribanHit={myKiribanHit}
               formatWithDay={formatWithDay}
               AnimatedCounter={AnimatedCounter}
               userExp={userExp}
