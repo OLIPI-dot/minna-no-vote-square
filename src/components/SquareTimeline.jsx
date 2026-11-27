@@ -58,7 +58,7 @@ const SquareTimeline = () => {
       setIsLoading(false);
     };
 
-    const initTimer = setTimeout(fetchPosts, 300);
+    fetchPosts();
 
     // 📱 スマホでスリープ復帰・回線復帰したときにタイムラインが空なら自動で再取得
     const handleWakeOrOnline = () => {
@@ -94,7 +94,6 @@ const SquareTimeline = () => {
       .subscribe();
 
     return () => {
-      clearTimeout(initTimer);
       if (retryTimer) clearTimeout(retryTimer);
       window.removeEventListener('online', fetchPosts);
       document.removeEventListener('visibilitychange', handleWakeOrOnline);

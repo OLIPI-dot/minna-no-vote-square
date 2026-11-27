@@ -78,7 +78,7 @@ const RecentComments = ({ navigateTo }) => {
       try { localStorage.setItem('min_ake_cached_recent_comments_v1', JSON.stringify(result)); } catch {}
     };
 
-    const initTimer = setTimeout(load, 600);
+    load();
     // 🔄 3分ごとにそっと更新＋スマホの回線復帰時に再取得
     const timer = setInterval(load, 3 * 60 * 1000);
     const handleWakeOrOnline = () => {
@@ -93,7 +93,6 @@ const RecentComments = ({ navigateTo }) => {
     document.addEventListener('visibilitychange', handleWakeOrOnline);
     return () => {
       cancelled = true;
-      clearTimeout(initTimer);
       clearInterval(timer);
       window.removeEventListener('online', load);
       document.removeEventListener('visibilitychange', handleWakeOrOnline);

@@ -3,14 +3,14 @@ import confetti from 'canvas-confetti';
 // Deploy Kick: 2026-10-09 07:13 🚀🐰 (Adjust view count fake multiplier)
 import { supabase } from './supabaseClient';
 // 🚀 コンポーネントの遅延読み込みで初期バンドルを極限まで削るらび！
-const Sidebar = lazy(() => import('./components/Sidebar'));
-const SurveyListView = lazy(() => import('./components/SurveyListView'));
-const SurveyDetailView = lazy(() => import('./components/SurveyDetailView'));
-const SiteConceptSection = lazy(() => import('./components/SiteConceptSection'));
-const AdSenseBox = lazy(() => import('./components/AdSenseBox'));
-const CountdownTimer = lazy(() => import('./components/CountdownTimer'));
+import Sidebar from './components/Sidebar';
+import SurveyListView from './components/SurveyListView';
+import SurveyDetailView from './components/SurveyDetailView';
+import SiteConceptSection from './components/SiteConceptSection';
+import AdSenseBox from './components/AdSenseBox';
+import CountdownTimer from './components/CountdownTimer';
 const FooterModals = lazy(() => import('./components/FooterModals'));
-const AnimatedCounter = lazy(() => import('./components/AnimatedCounter'));
+import AnimatedCounter from './components/AnimatedCounter';
 import WatermarkLogo from './components/WatermarkLogo';
 import {
   ADMIN_EMAILS,
@@ -142,8 +142,23 @@ function App() {
     return (new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '').has('id') || window.location.pathname.startsWith('/s/')) ? 'details' : 'list';
   }); // 🏷️ 'list' or 'details' or 'create'
   const [user, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [surveys, setSurveys] = useState([]);
+  const [surveys, setSurveys] = useState(() => {
+    try {
+      const isDetail = typeof window !== 'undefined' && (new URLSearchParams(window.location.search).has('id') || new URLSearchParams(window.location.search).has('s') || window.location.pathname.startsWith('/s/'));
+      if (isDetail) return [];
+      const cached = JSON.parse(localStorage.getItem('min_ake_cached_surveys_v1') || '[]');
+      const now = new Date();
+      return Array.isArray(cached) ? cached.filter(s => !s.deadline || new Date(s.deadline) > now) : [];
+    } catch { return []; }
+  });
+  const [isLoading, setIsLoading] = useState(() => {
+    try {
+      const isDetail = typeof window !== 'undefined' && (new URLSearchParams(window.location.search).has('id') || new URLSearchParams(window.location.search).has('s') || window.location.pathname.startsWith('/s/'));
+      if (isDetail) return true;
+      const cached = JSON.parse(localStorage.getItem('min_ake_cached_surveys_v1') || '[]');
+      return !(Array.isArray(cached) && cached.length > 0);
+    } catch { return true; }
+  });
   const [currentSurvey, setCurrentSurvey] = useState(null);
   const [options, setOptions] = useState([]);
   const [votedOption, setVotedOption] = useState(null);
@@ -171,7 +186,9 @@ function App() {
     console.log('🛡️ isAdmin check detail:', { detectedEmail: email, isAdmin: result });
     return result;
   }, [user]);
-  const [totalOfficialCount, setTotalOfficialCount] = useState(0); // 📊 公式の総件数
+  const [totalOfficialCount, setTotalOfficialCount] = useState(() => {
+    try { return Number(localStorage.getItem('min_ake_cached_official_count_v1')) || 0; } catch { return 0; }
+  }); // 📊 公式の総件数
   const [totalUserCount, setTotalUserCount] = useState(0); // 📊 ユーザー投稿の総件数
   const [totalMineCount, setTotalMineCount] = useState(0); // 📊 マイアンケートの総件数
   const [liveSurveys, setLiveSurveys] = useState(() => {
@@ -2172,7 +2189,9 @@ function App() {
     const isFirstLoad = !silent && page === 1 && (!category || category === 'すべて') && !query && !tag && currentTab === 'official' && sort === 'latest';
 
     let safetyTimeoutId = null;
-    if (!silent) {
+    // ⚡ 初回トップ表示でローカルキャッシュが既に画面にある場合は、スケルトンで画面を消さずに裏でなめらかに最新化する！
+    const hasInitialCache = isFirstLoad && surveys.length > 0;
+    if (!silent && !hasInitialCache) {
       setIsLoading(true);
       safetyTimeoutId = setTimeout(() => {
         console.warn("⚠️ fetchSurveys: Safety timeout triggered (10s). Forcing isLoading=false.");
@@ -2207,7 +2226,7 @@ function App() {
             if (activeEarly.length >= 10) {
               sData = activeEarly;
               count = activeEarly.length;
-              setTotalOfficialCount(prev => Math.max(prev, activeEarly.length));
+              setTotalOfficialCount(prev => prev > activeEarly.length ? prev : activeEarly.length);
             }
           }
         } catch (e) {
@@ -2289,8 +2308,8 @@ function App() {
         const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
         baseQuery = baseQuery.or(`deadline.lt.${now.toISOString()},created_at.lt.${thirtyDaysAgo.toISOString()}`);
       } else if (sort === 'latest') {
-        // 🕒 通常の新着一覧では、終了していないアクティブなアンケート（期限内 かつ 直近30日以内）を取得する！
-        if (!tag && !query.trim()) {
+        // 🕒 新着順タブでは、検索中であっても終了済み（アーカイブ）の記事が混ざらないよう常に受付中（期限内 かつ 直近30日以内）に絞る！
+        if (!tag) {
           const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
           baseQuery = baseQuery.gte('created_at', thirtyDaysAgo.toISOString());
           baseQuery = baseQuery.or(`deadline.is.null,deadline.gt.${now.toISOString()}`);
@@ -2299,14 +2318,14 @@ function App() {
 
       // 📈 ソート順の適用とデータ取得
       if (sort === 'popular') {
-        // 🚨 DB側での中途半端なソートは行わず、直近30日のアクティブな記事をまとめて最大300件取得し、
+        // 🚨 DB側での中途半端なソートは行わず、直近30日のアクティブな記事をまとめて最大120件取得し、
         // クライアント側（SurveyListView）で正確にスコア計算＆ソートするらび！
         const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
         baseQuery = baseQuery
           .gte('created_at', thirtyDaysAgo)
           .or(`deadline.is.null,deadline.gt.${now.toISOString()}`) // 終了済みは除外
           .order('created_at', { ascending: false }) // ちゃんと最新から取得するらび！
-          .limit(300);
+          .limit(120);
       } else {
         // デフォルトは新着順
         baseQuery = baseQuery.order('created_at', { ascending: false });
@@ -2368,6 +2387,11 @@ function App() {
         if (query && sData.length === 0) {
           console.warn("⚠️ fetchSurveys: Search returned 0 results for:", query);
         }
+        // 📊 baseQuery自体のexact countが取れている場合は現在のタブの件数を即座に反映（「公式・ニュース(20)」のまま固まるのを防止！）
+        if (count != null && !isFirstLoad && sort !== 'watching' && sort !== 'mine') {
+          if (currentTab === 'official') setTotalOfficialCount(count);
+          else if (currentTab === 'user') setTotalUserCount(count);
+        }
         // 📊 タブのカウント表示を同期するらび！（ウォッチ中・マイページ表示中は全体カウントを上書きしない）
         if (!query.trim() && sort !== 'watching' && sort !== 'mine') {
           (async () => {
@@ -2402,7 +2426,14 @@ function App() {
               ]);
               const visibleOfficial = Array.isArray(sData) ? sData.filter(s => s && s.is_official).length : 0;
               const visibleUser = Array.isArray(sData) ? sData.filter(s => s && !s.is_official).length : 0;
-              setTotalOfficialCount(prev => (offCount != null ? offCount : Math.max(prev, visibleOfficial)));
+              if (offCount != null) {
+                setTotalOfficialCount(offCount);
+                if (sort === 'latest' && (!category || category === 'すべて') && !tag) {
+                  try { localStorage.setItem('min_ake_cached_official_count_v1', String(offCount)); } catch {}
+                }
+              } else {
+                setTotalOfficialCount(prev => Math.max(prev, visibleOfficial));
+              }
               setTotalUserCount(prev => (uCount != null ? uCount : Math.max(prev, visibleUser)));
               console.log(`🔢 Filtered Counts Updated: Official(${offCount}), User(${uCount}) [Sort: ${sort}, Cat: ${category}]`);
             } catch (err) {
@@ -2559,27 +2590,29 @@ function App() {
       console.log("📡 fetchSidebarData: Fetching global sidebar data...");
       const now = new Date();
       const next24h = new Date(now.getTime() + 24 * 60 * 60 * 1000);
-
-      // 1. 新着 (最新10件)
-      const { data: latest } = await supabase
-        .from('surveys')
-        .select(SIDEBAR_SELECT_COLS)
-        .eq('visibility', 'public')
-        .not('tags', 'cs', '{"お知らせ"}')
-        .order('created_at', { ascending: false })
-        .limit(10);
-
-      // 2. 人気 (直近30日間のアンケートからスコア順で上位10件をクライアントで計算して抽出するらび！)
       const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
-      let { data: popularRaw } = await supabase
-        .from('surveys')
-        .select(SIDEBAR_SELECT_COLS)
-        .eq('visibility', 'public')
-        .not('tags', 'cs', '{"お知らせ"}')
-        .gte('created_at', thirtyDaysAgo)
-        .or(`deadline.is.null,deadline.gt.${now.toISOString()}`) // 終了済みは除外
-        .order('created_at', { ascending: false }) // 最新100件からスコア計算して通信量を半減！
-        .limit(100);
+
+      // ⚡ 新着10件は人気計算用の最新100件(popularRaw)の先頭10件と完全に同一なのでクエリを統合し、もうすぐ終了(ending)と並列取得！
+      const [{ data: popularRaw }, { data: ending }] = await Promise.all([
+        supabase
+          .from('surveys')
+          .select(SIDEBAR_SELECT_COLS)
+          .eq('visibility', 'public')
+          .not('tags', 'cs', '{"お知らせ"}')
+          .gte('created_at', thirtyDaysAgo)
+          .or(`deadline.is.null,deadline.gt.${now.toISOString()}`)
+          .order('created_at', { ascending: false })
+          .limit(100),
+        supabase
+          .from('surveys')
+          .select(SIDEBAR_SELECT_COLS)
+          .eq('visibility', 'public')
+          .gt('deadline', now.toISOString())
+          .lte('deadline', next24h.toISOString())
+          .order('deadline', { ascending: true })
+      ]);
+
+      const latest = Array.isArray(popularRaw) ? popularRaw.slice(0, 10) : [];
 
       const calcTotalScore = (item) => {
         const votes = Number(item.total_votes || 0);
@@ -2593,31 +2626,7 @@ function App() {
         popular = popularRaw.map(applySakuraStats).sort((a, b) => calcTotalScore(b) - calcTotalScore(a)).slice(0, 10);
       }
 
-      // 直近の投稿数が少なくてランキングが半分以下（5件未満）しか埋まらない場合は全期間のデータで補正する
-      if (!popular || popular.length < 5) {
-        const { data: fallbackPopularRaw } = await supabase
-          .from('surveys')
-          .select(SIDEBAR_SELECT_COLS)
-          .eq('visibility', 'public')
-          .not('tags', 'cs', '{"お知らせ"}')
-          .or(`deadline.is.null,deadline.gt.${now.toISOString()}`) // 終了済みは除外
-          .order('created_at', { ascending: false })
-          .limit(100);
-        if (fallbackPopularRaw) {
-          popular = fallbackPopularRaw.map(applySakuraStats).sort((a, b) => calcTotalScore(b) - calcTotalScore(a)).slice(0, 10);
-        }
-      }
-
-      // 3. もうすぐ終了 (24時間以内。全件取得！)
-      const { data: ending } = await supabase
-        .from('surveys')
-        .select(SIDEBAR_SELECT_COLS)
-        .eq('visibility', 'public')
-        .gt('deadline', now.toISOString())
-        .lte('deadline', next24h.toISOString())
-        .order('deadline', { ascending: true });
-
-      if (latest && latest.length > 0) {
+      if (latest.length > 0) {
         const mappedLatest = latest.map(applySakuraStats);
         setLiveSurveys(mappedLatest);
         try { localStorage.setItem('min_ake_cached_live_v1', JSON.stringify(mappedLatest)); } catch {}
@@ -2634,9 +2643,9 @@ function App() {
     }
   };
 
-  // 初回ロード時（メイン記事一覧の通信を優先するため350msだけずらして実行）と、10分おきにサイドバーを更新する魔法
+  // 初回ロード時と、10分おきにサイドバーを更新する魔法
   useEffect(() => {
-    const initTimer = setTimeout(fetchSidebarData, 350);
+    fetchSidebarData();
     const interval = setInterval(fetchSidebarData, 10 * 60 * 1000);
     const handleRecover = () => {
       if (typeof document === 'undefined' || document.visibilityState === 'visible') {
@@ -2656,7 +2665,6 @@ function App() {
     window.addEventListener('pageshow', handleRecover);
     document.addEventListener('visibilitychange', handleRecover);
     return () => {
-      clearTimeout(initTimer);
       clearInterval(interval);
       window.removeEventListener('online', handleRecover);
       window.removeEventListener('pageshow', handleRecover);
@@ -2879,12 +2887,17 @@ function App() {
     return () => clearTimeout(handler);
   }, [searchQuery]);
 
-  // 🔍 検索時に「どこに何件あるか」をサクッと調査する魔法
+  // 🔍 検索時に「どこに何件あるか」をサクッと調査する魔法（受付中が0件でアーカイブにヒットがある場合は自動でアーカイブタブへ切り替えるらび！）
+  const autoSwitchedToEndedRef = useRef(false);
   useEffect(() => {
     let cancelled = false;
     async function fetchSearchDiscovery() {
       if (!debouncedSearchQuery.trim()) {
         setSearchStats({ categories: {}, official: 0, user: 0, sortModes: { today: 0, latest: 0, ended: 0, popular: 0 } });
+        if (autoSwitchedToEndedRef.current) {
+          autoSwitchedToEndedRef.current = false;
+          setSortMode('latest');
+        }
         return;
       }
 
@@ -2897,59 +2910,102 @@ function App() {
       if (cancelled) return;
       if (!error && data) {
         const now = new Date();
-        const todayStart = new Date();
-        todayStart.setHours(0, 0, 0, 0);
+        const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+        const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
         const stats = data.reduce((acc, s) => {
           const cat = s.category || 'その他';
           acc.categories[cat] = (acc.categories[cat] || 0) + 1;
           acc.categories['すべて'] = (acc.categories['すべて'] || 0) + 1;
 
+          const createdAt = new Date(s.created_at);
+          const dline = s.deadline ? new Date(s.deadline) : null;
+          const isEnded = (dline && dline < now) || (createdAt < thirtyDaysAgo);
+
+          // 📅 各ソートモードでのカウント＆タブ別公式/ユーザー件数
+          if (isEnded) {
+            acc.sortModes.ended++;
+            if (s.is_official) acc.officialByMode.ended++;
+            else acc.userByMode.ended++;
+          } else {
+            if (createdAt >= twentyFourHoursAgo) {
+              acc.sortModes.today++;
+              if (s.is_official) acc.officialByMode.today++;
+              else acc.userByMode.today++;
+            }
+            acc.sortModes.latest++;
+            acc.sortModes.popular++;
+            if (s.is_official) {
+              acc.officialByMode.latest++;
+              acc.officialByMode.popular++;
+            } else {
+              acc.userByMode.latest++;
+              acc.userByMode.popular++;
+            }
+          }
+
           if (s.is_official) acc.official++;
           else acc.user++;
 
-          const createdAt = new Date(s.created_at);
-          const dline = s.deadline ? new Date(s.deadline) : null;
-
-          // 📅 各ソートモードでのカウント
-          if (createdAt >= todayStart) acc.sortModes.today++;
-          if (dline && dline < now) acc.sortModes.ended++;
-          else {
-            // 受付中なら新着・人気にも入る
-            acc.sortModes.latest++;
-            acc.sortModes.popular++;
-          }
-
           return acc;
-        }, { categories: {}, official: 0, user: 0, sortModes: { today: 0, latest: 0, ended: 0, popular: 0 } });
+        }, {
+          categories: {},
+          official: 0,
+          user: 0,
+          sortModes: { today: 0, latest: 0, ended: 0, popular: 0 },
+          officialByMode: { today: 0, latest: 0, ended: 0, popular: 0 },
+          userByMode: { today: 0, latest: 0, ended: 0, popular: 0 }
+        });
         setSearchStats(stats);
 
-        // 📝 検索中はタブの数字もこれに合わせるらび！
-        setTotalOfficialCount(stats.official);
-        setTotalUserCount(stats.user);
+        // 📁 受付中（新着順・今日の話題・人気）が0件で、アーカイブ（終了分）にヒットがある場合は自動でアーカイブタブに切り替えるらび！
+        let targetMode = sortMode;
+        if ((sortMode === 'latest' || sortMode === 'today' || sortMode === 'popular') && stats.sortModes[sortMode] === 0 && stats.sortModes.ended > 0) {
+          autoSwitchedToEndedRef.current = true;
+          targetMode = 'ended';
+          setSortMode('ended');
+        }
+
+        // 📝 検索中は現在のソートタブの数字にピタッと合わせるらび！
+        const modeOffCount = stats.officialByMode[targetMode] !== undefined ? stats.officialByMode[targetMode] : stats.official;
+        const modeUserCount = stats.userByMode[targetMode] !== undefined ? stats.userByMode[targetMode] : stats.user;
+        setTotalOfficialCount(modeOffCount);
+        setTotalUserCount(modeUserCount);
       }
     }
     fetchSearchDiscovery();
     return () => { cancelled = true; };
   }, [debouncedSearchQuery]);
 
-  // 🔄 ページやフィルタが変わったら再取得するらび！（リアルタイム監視も兼ねる）
-  useEffect(() => {
-    // 初回・変更時の取得
-    fetchSurveys(user, false, currentPage, filterCategory, debouncedSearchQuery, activeTab, sortMode, popularMode, filterTag);
+  // 🔄 ページやフィルタが変わったら再取得するらび！（公開タブでは user?.id の遅れての確定で二重通信・スケルトン再表示を起こさない）
+  const latestFilterStateRef = useRef({});
+  latestFilterStateRef.current = { user, currentPage, filterCategory, debouncedSearchQuery, activeTab, sortMode, popularMode, filterTag };
 
-    // 📡 リアルタイム監視
+  useEffect(() => {
+    fetchSurveys(user, false, currentPage, filterCategory, debouncedSearchQuery, activeTab, sortMode, popularMode, filterTag);
+  }, [currentPage, filterCategory, debouncedSearchQuery, activeTab, sortMode, popularMode, filterTag]);
+
+  // 👤 マイページ表示中のみ、ユーザー情報が確定したタイミングで再取得する
+  useEffect(() => {
+    if (sortMode === 'mine' && user?.id) {
+      fetchSurveys(user, false, currentPage, filterCategory, debouncedSearchQuery, activeTab, sortMode, popularMode, filterTag);
+    }
+  }, [user?.id]);
+
+  // 📡 リアルタイム監視（タブや検索ワードが変わるたびにWebSocketを切断・再接続しないよう1本で安定維持）
+  useEffect(() => {
     const ch = supabase.channel('global-changes')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'surveys' }, () => {
-        fetchSurveys(user, true, currentPage, filterCategory, debouncedSearchQuery, activeTab, sortMode, popularMode, filterTag);
-        fetchSidebarData(); // 🆕 サイドバーの「最新ニュース」も更新するらび！
+        const st = latestFilterStateRef.current;
+        fetchSurveys(st.user, true, st.currentPage, st.filterCategory, st.debouncedSearchQuery, st.activeTab, st.sortMode, st.popularMode, st.filterTag);
+        fetchSidebarData();
       })
       .subscribe();
 
     return () => {
       supabase.removeChannel(ch);
     };
-  }, [user?.id, currentPage, filterCategory, debouncedSearchQuery, activeTab, sortMode, popularMode, filterTag]);
+  }, []);
 
 
   // 📡 サイドバー用の派生データ（※以前はここで計算していたが、グローバル取得に移行したためお役御免らび！）
@@ -3741,8 +3797,8 @@ function App() {
       const isEnded = (s.deadline && new Date(s.deadline) < new Date()) ||
         (new Date() - new Date(s.created_at) > 30 * 24 * 60 * 60 * 1000);
 
-      // 通常リストでは終了したものを非表示（ただし検索中やウォッチ中、マイアンケートは除くらび！）
-      if (isEnded && sortMode !== 'ended' && !filterTag && !debouncedSearchQuery.trim()) {
+      // 通常リスト（新着順・今日の話題・人気）では、検索中であっても終了済み（アーカイブ）の記事は混ざらないように非表示（ウォッチ中、マイページ、タグ指定時は除く）
+      if (isEnded && sortMode !== 'ended' && !filterTag) {
         if (sortMode === 'latest' || sortMode === 'today' || sortMode === 'popular') {
           return false;
         }

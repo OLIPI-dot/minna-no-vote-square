@@ -146,35 +146,33 @@ const SurveyListView = ({
   React.useEffect(() => {
     if (!supabase) return;
     let cancelled = false;
-    const initTimer = setTimeout(() => {
-      const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
-      supabase
-        .from('surveys')
-        .select('tags, total_votes, view_count')
-        .eq('visibility', 'public')
-        .gte('created_at', since)
-        .order('created_at', { ascending: false })
-        .limit(150)
-        .then(({ data, error }) => {
-          if (cancelled || error || !data) return;
-          const count = {};
-          const score = {};
-          data.forEach(s => {
-            [...new Set(s.tags || [])].forEach(t => {
-              if (!t || t === 'お知らせ') return;
-              count[t] = (count[t] || 0) + 1;
-              score[t] = (score[t] || 0) + (s.total_votes || 0) * 2 + (s.view_count || 0) * 0.1;
-            });
+    const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+    supabase
+      .from('surveys')
+      .select('tags, total_votes, view_count')
+      .eq('visibility', 'public')
+      .gte('created_at', since)
+      .order('created_at', { ascending: false })
+      .limit(150)
+      .then(({ data, error }) => {
+        if (cancelled || error || !data) return;
+        const count = {};
+        const score = {};
+        data.forEach(s => {
+          [...new Set(s.tags || [])].forEach(t => {
+            if (!t || t === 'お知らせ') return;
+            count[t] = (count[t] || 0) + 1;
+            score[t] = (score[t] || 0) + (s.total_votes || 0) * 2 + (s.view_count || 0) * 0.1;
           });
-          const tags = Object.keys(count)
-            .filter(t => count[t] >= 2)
-            .sort((a, b) => (count[b] - count[a]) || (score[b] - score[a]))
-            .slice(0, 14);
-          setTrendingTags(tags);
-          try { localStorage.setItem('min_ake_cached_trending_tags_v1', JSON.stringify(tags)); } catch {}
         });
-    }, 500);
-    return () => { cancelled = true; clearTimeout(initTimer); };
+        const tags = Object.keys(count)
+          .filter(t => count[t] >= 2)
+          .sort((a, b) => (count[b] - count[a]) || (score[b] - score[a]))
+          .slice(0, 14);
+        setTrendingTags(tags);
+        try { localStorage.setItem('min_ake_cached_trending_tags_v1', JSON.stringify(tags)); } catch {}
+      });
+    return () => { cancelled = true; };
   }, [supabase]);
 
   // 選択中のタグが一覧にないときは、解除できるよう先頭に残すらび
