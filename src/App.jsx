@@ -142,23 +142,21 @@ function App() {
     return (new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '').has('id') || window.location.pathname.startsWith('/s/')) ? 'details' : 'list';
   }); // 🏷️ 'list' or 'details' or 'create'
   const [user, setUser] = useState(null);
-  const [surveys, setSurveys] = useState(() => {
+  const getInitialCachedTopSurveys = () => {
     try {
-      const isDetail = typeof window !== 'undefined' && (new URLSearchParams(window.location.search).has('id') || new URLSearchParams(window.location.search).has('s') || window.location.pathname.startsWith('/s/'));
-      if (isDetail) return [];
+      if (typeof window === 'undefined') return [];
+      const params = new URLSearchParams(window.location.search);
+      const isNonDefaultUrl = params.has('id') || params.has('s') || params.has('tab') || params.has('c') || params.has('t') || params.has('page') || window.location.pathname.startsWith('/s/');
+      if (isNonDefaultUrl) return [];
       const cached = JSON.parse(localStorage.getItem('min_ake_cached_surveys_v1') || '[]');
       const now = new Date();
-      return Array.isArray(cached) ? cached.filter(s => !s.deadline || new Date(s.deadline) > now) : [];
-    } catch { return []; }
-  });
-  const [isLoading, setIsLoading] = useState(() => {
-    try {
-      const isDetail = typeof window !== 'undefined' && (new URLSearchParams(window.location.search).has('id') || new URLSearchParams(window.location.search).has('s') || window.location.pathname.startsWith('/s/'));
-      if (isDetail) return true;
-      const cached = JSON.parse(localStorage.getItem('min_ake_cached_surveys_v1') || '[]');
-      return !(Array.isArray(cached) && cached.length > 0);
-    } catch { return true; }
-  });
+      return Array.isArray(cached) ? cached.filter(s => s && (!s.deadline || new Date(s.deadline) > now)) : [];
+    } catch {
+      return [];
+    }
+  };
+  const [surveys, setSurveys] = useState(getInitialCachedTopSurveys);
+  const [isLoading, setIsLoading] = useState(() => getInitialCachedTopSurveys().length === 0);
   const [currentSurvey, setCurrentSurvey] = useState(null);
   const [options, setOptions] = useState([]);
   const [votedOption, setVotedOption] = useState(null);
