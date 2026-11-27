@@ -79,8 +79,9 @@ const SurveyListView = ({
     };
   }, []);
 
-  const handleCardMouseEnter = (s, thumbSrc, catStyle, cardEl) => {
-    if (typeof window === 'undefined' || window.innerWidth < 680) return;
+  const handleCardMouseEnter = (s, thumbSrc, catStyle, thumbEl) => {
+    if (typeof window === 'undefined' || window.innerWidth < 768) return;
+    if (window.matchMedia && !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
     if (closeTimerRef.current) {
       clearTimeout(closeTimerRef.current);
       closeTimerRef.current = null;
@@ -88,25 +89,25 @@ const SurveyListView = ({
     if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
 
     hoverTimerRef.current = setTimeout(() => {
-      if (!cardEl) return;
-      const thumbEl = cardEl.querySelector('.video-thumb-wrapper') || cardEl;
+      if (!thumbEl) return;
       const rect = thumbEl.getBoundingClientRect();
-      const popupWidth = 360;
-      const popupEstHeight = 360;
-      let left = rect.left - 8;
+      const popupWidth = 340;
+      const popupEstHeight = 350;
+      // 右側の記事タイトルや説明文を隠さないよう、サムネイルの右端を基準に左外側へ広げて配置
+      let left = rect.right - popupWidth + 18;
       if (left + popupWidth > window.innerWidth - 16) {
         left = window.innerWidth - popupWidth - 16;
       }
       if (left < 12) left = 12;
 
-      let top = rect.top - 16;
+      let top = rect.top - 24;
       if (top + popupEstHeight > window.innerHeight - 16) {
         top = Math.max(12, window.innerHeight - popupEstHeight - 16);
       }
       if (top < 12) top = 12;
 
       setHoverPopup({ survey: s, thumbSrc, catStyle, top, left });
-    }, 160);
+    }, 350);
   };
 
   const handleCardMouseLeave = () => {
@@ -955,8 +956,6 @@ const SurveyListView = ({
                     <div
                       className={`survey-item-card ${s.tags?.includes('お知らせ') ? 'announcement-card' : ''}`}
                       onClick={() => navigateTo('details', s)}
-                      onMouseEnter={(e) => handleCardMouseEnter(s, showFallback ? null : thumbSrc, catStyle, e.currentTarget)}
-                      onMouseLeave={handleCardMouseLeave}
                       style={s.tags?.includes('お知らせ') ? {
                         background: 'linear-gradient(135deg, #fffbeb, #fff7ed)',
                         border: '2px solid #fbbf24',
@@ -972,7 +971,11 @@ const SurveyListView = ({
                       }}
                     >
                       {/* 🛡️ ここがリスト表示のすべてのサムネイル（ニュース画像・YouTube・公式などすべて）を描画する場所です！ */}
-                      <div className={`video-thumb-wrapper ${viewMode === 'list' || showFallback ? '' : 'skeleton'}`} style={viewMode === 'list' ? {
+                      <div
+                        className={`video-thumb-wrapper ${viewMode === 'list' || showFallback ? '' : 'skeleton'}`}
+                        onMouseEnter={(e) => handleCardMouseEnter(s, showFallback ? null : thumbSrc, catStyle, e.currentTarget)}
+                        onMouseLeave={handleCardMouseLeave}
+                        style={viewMode === 'list' ? {
                         width: '160px',
                         minWidth: '160px',
                         maxWidth: '160px',
@@ -1456,7 +1459,7 @@ const SurveyListView = ({
               position: 'fixed',
               top: `${hoverPopup.top}px`,
               left: `${hoverPopup.left}px`,
-              width: '360px',
+              width: '340px',
               maxWidth: 'calc(100vw - 24px)',
               background: '#ffffff',
               borderRadius: '18px',
@@ -1466,7 +1469,7 @@ const SurveyListView = ({
               overflow: 'hidden',
               cursor: 'pointer',
               animation: 'bowanPopupIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
-              transformOrigin: 'left center'
+              transformOrigin: 'right center'
             }}
           >
             {/* 上段：サムネよりひと回り大きいワイド画像ヘッダー */}
