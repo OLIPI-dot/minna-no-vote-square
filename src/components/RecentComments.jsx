@@ -76,9 +76,24 @@ const RecentComments = ({ navigateTo }) => {
     };
 
     load();
-    // 🔄 3分ごとにそっと更新
+    // 🔄 3分ごとにそっと更新＋スマホの回線復帰時に再取得
     const timer = setInterval(load, 3 * 60 * 1000);
-    return () => { cancelled = true; clearInterval(timer); };
+    const handleWakeOrOnline = () => {
+      if (typeof document === 'undefined' || document.visibilityState === 'visible') {
+        setItems(prev => {
+          if (!prev || prev.length === 0) load();
+          return prev;
+        });
+      }
+    };
+    window.addEventListener('online', load);
+    document.addEventListener('visibilitychange', handleWakeOrOnline);
+    return () => {
+      cancelled = true;
+      clearInterval(timer);
+      window.removeEventListener('online', load);
+      document.removeEventListener('visibilitychange', handleWakeOrOnline);
+    };
   }, []);
 
   // コメントがまだ無いときはカードごと出さない

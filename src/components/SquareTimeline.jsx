@@ -49,6 +49,18 @@ const SquareTimeline = () => {
 
     fetchPosts();
 
+    // 📱 スマホでスリープ復帰・回線復帰したときにタイムラインが空なら自動で再取得
+    const handleWakeOrOnline = () => {
+      if (typeof document === 'undefined' || document.visibilityState === 'visible') {
+        setPosts(prev => {
+          if (!prev || prev.length === 0) fetchPosts();
+          return prev;
+        });
+      }
+    };
+    window.addEventListener('online', fetchPosts);
+    document.addEventListener('visibilitychange', handleWakeOrOnline);
+
     // ⚡ Supabase Realtime 購読 - 誰かが投稿したら即座に全員の画面に届く！
     const channel = supabase
       .channel('timeline_posts_realtime')
@@ -71,6 +83,8 @@ const SquareTimeline = () => {
       .subscribe();
 
     return () => {
+      window.removeEventListener('online', fetchPosts);
+      document.removeEventListener('visibilitychange', handleWakeOrOnline);
       supabase.removeChannel(channel);
     };
   }, []);

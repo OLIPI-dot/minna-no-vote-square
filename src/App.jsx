@@ -2584,11 +2584,33 @@ function App() {
     }
   };
 
-  // 初回ロード時と、10分おきにサイドバーを更新する魔法
+  // 初回ロード時と、10分おきにサイドバーを更新する魔法（＋スマホのスリープ復帰・電波復帰時に空なら即リカバリー）
   useEffect(() => {
     fetchSidebarData();
     const interval = setInterval(fetchSidebarData, 10 * 60 * 1000);
-    return () => clearInterval(interval);
+    const handleRecover = () => {
+      if (typeof document === 'undefined' || document.visibilityState === 'visible') {
+        setPopularSurveys(prev => {
+          if (!prev || prev.length === 0) fetchSidebarData();
+          return prev;
+        });
+        setSurveys(prev => {
+          if (!prev || prev.length === 0) {
+            fetchSurveys(user, false, currentPage, filterCategory, debouncedSearchQuery, activeTab, sortMode, popularMode, filterTag);
+          }
+          return prev;
+        });
+      }
+    };
+    window.addEventListener('online', handleRecover);
+    window.addEventListener('pageshow', handleRecover);
+    document.addEventListener('visibilitychange', handleRecover);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('online', handleRecover);
+      window.removeEventListener('pageshow', handleRecover);
+      document.removeEventListener('visibilitychange', handleRecover);
+    };
   }, []);
 
   useEffect(() => {
