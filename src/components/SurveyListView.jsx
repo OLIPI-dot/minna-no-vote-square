@@ -58,9 +58,24 @@ const SurveyListView = ({
   const [brokenImages, setBrokenImages] = React.useState(new Set());
   const [isLoggingIn, setIsLoggingIn] = React.useState(false);
   const [isRefreshing, setIsRefreshing] = React.useState(false);
+  const [hoveredSurveyId, setHoveredSurveyId] = React.useState(null);
+  const [hoverSlideIdx, setHoverSlideIdx] = React.useState(0);
   const ITEMS_PER_PAGE = viewMode === 'grid' ? 40 : 20;
   const listRef = React.useRef(null);
   const [copyStatus, setCopyStatus] = React.useState('📜 タイトルをコピー');
+
+  // 🎬 YouTube風マウスオン・ミニ紙芝居プレビュー（マウスを乗せている1枚だけ2.1秒おきにスライド切替）
+  React.useEffect(() => {
+    if (!hoveredSurveyId) {
+      setHoverSlideIdx(0);
+      return;
+    }
+    setHoverSlideIdx(0);
+    const timer = setInterval(() => {
+      setHoverSlideIdx(prev => prev + 1);
+    }, 2100);
+    return () => clearInterval(timer);
+  }, [hoveredSurveyId]);
 
   // 🕒 投稿日時の相対表示（○分前／○時間前／月日）
   const formatCreatedTime = (dateStr) => {
@@ -128,6 +143,93 @@ const SurveyListView = ({
       return { hook: '', text: cleanText };
     }
     return null;
+  };
+
+  // 🎬 マウスオン時に順番に切り替わる紙芝居スライド配列を抽出（追加通信ゼロ・手元のSUMMARYデータを活用）
+  const extractHoverPreviewSlides = (s) => {
+    if (!s || !s.description) return [];
+    const desc = String(s.description);
+    const commentTags = (s.tags || [])
+      .filter(t => String(t).startsWith('comment:'))
+      .map(t => String(t).replace('comment:', '').trim())
+      .filter(Boolean);
+
+    const summaryMatch = desc.match(/\[\[SUMMARY:([\s\S]*?)\]\]/);
+    if (summaryMatch) {
+      try {
+        const parsed = JSON.parse(summaryMatch[1].trim());
+        const stripCount = (v) => typeof v === 'string'
+          ? v.replace(/\s*[（(]\s*\d+\s*(?:文字|字)\s*[）)]/g, '').trim()
+          : '';
+        const comments = Array.isArray(parsed.netizen_comments) && parsed.netizen_comments.length > 0
+          ? parsed.netizen_comments.filter(Boolean)
+          : commentTags;
+
+        const slides = [];
+        if (parsed.point1_title || parsed.point1_desc) {
+          slides.push({
+            badge: '➊ 要点1',
+            color: '#f43f5e',
+            bg: 'linear-gradient(90deg, #fff1f2 0%, #ffe4e6 100%)',
+            border: '#fecdd3',
+            hook: stripCount(parsed.point1_title),
+            text: stripCount(parsed.point1_desc),
+            gaya: comments[0] || comments[0]
+          });
+        }
+        if (parsed.point2_title || parsed.point2_desc) {
+          slides.push({
+            badge: '➋ 要点2',
+            color: '#0284c7',
+            bg: 'linear-gradient(90deg, #f0f9ff 0%, #e0f2fe 100%)',
+            border: '#bae6fd',
+            hook: stripCount(parsed.point2_title),
+            text: stripCount(parsed.point2_desc),
+            gaya: comments[1] || comments[0]
+          });
+        }
+        if (parsed.point3_title || parsed.point3_desc) {
+          slides.push({
+            badge: '➌ 要点3',
+            color: '#059669',
+            bg: 'linear-gradient(90deg, #ecfdf5 0%, #d1fae5 100%)',
+            border: '#a7f3d0',
+            hook: stripCount(parsed.point3_title),
+            text: stripCount(parsed.point3_desc),
+            gaya: comments[2] || comments[0]
+          });
+        }
+        if (Array.isArray(parsed.survey_options) && parsed.survey_options.length > 0) {
+          const optsText = parsed.survey_options
+            .slice(0, 4)
+            .map((o, i) => `${['①', '②', '③', '④'][i] || '・'}${stripCount(o)}`)
+            .join(' ／ ');
+          slides.push({
+            badge: '🗳️ 投票選択肢',
+            color: '#7c3aed',
+            bg: 'linear-gradient(90deg, #f5f3ff 0%, #ede9fe 100%)',
+            border: '#ddd6fe',
+            hook: stripCount(parsed.survey_question) || 'みんなの投票受付中！',
+            text: optsText,
+            gaya: stripCount(parsed.rabi_comment) ? `🐰 ${stripCount(parsed.rabi_comment)}` : (comments[0] || '')
+          });
+        } else if (parsed.rabi_comment) {
+          slides.push({
+            badge: '🐰 らびの視点',
+            color: '#db2777',
+            bg: 'linear-gradient(90deg, #fdf2f8 0%, #fce7f3 100%)',
+            border: '#fbcfe8',
+            hook: stripCount(parsed.survey_question) || '',
+            text: stripCount(parsed.rabi_comment),
+            gaya: comments[0] || ''
+          });
+        }
+        if (slides.length > 0) return slides;
+      } catch (e) {
+        // fallback below
+      }
+    }
+    return [];
   };
 
   const handleCopyPageTitles = () => {
@@ -500,6 +602,14 @@ const SurveyListView = ({
             color: #be185d !important;
             box-shadow: 0 6px 14px rgba(236, 72, 153, 0.18) !important;
           }
+          @keyframes ytHoverProgress {
+            0% { width: 0%; }
+            100% { width: 100%; }
+          }
+          @keyframes ytSlideFadeIn {
+            0% { opacity: 0.25; transform: translateY(3px); }
+            100% { opacity: 1; transform: translateY(0); }
+          }
         `}</style>
       </div>
 
@@ -842,12 +952,19 @@ const SurveyListView = ({
                 const commentTag = s.tags?.find(t => String(t).startsWith('comment:'));
                 const pickupComment = commentTag ? commentTag.replace('comment:', '') : null;
                 const teaser = extractSurveyTeaser(s);
+                const isCardHovered = hoveredSurveyId === s.id;
+                const hoverSlides = isCardHovered ? extractHoverPreviewSlides(s) : [];
+                const activeSlide = hoverSlides.length > 0 ? hoverSlides[hoverSlideIdx % hoverSlides.length] : null;
+                const activeSlideNumber = hoverSlides.length > 0 ? (hoverSlideIdx % hoverSlides.length) : 0;
+                const activePickupComment = (activeSlide && activeSlide.gaya) ? activeSlide.gaya : pickupComment;
 
                 return (
                   <React.Fragment key={s.id}>
                     <div
                       className={`survey-item-card ${s.tags?.includes('お知らせ') ? 'announcement-card' : ''}`}
                       onClick={() => navigateTo('details', s)}
+                      onMouseEnter={() => setHoveredSurveyId(s.id)}
+                      onMouseLeave={() => setHoveredSurveyId(prev => (prev === s.id ? null : prev))}
                       style={s.tags?.includes('お知らせ') ? {
                         background: 'linear-gradient(135deg, #fffbeb, #fff7ed)',
                         border: '2px solid #fbbf24',
@@ -914,33 +1031,96 @@ const SurveyListView = ({
                               height: '100%',
                               objectFit: 'contain',
                               display: 'block',
-                              zIndex: 1
-                            } : { position: 'relative', zIndex: 2, display: 'block', width: '100%', height: '100%', objectFit: 'cover', backgroundColor: 'transparent', borderRadius: '8px' }}
+                              zIndex: 1,
+                              transition: 'transform 0.55s ease',
+                              transform: isCardHovered ? 'scale(1.06)' : 'scale(1)'
+                            } : {
+                              position: 'relative',
+                              zIndex: 2,
+                              display: 'block',
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'cover',
+                              backgroundColor: 'transparent',
+                              borderRadius: '8px',
+                              transition: 'transform 0.55s ease',
+                              transform: isCardHovered ? 'scale(1.06)' : 'scale(1)'
+                            }}
                           />
                         )}
 
-                        {/* 💬 ガヤ吹き出しオーバーレイ (リスト表示用) */}
-                        {pickupComment && (
-                          <div style={{
-                            position: 'absolute',
-                            bottom: '6px',
-                            right: '6px',
-                            background: 'rgba(0, 0, 0, 0.75)',
-                            color: '#fff',
-                            padding: '4px 8px',
-                            borderRadius: '12px',
-                            fontSize: '0.75rem',
-                            fontWeight: 'bold',
-                            zIndex: 10,
-                            backdropFilter: 'blur(4px)',
-                            border: '1px solid rgba(255,255,255,0.2)',
-                            boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
-                            maxWidth: '90%',
-                            whiteSpace: 'nowrap',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis'
-                          }}>
-                            💬 {pickupComment}
+                        {/* 🎬 YouTube風プレビュー再生中バッジ ＆ 下部プログレスバー */}
+                        {activeSlide && (
+                          <>
+                            <div style={{
+                              position: 'absolute',
+                              top: '6px',
+                              right: '6px',
+                              background: 'rgba(15, 23, 42, 0.84)',
+                              color: '#fff',
+                              padding: '2px 7px',
+                              borderRadius: '999px',
+                              fontSize: '0.62rem',
+                              fontWeight: '900',
+                              zIndex: 12,
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '4px',
+                              border: '1px solid rgba(255,255,255,0.28)',
+                              boxShadow: '0 2px 6px rgba(0,0,0,0.25)',
+                              letterSpacing: '0.02em'
+                            }}>
+                              <span style={{ color: activeSlide.color, fontSize: '0.65rem' }}>▶</span>
+                              <span>{activeSlideNumber + 1}/{hoverSlides.length}</span>
+                            </div>
+                            <div style={{
+                              position: 'absolute',
+                              bottom: 0,
+                              left: 0,
+                              width: '100%',
+                              height: '3.5px',
+                              background: 'rgba(255, 255, 255, 0.35)',
+                              zIndex: 14,
+                              overflow: 'hidden'
+                            }}>
+                              <div
+                                key={`bar-${s.id}-${activeSlideNumber}`}
+                                style={{
+                                  height: '100%',
+                                  background: activeSlide.color,
+                                  animation: 'ytHoverProgress 2.1s linear forwards'
+                                }}
+                              />
+                            </div>
+                          </>
+                        )}
+
+                        {/* 💬 ガヤ吹き出しオーバーレイ (リスト表示用・ホバー時はネットの声1→2→3→らびに連動切替！) */}
+                        {activePickupComment && (
+                          <div
+                            key={`gaya-${s.id}-${activeSlide ? activeSlideNumber : ' static'}`}
+                            style={{
+                              position: 'absolute',
+                              bottom: activeSlide ? '7px' : '6px',
+                              right: '6px',
+                              background: activeSlide ? 'rgba(15, 23, 42, 0.86)' : 'rgba(0, 0, 0, 0.75)',
+                              color: '#fff',
+                              padding: '4px 8px',
+                              borderRadius: '12px',
+                              fontSize: '0.75rem',
+                              fontWeight: 'bold',
+                              zIndex: 10,
+                              backdropFilter: 'blur(4px)',
+                              border: activeSlide ? `1px solid ${activeSlide.color}99` : '1px solid rgba(255,255,255,0.2)',
+                              boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
+                              maxWidth: '90%',
+                              whiteSpace: 'nowrap',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              animation: activeSlide ? 'ytSlideFadeIn 0.28s ease-out' : 'none'
+                            }}
+                          >
+                            {activePickupComment.startsWith('🐰') ? activePickupComment : `💬 ${activePickupComment}`}
                           </div>
                         )}
 
@@ -982,42 +1162,86 @@ const SurveyListView = ({
                                 style={{ flexShrink: 0, background: 'none', border: 'none', fontSize: '1rem', cursor: 'pointer', padding: '2px', lineHeight: 1, color: watchedIds.some(wId => String(wId) === String(s.id)) ? '#f59e0b' : '#94a3b8' }}
                               >{watchedIds.some(wId => String(wId) === String(s.id)) ? '★' : '☆'}</button>
                             </div>
-                            {/* ⚡ チラ見せ見出し（PC用：右カラム内に表示） */}
-                            {teaser && (
+                            {/* ⚡ チラ見せ見出し（PC用：右カラム内に表示。マウスオン時はYouTube風ミニ紙芝居スライドショーに変化！） */}
+                            {(activeSlide || teaser) && (
                               <div className="survey-item-teaser-row survey-item-teaser-pc" style={{
-                                background: 'linear-gradient(90deg, #faf5ff 0%, #fdf2f8 60%, #fffbeb 100%)',
-                                border: '1px solid #e9d5ff',
+                                background: activeSlide ? activeSlide.bg : 'linear-gradient(90deg, #faf5ff 0%, #fdf2f8 60%, #fffbeb 100%)',
+                                border: `1.5px solid ${activeSlide ? activeSlide.border : '#e9d5ff'}`,
                                 borderRadius: '8px',
-                                padding: '4px 8px',
+                                padding: '5px 9px',
                                 minWidth: 0,
-                                maxWidth: '100%'
+                                maxWidth: '100%',
+                                transition: 'background 0.25s ease, border-color 0.25s ease'
                               }}>
-                                <div className="survey-item-teaser-clamp" style={{
-                                  fontSize: '0.76rem',
-                                  fontWeight: 600,
-                                  color: '#334155',
-                                  lineHeight: 1.5,
-                                  display: '-webkit-box',
-                                  WebkitLineClamp: 2,
-                                  WebkitBoxOrient: 'vertical',
-                                  overflow: 'hidden',
-                                  wordBreak: 'break-word'
-                                }}>
-                                  <span style={{ marginRight: '3px' }}>💡</span>
-                                  {teaser.hook && (
+                                {activeSlide && (
+                                  <div style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    marginBottom: '2px',
+                                    gap: '6px'
+                                  }}>
                                     <span style={{
-                                      color: '#5b21b6',
+                                      display: 'inline-flex',
+                                      alignItems: 'center',
+                                      gap: '4px',
+                                      background: activeSlide.color,
+                                      color: '#fff',
+                                      fontSize: '0.64rem',
+                                      fontWeight: 900,
+                                      padding: '1px 7px',
+                                      borderRadius: '999px',
+                                      letterSpacing: '0.02em'
+                                    }}>
+                                      {activeSlide.badge}
+                                    </span>
+                                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                                      {hoverSlides.map((_, sIdx) => (
+                                        <span
+                                          key={sIdx}
+                                          style={{
+                                            width: sIdx === activeSlideNumber ? '14px' : '5px',
+                                            height: '5px',
+                                            borderRadius: '999px',
+                                            background: sIdx === activeSlideNumber ? activeSlide.color : '#cbd5e1',
+                                            transition: 'all 0.25s ease'
+                                          }}
+                                        />
+                                      ))}
+                                    </span>
+                                  </div>
+                                )}
+                                <div
+                                  key={activeSlide ? `slide-${s.id}-${activeSlideNumber}` : `static-${s.id}`}
+                                  className="survey-item-teaser-clamp"
+                                  style={{
+                                    fontSize: '0.76rem',
+                                    fontWeight: 600,
+                                    color: '#334155',
+                                    lineHeight: 1.5,
+                                    display: '-webkit-box',
+                                    WebkitLineClamp: 2,
+                                    WebkitBoxOrient: 'vertical',
+                                    overflow: 'hidden',
+                                    wordBreak: 'break-word',
+                                    animation: activeSlide ? 'ytSlideFadeIn 0.28s ease-out' : 'none'
+                                  }}
+                                >
+                                  {!activeSlide && <span style={{ marginRight: '3px' }}>💡</span>}
+                                  {(activeSlide ? activeSlide.hook : teaser?.hook) && (
+                                    <span style={{
+                                      color: activeSlide ? activeSlide.color : '#5b21b6',
                                       fontWeight: 800,
                                       marginRight: '6px'
                                     }}>
-                                      {teaser.hook}
+                                      {activeSlide ? activeSlide.hook : teaser.hook}
                                     </span>
                                   )}
-                                  <span>{teaser.text}</span>
+                                  <span>{activeSlide ? activeSlide.text : teaser?.text}</span>
                                   <span style={{
                                     fontSize: '0.72rem',
                                     fontWeight: 800,
-                                    color: '#7c3aed',
+                                    color: activeSlide ? activeSlide.color : '#7c3aed',
                                     marginLeft: '3px'
                                   }}>▸</span>
                                 </div>
@@ -1112,40 +1336,79 @@ const SurveyListView = ({
                                 >{watchedIds.some(wId => String(wId) === String(s.id)) ? '★' : '☆'}</button>
                               </div>
                             </div>
-                            {/* ⚡ グリッド用 チラ見せ見出し（PCは0.82rem、スマホ2列時は自動で0.68remに縮小） */}
-                            {teaser && (
+                            {/* ⚡ グリッド用 チラ見せ見出し（マウスオン時はYouTube風ミニ紙芝居スライドショーに変化！） */}
+                            {(activeSlide || teaser) && (
                               <div className="survey-item-teaser-row-grid" style={{
-                                background: 'linear-gradient(90deg, #faf5ff 0%, #fdf2f8 100%)',
-                                border: '1px solid #e9d5ff',
+                                background: activeSlide ? activeSlide.bg : 'linear-gradient(90deg, #faf5ff 0%, #fdf2f8 100%)',
+                                border: `1.5px solid ${activeSlide ? activeSlide.border : '#e9d5ff'}`,
                                 borderRadius: '7px',
                                 padding: 'clamp(3px, 0.8vw, 5px) clamp(5px, 1.2vw, 8px)',
                                 margin: '2px -4px 0 -4px',
                                 width: 'calc(100% + 8px)',
                                 boxSizing: 'border-box',
-                                minWidth: 0
+                                minWidth: 0,
+                                transition: 'background 0.25s ease, border-color 0.25s ease'
                               }}>
-                                <div style={{
-                                  fontSize: 'clamp(0.68rem, 1.8vw, 0.82rem)',
-                                  fontWeight: 600,
-                                  color: '#334155',
-                                  lineHeight: 1.42,
-                                  display: '-webkit-box',
-                                  WebkitLineClamp: 6,
-                                  WebkitBoxOrient: 'vertical',
-                                  overflow: 'hidden',
-                                  wordBreak: 'break-word'
-                                }}>
-                                  <span style={{ marginRight: '3px' }}>💡</span>
-                                  {teaser.hook && (
+                                {activeSlide && (
+                                  <div style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    marginBottom: '3px',
+                                    gap: '4px'
+                                  }}>
                                     <span style={{
-                                      color: '#5b21b6',
+                                      background: activeSlide.color,
+                                      color: '#fff',
+                                      fontSize: '0.62rem',
+                                      fontWeight: 900,
+                                      padding: '1px 6px',
+                                      borderRadius: '999px'
+                                    }}>
+                                      {activeSlide.badge}
+                                    </span>
+                                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+                                      {hoverSlides.map((_, sIdx) => (
+                                        <span
+                                          key={sIdx}
+                                          style={{
+                                            width: sIdx === activeSlideNumber ? '12px' : '4px',
+                                            height: '4px',
+                                            borderRadius: '999px',
+                                            background: sIdx === activeSlideNumber ? activeSlide.color : '#cbd5e1',
+                                            transition: 'all 0.25s ease'
+                                          }}
+                                        />
+                                      ))}
+                                    </span>
+                                  </div>
+                                )}
+                                <div
+                                  key={activeSlide ? `gslide-${s.id}-${activeSlideNumber}` : `gstatic-${s.id}`}
+                                  style={{
+                                    fontSize: 'clamp(0.68rem, 1.8vw, 0.82rem)',
+                                    fontWeight: 600,
+                                    color: '#334155',
+                                    lineHeight: 1.42,
+                                    display: '-webkit-box',
+                                    WebkitLineClamp: 6,
+                                    WebkitBoxOrient: 'vertical',
+                                    overflow: 'hidden',
+                                    wordBreak: 'break-word',
+                                    animation: activeSlide ? 'ytSlideFadeIn 0.28s ease-out' : 'none'
+                                  }}
+                                >
+                                  {!activeSlide && <span style={{ marginRight: '3px' }}>💡</span>}
+                                  {(activeSlide ? activeSlide.hook : teaser?.hook) && (
+                                    <span style={{
+                                      color: activeSlide ? activeSlide.color : '#5b21b6',
                                       fontWeight: 800,
                                       marginRight: '5px'
                                     }}>
-                                      {teaser.hook}
+                                      {activeSlide ? activeSlide.hook : teaser.hook}
                                     </span>
                                   )}
-                                  <span>{teaser.text}</span>
+                                  <span>{activeSlide ? activeSlide.text : teaser?.text}</span>
                                 </div>
                               </div>
                             )}
