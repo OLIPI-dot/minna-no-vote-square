@@ -569,24 +569,39 @@ const SquareTimeline = () => {
             )
           }}>
             {/* アバター */}
-            <div style={{
-              width: '36px',
-              height: '36px',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '1.2rem',
-              flexShrink: 0,
-              ...(p.is_official
-                ? officialAvatarStyle
-                : isNews
+            {p.is_official ? (
+              <img
+                src="/favicon-144x144.png"
+                alt="らびたん"
+                style={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '50%',
+                  border: '2px solid #f472b6',
+                  objectFit: 'cover',
+                  background: '#fff',
+                  boxShadow: '0 2px 6px rgba(236, 72, 153, 0.22)',
+                  flexShrink: 0
+                }}
+              />
+            ) : (
+              <div style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '1.2rem',
+                flexShrink: 0,
+                ...(isNews
                   ? newsAvatarStyle
                   : { background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)' }
-              )
-            }}>
-              {p.avatar}
-            </div>
+                )
+              }}>
+                {p.avatar}
+              </div>
+            )}
 
             {/* 本文エリア */}
             <div style={{ flex: 1, minWidth: 0 }}>
