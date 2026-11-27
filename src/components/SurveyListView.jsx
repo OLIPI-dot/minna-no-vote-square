@@ -58,24 +58,66 @@ const SurveyListView = ({
   const [brokenImages, setBrokenImages] = React.useState(new Set());
   const [isLoggingIn, setIsLoggingIn] = React.useState(false);
   const [isRefreshing, setIsRefreshing] = React.useState(false);
-  const [hoveredSurveyId, setHoveredSurveyId] = React.useState(null);
-  const [hoverSlideIdx, setHoverSlideIdx] = React.useState(0);
+  const [hoverPopup, setHoverPopup] = React.useState(null); // { survey, thumbSrc, catStyle, top, left }
+  const hoverTimerRef = React.useRef(null);
+  const closeTimerRef = React.useRef(null);
   const ITEMS_PER_PAGE = viewMode === 'grid' ? 40 : 20;
   const listRef = React.useRef(null);
   const [copyStatus, setCopyStatus] = React.useState('📜 タイトルをコピー');
 
-  // 🎬 YouTube風マウスオン・ミニ紙芝居プレビュー（マウスを乗せている1枚だけ2.1秒おきにスライド切替）
+  // スクロール時はボワンと出たプレビュー窓をサッと閉じる
   React.useEffect(() => {
-    if (!hoveredSurveyId) {
-      setHoverSlideIdx(0);
-      return;
+    const handleScroll = () => {
+      if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
+      setHoverPopup(null);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
+      if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+    };
+  }, []);
+
+  const handleCardMouseEnter = (s, thumbSrc, catStyle, cardEl) => {
+    if (typeof window === 'undefined' || window.innerWidth < 680) return;
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
     }
-    setHoverSlideIdx(0);
-    const timer = setInterval(() => {
-      setHoverSlideIdx(prev => prev + 1);
-    }, 2100);
-    return () => clearInterval(timer);
-  }, [hoveredSurveyId]);
+    if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
+
+    hoverTimerRef.current = setTimeout(() => {
+      if (!cardEl) return;
+      const thumbEl = cardEl.querySelector('.video-thumb-wrapper') || cardEl;
+      const rect = thumbEl.getBoundingClientRect();
+      const popupWidth = 360;
+      const popupEstHeight = 360;
+      let left = rect.left - 8;
+      if (left + popupWidth > window.innerWidth - 16) {
+        left = window.innerWidth - popupWidth - 16;
+      }
+      if (left < 12) left = 12;
+
+      let top = rect.top - 16;
+      if (top + popupEstHeight > window.innerHeight - 16) {
+        top = Math.max(12, window.innerHeight - popupEstHeight - 16);
+      }
+      if (top < 12) top = 12;
+
+      setHoverPopup({ survey: s, thumbSrc, catStyle, top, left });
+    }, 160);
+  };
+
+  const handleCardMouseLeave = () => {
+    if (hoverTimerRef.current) {
+      clearTimeout(hoverTimerRef.current);
+      hoverTimerRef.current = null;
+    }
+    closeTimerRef.current = setTimeout(() => {
+      setHoverPopup(null);
+    }, 90);
+  };
 
   // 🕒 投稿日時の相対表示（○分前／○時間前／月日）
   const formatCreatedTime = (dateStr) => {
@@ -145,91 +187,50 @@ const SurveyListView = ({
     return null;
   };
 
-  // 🎬 マウスオン時に順番に切り替わる紙芝居スライド配列を抽出（追加通信ゼロ・手元のSUMMARYデータを活用）
-  const extractHoverPreviewSlides = (s) => {
-    if (!s || !s.description) return [];
-    const desc = String(s.description);
-    const commentTags = (s.tags || [])
-      .filter(t => String(t).startsWith('comment:'))
-      .map(t => String(t).replace('comment:', '').trim())
-      .filter(Boolean);
+  // 📖 マウスオン時に「ボワン」と出るミニ記事画面用の冒頭プレビュー抽出（記事の最初の部分だけチラ見せ）
+  const extractArticleOpeningPreview = (s) => {
+    if (!s) return { point1Title: '', point1Desc: '', bodyOpening: '', question: '' };
+    const desc = String(s.description || '');
+    const stripCount = (v) => typeof v === 'string'
+      ? v.replace(/\s*[（(]\s*\d+\s*(?:文字|字)\s*[）)]/g, '').trim()
+      : '';
+
+    let point1Title = '';
+    let point1Desc = '';
+    let question = '';
 
     const summaryMatch = desc.match(/\[\[SUMMARY:([\s\S]*?)\]\]/);
     if (summaryMatch) {
       try {
         const parsed = JSON.parse(summaryMatch[1].trim());
-        const stripCount = (v) => typeof v === 'string'
-          ? v.replace(/\s*[（(]\s*\d+\s*(?:文字|字)\s*[）)]/g, '').trim()
-          : '';
-        const comments = Array.isArray(parsed.netizen_comments) && parsed.netizen_comments.length > 0
-          ? parsed.netizen_comments.filter(Boolean)
-          : commentTags;
-
-        const slides = [];
-        if (parsed.point1_title || parsed.point1_desc) {
-          slides.push({
-            badge: '➊ 要点1',
-            color: '#f43f5e',
-            bg: 'linear-gradient(90deg, #fff1f2 0%, #ffe4e6 100%)',
-            border: '#fecdd3',
-            hook: stripCount(parsed.point1_title),
-            text: stripCount(parsed.point1_desc),
-            gaya: comments[0] || comments[0]
-          });
-        }
-        if (parsed.point2_title || parsed.point2_desc) {
-          slides.push({
-            badge: '➋ 要点2',
-            color: '#0284c7',
-            bg: 'linear-gradient(90deg, #f0f9ff 0%, #e0f2fe 100%)',
-            border: '#bae6fd',
-            hook: stripCount(parsed.point2_title),
-            text: stripCount(parsed.point2_desc),
-            gaya: comments[1] || comments[0]
-          });
-        }
-        if (parsed.point3_title || parsed.point3_desc) {
-          slides.push({
-            badge: '➌ 要点3',
-            color: '#059669',
-            bg: 'linear-gradient(90deg, #ecfdf5 0%, #d1fae5 100%)',
-            border: '#a7f3d0',
-            hook: stripCount(parsed.point3_title),
-            text: stripCount(parsed.point3_desc),
-            gaya: comments[2] || comments[0]
-          });
-        }
-        if (Array.isArray(parsed.survey_options) && parsed.survey_options.length > 0) {
-          const optsText = parsed.survey_options
-            .slice(0, 4)
-            .map((o, i) => `${['①', '②', '③', '④'][i] || '・'}${stripCount(o)}`)
-            .join(' ／ ');
-          slides.push({
-            badge: '🗳️ 投票選択肢',
-            color: '#7c3aed',
-            bg: 'linear-gradient(90deg, #f5f3ff 0%, #ede9fe 100%)',
-            border: '#ddd6fe',
-            hook: stripCount(parsed.survey_question) || 'みんなの投票受付中！',
-            text: optsText,
-            gaya: stripCount(parsed.rabi_comment) ? `🐰 ${stripCount(parsed.rabi_comment)}` : (comments[0] || '')
-          });
-        } else if (parsed.rabi_comment) {
-          slides.push({
-            badge: '🐰 らびの視点',
-            color: '#db2777',
-            bg: 'linear-gradient(90deg, #fdf2f8 0%, #fce7f3 100%)',
-            border: '#fbcfe8',
-            hook: stripCount(parsed.survey_question) || '',
-            text: stripCount(parsed.rabi_comment),
-            gaya: comments[0] || ''
-          });
-        }
-        if (slides.length > 0) return slides;
+        point1Title = stripCount(parsed.point1_title);
+        point1Desc = stripCount(parsed.point1_desc);
+        question = stripCount(parsed.survey_question);
       } catch (e) {
-        // fallback below
+        // ignore parse error
       }
     }
-    return [];
+
+    // 記事本文（ニュース原文・説明文）の冒頭部分だけを綺麗に抽出
+    const rawBody = desc
+      .replace(/\[\[SUMMARY:[\s\S]*?\]\]/g, '')
+      .replace(/\[\[SECRET_ANSWER:[\s\S]*?\]\]/g, '')
+      .replace(/🐰\s*\*\*らびの視点：\*\*[\s\S]*?(?=\n\n|$)/g, '')
+      .replace(/\[続きを読む\]\(https?:\/\/[^\s)]+\)/g, '')
+      .replace(/\[([^\]]+)\]\(https?:\/\/[^\s)]+\)/g, '$1')
+      .replace(/https?:\/\/[^\s)]+/g, '')
+      .replace(/[\(（]\s*出典[\s\S]*?[\)）]/g, '')
+      .replace(/###\s*/g, '')
+      .trim();
+
+    const bodyParagraphs = rawBody
+      .split(/\r?\n/)
+      .map(line => line.trim())
+      .filter(line => line.length > 0 && !/画像は.*より$/.test(line) && !/写真＝/.test(line));
+
+    const bodyOpening = bodyParagraphs.slice(0, 3).join('\n');
+
+    return { point1Title, point1Desc, bodyOpening, question };
   };
 
   const handleCopyPageTitles = () => {
@@ -602,13 +603,9 @@ const SurveyListView = ({
             color: #be185d !important;
             box-shadow: 0 6px 14px rgba(236, 72, 153, 0.18) !important;
           }
-          @keyframes ytHoverProgress {
-            0% { width: 0%; }
-            100% { width: 100%; }
-          }
-          @keyframes ytSlideFadeIn {
-            0% { opacity: 0.25; transform: translateY(3px); }
-            100% { opacity: 1; transform: translateY(0); }
+          @keyframes bowanPopupIn {
+            0% { opacity: 0; transform: scale(0.86) translateY(8px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
           }
         `}</style>
       </div>
@@ -952,19 +949,14 @@ const SurveyListView = ({
                 const commentTag = s.tags?.find(t => String(t).startsWith('comment:'));
                 const pickupComment = commentTag ? commentTag.replace('comment:', '') : null;
                 const teaser = extractSurveyTeaser(s);
-                const isCardHovered = hoveredSurveyId === s.id;
-                const hoverSlides = isCardHovered ? extractHoverPreviewSlides(s) : [];
-                const activeSlide = hoverSlides.length > 0 ? hoverSlides[hoverSlideIdx % hoverSlides.length] : null;
-                const activeSlideNumber = hoverSlides.length > 0 ? (hoverSlideIdx % hoverSlides.length) : 0;
-                const activePickupComment = (activeSlide && activeSlide.gaya) ? activeSlide.gaya : pickupComment;
 
                 return (
                   <React.Fragment key={s.id}>
                     <div
                       className={`survey-item-card ${s.tags?.includes('お知らせ') ? 'announcement-card' : ''}`}
                       onClick={() => navigateTo('details', s)}
-                      onMouseEnter={() => setHoveredSurveyId(s.id)}
-                      onMouseLeave={() => setHoveredSurveyId(prev => (prev === s.id ? null : prev))}
+                      onMouseEnter={(e) => handleCardMouseEnter(s, showFallback ? null : thumbSrc, catStyle, e.currentTarget)}
+                      onMouseLeave={handleCardMouseLeave}
                       style={s.tags?.includes('お知らせ') ? {
                         background: 'linear-gradient(135deg, #fffbeb, #fff7ed)',
                         border: '2px solid #fbbf24',
@@ -1031,96 +1023,33 @@ const SurveyListView = ({
                               height: '100%',
                               objectFit: 'contain',
                               display: 'block',
-                              zIndex: 1,
-                              transition: 'transform 0.55s ease',
-                              transform: isCardHovered ? 'scale(1.06)' : 'scale(1)'
-                            } : {
-                              position: 'relative',
-                              zIndex: 2,
-                              display: 'block',
-                              width: '100%',
-                              height: '100%',
-                              objectFit: 'cover',
-                              backgroundColor: 'transparent',
-                              borderRadius: '8px',
-                              transition: 'transform 0.55s ease',
-                              transform: isCardHovered ? 'scale(1.06)' : 'scale(1)'
-                            }}
+                              zIndex: 1
+                            } : { position: 'relative', zIndex: 2, display: 'block', width: '100%', height: '100%', objectFit: 'cover', backgroundColor: 'transparent', borderRadius: '8px' }}
                           />
                         )}
 
-                        {/* 🎬 YouTube風プレビュー再生中バッジ ＆ 下部プログレスバー */}
-                        {activeSlide && (
-                          <>
-                            <div style={{
-                              position: 'absolute',
-                              top: '6px',
-                              right: '6px',
-                              background: 'rgba(15, 23, 42, 0.84)',
-                              color: '#fff',
-                              padding: '2px 7px',
-                              borderRadius: '999px',
-                              fontSize: '0.62rem',
-                              fontWeight: '900',
-                              zIndex: 12,
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: '4px',
-                              border: '1px solid rgba(255,255,255,0.28)',
-                              boxShadow: '0 2px 6px rgba(0,0,0,0.25)',
-                              letterSpacing: '0.02em'
-                            }}>
-                              <span style={{ color: activeSlide.color, fontSize: '0.65rem' }}>▶</span>
-                              <span>{activeSlideNumber + 1}/{hoverSlides.length}</span>
-                            </div>
-                            <div style={{
-                              position: 'absolute',
-                              bottom: 0,
-                              left: 0,
-                              width: '100%',
-                              height: '3.5px',
-                              background: 'rgba(255, 255, 255, 0.35)',
-                              zIndex: 14,
-                              overflow: 'hidden'
-                            }}>
-                              <div
-                                key={`bar-${s.id}-${activeSlideNumber}`}
-                                style={{
-                                  height: '100%',
-                                  background: activeSlide.color,
-                                  animation: 'ytHoverProgress 2.1s linear forwards'
-                                }}
-                              />
-                            </div>
-                          </>
-                        )}
-
-                        {/* 💬 ガヤ吹き出しオーバーレイ (リスト表示用・ホバー時はネットの声1→2→3→らびに連動切替！) */}
-                        {activePickupComment && (
-                          <div
-                            key={`gaya-${s.id}-${activeSlide ? activeSlideNumber : ' static'}`}
-                            style={{
-                              position: 'absolute',
-                              bottom: activeSlide ? '7px' : '6px',
-                              right: '6px',
-                              background: activeSlide ? 'rgba(15, 23, 42, 0.86)' : 'rgba(0, 0, 0, 0.75)',
-                              color: '#fff',
-                              padding: '4px 8px',
-                              borderRadius: '12px',
-                              fontSize: '0.75rem',
-                              fontWeight: 'bold',
-                              zIndex: 10,
-                              backdropFilter: 'blur(4px)',
-                              border: activeSlide ? `1px solid ${activeSlide.color}99` : '1px solid rgba(255,255,255,0.2)',
-                              boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
-                              maxWidth: '90%',
-                              whiteSpace: 'nowrap',
-                              overflow: 'hidden',
-                              textOverflow: 'ellipsis',
-                              animation: activeSlide ? 'ytSlideFadeIn 0.28s ease-out' : 'none'
-                            }}
-                          >
-                            {activePickupComment.startsWith('🐰') ? activePickupComment : `💬 ${activePickupComment}`}
+                        {/* 💬 ガヤ吹き出しオーバーレイ (リスト表示用) */}
+                        {pickupComment && (
+                          <div style={{
+                            position: 'absolute',
+                            bottom: '6px',
+                            right: '6px',
+                            background: 'rgba(0, 0, 0, 0.75)',
+                            color: '#fff',
+                            padding: '4px 8px',
+                            borderRadius: '12px',
+                            fontSize: '0.75rem',
+                            fontWeight: 'bold',
+                            zIndex: 10,
+                            backdropFilter: 'blur(4px)',
+                            border: '1px solid rgba(255,255,255,0.2)',
+                            boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
+                            maxWidth: '90%',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis'
+                          }}>
+                            💬 {pickupComment}
                           </div>
                         )}
 
@@ -1162,86 +1091,42 @@ const SurveyListView = ({
                                 style={{ flexShrink: 0, background: 'none', border: 'none', fontSize: '1rem', cursor: 'pointer', padding: '2px', lineHeight: 1, color: watchedIds.some(wId => String(wId) === String(s.id)) ? '#f59e0b' : '#94a3b8' }}
                               >{watchedIds.some(wId => String(wId) === String(s.id)) ? '★' : '☆'}</button>
                             </div>
-                            {/* ⚡ チラ見せ見出し（PC用：右カラム内に表示。マウスオン時はYouTube風ミニ紙芝居スライドショーに変化！） */}
-                            {(activeSlide || teaser) && (
+                            {/* ⚡ チラ見せ見出し（PC用：右カラム内に表示） */}
+                            {teaser && (
                               <div className="survey-item-teaser-row survey-item-teaser-pc" style={{
-                                background: activeSlide ? activeSlide.bg : 'linear-gradient(90deg, #faf5ff 0%, #fdf2f8 60%, #fffbeb 100%)',
-                                border: `1.5px solid ${activeSlide ? activeSlide.border : '#e9d5ff'}`,
+                                background: 'linear-gradient(90deg, #faf5ff 0%, #fdf2f8 60%, #fffbeb 100%)',
+                                border: '1px solid #e9d5ff',
                                 borderRadius: '8px',
-                                padding: '5px 9px',
+                                padding: '4px 8px',
                                 minWidth: 0,
-                                maxWidth: '100%',
-                                transition: 'background 0.25s ease, border-color 0.25s ease'
+                                maxWidth: '100%'
                               }}>
-                                {activeSlide && (
-                                  <div style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between',
-                                    marginBottom: '2px',
-                                    gap: '6px'
-                                  }}>
+                                <div className="survey-item-teaser-clamp" style={{
+                                  fontSize: '0.76rem',
+                                  fontWeight: 600,
+                                  color: '#334155',
+                                  lineHeight: 1.5,
+                                  display: '-webkit-box',
+                                  WebkitLineClamp: 2,
+                                  WebkitBoxOrient: 'vertical',
+                                  overflow: 'hidden',
+                                  wordBreak: 'break-word'
+                                }}>
+                                  <span style={{ marginRight: '3px' }}>💡</span>
+                                  {teaser.hook && (
                                     <span style={{
-                                      display: 'inline-flex',
-                                      alignItems: 'center',
-                                      gap: '4px',
-                                      background: activeSlide.color,
-                                      color: '#fff',
-                                      fontSize: '0.64rem',
-                                      fontWeight: 900,
-                                      padding: '1px 7px',
-                                      borderRadius: '999px',
-                                      letterSpacing: '0.02em'
-                                    }}>
-                                      {activeSlide.badge}
-                                    </span>
-                                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                                      {hoverSlides.map((_, sIdx) => (
-                                        <span
-                                          key={sIdx}
-                                          style={{
-                                            width: sIdx === activeSlideNumber ? '14px' : '5px',
-                                            height: '5px',
-                                            borderRadius: '999px',
-                                            background: sIdx === activeSlideNumber ? activeSlide.color : '#cbd5e1',
-                                            transition: 'all 0.25s ease'
-                                          }}
-                                        />
-                                      ))}
-                                    </span>
-                                  </div>
-                                )}
-                                <div
-                                  key={activeSlide ? `slide-${s.id}-${activeSlideNumber}` : `static-${s.id}`}
-                                  className="survey-item-teaser-clamp"
-                                  style={{
-                                    fontSize: '0.76rem',
-                                    fontWeight: 600,
-                                    color: '#334155',
-                                    lineHeight: 1.5,
-                                    display: '-webkit-box',
-                                    WebkitLineClamp: 2,
-                                    WebkitBoxOrient: 'vertical',
-                                    overflow: 'hidden',
-                                    wordBreak: 'break-word',
-                                    animation: activeSlide ? 'ytSlideFadeIn 0.28s ease-out' : 'none'
-                                  }}
-                                >
-                                  {!activeSlide && <span style={{ marginRight: '3px' }}>💡</span>}
-                                  {(activeSlide ? activeSlide.hook : teaser?.hook) && (
-                                    <span style={{
-                                      color: activeSlide ? activeSlide.color : '#5b21b6',
+                                      color: '#5b21b6',
                                       fontWeight: 800,
                                       marginRight: '6px'
                                     }}>
-                                      {activeSlide ? activeSlide.hook : teaser.hook}
+                                      {teaser.hook}
                                     </span>
                                   )}
-                                  <span>{activeSlide ? activeSlide.text : teaser?.text}</span>
+                                  <span>{teaser.text}</span>
                                   <span style={{
                                     fontSize: '0.72rem',
                                     fontWeight: 800,
-                                    color: activeSlide ? activeSlide.color : '#7c3aed',
+                                    color: '#7c3aed',
                                     marginLeft: '3px'
                                   }}>▸</span>
                                 </div>
@@ -1336,79 +1221,40 @@ const SurveyListView = ({
                                 >{watchedIds.some(wId => String(wId) === String(s.id)) ? '★' : '☆'}</button>
                               </div>
                             </div>
-                            {/* ⚡ グリッド用 チラ見せ見出し（マウスオン時はYouTube風ミニ紙芝居スライドショーに変化！） */}
-                            {(activeSlide || teaser) && (
+                            {/* ⚡ グリッド用 チラ見せ見出し（PCは0.82rem、スマホ2列時は自動で0.68remに縮小） */}
+                            {teaser && (
                               <div className="survey-item-teaser-row-grid" style={{
-                                background: activeSlide ? activeSlide.bg : 'linear-gradient(90deg, #faf5ff 0%, #fdf2f8 100%)',
-                                border: `1.5px solid ${activeSlide ? activeSlide.border : '#e9d5ff'}`,
+                                background: 'linear-gradient(90deg, #faf5ff 0%, #fdf2f8 100%)',
+                                border: '1px solid #e9d5ff',
                                 borderRadius: '7px',
                                 padding: 'clamp(3px, 0.8vw, 5px) clamp(5px, 1.2vw, 8px)',
                                 margin: '2px -4px 0 -4px',
                                 width: 'calc(100% + 8px)',
                                 boxSizing: 'border-box',
-                                minWidth: 0,
-                                transition: 'background 0.25s ease, border-color 0.25s ease'
+                                minWidth: 0
                               }}>
-                                {activeSlide && (
-                                  <div style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between',
-                                    marginBottom: '3px',
-                                    gap: '4px'
-                                  }}>
+                                <div style={{
+                                  fontSize: 'clamp(0.68rem, 1.8vw, 0.82rem)',
+                                  fontWeight: 600,
+                                  color: '#334155',
+                                  lineHeight: 1.42,
+                                  display: '-webkit-box',
+                                  WebkitLineClamp: 6,
+                                  WebkitBoxOrient: 'vertical',
+                                  overflow: 'hidden',
+                                  wordBreak: 'break-word'
+                                }}>
+                                  <span style={{ marginRight: '3px' }}>💡</span>
+                                  {teaser.hook && (
                                     <span style={{
-                                      background: activeSlide.color,
-                                      color: '#fff',
-                                      fontSize: '0.62rem',
-                                      fontWeight: 900,
-                                      padding: '1px 6px',
-                                      borderRadius: '999px'
-                                    }}>
-                                      {activeSlide.badge}
-                                    </span>
-                                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
-                                      {hoverSlides.map((_, sIdx) => (
-                                        <span
-                                          key={sIdx}
-                                          style={{
-                                            width: sIdx === activeSlideNumber ? '12px' : '4px',
-                                            height: '4px',
-                                            borderRadius: '999px',
-                                            background: sIdx === activeSlideNumber ? activeSlide.color : '#cbd5e1',
-                                            transition: 'all 0.25s ease'
-                                          }}
-                                        />
-                                      ))}
-                                    </span>
-                                  </div>
-                                )}
-                                <div
-                                  key={activeSlide ? `gslide-${s.id}-${activeSlideNumber}` : `gstatic-${s.id}`}
-                                  style={{
-                                    fontSize: 'clamp(0.68rem, 1.8vw, 0.82rem)',
-                                    fontWeight: 600,
-                                    color: '#334155',
-                                    lineHeight: 1.42,
-                                    display: '-webkit-box',
-                                    WebkitLineClamp: 6,
-                                    WebkitBoxOrient: 'vertical',
-                                    overflow: 'hidden',
-                                    wordBreak: 'break-word',
-                                    animation: activeSlide ? 'ytSlideFadeIn 0.28s ease-out' : 'none'
-                                  }}
-                                >
-                                  {!activeSlide && <span style={{ marginRight: '3px' }}>💡</span>}
-                                  {(activeSlide ? activeSlide.hook : teaser?.hook) && (
-                                    <span style={{
-                                      color: activeSlide ? activeSlide.color : '#5b21b6',
+                                      color: '#5b21b6',
                                       fontWeight: 800,
                                       marginRight: '5px'
                                     }}>
-                                      {activeSlide ? activeSlide.hook : teaser.hook}
+                                      {teaser.hook}
                                     </span>
                                   )}
-                                  <span>{activeSlide ? activeSlide.text : teaser?.text}</span>
+                                  <span>{teaser.text}</span>
                                 </div>
                               </div>
                             )}
@@ -1586,6 +1432,231 @@ const SurveyListView = ({
           }}
         />
       </div>
+
+      {/* 📖 マウスオン時に「ボワン」と浮かび上がるミニ記事プレビュー窓 */}
+      {hoverPopup && hoverPopup.survey && (() => {
+        const hs = hoverPopup.survey;
+        const preview = extractArticleOpeningPreview(hs);
+        const cStyle = hoverPopup.catStyle || { color: '#8b5cf6', icon: '📁' };
+        return (
+          <div
+            key={`popup-${hs.id}`}
+            onClick={() => {
+              setHoverPopup(null);
+              navigateTo('details', hs);
+            }}
+            onMouseEnter={() => {
+              if (closeTimerRef.current) {
+                clearTimeout(closeTimerRef.current);
+                closeTimerRef.current = null;
+              }
+            }}
+            onMouseLeave={handleCardMouseLeave}
+            style={{
+              position: 'fixed',
+              top: `${hoverPopup.top}px`,
+              left: `${hoverPopup.left}px`,
+              width: '360px',
+              maxWidth: 'calc(100vw - 24px)',
+              background: '#ffffff',
+              borderRadius: '18px',
+              border: `2.5px solid ${cStyle.color}`,
+              boxShadow: '0 22px 48px rgba(15, 23, 42, 0.24), 0 4px 14px rgba(139, 92, 246, 0.16)',
+              zIndex: 9999,
+              overflow: 'hidden',
+              cursor: 'pointer',
+              animation: 'bowanPopupIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
+              transformOrigin: 'left center'
+            }}
+          >
+            {/* 上段：サムネよりひと回り大きいワイド画像ヘッダー */}
+            <div style={{
+              position: 'relative',
+              width: '100%',
+              height: '138px',
+              background: '#0f172a',
+              overflow: 'hidden'
+            }}>
+              {hoverPopup.thumbSrc ? (
+                <img
+                  src={hoverPopup.thumbSrc}
+                  alt={hs.title}
+                  referrerPolicy="no-referrer"
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    display: 'block'
+                  }}
+                />
+              ) : (
+                <CategoryEyecatch category={hs.category} />
+              )}
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                background: 'linear-gradient(180deg, rgba(15,23,42,0.35) 0%, rgba(15,23,42,0) 45%, rgba(15,23,42,0.65) 100%)'
+              }} />
+              <div style={{
+                position: 'absolute',
+                top: '8px',
+                left: '10px',
+                background: 'rgba(255, 255, 255, 0.95)',
+                color: cStyle.color,
+                border: `1.5px solid ${cStyle.color}55`,
+                borderRadius: '999px',
+                padding: '2px 9px',
+                fontSize: '0.7rem',
+                fontWeight: 900,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px',
+                boxShadow: '0 2px 6px rgba(0,0,0,0.15)'
+              }}>
+                <span>{cStyle.icon}</span>
+                <span>{hs.category || 'その他'}</span>
+              </div>
+              <div style={{
+                position: 'absolute',
+                top: '8px',
+                right: '10px',
+                background: 'rgba(15, 23, 42, 0.82)',
+                color: '#fff',
+                borderRadius: '999px',
+                padding: '2px 9px',
+                fontSize: '0.66rem',
+                fontWeight: 800,
+                border: '1px solid rgba(255,255,255,0.25)',
+                backdropFilter: 'blur(4px)'
+              }}>
+                📖 記事のはじめをチラ見せ
+              </div>
+            </div>
+
+            {/* 中段：クリックした先の記事画面のはじめの部分（タイトル＋要点①＋本文の冒頭） */}
+            <div style={{
+              position: 'relative',
+              padding: '12px 14px 40px 14px',
+              maxHeight: '220px',
+              overflow: 'hidden',
+              background: '#ffffff'
+            }}>
+              <div style={{
+                fontSize: '0.88rem',
+                fontWeight: 900,
+                color: '#0f172a',
+                lineHeight: 1.4,
+                marginBottom: '8px',
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden'
+              }}>
+                {hs.title}
+              </div>
+
+              {/* 要点①カード（記事詳細ページの「1」と同じミニデザイン） */}
+              {(preview.point1Title || preview.point1Desc) && (
+                <div style={{
+                  background: '#fff1f2',
+                  border: '1px solid #fecdd3',
+                  borderLeft: '4px solid #f43f5e',
+                  borderRadius: '8px',
+                  padding: '6px 9px',
+                  marginBottom: '8px'
+                }}>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    marginBottom: '2px'
+                  }}>
+                    <span style={{
+                      width: '17px',
+                      height: '17px',
+                      borderRadius: '50%',
+                      background: '#f43f5e',
+                      color: '#fff',
+                      fontSize: '0.66rem',
+                      fontWeight: 900,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0
+                    }}>1</span>
+                    <span style={{
+                      fontSize: '0.75rem',
+                      fontWeight: 900,
+                      color: '#be123c',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap'
+                    }}>
+                      {preview.point1Title || 'この記事のポイント'}
+                    </span>
+                  </div>
+                  {preview.point1Desc && (
+                    <div style={{
+                      fontSize: '0.73rem',
+                      color: '#334155',
+                      lineHeight: 1.48,
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden'
+                    }}>
+                      {preview.point1Desc}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* 記事本文の冒頭（ほんとはじめの部分だけ見えて下がフェードアウト） */}
+              {preview.bodyOpening && (
+                <div style={{
+                  fontSize: '0.75rem',
+                  color: '#475569',
+                  lineHeight: 1.6,
+                  whiteSpace: 'pre-line',
+                  wordBreak: 'break-word'
+                }}>
+                  {preview.bodyOpening}
+                </div>
+              )}
+
+              {/* 下部ホワイトグラデーションフェードアウト ＋ クリック案内 */}
+              <div style={{
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                bottom: 0,
+                height: '64px',
+                background: 'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.92) 48%, #ffffff 100%)',
+                display: 'flex',
+                alignItems: 'flex-end',
+                justifyContent: 'center',
+                paddingBottom: '8px'
+              }}>
+                <span style={{
+                  background: 'linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)',
+                  color: '#ffffff',
+                  fontSize: '0.72rem',
+                  fontWeight: 900,
+                  padding: '5px 14px',
+                  borderRadius: '999px',
+                  boxShadow: '0 4px 12px rgba(139, 92, 246, 0.28)',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}>
+                  <span>👆 クリックして記事の続き＆投票を見る</span>
+                  <span>▸</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </>
   );
 };
