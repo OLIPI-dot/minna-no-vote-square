@@ -74,6 +74,7 @@ const Sidebar = ({
   const [isDictionaryOpen, setIsDictionaryOpen] = useState(false);
   const [isStatusOpen, setIsStatusOpen] = useState(false);
   const [brokenRankImages, setBrokenRankImages] = useState(() => new Set());
+  const [sidebarMainTab, setSidebarMainTab] = useState('ranking'); // 'ranking' | 'minque' | 'timeline'
 
   useEffect(() => {
     // ☁️ 1. まずSupabaseに保存されたカスタムネームがあるか確認
@@ -155,441 +156,10 @@ const Sidebar = ({
         </div>
       </div>
 
-      {/* 2. 🏆 ユーザー称号＆レベル (みんクエ) — トップ案内ボックスの横に配置 */}
-      <div id="sidebar-minque-card" className="sidebar-section-card" style={{ marginBottom: '24px', background: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)', border: '2px solid #fbbf24', textAlign: 'center', scrollMarginTop: '16px' }}>
-          
-          <h3 className="live-feed-title" style={{ color: '#b45309', border: 'none', padding: 0, justifyContent: 'center', marginTop: '12px' }}>🐰 みんクエ 🥕</h3>
-
-          {/* ☁️ ログイン・同期状態の明示バッジ */}
-          {user ? (
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#dcfce7', border: '1px solid #86efac', color: '#166534', fontSize: '0.72rem', fontWeight: 'bold', padding: '3px 10px', borderRadius: '12px', margin: '4px 0 8px 0' }}>
-              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#22c55e', display: 'inline-block' }}></span>
-              ☁️ クラウド同期中（全端末で共有）
-            </div>
-          ) : (
-            <div style={{ margin: '4px 0 10px 0' }}>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#fee2e2', border: '1px solid #fca5a5', color: '#991b1b', fontSize: '0.72rem', fontWeight: 'bold', padding: '3px 10px', borderRadius: '12px' }}>
-                <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#ef4444', display: 'inline-block' }}></span>
-                📱 ゲスト保存中（この端末のみ）
-              </div>
-              <div style={{ marginTop: '6px' }}>
-                <button 
-                  disabled={isSidebarLoggingIn}
-                  onClick={async () => {
-                    if (isSidebarLoggingIn) return;
-                    setIsSidebarLoggingIn(true);
-                    try {
-                      const redirectUrl = window.location.origin;
-                      const { error } = await supabase.auth.signInWithOAuth({
-                        provider: 'google',
-                        options: { redirectTo: redirectUrl }
-                      });
-                      if (error) {
-                        console.error('Sidebar login error:', error);
-                        setIsSidebarLoggingIn(false);
-                      }
-                    } catch (e) {
-                      console.error('Sidebar login exception:', e);
-                      setIsSidebarLoggingIn(false);
-                    }
-                  }}
-                  style={{ 
-                    background: isSidebarLoggingIn ? '#9ca3af' : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)', 
-                    color: 'white', border: 'none', borderRadius: '6px', 
-                    padding: '6px 14px', fontSize: '0.75rem', fontWeight: 'bold', 
-                    cursor: isSidebarLoggingIn ? 'not-allowed' : 'pointer', 
-                    boxShadow: '0 2px 6px rgba(239, 68, 68, 0.3)',
-                    display: 'inline-flex', alignItems: 'center', gap: '6px',
-                    opacity: isSidebarLoggingIn ? 0.7 : 1
-                  }}
-                >
-                  <span>{isSidebarLoggingIn ? '🔄' : '☁️'}</span> {isSidebarLoggingIn ? 'Googleへ接続中...' : 'Googleログインして同期する'}
-                </button>
-              </div>
-            </div>
-          )}
-          
-          <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#d97706', margin: '4px 0 12px 0' }}>
-            {levelInfo?.title || 'ひよっこ広場民 🥚'}
-          </div>
-
-          {isEditingHn ? (
-            <div style={{ margin: '8px 0', display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center' }}>
-              <input 
-                type="text" 
-                value={tempHn} 
-                onChange={(e) => setTempHn(e.target.value)} 
-                placeholder="ハンドルネーム" 
-                maxLength={40} // 長いパスワードも入力できるように上限を増やす
-                style={{ padding: '6px', borderRadius: '4px', border: '1px solid #fbbf24', textAlign: 'center', width: '80%' }}
-              />
-              <button onClick={saveHn} style={{ padding: '4px 16px', background: '#f59e0b', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>決定</button>
-            </div>
-          ) : (
-            <div style={{ fontSize: '1rem', fontWeight: 'bold', color: hn.includes('◆OLiPi') ? '#ef4444' : (levelInfo?.color || '#78350f'), textShadow: hn.includes('◆OLiPi') ? '0 0 8px rgba(239, 68, 68, 0.4)' : (levelInfo?.textShadow || 'none'), display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', margin: '8px 0' }}>
-              {hn.includes('◆OLiPi') ? `👑 ${hn}` : hn} 
-              <button onClick={() => setIsEditingHn(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.8rem', color: '#d97706', padding: '2px 4px', borderRadius: '4px' }}>✏️</button>
-            </div>
-          )}
-
-          <div style={{ fontSize: '0.85rem', color: '#92400e', marginBottom: '8px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-            <span>Lv.{levelInfo?.level || 1} (EXP: {userExp || 0})</span>
-            <span style={{ fontWeight: 'bold' }}>🎫 {gachaTickets || 0} 枚</span>
-            <button 
-              onClick={() => setIsStatusOpen(true)}
-              className="minique-status-btn"
-              title="ステータス・装備詳細を見る"
-            >
-              <span>📊</span>
-              <span>ステータス</span>
-            </button>
-          </div>
-          {levelInfo?.next && (
-            <div style={{ width: '100%', background: '#fde68a', borderRadius: '10px', height: '12px', overflow: 'hidden', position: 'relative', marginBottom: '4px' }}>
-              <div style={{ height: '100%', background: 'linear-gradient(90deg, #f59e0b, #d97706)', width: `${Math.min(100, Math.max(0, ((userExp || 0) / levelInfo.next) * 100))}%` }}></div>
-            </div>
-          )}
-          {levelInfo?.next ? (
-            <div style={{ fontSize: '0.75rem', color: '#b45309' }}>次のレベルまであと {levelInfo.next - (userExp || 0)} EXP！</div>
-          ) : (
-            <div style={{ fontSize: '0.75rem', color: '#b45309' }}>最大レベル到達！あなたは伝説です✨</div>
-          )}
-
-          {/* ⚔️ みんクエ 操作パネル (立体ボタン & 擬似要素装飾付き) */}
-          <div className="minique-panel-container">
-            <button 
-              onClick={() => setMiniqueTab('patrol')}
-              className="minique-tab-btn"
-              style={{ 
-                background: miniqueTab === 'patrol' 
-                  ? 'linear-gradient(180deg, #60a5fa 0%, #3b82f6 50%, #2563eb 100%)' 
-                  : '#ffffff', 
-                color: miniqueTab === 'patrol' ? '#ffffff' : '#334155', 
-                border: miniqueTab === 'patrol' ? '1px solid #2563eb' : '1px solid #e2e8f0',
-                borderBottom: miniqueTab === 'patrol' ? '3px solid #1d4ed8' : '3px solid #cbd5e1',
-                boxShadow: miniqueTab === 'patrol' ? '0 3px 8px rgba(37, 99, 235, 0.4)' : '0 2px 4px rgba(0,0,0,0.04)'
-              }}
-            >
-              <span>🚓</span>
-              <span>パトロール</span>
-            </button>
-
-            <button 
-              onClick={() => setMiniqueTab('dungeon')}
-              className="minique-tab-btn"
-              style={{ 
-                background: miniqueTab === 'dungeon' 
-                  ? 'linear-gradient(180deg, #818cf8 0%, #6366f1 50%, #4f46e5 100%)' 
-                  : '#ffffff', 
-                color: miniqueTab === 'dungeon' ? '#ffffff' : '#334155', 
-                border: miniqueTab === 'dungeon' ? '1px solid #4f46e5' : '1px solid #e2e8f0',
-                borderBottom: miniqueTab === 'dungeon' ? '3px solid #3730a3' : '3px solid #cbd5e1',
-                boxShadow: miniqueTab === 'dungeon' ? '0 3px 8px rgba(79, 70, 229, 0.4)' : '0 2px 4px rgba(0,0,0,0.04)'
-              }}
-            >
-              <span>🔦</span>
-              <span>地下パトロール</span>
-            </button>
-
-            {/* 🐉 レイドボス (全幅ワイド配置 ＆ 炎の立体ボタン) */}
-            <button 
-              onClick={() => setMiniqueTab('raid')}
-              className="minique-tab-btn"
-              style={{ 
-                gridColumn: '1 / span 2',
-                padding: '10px 8px',
-                background: miniqueTab === 'raid' 
-                  ? 'linear-gradient(180deg, #f87171 0%, #ef4444 50%, #dc2626 100%)' 
-                  : 'linear-gradient(180deg, #ffffff 0%, #fff5f5 100%)', 
-                color: miniqueTab === 'raid' ? '#ffffff' : '#b91c1c', 
-                border: miniqueTab === 'raid' ? '1px solid #dc2626' : '1px solid #fca5a5',
-                borderBottom: miniqueTab === 'raid' ? '3px solid #991b1b' : '3px solid #f87171',
-                boxShadow: miniqueTab === 'raid' ? '0 4px 12px rgba(239, 68, 68, 0.45)' : '0 2px 6px rgba(239, 68, 68, 0.15)',
-                fontSize: '0.84rem'
-              }}
-            >
-              <span>🐉</span>
-              <span>レイドボス討伐戦</span>
-              <span style={{ 
-                fontSize: '0.62rem', 
-                background: miniqueTab === 'raid' ? 'rgba(0,0,0,0.3)' : '#ef4444', 
-                color: '#ffffff', 
-                padding: '2px 6px', 
-                borderRadius: '6px',
-                fontWeight: '900',
-                letterSpacing: '0.5px',
-                boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
-              }}>
-                LIVE 🔥
-              </span>
-            </button>
-
-            <button 
-              onClick={() => setMiniqueTab('gacha')}
-              className="minique-tab-btn"
-              style={{ 
-                background: miniqueTab === 'gacha' 
-                  ? 'linear-gradient(180deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%)' 
-                  : '#ffffff', 
-                color: miniqueTab === 'gacha' ? '#ffffff' : '#334155', 
-                border: miniqueTab === 'gacha' ? '1px solid #d97706' : '1px solid #e2e8f0',
-                borderBottom: miniqueTab === 'gacha' ? '3px solid #b45309' : '3px solid #cbd5e1',
-                boxShadow: miniqueTab === 'gacha' ? '0 3px 8px rgba(217, 119, 6, 0.4)' : '0 2px 4px rgba(0,0,0,0.04)'
-              }}
-            >
-              <span>🛡️</span>
-              <span>装備・ガチャ</span>
-            </button>
-
-            <button 
-              onClick={() => setIsDictionaryOpen(true)}
-              className="minique-tab-btn"
-              style={{ 
-                background: 'linear-gradient(180deg, #a78bfa 0%, #8b5cf6 50%, #7c3aed 100%)', 
-                color: '#ffffff', 
-                border: '1px solid #7c3aed',
-                borderBottom: '3px solid #5b21b6',
-                boxShadow: '0 3px 8px rgba(124, 58, 237, 0.4)'
-              }}
-            >
-              <span>📖</span>
-              <span>図鑑</span>
-            </button>
-          </div>
-
-          <div style={{ minHeight: '300px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <div style={{ display: miniqueTab === 'patrol' ? 'block' : 'none' }}>
-              <PatrolMiniGame 
-                userLevel={levelInfo?.level || 1} 
-                userExp={userExp}
-                levelInfo={levelInfo}
-                addExp={addExp} 
-                gachaTickets={gachaTickets}
-                addTickets={addTickets}
-                equipment={equipment}
-                setEquipment={setEquipment}
-                inventory={inventory}
-                setInventory={setInventory}
-                globalOnlineCount={globalOnlineCount}
-                encounteredEnemies={encounteredEnemies}
-                setEncounteredEnemies={setEncounteredEnemies}
-                user={user}
-              />
-            </div>
-
-            <div style={{ display: miniqueTab === 'dungeon' ? 'block' : 'none' }}>
-              <DungeonMiniGame 
-                userLevel={levelInfo?.level || 1} 
-                userExp={userExp}
-                levelInfo={levelInfo}
-                addExp={addExp} 
-                gachaTickets={gachaTickets}
-                addTickets={addTickets}
-                equipment={equipment}
-                setEquipment={setEquipment}
-                inventory={inventory}
-                setInventory={setInventory}
-                encounteredEnemies={encounteredEnemies}
-                setEncounteredEnemies={setEncounteredEnemies}
-                user={user}
-                hn={hn}
-              />
-            </div>
-
-            {miniqueTab === 'raid' && (
-              <div>
-                <RaidBossMiniGame 
-                  userLevel={levelInfo?.level || 1}
-                  userExp={userExp}
-                  addExp={addExp}
-                  gachaTickets={gachaTickets}
-                  addTickets={addTickets}
-                  equipment={equipment}
-                  user={user}
-                  hn={hn}
-                  globalOnlineCount={globalOnlineCount}
-                />
-              </div>
-            )}
-
-            <div style={{ display: miniqueTab === 'gacha' ? 'block' : 'none' }}>
-              <GachaMiniGame 
-                userLevel={levelInfo?.level || 1}
-                gachaTickets={gachaTickets} 
-                addTickets={addTickets} 
-                equipment={equipment} 
-                setEquipment={setEquipment} 
-                addExp={addExp}
-                inventory={inventory}
-                setInventory={setInventory}
-                acquiredItems={acquiredItems}
-                setAcquiredItems={setAcquiredItems}
-                hn={hn}
-              />
-            </div>
-          </div>
-        </div>
-
-      {/* 3. 💬 X風・広場のタイムライン（つぶやき＆みんクエ速報） */}
-      <div id="sidebar-timeline-card" style={{ scrollMarginTop: '16px' }}>
-        <SquareTimeline />
-      </div>
-
-      {/* 📌 スクロール追従エリア：記事一覧を下まで読んでも右隣が空白にならないようピタッと追従 */}
-      <div className="sidebar-sticky-group" style={{ position: 'sticky', top: '20px', zIndex: 5 }}>
-      {/* 4. 🔥 人気ランキング — ちょうど左側の記事一覧（公式・ニュース）が始まる真横の高さに配置 */}
-      <div className="sidebar-section-card" style={{ marginBottom: '24px', padding: '18px 14px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '6px', marginBottom: '14px' }}>
-          <h3 className="live-feed-title" style={{ marginLeft: '4px', marginBottom: 0 }}>🔥 人気ランキング</h3>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <button
-              type="button"
-              onClick={() => {
-                const el = document.getElementById('sidebar-minque-card');
-                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }}
-              title="みんクエへ移動"
-              style={{
-                background: '#fffbeb',
-                border: '1px solid #fcd34d',
-                color: '#b45309',
-                borderRadius: '999px',
-                padding: '3px 8px',
-                fontSize: '0.68rem',
-                fontWeight: '800',
-                cursor: 'pointer',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '2px',
-                boxShadow: '0 1px 3px rgba(245, 158, 11, 0.12)'
-              }}
-            >
-              🐰みんクエ↑
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                const el = document.getElementById('sidebar-timeline-card');
-                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }}
-              title="広場のタイムラインへ移動"
-              style={{
-                background: '#f5f3ff',
-                border: '1px solid #ddd6fe',
-                color: '#6d28d9',
-                borderRadius: '999px',
-                padding: '3px 8px',
-                fontSize: '0.68rem',
-                fontWeight: '800',
-                cursor: 'pointer',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '2px',
-                boxShadow: '0 1px 3px rgba(124, 58, 237, 0.12)'
-              }}
-            >
-              💬広場↑
-            </button>
-          </div>
-        </div>
-        <div className="live-feed-content">
-          {popularSurveys.slice(0, 5).map((s, idx) => {
-            const thumbSrc = extractThumbUrl(s);
-            const showFallback = !thumbSrc || brokenRankImages.has(s.id);
-            const catColor = getCatColor(s.category);
-            return (
-              <div 
-                key={s.id} 
-                className="live-item popular clickable" 
-                onClick={() => navigateTo('details', s)}
-                role="button"
-                tabIndex={0}
-                onKeyPress={(e) => e.key === 'Enter' && navigateTo('details', s)}
-                aria-label={`${idx + 1}位: ${s.title} の詳細を見る`}
-                style={{
-                  borderLeft: `5px solid ${catColor}`,
-                  padding: '10px 8px',
-                  gap: '7px',
-                  alignItems: 'center'
-                }}
-              >
-                <span className="rank-label" style={idx > 2 ? { fontSize: '0.76rem', fontWeight: '800', color: '#64748b', minWidth: '20px', textAlign: 'center', flexShrink: 0 } : { fontSize: '1.2rem', minWidth: '20px', textAlign: 'center', flexShrink: 0 }}>
-                  {idx === 0 ? '👑' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `${idx + 1}位`}
-                </span>
-                <div className="popular-item-info" style={{ flex: 1, minWidth: 0 }}>
-                  <strong style={{
-                    display: '-webkit-box',
-                    WebkitLineClamp: 4,
-                    WebkitBoxOrient: 'vertical',
-                    overflow: 'hidden',
-                    marginBottom: '4px',
-                    fontSize: '0.81rem',
-                    lineHeight: '1.35',
-                    color: '#1e293b'
-                  }}>{s.title}</strong>
-                  <div style={{ display: 'flex', gap: '5px', fontSize: '0.7rem', color: '#64748b', flexWrap: 'wrap', alignItems: 'center' }}>
-                    <span style={{ color: '#d97706', fontWeight: 'bold' }}>
-                      ⚡ {(Number(s.total_votes || 0) * 10) + (Number(s.likes_count || 0) * 5) + Number(s.view_count || 0)} pt
-                    </span>
-                    <span>🗳️ <AnimatedCounter value={s.total_votes || 0} /> 票</span>
-                    <span>👁️ {s.view_count || 0}</span>
-                    <span>💬 {s.comment_count || 0}</span>
-                  </div>
-                </div>
-                <div style={{
-                  width: '74px',
-                  height: '52px',
-                  flexShrink: 0,
-                  borderRadius: '8px',
-                  overflow: 'hidden',
-                  position: 'relative',
-                  background: '#f1f5f9',
-                  border: '1px solid #e2e8f0',
-                  boxShadow: '0 2px 5px rgba(0, 0, 0, 0.05)'
-                }}>
-                  {showFallback ? (
-                    <div style={{
-                      width: '100%',
-                      height: '100%',
-                      background: `linear-gradient(135deg, ${catColor} 0%, #1e293b 160%)`,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '2px',
-                      fontSize: '1.05rem'
-                    }}>
-                      <span>🐰</span>
-                      <span>{getCatIcon(s.category)}</span>
-                    </div>
-                  ) : (
-                    <img
-                      src={thumbSrc}
-                      alt=""
-                      loading="lazy"
-                      decoding="async"
-                      referrerPolicy="no-referrer"
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        display: 'block'
-                      }}
-                      onError={() => {
-                        setBrokenRankImages(prev => new Set([...prev, s.id]));
-                      }}
-                    />
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* 3.5 💬 新着コメント（どの記事にどんなコメントがついたか） */}
+      {/* 2. 💬 新着コメント（どの記事にどんなコメントがついたか） */}
       <RecentComments navigateTo={navigateTo} />
 
-      {/* 4. ⏳ もうすぐ終了！ (条件付きレンダリング) */}
+      {/* 3. ⏳ もうすぐ終了！ (条件付きレンダリング) */}
       {endingSoonSurveys.length > 0 && (
         <div className="sidebar-section-card" style={{ marginBottom: '24px', border: '2px solid #fee2e2' }}>
           <h3 className="live-feed-title" style={{ color: '#e11d48' }}>⏰ もうすぐ終了！</h3>
@@ -621,7 +191,8 @@ const Sidebar = ({
           </div>
         </div>
       )}
-      {/* 6. ✨ 広場の最新ニュース */}
+
+      {/* 4. ✨ 広場の最新ニュース */}
       <div className="sidebar-section-card" style={{ marginBottom: '24px' }}>
         <h3 className="live-feed-title">✨ 広場の最新ニュース</h3>
         <div className="live-feed-content">
@@ -641,9 +212,461 @@ const Sidebar = ({
         </div>
       </div>
 
-      {/* 7. 広告 */}
+      {/* 5. 広告 */}
       <AdSenseBox slot="sidebar_slot_placeholder" affiliateType="amazon" />
       <NinjaAdMaxBox />
+
+      {/* 📌 6. スクロール追従・3タブ切り替えエリア（記事一覧が始まる真横から一番下までピタッと追従！） */}
+      <div className="sidebar-sticky-group" style={{ position: 'sticky', top: '16px', zIndex: 10 }}>
+        {/* 🗂️ 3タブ切り替えバー（🔥ランキング / 🐰みんクエ / 💬タイムライン） */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gap: '5px',
+          background: '#f1f5f9',
+          padding: '5px',
+          borderRadius: '16px',
+          border: '1px solid #e2e8f0',
+          marginBottom: '10px',
+          boxShadow: '0 4px 12px rgba(15, 23, 42, 0.05)'
+        }}>
+          <button
+            type="button"
+            onClick={() => setSidebarMainTab('ranking')}
+            style={{
+              border: sidebarMainTab === 'ranking' ? '1px solid #c7d2fe' : '1px solid transparent',
+              background: sidebarMainTab === 'ranking' ? '#ffffff' : 'transparent',
+              color: sidebarMainTab === 'ranking' ? '#4f46e5' : '#64748b',
+              borderRadius: '12px',
+              padding: '8px 4px',
+              fontSize: '0.76rem',
+              fontWeight: '900',
+              cursor: 'pointer',
+              boxShadow: sidebarMainTab === 'ranking' ? '0 2px 6px rgba(99, 102, 241, 0.15)' : 'none',
+              transition: 'all 0.18s ease',
+              whiteSpace: 'nowrap'
+            }}
+          >
+            🔥 ランキング
+          </button>
+          <button
+            type="button"
+            onClick={() => setSidebarMainTab('minque')}
+            style={{
+              border: sidebarMainTab === 'minque' ? '1px solid #fde68a' : '1px solid transparent',
+              background: sidebarMainTab === 'minque' ? 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)' : 'transparent',
+              color: sidebarMainTab === 'minque' ? '#b45309' : '#64748b',
+              borderRadius: '12px',
+              padding: '8px 4px',
+              fontSize: '0.76rem',
+              fontWeight: '900',
+              cursor: 'pointer',
+              boxShadow: sidebarMainTab === 'minque' ? '0 2px 6px rgba(245, 158, 11, 0.18)' : 'none',
+              transition: 'all 0.18s ease',
+              whiteSpace: 'nowrap'
+            }}
+          >
+            🐰 みんクエ
+          </button>
+          <button
+            type="button"
+            onClick={() => setSidebarMainTab('timeline')}
+            style={{
+              border: sidebarMainTab === 'timeline' ? '1px solid #fbcfe8' : '1px solid transparent',
+              background: sidebarMainTab === 'timeline' ? 'linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%)' : 'transparent',
+              color: sidebarMainTab === 'timeline' ? '#be185d' : '#64748b',
+              borderRadius: '12px',
+              padding: '8px 4px',
+              fontSize: '0.76rem',
+              fontWeight: '900',
+              cursor: 'pointer',
+              boxShadow: sidebarMainTab === 'timeline' ? '0 2px 6px rgba(236, 72, 153, 0.16)' : 'none',
+              transition: 'all 0.18s ease',
+              whiteSpace: 'nowrap'
+            }}
+          >
+            💬 広場
+          </button>
+        </div>
+
+        {/* タブ1: 🔥 人気ランキング */}
+        <div style={{ display: sidebarMainTab === 'ranking' ? 'block' : 'none' }}>
+          <div className="sidebar-section-card" style={{ marginBottom: '24px', padding: '18px 14px' }}>
+            <h3 className="live-feed-title" style={{ marginLeft: '4px', marginBottom: '14px' }}>🔥 人気ランキング</h3>
+            <div className="live-feed-content">
+              {popularSurveys.slice(0, 5).map((s, idx) => {
+                const thumbSrc = extractThumbUrl(s);
+                const showFallback = !thumbSrc || brokenRankImages.has(s.id);
+                const catColor = getCatColor(s.category);
+                return (
+                  <div 
+                    key={s.id} 
+                    className="live-item popular clickable" 
+                    onClick={() => navigateTo('details', s)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyPress={(e) => e.key === 'Enter' && navigateTo('details', s)}
+                    aria-label={`${idx + 1}位: ${s.title} の詳細を見る`}
+                    style={{
+                      borderLeft: `5px solid ${catColor}`,
+                      padding: '10px 8px',
+                      gap: '7px',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <span className="rank-label" style={idx > 2 ? { fontSize: '0.76rem', fontWeight: '800', color: '#64748b', minWidth: '20px', textAlign: 'center', flexShrink: 0 } : { fontSize: '1.2rem', minWidth: '20px', textAlign: 'center', flexShrink: 0 }}>
+                      {idx === 0 ? '👑' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `${idx + 1}位`}
+                    </span>
+                    <div className="popular-item-info" style={{ flex: 1, minWidth: 0 }}>
+                      <strong style={{
+                        display: '-webkit-box',
+                        WebkitLineClamp: 4,
+                        WebkitBoxOrient: 'vertical',
+                        overflow: 'hidden',
+                        marginBottom: '4px',
+                        fontSize: '0.81rem',
+                        lineHeight: '1.35',
+                        color: '#1e293b'
+                      }}>{s.title}</strong>
+                      <div style={{ display: 'flex', gap: '5px', fontSize: '0.7rem', color: '#64748b', flexWrap: 'wrap', alignItems: 'center' }}>
+                        <span style={{ color: '#d97706', fontWeight: 'bold' }}>
+                          ⚡ {(Number(s.total_votes || 0) * 10) + (Number(s.likes_count || 0) * 5) + Number(s.view_count || 0)} pt
+                        </span>
+                        <span>🗳️ <AnimatedCounter value={s.total_votes || 0} /> 票</span>
+                        <span>👁️ {s.view_count || 0}</span>
+                        <span>💬 {s.comment_count || 0}</span>
+                      </div>
+                    </div>
+                    <div style={{
+                      width: '74px',
+                      height: '52px',
+                      flexShrink: 0,
+                      borderRadius: '8px',
+                      overflow: 'hidden',
+                      position: 'relative',
+                      background: '#f1f5f9',
+                      border: '1px solid #e2e8f0',
+                      boxShadow: '0 2px 5px rgba(0, 0, 0, 0.05)'
+                    }}>
+                      {showFallback ? (
+                        <div style={{
+                          width: '100%',
+                          height: '100%',
+                          background: `linear-gradient(135deg, ${catColor} 0%, #1e293b 160%)`,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '2px',
+                          fontSize: '1.05rem'
+                        }}>
+                          <span>🐰</span>
+                          <span>{getCatIcon(s.category)}</span>
+                        </div>
+                      ) : (
+                        <img
+                          src={thumbSrc}
+                          alt=""
+                          loading="lazy"
+                          decoding="async"
+                          referrerPolicy="no-referrer"
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                            display: 'block'
+                          }}
+                          onError={() => {
+                            setBrokenRankImages(prev => new Set([...prev, s.id]));
+                          }}
+                        />
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* タブ2: 🐰 みんクエ */}
+        <div style={{ display: sidebarMainTab === 'minque' ? 'block' : 'none' }}>
+          <div id="sidebar-minque-card" className="sidebar-section-card" style={{ marginBottom: '24px', background: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)', border: '2px solid #fbbf24', textAlign: 'center' }}>
+            <h3 className="live-feed-title" style={{ color: '#b45309', border: 'none', padding: 0, justifyContent: 'center', marginTop: '4px' }}>🐰 みんクエ 🥕</h3>
+
+            {/* ☁️ ログイン・同期状態の明示バッジ */}
+            {user ? (
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#dcfce7', border: '1px solid #86efac', color: '#166534', fontSize: '0.72rem', fontWeight: 'bold', padding: '3px 10px', borderRadius: '12px', margin: '4px 0 8px 0' }}>
+                <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#22c55e', display: 'inline-block' }}></span>
+                ☁️ クラウド同期中（全端末で共有）
+              </div>
+            ) : (
+              <div style={{ margin: '4px 0 10px 0' }}>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#fee2e2', border: '1px solid #fca5a5', color: '#991b1b', fontSize: '0.72rem', fontWeight: 'bold', padding: '3px 10px', borderRadius: '12px' }}>
+                  <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#ef4444', display: 'inline-block' }}></span>
+                  📱 ゲスト保存中（この端末のみ）
+                </div>
+                <div style={{ marginTop: '6px' }}>
+                  <button 
+                    disabled={isSidebarLoggingIn}
+                    onClick={async () => {
+                      if (isSidebarLoggingIn) return;
+                      setIsSidebarLoggingIn(true);
+                      try {
+                        const redirectUrl = window.location.origin;
+                        const { error } = await supabase.auth.signInWithOAuth({
+                          provider: 'google',
+                          options: { redirectTo: redirectUrl }
+                        });
+                        if (error) {
+                          console.error('Sidebar login error:', error);
+                          setIsSidebarLoggingIn(false);
+                        }
+                      } catch (e) {
+                        console.error('Sidebar login exception:', e);
+                        setIsSidebarLoggingIn(false);
+                      }
+                    }}
+                    style={{ 
+                      background: isSidebarLoggingIn ? '#9ca3af' : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)', 
+                      color: 'white', border: 'none', borderRadius: '6px', 
+                      padding: '6px 14px', fontSize: '0.75rem', fontWeight: 'bold', 
+                      cursor: isSidebarLoggingIn ? 'not-allowed' : 'pointer', 
+                      boxShadow: '0 2px 6px rgba(239, 68, 68, 0.3)',
+                      display: 'inline-flex', alignItems: 'center', gap: '6px',
+                      opacity: isSidebarLoggingIn ? 0.7 : 1
+                    }}
+                  >
+                    <span>{isSidebarLoggingIn ? '🔄' : '☁️'}</span> {isSidebarLoggingIn ? 'Googleへ接続中...' : 'Googleログインして同期する'}
+                  </button>
+                </div>
+              </div>
+            )}
+            
+            <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#d97706', margin: '4px 0 12px 0' }}>
+              {levelInfo?.title || 'ひよっこ広場民 🥚'}
+            </div>
+
+            {isEditingHn ? (
+              <div style={{ margin: '8px 0', display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center' }}>
+                <input 
+                  type="text" 
+                  value={tempHn} 
+                  onChange={(e) => setTempHn(e.target.value)} 
+                  placeholder="ハンドルネーム" 
+                  maxLength={40}
+                  style={{ padding: '6px', borderRadius: '4px', border: '1px solid #fbbf24', textAlign: 'center', width: '80%' }}
+                />
+                <button onClick={saveHn} style={{ padding: '4px 16px', background: '#f59e0b', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>決定</button>
+              </div>
+            ) : (
+              <div style={{ fontSize: '1rem', fontWeight: 'bold', color: hn.includes('◆OLiPi') ? '#ef4444' : (levelInfo?.color || '#78350f'), textShadow: hn.includes('◆OLiPi') ? '0 0 8px rgba(239, 68, 68, 0.4)' : (levelInfo?.textShadow || 'none'), display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', margin: '8px 0' }}>
+                {hn.includes('◆OLiPi') ? `👑 ${hn}` : hn} 
+                <button onClick={() => setIsEditingHn(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.8rem', color: '#d97706', padding: '2px 4px', borderRadius: '4px' }}>✏️</button>
+              </div>
+            )}
+
+            <div style={{ fontSize: '0.85rem', color: '#92400e', marginBottom: '8px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+              <span>Lv.{levelInfo?.level || 1} (EXP: {userExp || 0})</span>
+              <span style={{ fontWeight: 'bold' }}>🎫 {gachaTickets || 0} 枚</span>
+              <button 
+                onClick={() => setIsStatusOpen(true)}
+                className="minique-status-btn"
+                title="ステータス・装備詳細を見る"
+              >
+                <span>📊</span>
+                <span>ステータス</span>
+              </button>
+            </div>
+            {levelInfo?.next && (
+              <div style={{ width: '100%', background: '#fde68a', borderRadius: '10px', height: '12px', overflow: 'hidden', position: 'relative', marginBottom: '4px' }}>
+                <div style={{ height: '100%', background: 'linear-gradient(90deg, #f59e0b, #d97706)', width: `${Math.min(100, Math.max(0, ((userExp || 0) / levelInfo.next) * 100))}%` }}></div>
+              </div>
+            )}
+            {levelInfo?.next ? (
+              <div style={{ fontSize: '0.75rem', color: '#b45309' }}>次のレベルまであと {levelInfo.next - (userExp || 0)} EXP！</div>
+            ) : (
+              <div style={{ fontSize: '0.75rem', color: '#b45309' }}>最大レベル到達！あなたは伝説です✨</div>
+            )}
+
+            {/* ⚔️ みんクエ 操作パネル */}
+            <div className="minique-panel-container">
+              <button 
+                onClick={() => setMiniqueTab('patrol')}
+                className="minique-tab-btn"
+                style={{ 
+                  background: miniqueTab === 'patrol' 
+                    ? 'linear-gradient(180deg, #60a5fa 0%, #3b82f6 50%, #2563eb 100%)' 
+                    : '#ffffff', 
+                  color: miniqueTab === 'patrol' ? '#ffffff' : '#334155', 
+                  border: miniqueTab === 'patrol' ? '1px solid #2563eb' : '1px solid #e2e8f0',
+                  borderBottom: miniqueTab === 'patrol' ? '3px solid #1d4ed8' : '3px solid #cbd5e1',
+                  boxShadow: miniqueTab === 'patrol' ? '0 3px 8px rgba(37, 99, 235, 0.4)' : '0 2px 4px rgba(0,0,0,0.04)'
+                }}
+              >
+                <span>🚓</span>
+                <span>パトロール</span>
+              </button>
+
+              <button 
+                onClick={() => setMiniqueTab('dungeon')}
+                className="minique-tab-btn"
+                style={{ 
+                  background: miniqueTab === 'dungeon' 
+                    ? 'linear-gradient(180deg, #818cf8 0%, #6366f1 50%, #4f46e5 100%)' 
+                    : '#ffffff', 
+                  color: miniqueTab === 'dungeon' ? '#ffffff' : '#334155', 
+                  border: miniqueTab === 'dungeon' ? '1px solid #4f46e5' : '1px solid #e2e8f0',
+                  borderBottom: miniqueTab === 'dungeon' ? '3px solid #3730a3' : '3px solid #cbd5e1',
+                  boxShadow: miniqueTab === 'dungeon' ? '0 3px 8px rgba(79, 70, 229, 0.4)' : '0 2px 4px rgba(0,0,0,0.04)'
+                }}
+              >
+                <span>🔦</span>
+                <span>地下パトロール</span>
+              </button>
+
+              <button 
+                onClick={() => setMiniqueTab('raid')}
+                className="minique-tab-btn"
+                style={{ 
+                  gridColumn: '1 / span 2',
+                  padding: '10px 8px',
+                  background: miniqueTab === 'raid' 
+                    ? 'linear-gradient(180deg, #f87171 0%, #ef4444 50%, #dc2626 100%)' 
+                    : 'linear-gradient(180deg, #ffffff 0%, #fff5f5 100%)', 
+                  color: miniqueTab === 'raid' ? '#ffffff' : '#b91c1c', 
+                  border: miniqueTab === 'raid' ? '1px solid #dc2626' : '1px solid #fca5a5',
+                  borderBottom: miniqueTab === 'raid' ? '3px solid #991b1b' : '3px solid #f87171',
+                  boxShadow: miniqueTab === 'raid' ? '0 4px 12px rgba(239, 68, 68, 0.45)' : '0 2px 6px rgba(239, 68, 68, 0.15)',
+                  fontSize: '0.84rem'
+                }}
+              >
+                <span>🐉</span>
+                <span>レイドボス討伐戦</span>
+                <span style={{ 
+                  fontSize: '0.62rem', 
+                  background: miniqueTab === 'raid' ? 'rgba(0,0,0,0.3)' : '#ef4444', 
+                  color: '#ffffff', 
+                  padding: '2px 6px', 
+                  borderRadius: '6px',
+                  fontWeight: '900',
+                  letterSpacing: '0.5px',
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
+                }}>
+                  LIVE 🔥
+                </span>
+              </button>
+
+              <button 
+                onClick={() => setMiniqueTab('gacha')}
+                className="minique-tab-btn"
+                style={{ 
+                  background: miniqueTab === 'gacha' 
+                    ? 'linear-gradient(180deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%)' 
+                    : '#ffffff', 
+                  color: miniqueTab === 'gacha' ? '#ffffff' : '#334155', 
+                  border: miniqueTab === 'gacha' ? '1px solid #d97706' : '1px solid #e2e8f0',
+                  borderBottom: miniqueTab === 'gacha' ? '3px solid #b45309' : '3px solid #cbd5e1',
+                  boxShadow: miniqueTab === 'gacha' ? '0 3px 8px rgba(217, 119, 6, 0.4)' : '0 2px 4px rgba(0,0,0,0.04)'
+                }}
+              >
+                <span>🛡️</span>
+                <span>装備・ガチャ</span>
+              </button>
+
+              <button 
+                onClick={() => setIsDictionaryOpen(true)}
+                className="minique-tab-btn"
+                style={{ 
+                  background: 'linear-gradient(180deg, #a78bfa 0%, #8b5cf6 50%, #7c3aed 100%)', 
+                  color: '#ffffff', 
+                  border: '1px solid #7c3aed',
+                  borderBottom: '3px solid #5b21b6',
+                  boxShadow: '0 3px 8px rgba(124, 58, 237, 0.4)'
+                }}
+              >
+                <span>📖</span>
+                <span>図鑑</span>
+              </button>
+            </div>
+
+            <div style={{ minHeight: '300px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div style={{ display: miniqueTab === 'patrol' ? 'block' : 'none' }}>
+                <PatrolMiniGame 
+                  userLevel={levelInfo?.level || 1} 
+                  userExp={userExp}
+                  levelInfo={levelInfo}
+                  addExp={addExp} 
+                  gachaTickets={gachaTickets}
+                  addTickets={addTickets}
+                  equipment={equipment}
+                  setEquipment={setEquipment}
+                  inventory={inventory}
+                  setInventory={setInventory}
+                  globalOnlineCount={globalOnlineCount}
+                  encounteredEnemies={encounteredEnemies}
+                  setEncounteredEnemies={setEncounteredEnemies}
+                  user={user}
+                />
+              </div>
+
+              <div style={{ display: miniqueTab === 'dungeon' ? 'block' : 'none' }}>
+                <DungeonMiniGame 
+                  userLevel={levelInfo?.level || 1} 
+                  userExp={userExp}
+                  levelInfo={levelInfo}
+                  addExp={addExp} 
+                  gachaTickets={gachaTickets}
+                  addTickets={addTickets}
+                  equipment={equipment}
+                  setEquipment={setEquipment}
+                  inventory={inventory}
+                  setInventory={setInventory}
+                  encounteredEnemies={encounteredEnemies}
+                  setEncounteredEnemies={setEncounteredEnemies}
+                  user={user}
+                  hn={hn}
+                />
+              </div>
+
+              {miniqueTab === 'raid' && (
+                <div>
+                  <RaidBossMiniGame 
+                    userLevel={levelInfo?.level || 1}
+                    userExp={userExp}
+                    addExp={addExp}
+                    gachaTickets={gachaTickets}
+                    addTickets={addTickets}
+                    equipment={equipment}
+                    user={user}
+                    hn={hn}
+                    globalOnlineCount={globalOnlineCount}
+                  />
+                </div>
+              )}
+
+              <div style={{ display: miniqueTab === 'gacha' ? 'block' : 'none' }}>
+                <GachaMiniGame 
+                  userLevel={levelInfo?.level || 1}
+                  gachaTickets={gachaTickets} 
+                  addTickets={addTickets} 
+                  equipment={equipment} 
+                  setEquipment={setEquipment} 
+                  addExp={addExp}
+                  inventory={inventory}
+                  setInventory={setInventory}
+                  acquiredItems={acquiredItems}
+                  setAcquiredItems={setAcquiredItems}
+                  hn={hn}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* タブ3: 💬 広場のタイムライン */}
+        <div id="sidebar-timeline-card" style={{ display: sidebarMainTab === 'timeline' ? 'block' : 'none' }}>
+          <SquareTimeline />
+        </div>
       </div>
 
       <DictionaryModal 
