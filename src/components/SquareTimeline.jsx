@@ -879,33 +879,36 @@ const SquareTimeline = () => {
                   position: 'relative',
                   boxShadow: '0 2px 8px rgba(236, 72, 153, 0.08)'
                 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '6px', marginBottom: '4px', flexWrap: 'wrap' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <span style={{ color: '#ec4899', fontWeight: '900', fontSize: '0.85rem' }}>↳</span>
-                      <img
-                        src="/favicon-144x144.png"
-                        alt="らびたん"
-                        style={{
-                          width: '24px',
-                          height: '24px',
-                          borderRadius: '50%',
-                          border: '1.5px solid #f472b6',
-                          objectFit: 'cover',
-                          background: '#fff',
-                          flexShrink: 0
-                        }}
-                      />
-                      <span style={{ ...officialNameStyle, fontSize: '0.8rem' }}>らびたん🐰</span>
-                      <span style={{
-                        fontSize: '0.62rem',
-                        background: 'linear-gradient(90deg, #ec4899, #8b5cf6)',
-                        color: '#fff',
-                        padding: '1px 6px',
-                        borderRadius: '8px',
-                        fontWeight: 'bold'
-                      }}>✦ お返事</span>
-                      <span style={{ fontSize: '0.68rem', color: '#94a3b8' }}>・{timeAgo(rep.created_at)}</span>
-                    </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginBottom: '4px', flexWrap: 'nowrap', whiteSpace: 'nowrap', overflow: 'hidden' }}>
+                    <span style={{ color: '#ec4899', fontWeight: '900', fontSize: '0.82rem', flexShrink: 0 }}>↳</span>
+                    <img
+                      src="/favicon-144x144.png"
+                      alt="らびたん"
+                      style={{
+                        width: '22px',
+                        height: '22px',
+                        borderRadius: '50%',
+                        border: '1.5px solid #f472b6',
+                        objectFit: 'cover',
+                        background: '#fff',
+                        flexShrink: 0
+                      }}
+                    />
+                    <span style={{ ...officialNameStyle, fontSize: '0.78rem', whiteSpace: 'nowrap', flexShrink: 0 }}>らびたん🐰</span>
+                    <span style={{
+                      fontSize: '0.6rem',
+                      background: 'linear-gradient(90deg, #ec4899, #8b5cf6)',
+                      color: '#fff',
+                      padding: '1px 6px',
+                      borderRadius: '8px',
+                      fontWeight: 'bold',
+                      whiteSpace: 'nowrap',
+                      flexShrink: 0
+                    }}>✦ お返事</span>
+                    <span style={{ fontSize: '0.66rem', color: '#94a3b8', whiteSpace: 'nowrap', flexShrink: 0 }}>・{timeAgo(rep.created_at)}</span>
+                  </div>
+                  <div style={{ paddingLeft: '4px' }}>
+                    {renderTimelineContent(rep.content)}
                     <button
                       type="button"
                       onClick={() => handleLike(rep)}
@@ -925,9 +928,6 @@ const SquareTimeline = () => {
                       <span>{likedIds.has(rep.id) ? '❤️' : '🤍'}</span>
                       <span>{rep.likes || 0}</span>
                     </button>
-                  </div>
-                  <div style={{ paddingLeft: '4px' }}>
-                    {renderTimelineContent(rep.content)}
                   </div>
                 </div>
               ))}
