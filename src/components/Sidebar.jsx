@@ -18,6 +18,29 @@ const getCatColor = (cat) => {
   return style?.color || '#cbd5e1';
 };
 
+const getCatIcon = (cat) => {
+  if (!cat) return '✨';
+  const style = CATEGORY_ICON_STYLE[cat] || CATEGORY_ICON_STYLE[cat.trim()] || CATEGORY_ICON_STYLE['その他'];
+  return style?.icon || '✨';
+};
+
+const extractThumbUrl = (s) => {
+  if (!s?.image_url || s.image_url === 'null' || s.image_url === 'undefined') return null;
+  const entries = String(s.image_url).split(',').map(v => v.trim()).filter(Boolean);
+  const yt = entries.find(v => v.startsWith('yt:'));
+  const nico = entries.find(v => v.startsWith('nico:'));
+  if (yt) return `https://img.youtube.com/vi/${yt.substring(3)}/mqdefault.jpg`;
+  if (nico) {
+    const fullId = nico.substring(5);
+    const numericId = fullId.replace(/^[a-z]+/, '');
+    return `https://nicovideo.cdn.nimg.jp/thumbnails/${numericId}/${numericId}`;
+  }
+  if (entries[0] && entries[0] !== 'null' && entries[0] !== 'undefined') {
+    return entries[0].replace(/&amp;/g, '&');
+  }
+  return null;
+};
+
 const Sidebar = ({ 
   liveSurveys, 
   popularSurveys, 
@@ -50,6 +73,7 @@ const Sidebar = ({
   const [tempHn, setTempHn] = useState('');
   const [isDictionaryOpen, setIsDictionaryOpen] = useState(false);
   const [isStatusOpen, setIsStatusOpen] = useState(false);
+  const [brokenRankImages, setBrokenRankImages] = useState(() => new Set());
 
   useEffect(() => {
     // ☁️ 1. まずSupabaseに保存されたカスタムネームがあるか確認
@@ -135,34 +159,96 @@ const Sidebar = ({
       <div className="sidebar-section-card" style={{ marginBottom: '24px' }}>
         <h3 className="live-feed-title">🔥 人気ランキング</h3>
         <div className="live-feed-content">
-          {popularSurveys.slice(0, 5).map((s, idx) => (
-            <div 
-              key={s.id} 
-              className="live-item popular clickable" 
-              onClick={() => navigateTo('details', s)}
-              role="button"
-              tabIndex={0}
-              onKeyPress={(e) => e.key === 'Enter' && navigateTo('details', s)}
-              aria-label={`${idx + 1}位: ${s.title} の詳細を見る`}
-              style={{ borderLeft: `5px solid ${getCatColor(s.category)}` }}
-            >
-              <span className="rank-label" style={idx > 2 ? { fontSize: '0.85rem', fontWeight: 'bold', color: '#64748b', minWidth: '24px', textAlign: 'center' } : {}}>
-                {idx === 0 ? '👑' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `${idx + 1}位`}
-              </span>
-              <div className="popular-item-info">
-                <strong style={{ display: 'block', marginBottom: '4px' }}>{s.title}</strong>
-                <div style={{ display: 'flex', gap: '8px', fontSize: '0.75rem', color: '#64748b', flexWrap: 'wrap' }}>
-                  <span style={{ color: '#d97706', fontWeight: 'bold' }}>
-                    ⚡ {(Number(s.total_votes || 0) * 10) + (Number(s.likes_count || 0) * 5) + Number(s.view_count || 0)} pt
-                  </span>
-                  <span>🗳️ <AnimatedCounter value={s.total_votes || 0} /> 票</span>
-                  <span>👁️ {s.view_count || 0}</span>
-                  <span>👍 {s.likes_count || 0}</span>
-                  <span>💬 {s.comment_count || 0}</span>
+          {popularSurveys.slice(0, 5).map((s, idx) => {
+            const thumbSrc = extractThumbUrl(s);
+            const showFallback = !thumbSrc || brokenRankImages.has(s.id);
+            const catColor = getCatColor(s.category);
+            return (
+              <div 
+                key={s.id} 
+                className="live-item popular clickable" 
+                onClick={() => navigateTo('details', s)}
+                role="button"
+                tabIndex={0}
+                onKeyPress={(e) => e.key === 'Enter' && navigateTo('details', s)}
+                aria-label={`${idx + 1}位: ${s.title} の詳細を見る`}
+                style={{
+                  borderLeft: `5px solid ${catColor}`,
+                  padding: '12px 12px',
+                  gap: '10px',
+                  alignItems: 'center'
+                }}
+              >
+                <span className="rank-label" style={idx > 2 ? { fontSize: '0.82rem', fontWeight: 'bold', color: '#64748b', minWidth: '24px', textAlign: 'center', flexShrink: 0 } : { minWidth: '24px', textAlign: 'center', flexShrink: 0 }}>
+                  {idx === 0 ? '👑' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `${idx + 1}位`}
+                </span>
+                <div className="popular-item-info" style={{ flex: 1, minWidth: 0 }}>
+                  <strong style={{
+                    display: '-webkit-box',
+                    WebkitLineClamp: 3,
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden',
+                    marginBottom: '5px',
+                    fontSize: '0.84rem',
+                    lineHeight: '1.38',
+                    color: '#1e293b'
+                  }}>{s.title}</strong>
+                  <div style={{ display: 'flex', gap: '6px', fontSize: '0.72rem', color: '#64748b', flexWrap: 'wrap', alignItems: 'center' }}>
+                    <span style={{ color: '#d97706', fontWeight: 'bold' }}>
+                      ⚡ {(Number(s.total_votes || 0) * 10) + (Number(s.likes_count || 0) * 5) + Number(s.view_count || 0)} pt
+                    </span>
+                    <span>🗳️ <AnimatedCounter value={s.total_votes || 0} /> 票</span>
+                    <span>👁️ {s.view_count || 0}</span>
+                    <span>💬 {s.comment_count || 0}</span>
+                  </div>
+                </div>
+                <div style={{
+                  width: '74px',
+                  height: '52px',
+                  flexShrink: 0,
+                  borderRadius: '8px',
+                  overflow: 'hidden',
+                  position: 'relative',
+                  background: '#f1f5f9',
+                  border: '1px solid #e2e8f0',
+                  boxShadow: '0 2px 5px rgba(0, 0, 0, 0.05)'
+                }}>
+                  {showFallback ? (
+                    <div style={{
+                      width: '100%',
+                      height: '100%',
+                      background: `linear-gradient(135deg, ${catColor} 0%, #1e293b 160%)`,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '2px',
+                      fontSize: '1.05rem'
+                    }}>
+                      <span>🐰</span>
+                      <span>{getCatIcon(s.category)}</span>
+                    </div>
+                  ) : (
+                    <img
+                      src={thumbSrc}
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                      referrerPolicy="no-referrer"
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        display: 'block'
+                      }}
+                      onError={() => {
+                        setBrokenRankImages(prev => new Set([...prev, s.id]));
+                      }}
+                    />
+                  )}
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
