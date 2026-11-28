@@ -156,7 +156,7 @@ const Sidebar = ({
       </div>
 
       {/* 2. 🏆 ユーザー称号＆レベル (みんクエ) — トップ案内ボックスの横に配置 */}
-      <div className="sidebar-section-card" style={{ marginBottom: '24px', background: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)', border: '2px solid #fbbf24', textAlign: 'center' }}>
+      <div id="sidebar-minque-card" className="sidebar-section-card" style={{ marginBottom: '24px', background: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)', border: '2px solid #fbbf24', textAlign: 'center', scrollMarginTop: '16px' }}>
           
           <h3 className="live-feed-title" style={{ color: '#b45309', border: 'none', padding: 0, justifyContent: 'center', marginTop: '12px' }}>🐰 みんクエ 🥕</h3>
 
@@ -431,13 +431,67 @@ const Sidebar = ({
         </div>
 
       {/* 3. 💬 X風・広場のタイムライン（つぶやき＆みんクエ速報） */}
-      <SquareTimeline />
+      <div id="sidebar-timeline-card" style={{ scrollMarginTop: '16px' }}>
+        <SquareTimeline />
+      </div>
 
       {/* 📌 スクロール追従エリア：記事一覧を下まで読んでも右隣が空白にならないようピタッと追従 */}
       <div className="sidebar-sticky-group" style={{ position: 'sticky', top: '20px', zIndex: 5 }}>
       {/* 4. 🔥 人気ランキング — ちょうど左側の記事一覧（公式・ニュース）が始まる真横の高さに配置 */}
-      <div className="sidebar-section-card" style={{ marginBottom: '24px', padding: '20px 14px' }}>
-        <h3 className="live-feed-title" style={{ marginLeft: '4px' }}>🔥 人気ランキング</h3>
+      <div className="sidebar-section-card" style={{ marginBottom: '24px', padding: '18px 14px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '6px', marginBottom: '14px' }}>
+          <h3 className="live-feed-title" style={{ marginLeft: '4px', marginBottom: 0 }}>🔥 人気ランキング</h3>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <button
+              type="button"
+              onClick={() => {
+                const el = document.getElementById('sidebar-minque-card');
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+              title="みんクエへ移動"
+              style={{
+                background: '#fffbeb',
+                border: '1px solid #fcd34d',
+                color: '#b45309',
+                borderRadius: '999px',
+                padding: '3px 8px',
+                fontSize: '0.68rem',
+                fontWeight: '800',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '2px',
+                boxShadow: '0 1px 3px rgba(245, 158, 11, 0.12)'
+              }}
+            >
+              🐰みんクエ↑
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                const el = document.getElementById('sidebar-timeline-card');
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+              title="広場のタイムラインへ移動"
+              style={{
+                background: '#f5f3ff',
+                border: '1px solid #ddd6fe',
+                color: '#6d28d9',
+                borderRadius: '999px',
+                padding: '3px 8px',
+                fontSize: '0.68rem',
+                fontWeight: '800',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '2px',
+                boxShadow: '0 1px 3px rgba(124, 58, 237, 0.12)'
+              }}
+            >
+              💬広場↑
+            </button>
+          </div>
+        </div>
         <div className="live-feed-content">
           {popularSurveys.slice(0, 5).map((s, idx) => {
             const thumbSrc = extractThumbUrl(s);
