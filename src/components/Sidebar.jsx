@@ -433,6 +433,8 @@ const Sidebar = ({
       {/* 3. 💬 X風・広場のタイムライン（つぶやき＆みんクエ速報） */}
       <SquareTimeline />
 
+      {/* 📌 スクロール追従エリア：記事一覧を下まで読んでも右隣が空白にならないようピタッと追従 */}
+      <div className="sidebar-sticky-group" style={{ position: 'sticky', top: '20px', zIndex: 5 }}>
       {/* 4. 🔥 人気ランキング — ちょうど左側の記事一覧（公式・ニュース）が始まる真横の高さに配置 */}
       <div className="sidebar-section-card" style={{ marginBottom: '24px', padding: '20px 14px' }}>
         <h3 className="live-feed-title" style={{ marginLeft: '4px' }}>🔥 人気ランキング</h3>
@@ -588,6 +590,7 @@ const Sidebar = ({
       {/* 7. 広告 */}
       <AdSenseBox slot="sidebar_slot_placeholder" affiliateType="amazon" />
       <NinjaAdMaxBox />
+      </div>
 
       <DictionaryModal 
         isOpen={isDictionaryOpen} 
