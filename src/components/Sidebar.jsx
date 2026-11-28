@@ -192,31 +192,7 @@ const Sidebar = ({
         </div>
       )}
 
-      {/* 4. ✨ 広場の最新ニュース */}
-      <div className="sidebar-section-card" style={{ marginBottom: '24px' }}>
-        <h3 className="live-feed-title">✨ 広場の最新ニュース</h3>
-        <div className="live-feed-content">
-          {liveSurveys.slice(0, 5).map(s => (
-            <div 
-              key={s.id} 
-              className="live-item clickable" 
-              onClick={() => navigateTo('details', s)}
-              role="button"
-              tabIndex={0}
-              onKeyPress={(e) => e.key === 'Enter' && navigateTo('details', s)}
-              aria-label={`${s.title} の詳細を見る`}
-            >
-              <strong>{s.title}</strong> が公開されました！
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* 5. 広告 */}
-      <AdSenseBox slot="sidebar_slot_placeholder" affiliateType="amazon" />
-      <NinjaAdMaxBox />
-
-      {/* 📌 6. スクロール追従・3タブ切り替えエリア（記事一覧が始まる真横から一番下までピタッと追従！） */}
+      {/* 📌 4. スクロール追従・3タブ切り替えエリア（PRより上に配置＆一番下までピタッと追従！） */}
       <div className="sidebar-sticky-group" style={{ position: 'sticky', top: '16px', zIndex: 10 }}>
         {/* 🗂️ 3タブ切り替えバー（🔥ランキング / 🐰みんクエ / 💬タイムライン） */}
         <div style={{
@@ -667,6 +643,10 @@ const Sidebar = ({
         <div id="sidebar-timeline-card" style={{ display: sidebarMainTab === 'timeline' ? 'block' : 'none' }}>
           <SquareTimeline />
         </div>
+
+        {/* 5. 広告（3タブパネルのすぐ下に配置） */}
+        <AdSenseBox slot="sidebar_slot_placeholder" affiliateType="amazon" />
+        <NinjaAdMaxBox />
       </div>
 
       <DictionaryModal 
