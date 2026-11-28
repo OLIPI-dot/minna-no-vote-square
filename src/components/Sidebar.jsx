@@ -192,10 +192,24 @@ const Sidebar = ({
         </div>
       )}
 
-      {/* 📌 4. スクロール追従・3タブ切り替えエリア（PRより上に配置＆一番下までピタッと追従！） */}
-      <div className="sidebar-sticky-group" style={{ position: 'sticky', top: '16px', zIndex: 10 }}>
+      {/* 📌 4. スクロール追従・3タブ切り替えエリア（PRより上に配置＆パネル内スクロール対応でみんクエも下まで全部見える！） */}
+      <div
+        className="sidebar-sticky-group"
+        style={{
+          position: 'sticky',
+          top: '12px',
+          zIndex: 10,
+          maxHeight: 'calc(100vh - 24px)',
+          overflowY: 'auto',
+          overflowX: 'hidden',
+          scrollbarWidth: 'thin'
+        }}
+      >
         {/* 🗂️ 3タブ切り替えバー（🔥ランキング / 🐰みんクエ / 💬タイムライン） */}
         <div style={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 15,
           display: 'grid',
           gridTemplateColumns: 'repeat(3, 1fr)',
           gap: '5px',
@@ -203,8 +217,8 @@ const Sidebar = ({
           padding: '5px',
           borderRadius: '16px',
           border: '1px solid #e2e8f0',
-          marginBottom: '10px',
-          boxShadow: '0 4px 12px rgba(15, 23, 42, 0.05)'
+          marginBottom: '8px',
+          boxShadow: '0 4px 12px rgba(15, 23, 42, 0.06)'
         }}>
           <button
             type="button"
@@ -366,82 +380,85 @@ const Sidebar = ({
 
         {/* タブ2: 🐰 みんクエ */}
         <div style={{ display: sidebarMainTab === 'minque' ? 'block' : 'none' }}>
-          <div id="sidebar-minque-card" className="sidebar-section-card" style={{ marginBottom: '24px', background: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)', border: '2px solid #fbbf24', textAlign: 'center' }}>
-            <h3 className="live-feed-title" style={{ color: '#b45309', border: 'none', padding: 0, justifyContent: 'center', marginTop: '4px' }}>🐰 みんクエ 🥕</h3>
-
-            {/* ☁️ ログイン・同期状態の明示バッジ */}
-            {user ? (
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#dcfce7', border: '1px solid #86efac', color: '#166534', fontSize: '0.72rem', fontWeight: 'bold', padding: '3px 10px', borderRadius: '12px', margin: '4px 0 8px 0' }}>
-                <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#22c55e', display: 'inline-block' }}></span>
-                ☁️ クラウド同期中（全端末で共有）
-              </div>
-            ) : (
-              <div style={{ margin: '4px 0 10px 0' }}>
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#fee2e2', border: '1px solid #fca5a5', color: '#991b1b', fontSize: '0.72rem', fontWeight: 'bold', padding: '3px 10px', borderRadius: '12px' }}>
-                  <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#ef4444', display: 'inline-block' }}></span>
-                  📱 ゲスト保存中（この端末のみ）
+          <div id="sidebar-minque-card" className="sidebar-section-card" style={{ marginBottom: '20px', padding: '14px 12px', background: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)', border: '2px solid #fbbf24', textAlign: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '6px', marginBottom: '6px' }}>
+              <h3 className="live-feed-title" style={{ color: '#b45309', border: 'none', padding: 0, margin: 0, fontSize: '0.98rem' }}>🐰 みんクエ 🥕</h3>
+              {/* ☁️ ログイン・同期状態の明示バッジ */}
+              {user ? (
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', background: '#dcfce7', border: '1px solid #86efac', color: '#166534', fontSize: '0.66rem', fontWeight: 'bold', padding: '2px 8px', borderRadius: '10px' }}>
+                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#22c55e', display: 'inline-block' }}></span>
+                  ☁️ 同期中
                 </div>
-                <div style={{ marginTop: '6px' }}>
-                  <button 
-                    disabled={isSidebarLoggingIn}
-                    onClick={async () => {
-                      if (isSidebarLoggingIn) return;
-                      setIsSidebarLoggingIn(true);
-                      try {
-                        const redirectUrl = window.location.origin;
-                        const { error } = await supabase.auth.signInWithOAuth({
-                          provider: 'google',
-                          options: { redirectTo: redirectUrl }
-                        });
-                        if (error) {
-                          console.error('Sidebar login error:', error);
-                          setIsSidebarLoggingIn(false);
-                        }
-                      } catch (e) {
-                        console.error('Sidebar login exception:', e);
+              ) : (
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', background: '#fee2e2', border: '1px solid #fca5a5', color: '#991b1b', fontSize: '0.66rem', fontWeight: 'bold', padding: '2px 8px', borderRadius: '10px' }}>
+                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#ef4444', display: 'inline-block' }}></span>
+                  📱 ゲスト保存
+                </div>
+              )}
+            </div>
+
+            {!user && (
+              <div style={{ marginBottom: '6px' }}>
+                <button 
+                  disabled={isSidebarLoggingIn}
+                  onClick={async () => {
+                    if (isSidebarLoggingIn) return;
+                    setIsSidebarLoggingIn(true);
+                    try {
+                      const redirectUrl = window.location.origin;
+                      const { error } = await supabase.auth.signInWithOAuth({
+                        provider: 'google',
+                        options: { redirectTo: redirectUrl }
+                      });
+                      if (error) {
+                        console.error('Sidebar login error:', error);
                         setIsSidebarLoggingIn(false);
                       }
-                    }}
-                    style={{ 
-                      background: isSidebarLoggingIn ? '#9ca3af' : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)', 
-                      color: 'white', border: 'none', borderRadius: '6px', 
-                      padding: '6px 14px', fontSize: '0.75rem', fontWeight: 'bold', 
-                      cursor: isSidebarLoggingIn ? 'not-allowed' : 'pointer', 
-                      boxShadow: '0 2px 6px rgba(239, 68, 68, 0.3)',
-                      display: 'inline-flex', alignItems: 'center', gap: '6px',
-                      opacity: isSidebarLoggingIn ? 0.7 : 1
-                    }}
-                  >
-                    <span>{isSidebarLoggingIn ? '🔄' : '☁️'}</span> {isSidebarLoggingIn ? 'Googleへ接続中...' : 'Googleログインして同期する'}
-                  </button>
-                </div>
+                    } catch (e) {
+                      console.error('Sidebar login exception:', e);
+                      setIsSidebarLoggingIn(false);
+                    }
+                  }}
+                  style={{ 
+                    background: isSidebarLoggingIn ? '#9ca3af' : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)', 
+                    color: 'white', border: 'none', borderRadius: '6px', 
+                    padding: '4px 12px', fontSize: '0.72rem', fontWeight: 'bold', 
+                    cursor: isSidebarLoggingIn ? 'not-allowed' : 'pointer', 
+                    boxShadow: '0 2px 6px rgba(239, 68, 68, 0.25)',
+                    display: 'inline-flex', alignItems: 'center', gap: '4px',
+                    opacity: isSidebarLoggingIn ? 0.7 : 1
+                  }}
+                >
+                  <span>{isSidebarLoggingIn ? '🔄' : '☁️'}</span> {isSidebarLoggingIn ? 'Googleへ接続中...' : 'Googleログインして同期'}
+                </button>
               </div>
             )}
             
-            <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#d97706', margin: '4px 0 12px 0' }}>
-              {levelInfo?.title || 'ひよっこ広場民 🥚'}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '8px', margin: '2px 0 4px 0' }}>
+              <span style={{ fontSize: '0.95rem', fontWeight: 'bold', color: '#d97706' }}>
+                {levelInfo?.title || 'ひよっこ広場民 🥚'}
+              </span>
+              {isEditingHn ? (
+                <div style={{ display: 'inline-flex', gap: '4px', alignItems: 'center' }}>
+                  <input 
+                    type="text" 
+                    value={tempHn} 
+                    onChange={(e) => setTempHn(e.target.value)} 
+                    placeholder="ハンドルネーム" 
+                    maxLength={40}
+                    style={{ padding: '3px 6px', borderRadius: '4px', border: '1px solid #fbbf24', textAlign: 'center', width: '110px', fontSize: '0.8rem' }}
+                  />
+                  <button onClick={saveHn} style={{ padding: '3px 10px', background: '#f59e0b', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.75rem' }}>決定</button>
+                </div>
+              ) : (
+                <span style={{ fontSize: '0.9rem', fontWeight: 'bold', color: hn.includes('◆OLiPi') ? '#ef4444' : (levelInfo?.color || '#78350f'), textShadow: hn.includes('◆OLiPi') ? '0 0 8px rgba(239, 68, 68, 0.4)' : (levelInfo?.textShadow || 'none'), display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                  {hn.includes('◆OLiPi') ? `👑 ${hn}` : hn} 
+                  <button onClick={() => setIsEditingHn(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.75rem', color: '#d97706', padding: '0 2px', borderRadius: '4px' }}>✏️</button>
+                </span>
+              )}
             </div>
 
-            {isEditingHn ? (
-              <div style={{ margin: '8px 0', display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center' }}>
-                <input 
-                  type="text" 
-                  value={tempHn} 
-                  onChange={(e) => setTempHn(e.target.value)} 
-                  placeholder="ハンドルネーム" 
-                  maxLength={40}
-                  style={{ padding: '6px', borderRadius: '4px', border: '1px solid #fbbf24', textAlign: 'center', width: '80%' }}
-                />
-                <button onClick={saveHn} style={{ padding: '4px 16px', background: '#f59e0b', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>決定</button>
-              </div>
-            ) : (
-              <div style={{ fontSize: '1rem', fontWeight: 'bold', color: hn.includes('◆OLiPi') ? '#ef4444' : (levelInfo?.color || '#78350f'), textShadow: hn.includes('◆OLiPi') ? '0 0 8px rgba(239, 68, 68, 0.4)' : (levelInfo?.textShadow || 'none'), display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', margin: '8px 0' }}>
-                {hn.includes('◆OLiPi') ? `👑 ${hn}` : hn} 
-                <button onClick={() => setIsEditingHn(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.8rem', color: '#d97706', padding: '2px 4px', borderRadius: '4px' }}>✏️</button>
-              </div>
-            )}
-
-            <div style={{ fontSize: '0.85rem', color: '#92400e', marginBottom: '8px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+            <div style={{ fontSize: '0.8rem', color: '#92400e', marginBottom: '5px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
               <span>Lv.{levelInfo?.level || 1} (EXP: {userExp || 0})</span>
               <span style={{ fontWeight: 'bold' }}>🎫 {gachaTickets || 0} 枚</span>
               <button 
@@ -454,14 +471,14 @@ const Sidebar = ({
               </button>
             </div>
             {levelInfo?.next && (
-              <div style={{ width: '100%', background: '#fde68a', borderRadius: '10px', height: '12px', overflow: 'hidden', position: 'relative', marginBottom: '4px' }}>
+              <div style={{ width: '100%', background: '#fde68a', borderRadius: '10px', height: '8px', overflow: 'hidden', position: 'relative', marginBottom: '3px' }}>
                 <div style={{ height: '100%', background: 'linear-gradient(90deg, #f59e0b, #d97706)', width: `${Math.min(100, Math.max(0, ((userExp || 0) / levelInfo.next) * 100))}%` }}></div>
               </div>
             )}
             {levelInfo?.next ? (
-              <div style={{ fontSize: '0.75rem', color: '#b45309' }}>次のレベルまであと {levelInfo.next - (userExp || 0)} EXP！</div>
+              <div style={{ fontSize: '0.7rem', color: '#b45309', marginBottom: '4px' }}>次のレベルまであと {levelInfo.next - (userExp || 0)} EXP！</div>
             ) : (
-              <div style={{ fontSize: '0.75rem', color: '#b45309' }}>最大レベル到達！あなたは伝説です✨</div>
+              <div style={{ fontSize: '0.7rem', color: '#b45309', marginBottom: '4px' }}>最大レベル到達！あなたは伝説です✨</div>
             )}
 
             {/* ⚔️ みんクエ 操作パネル */}
