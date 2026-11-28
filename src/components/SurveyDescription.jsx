@@ -505,7 +505,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
             padding: '2px 10px',
             borderRadius: '999px'
           }}>
-            💬 らびのひとこと
+            💬 らびたんのひとこと
           </span>
         </div>
         <div className="summary-rabi-text" style={{ color: '#1e293b', fontSize: '0.95rem', fontWeight: '400', lineHeight: '1.7', whiteSpace: 'normal' }}>
@@ -875,7 +875,7 @@ const SurveyDescription = ({ description, renderCommentContent, isTimeUp, childr
           }}>
             <div style={{ fontWeight: 'bold', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span style={{ fontSize: '1.4rem' }}>🐰</span>
-              <span>らびのコメント</span>
+              <span>らびたんのコメント</span>
             </div>
             {labiComment}
             <div style={{

@@ -153,7 +153,7 @@ const SquareTimeline = () => {
         (payload) => {
           // 🛡️ ゲーム実況・ボスのログはチャットタイムラインに混ぜない
           if (payload.new?.name && payload.new.name.includes('実況')) return;
-          setPosts(prev => [payload.new, ...prev.slice(0, 29)]);
+          setPosts(prev => prev.some(p => p.id === payload.new?.id) ? prev : [payload.new, ...prev.slice(0, 29)]);
         }
       )
       .on(
@@ -204,8 +204,10 @@ const SquareTimeline = () => {
       return;
     }
 
+    let createdUserPostId = null;
     if (Array.isArray(insertedRows) && insertedRows[0]) {
       const newPost = insertedRows[0];
+      createdUserPostId = newPost.id;
       setPosts(prev => prev.some(p => p.id === newPost.id) ? prev : [newPost, ...prev.slice(0, 29)]);
     }
     setInputText('');
@@ -218,14 +220,15 @@ const SquareTimeline = () => {
 
     // 🐰 らびたん自動お返事（ONのとき、2.2秒後に優しく返信！）
     if (rabiReplyEnabled) {
-      setIsRabiTyping(true);
-      const replyContent = buildRabiChatReply(trimmedText, posterName);
+      setIsRabiTyping(createdUserPostId || true);
+      const rawReply = buildRabiChatReply(trimmedText, posterName);
+      const replyContent = createdUserPostId ? `[[REPLY_TO:${createdUserPostId}]]${rawReply}` : rawReply;
       setTimeout(async () => {
         try {
           let { data: rabiRows, error: rabiErr } = await supabase
             .from('timeline_posts')
             .insert([{
-              name: 'らび🐰',
+              name: 'らびたん🐰',
               avatar: '🐰',
               content: replyContent,
               is_official: true
@@ -235,7 +238,7 @@ const SquareTimeline = () => {
             const fb = await supabase
               .from('timeline_posts')
               .insert([{
-                name: 'らび🐰',
+                name: 'らびたん🐰',
                 avatar: '🐰',
                 content: replyContent
               }])
@@ -250,9 +253,6 @@ const SquareTimeline = () => {
           console.warn('Rabi auto reply error:', err);
         } finally {
           setIsRabiTyping(false);
-          if (scrollRef.current) {
-            scrollRef.current.scrollTop = 0;
-          }
         }
       }, 2200);
     }
@@ -447,7 +447,10 @@ const SquareTimeline = () => {
       );
     }
 
-    // 通常の投稿
+    // 通常の投稿（内部タグや先頭の「＞〇〇さん」宛名をきれいに整形）
+    const cleanText = content
+      .replace(/^\[\[REPLY_TO:\d+\]\]/, '')
+      .replace(/^＞[^\n]+?さん\n/, '');
     return (
       <div style={{
         whiteSpace: 'pre-wrap',
@@ -457,7 +460,7 @@ const SquareTimeline = () => {
         lineHeight: '1.45',
         margin: '3px 0 6px 0'
       }}>
-        {content}
+        {cleanText}
       </div>
     );
   };
@@ -488,8 +491,10 @@ const SquareTimeline = () => {
       .eq('id', post.id);
   };
 
-  // タブに応じた投稿フィルタ
-  const displayedPosts = posts.filter(p => {
+  // タブに応じた投稿フィルタ ＆ らびたん返信の親カードへの紐付け
+  const isOfficialRabiPost = (p) => Boolean(p && (p.is_official || p.name === 'らび🐰' || p.name === 'らびたん🐰' || p.name === 'らびたん' || p.name === '守護霊らび'));
+
+  const rawFilteredPosts = posts.filter(p => {
     if (p.name && p.name.includes('実況')) return false;
     const isNews = typeof p.content === 'string' && (p.content.startsWith('【ガチャ速報】') || p.content.startsWith('【ドロップ速報】'));
     if (timelineTab === 'chat') return !isNews;
@@ -497,8 +502,48 @@ const SquareTimeline = () => {
     return true;
   });
 
+  // 🐰 らびたんの返信投稿（「[[REPLY_TO:ID]]」または「＞〇〇さん\n」で始まる公式投稿）を親投稿のカード内に紐付ける
+  const repliesByParentId = new Map();
+  const attachedReplyIds = new Set();
+
+  rawFilteredPosts.forEach(p => {
+    if (!isOfficialRabiPost(p) || typeof p.content !== 'string') return;
+    const tagMatch = p.content.match(/^\[\[REPLY_TO:(\d+)\]\]/);
+    if (tagMatch) {
+      const targetId = Number(tagMatch[1]);
+      if (rawFilteredPosts.some(candidate => Number(candidate.id) === targetId)) {
+        const list = repliesByParentId.get(targetId) || [];
+        list.push(p);
+        repliesByParentId.set(targetId, list);
+        attachedReplyIds.add(p.id);
+        return;
+      }
+    }
+    const nameMatch = p.content.replace(/^\[\[REPLY_TO:\d+\]\]/, '').match(/^＞([^\n]+?)さん\n/);
+    if (nameMatch) {
+      const targetName = nameMatch[1].trim();
+      const rabiTime = new Date(p.created_at).getTime();
+      const parent = rawFilteredPosts.find(candidate => {
+        if (isOfficialRabiPost(candidate) || candidate.id === p.id) return false;
+        const cName = (candidate.name || '').replace(/\s*◆.*$/, '').trim();
+        if (cName !== targetName) return false;
+        const cTime = new Date(candidate.created_at).getTime();
+        return Math.abs(rabiTime - cTime) < 10 * 60 * 1000 && !repliesByParentId.has(Number(candidate.id));
+      });
+      if (parent) {
+        const targetId = Number(parent.id);
+        const list = repliesByParentId.get(targetId) || [];
+        list.push(p);
+        repliesByParentId.set(targetId, list);
+        attachedReplyIds.add(p.id);
+      }
+    }
+  });
+
+  const displayedPosts = rawFilteredPosts.filter(p => !attachedReplyIds.has(p.id));
+
   const newsCount = posts.filter(p => !p.name?.includes('実況') && typeof p.content === 'string' && (p.content.startsWith('【ガチャ速報】') || p.content.startsWith('【ドロップ速報】'))).length;
-  const chatCount = posts.filter(p => !p.name?.includes('実況') && typeof p.content === 'string' && !(p.content.startsWith('【ガチャ速報】') || p.content.startsWith('【ドロップ速報】'))).length;
+  const chatCount = posts.filter(p => !p.name?.includes('実況') && !attachedReplyIds.has(p.id) && typeof p.content === 'string' && !(p.content.startsWith('【ガチャ速報】') || p.content.startsWith('【ドロップ速報】'))).length;
 
   return (
     <div className="sidebar-section-card" style={{
@@ -659,28 +704,6 @@ const SquareTimeline = () => {
         gap: '12px',
         scrollbarWidth: 'thin'
       }}>
-        {isRabiTyping && (
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            padding: '8px 12px',
-            borderRadius: '12px',
-            background: 'linear-gradient(135deg, #fdf4ff 0%, #fff1f2 100%)',
-            border: '1px dashed #f472b6',
-            fontSize: '0.76rem',
-            color: '#be185d',
-            fontWeight: 'bold',
-            animation: 'fadeInUp 0.2s ease-out'
-          }}>
-            <img
-              src="/favicon-144x144.png"
-              alt="らびたん"
-              style={{ width: '24px', height: '24px', borderRadius: '50%', border: '1.5px solid #f472b6', background: '#fff' }}
-            />
-            <span>らびたんがお返事を書いています…✏️🐰</span>
-          </div>
-        )}
         {isLoading ? (
           <div style={{ textAlign: 'center', padding: '20px', color: '#94a3b8', fontSize: '0.85rem' }}>
             読み込み中…🐰
@@ -693,12 +716,16 @@ const SquareTimeline = () => {
           </div>
         ) : displayedPosts.map(p => {
           const isNews = typeof p.content === 'string' && (p.content.startsWith('【ガチャ速報】') || p.content.startsWith('【ドロップ速報】'));
-          const isOfficialPost = Boolean(p.is_official || p.name === 'らび🐰' || p.name === '守護霊らび');
+          const isOfficialPost = isOfficialRabiPost(p);
+          const displayName = isOfficialPost ? 'らびたん🐰' : p.name;
+          const attachedReplies = repliesByParentId.get(Number(p.id)) || [];
+          const showTypingForThisPost = isRabiTyping && (isRabiTyping === p.id || (isRabiTyping === true && displayedPosts[0]?.id === p.id));
           return (
             <div key={p.id} style={{
               display: 'flex',
-              gap: '10px',
-              padding: '12px 16px',
+              flexDirection: 'column',
+              gap: '8px',
+              padding: '12px 14px',
               boxSizing: 'border-box',
               width: '100%',
               borderRadius: '14px',
@@ -717,101 +744,193 @@ const SquareTimeline = () => {
                   }
               )
             }}>
-              {/* アバター */}
-              {isOfficialPost ? (
-                <img
-                  src="/favicon-144x144.png"
-                  alt="らびたん"
-                  style={{
+              <div style={{ display: 'flex', gap: '10px', width: '100%' }}>
+                {/* アバター */}
+                {isOfficialPost ? (
+                  <img
+                    src="/favicon-144x144.png"
+                    alt="らびたん"
+                    style={{
+                      width: '36px',
+                      height: '36px',
+                      borderRadius: '50%',
+                      border: '2px solid #f472b6',
+                      objectFit: 'cover',
+                      background: '#fff',
+                      boxShadow: '0 2px 6px rgba(236, 72, 153, 0.22)',
+                      flexShrink: 0
+                    }}
+                  />
+                ) : (
+                  <div style={{
                     width: '36px',
                     height: '36px',
                     borderRadius: '50%',
-                    border: '2px solid #f472b6',
-                    objectFit: 'cover',
-                    background: '#fff',
-                    boxShadow: '0 2px 6px rgba(236, 72, 153, 0.22)',
-                    flexShrink: 0
-                  }}
-                />
-              ) : (
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '1.2rem',
+                    flexShrink: 0,
+                    ...(isNews
+                      ? newsAvatarStyle
+                      : { background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)' }
+                    )
+                  }}>
+                    {p.avatar}
+                  </div>
+                )}
+
+                {/* 本文エリア */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap', marginBottom: '3px' }}>
+                    {isOfficialPost ? (
+                      <span style={officialNameStyle}>{displayName}</span>
+                    ) : isNews ? (
+                      <span style={newsNameStyle}>{displayName}</span>
+                    ) : (
+                      <span style={{ fontWeight: '800', fontSize: '0.85rem', color: '#1e293b' }}>{displayName}</span>
+                    )}
+                    {isOfficialPost && (
+                      <span style={{
+                        fontSize: '0.65rem',
+                        background: 'linear-gradient(90deg, #7c3aed, #2563eb)',
+                        color: '#fff',
+                        padding: '1px 6px',
+                        borderRadius: '10px',
+                        fontWeight: 'bold',
+                        letterSpacing: '0.02em',
+                        flexShrink: 0
+                      }}>✦ 公式</span>
+                    )}
+                    {isNews && (
+                      <span style={{
+                        fontSize: '0.65rem',
+                        background: 'linear-gradient(90deg, #f59e0b, #d97706)',
+                        color: '#fff',
+                        padding: '1px 6px',
+                        borderRadius: '10px',
+                        fontWeight: 'bold',
+                        letterSpacing: '0.02em',
+                        flexShrink: 0,
+                        boxShadow: '0 1px 4px rgba(217, 119, 6, 0.3)'
+                      }}>✦ 速報</span>
+                    )}
+                    <span style={{ fontSize: '0.72rem', color: '#94a3b8' }}>・{timeAgo(p.created_at)}</span>
+                  </div>
+                  {renderTimelineContent(p.content)}
+                  {/* いいねボタン */}
+                  <button
+                    type="button"
+                    onClick={() => handleLike(p)}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      cursor: likedIds.has(p.id) ? 'default' : 'pointer',
+                      padding: '2px 6px',
+                      borderRadius: '8px',
+                      fontSize: '0.75rem',
+                      color: likedIds.has(p.id) ? '#e11d48' : '#94a3b8',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      transition: 'all 0.15s ease'
+                    }}
+                  >
+                    <span>{likedIds.has(p.id) ? '❤️' : '🤍'}</span>
+                    <span>{p.likes || 0}</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* ↳ 🐰 同じカード内にインデント表示する「らびたんからのお返事」吹き出し */}
+              {showTypingForThisPost && (
                 <div style={{
-                  width: '36px',
-                  height: '36px',
-                  borderRadius: '50%',
+                  marginLeft: '18px',
+                  padding: '8px 12px',
+                  borderRadius: '12px',
+                  background: 'linear-gradient(135deg, #fdf4ff 0%, #fff1f2 100%)',
+                  border: '1px dashed #f472b6',
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '1.2rem',
-                  flexShrink: 0,
-                  ...(isNews
-                    ? newsAvatarStyle
-                    : { background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)' }
-                  )
+                  gap: '8px',
+                  fontSize: '0.75rem',
+                  color: '#be185d',
+                  fontWeight: 'bold'
                 }}>
-                  {p.avatar}
+                  <span style={{ color: '#f472b6', fontWeight: '900' }}>↳</span>
+                  <img
+                    src="/favicon-144x144.png"
+                    alt="らびたん"
+                    style={{ width: '22px', height: '22px', borderRadius: '50%', border: '1.5px solid #f472b6', background: '#fff' }}
+                  />
+                  <span>らびたんがお返事を書いています…✏️🐰</span>
                 </div>
               )}
 
-              {/* 本文エリア */}
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap', marginBottom: '3px' }}>
-                  {isOfficialPost ? (
-                    <span style={officialNameStyle}>{p.name}</span>
-                  ) : isNews ? (
-                    <span style={newsNameStyle}>{p.name}</span>
-                  ) : (
-                    <span style={{ fontWeight: '800', fontSize: '0.85rem', color: '#1e293b' }}>{p.name}</span>
-                  )}
-                  {isOfficialPost && (
-                    <span style={{
-                      fontSize: '0.65rem',
-                      background: 'linear-gradient(90deg, #7c3aed, #2563eb)',
-                      color: '#fff',
-                      padding: '1px 6px',
-                      borderRadius: '10px',
-                      fontWeight: 'bold',
-                      letterSpacing: '0.02em',
-                      flexShrink: 0
-                    }}>✦ 公式</span>
-                  )}
-                  {isNews && (
-                    <span style={{
-                      fontSize: '0.65rem',
-                      background: 'linear-gradient(90deg, #f59e0b, #d97706)',
-                      color: '#fff',
-                      padding: '1px 6px',
-                      borderRadius: '10px',
-                      fontWeight: 'bold',
-                      letterSpacing: '0.02em',
-                      flexShrink: 0,
-                      boxShadow: '0 1px 4px rgba(217, 119, 6, 0.3)'
-                    }}>✦ 速報</span>
-                  )}
-                  <span style={{ fontSize: '0.72rem', color: '#94a3b8' }}>・{timeAgo(p.created_at)}</span>
+              {attachedReplies.map(rep => (
+                <div key={rep.id} style={{
+                  marginLeft: '14px',
+                  marginTop: '2px',
+                  padding: '10px 12px',
+                  borderRadius: '12px',
+                  background: 'linear-gradient(135deg, #fdf4ff 0%, #f5f3ff 60%, #fff1f2 100%)',
+                  border: '1.5px solid #e9d5ff',
+                  borderLeft: '4px solid #ec4899',
+                  position: 'relative',
+                  boxShadow: '0 2px 8px rgba(236, 72, 153, 0.08)'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '6px', marginBottom: '4px', flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span style={{ color: '#ec4899', fontWeight: '900', fontSize: '0.85rem' }}>↳</span>
+                      <img
+                        src="/favicon-144x144.png"
+                        alt="らびたん"
+                        style={{
+                          width: '24px',
+                          height: '24px',
+                          borderRadius: '50%',
+                          border: '1.5px solid #f472b6',
+                          objectFit: 'cover',
+                          background: '#fff',
+                          flexShrink: 0
+                        }}
+                      />
+                      <span style={{ ...officialNameStyle, fontSize: '0.8rem' }}>らびたん🐰</span>
+                      <span style={{
+                        fontSize: '0.62rem',
+                        background: 'linear-gradient(90deg, #ec4899, #8b5cf6)',
+                        color: '#fff',
+                        padding: '1px 6px',
+                        borderRadius: '8px',
+                        fontWeight: 'bold'
+                      }}>✦ お返事</span>
+                      <span style={{ fontSize: '0.68rem', color: '#94a3b8' }}>・{timeAgo(rep.created_at)}</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleLike(rep)}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        cursor: likedIds.has(rep.id) ? 'default' : 'pointer',
+                        padding: '1px 5px',
+                        borderRadius: '8px',
+                        fontSize: '0.72rem',
+                        color: likedIds.has(rep.id) ? '#e11d48' : '#94a3b8',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '3px'
+                      }}
+                    >
+                      <span>{likedIds.has(rep.id) ? '❤️' : '🤍'}</span>
+                      <span>{rep.likes || 0}</span>
+                    </button>
+                  </div>
+                  <div style={{ paddingLeft: '4px' }}>
+                    {renderTimelineContent(rep.content)}
+                  </div>
                 </div>
-                {renderTimelineContent(p.content)}
-                {/* いいねボタン */}
-                <button
-                  type="button"
-                  onClick={() => handleLike(p)}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    cursor: likedIds.has(p.id) ? 'default' : 'pointer',
-                    padding: '2px 6px',
-                    borderRadius: '8px',
-                    fontSize: '0.75rem',
-                    color: likedIds.has(p.id) ? '#e11d48' : '#94a3b8',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px',
-                    transition: 'all 0.15s ease'
-                  }}
-                >
-                  <span>{likedIds.has(p.id) ? '❤️' : '🤍'}</span>
-                  <span>{p.likes || 0}</span>
-                </button>
-              </div>
+              ))}
             </div>
           );
         })}

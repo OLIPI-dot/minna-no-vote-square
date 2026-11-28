@@ -1562,7 +1562,7 @@ function App() {
 
         const { error } = await supabase.from('comments').insert([{
           survey_id: currentSurvey.id,
-          user_name: "守護霊らび",
+          user_name: "らびたん🐰",
           content: reply,
           user_id: null,
           edit_key: "labi_bot"
@@ -3810,7 +3810,7 @@ function App() {
                           style={{ minHeight: '80px', resize: 'vertical', fontFamily: 'inherit', border: '2px dashed #7c3aed66', background: '#f5f3ff' }}
                           value={surveyAnswer}
                           onChange={e => setSurveyAnswer(e.target.value)}
-                          placeholder="例：正解は「ニンジン」でした！🥕 理由は、らびの主食だからです！"
+                          placeholder="例：正解は「ニンジン」でした！🥕 理由は、らびたんの主食だからです！"
                         />
                         <small style={{ color: '#64748b', marginTop: '5px', display: 'block' }}>※ ここに書いた内容は、アンケート締切後に自動で公開されますらび！🐰✨</small>
                       </div>
@@ -4023,7 +4023,7 @@ function App() {
             </h4>
             <p style={{ color: '#475569', lineHeight: '1.8', fontSize: '0.95rem' }}>
               ここは、匿名で集まる本音が明日の世界を少しだけ面白くする場所です。<br />
-              最新ニュースから趣味の話題まで、AI守護霊「らび」と一緒に、安心して意見を共有できるコミュニティを目指しています。
+              最新ニュースから趣味の話題まで、AI守護霊「らびたん」と一緒に、安心して意見を共有できるコミュニティを目指しています。
             </p>
           </div>
 
@@ -4078,7 +4078,7 @@ function App() {
                 flexShrink: 0
               }}
             />
-            <span>うさぎのらび ＆ おりぴプロジェクトを応援！ 🥕</span>
+            <span>うさぎのらびたん ＆ おりぴプロジェクトを応援！ 🥕</span>
           </p>
           <p style={{
             margin: '0 auto 18px auto', maxWidth: '600px', fontSize: '0.88rem',

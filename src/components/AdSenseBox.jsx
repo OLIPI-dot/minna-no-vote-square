@@ -346,7 +346,7 @@ const AdSenseBox = ({ slot, format = 'auto', affiliateType = null, tags = [], ti
         {affiliateType === 'ofuse' ? (
           <div className="affiliate-content" style={{ position: 'relative', zIndex: 10 }}>
             <div style={{ fontSize: '1.5rem', marginBottom: '8px' }}>💖</div>
-            <div style={{ fontWeight: 'bold', color: '#db2777' }}>らび＆おりぴを応援！</div>
+            <div style={{ fontWeight: 'bold', color: '#db2777' }}>らびたん＆おりぴを応援！</div>
             <div style={{ fontSize: '0.8rem', opacity: 0.8, marginTop: '4px' }}>いつも広場を使ってくれてありがとう！<br />100円から応援できるらび🥕</div>
             <button 
               className="support-heart-btn" 

@@ -417,7 +417,7 @@ const SurveyListView = ({
       <button
         type="button"
         className="create-new-button"
-        onClick={() => user ? setView('create') : alert("🌟 広場をもっと楽しもう！\n\nアンケートを作るには、ログインが必要だよ。上の「Googleでログイン」から、らびと一緒に始めよう！🐰🥕")}
+        onClick={() => user ? setView('create') : alert("🌟 広場をもっと楽しもう！\n\nアンケートを作るには、ログインが必要だよ。上の「Googleでログイン」から、らびたんと一緒に始めよう！🐰🥕")}
       >
         <span>✏️</span>
         <span>新しいアンケートを作る</span>

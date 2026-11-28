@@ -1918,7 +1918,7 @@ const SurveyDetailView = ({
                 <div style={{ marginBottom: '8px' }}>
                   <span onClick={() => setCommentContent(prev => prev + `>>${stableResNum} `)} style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline', marginRight: '4px' }}>{stableResNum}</span>
                   名前：<span style={{ color: 'green', fontWeight: 'bold' }}>
-                    {isLabi ? '🐰 らび 🐰 (AI)' : cleanName}
+                    {isLabi ? '🐰 らびたん 🐰 (AI)' : cleanName}
                   </span>
                   ：{yyyy}/{mm}/{dd}({day}) {hh}:{min}:{ss}.{ms} {chId}
                   {isMyComment && <span style={{ marginLeft: '10px', fontSize: '0.8rem', color: '#888' }}>★あなたの書き込み</span>}

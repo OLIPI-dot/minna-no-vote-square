@@ -37,7 +37,7 @@ const RiddleSquareView = ({
           🧩 なぞなぞ ＆ クイズ広場 ❓
         </h2>
         <p style={{ color: '#6d28d9', fontSize: '1.1rem', fontWeight: 'bold' }}>
-          頭を柔らかくして挑戦！らびと一緒に謎解きを楽しもう！🐰🥕
+          頭を柔らかくして挑戦！らびたんと一緒に謎解きを楽しもう！🐰🥕
         </p>
       </div>
 
