@@ -192,19 +192,8 @@ const Sidebar = ({
         </div>
       )}
 
-      {/* 📌 4. スクロール追従・3タブ切り替えエリア（PRより上に配置＆パネル内スクロール対応でみんクエも下まで全部見える！） */}
-      <div
-        className="sidebar-sticky-group"
-        style={{
-          position: 'sticky',
-          top: '12px',
-          zIndex: 10,
-          maxHeight: 'calc(100vh - 24px)',
-          overflowY: 'auto',
-          overflowX: 'hidden',
-          scrollbarWidth: 'thin'
-        }}
-      >
+      {/* 📌 4. スクロール追従・3タブ切り替えエリア（PCではパネル内スクロール追従、スマホ縦1列では自然なページスクロール） */}
+      <div className="sidebar-sticky-group">
         {/* 🗂️ 3タブ切り替えバー（🔥ランキング / 🐰みんクエ / 💬タイムライン） */}
         <div style={{
           position: 'sticky',
