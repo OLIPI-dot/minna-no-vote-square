@@ -156,8 +156,8 @@ const Sidebar = ({
       </div>
 
       {/* 2. 🔥 人気ランキング */}
-      <div className="sidebar-section-card" style={{ marginBottom: '24px' }}>
-        <h3 className="live-feed-title">🔥 人気ランキング</h3>
+      <div className="sidebar-section-card" style={{ marginBottom: '24px', padding: '20px 14px' }}>
+        <h3 className="live-feed-title" style={{ marginLeft: '4px' }}>🔥 人気ランキング</h3>
         <div className="live-feed-content">
           {popularSurveys.slice(0, 5).map((s, idx) => {
             const thumbSrc = extractThumbUrl(s);
@@ -174,26 +174,26 @@ const Sidebar = ({
                 aria-label={`${idx + 1}位: ${s.title} の詳細を見る`}
                 style={{
                   borderLeft: `5px solid ${catColor}`,
-                  padding: '12px 12px',
-                  gap: '10px',
+                  padding: '10px 8px',
+                  gap: '7px',
                   alignItems: 'center'
                 }}
               >
-                <span className="rank-label" style={idx > 2 ? { fontSize: '0.82rem', fontWeight: 'bold', color: '#64748b', minWidth: '24px', textAlign: 'center', flexShrink: 0 } : { minWidth: '24px', textAlign: 'center', flexShrink: 0 }}>
+                <span className="rank-label" style={idx > 2 ? { fontSize: '0.76rem', fontWeight: '800', color: '#64748b', minWidth: '20px', textAlign: 'center', flexShrink: 0 } : { fontSize: '1.2rem', minWidth: '20px', textAlign: 'center', flexShrink: 0 }}>
                   {idx === 0 ? '👑' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `${idx + 1}位`}
                 </span>
                 <div className="popular-item-info" style={{ flex: 1, minWidth: 0 }}>
                   <strong style={{
                     display: '-webkit-box',
-                    WebkitLineClamp: 3,
+                    WebkitLineClamp: 4,
                     WebkitBoxOrient: 'vertical',
                     overflow: 'hidden',
-                    marginBottom: '5px',
-                    fontSize: '0.84rem',
-                    lineHeight: '1.38',
+                    marginBottom: '4px',
+                    fontSize: '0.81rem',
+                    lineHeight: '1.35',
                     color: '#1e293b'
                   }}>{s.title}</strong>
-                  <div style={{ display: 'flex', gap: '6px', fontSize: '0.72rem', color: '#64748b', flexWrap: 'wrap', alignItems: 'center' }}>
+                  <div style={{ display: 'flex', gap: '5px', fontSize: '0.7rem', color: '#64748b', flexWrap: 'wrap', alignItems: 'center' }}>
                     <span style={{ color: '#d97706', fontWeight: 'bold' }}>
                       ⚡ {(Number(s.total_votes || 0) * 10) + (Number(s.likes_count || 0) * 5) + Number(s.view_count || 0)} pt
                     </span>
