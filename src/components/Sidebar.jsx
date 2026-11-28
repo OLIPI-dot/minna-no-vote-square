@@ -155,140 +155,7 @@ const Sidebar = ({
         </div>
       </div>
 
-      {/* 2. 🔥 人気ランキング */}
-      <div className="sidebar-section-card" style={{ marginBottom: '24px', padding: '20px 14px' }}>
-        <h3 className="live-feed-title" style={{ marginLeft: '4px' }}>🔥 人気ランキング</h3>
-        <div className="live-feed-content">
-          {popularSurveys.slice(0, 5).map((s, idx) => {
-            const thumbSrc = extractThumbUrl(s);
-            const showFallback = !thumbSrc || brokenRankImages.has(s.id);
-            const catColor = getCatColor(s.category);
-            return (
-              <div 
-                key={s.id} 
-                className="live-item popular clickable" 
-                onClick={() => navigateTo('details', s)}
-                role="button"
-                tabIndex={0}
-                onKeyPress={(e) => e.key === 'Enter' && navigateTo('details', s)}
-                aria-label={`${idx + 1}位: ${s.title} の詳細を見る`}
-                style={{
-                  borderLeft: `5px solid ${catColor}`,
-                  padding: '10px 8px',
-                  gap: '7px',
-                  alignItems: 'center'
-                }}
-              >
-                <span className="rank-label" style={idx > 2 ? { fontSize: '0.76rem', fontWeight: '800', color: '#64748b', minWidth: '20px', textAlign: 'center', flexShrink: 0 } : { fontSize: '1.2rem', minWidth: '20px', textAlign: 'center', flexShrink: 0 }}>
-                  {idx === 0 ? '👑' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `${idx + 1}位`}
-                </span>
-                <div className="popular-item-info" style={{ flex: 1, minWidth: 0 }}>
-                  <strong style={{
-                    display: '-webkit-box',
-                    WebkitLineClamp: 4,
-                    WebkitBoxOrient: 'vertical',
-                    overflow: 'hidden',
-                    marginBottom: '4px',
-                    fontSize: '0.81rem',
-                    lineHeight: '1.35',
-                    color: '#1e293b'
-                  }}>{s.title}</strong>
-                  <div style={{ display: 'flex', gap: '5px', fontSize: '0.7rem', color: '#64748b', flexWrap: 'wrap', alignItems: 'center' }}>
-                    <span style={{ color: '#d97706', fontWeight: 'bold' }}>
-                      ⚡ {(Number(s.total_votes || 0) * 10) + (Number(s.likes_count || 0) * 5) + Number(s.view_count || 0)} pt
-                    </span>
-                    <span>🗳️ <AnimatedCounter value={s.total_votes || 0} /> 票</span>
-                    <span>👁️ {s.view_count || 0}</span>
-                    <span>💬 {s.comment_count || 0}</span>
-                  </div>
-                </div>
-                <div style={{
-                  width: '74px',
-                  height: '52px',
-                  flexShrink: 0,
-                  borderRadius: '8px',
-                  overflow: 'hidden',
-                  position: 'relative',
-                  background: '#f1f5f9',
-                  border: '1px solid #e2e8f0',
-                  boxShadow: '0 2px 5px rgba(0, 0, 0, 0.05)'
-                }}>
-                  {showFallback ? (
-                    <div style={{
-                      width: '100%',
-                      height: '100%',
-                      background: `linear-gradient(135deg, ${catColor} 0%, #1e293b 160%)`,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '2px',
-                      fontSize: '1.05rem'
-                    }}>
-                      <span>🐰</span>
-                      <span>{getCatIcon(s.category)}</span>
-                    </div>
-                  ) : (
-                    <img
-                      src={thumbSrc}
-                      alt=""
-                      loading="lazy"
-                      decoding="async"
-                      referrerPolicy="no-referrer"
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        display: 'block'
-                      }}
-                      onError={() => {
-                        setBrokenRankImages(prev => new Set([...prev, s.id]));
-                      }}
-                    />
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* 2.5 💬 新着コメント（どの記事にどんなコメントがついたか） */}
-      <RecentComments navigateTo={navigateTo} />
-
-      {/* 3. ⏳ もうすぐ終了！ (条件付きレンダリング) */}
-      {endingSoonSurveys.length > 0 && (
-        <div className="sidebar-section-card" style={{ marginBottom: '24px', border: '2px solid #fee2e2' }}>
-          <h3 className="live-feed-title" style={{ color: '#e11d48' }}>⏰ もうすぐ終了！</h3>
-          <div className="live-feed-content">
-            {(showAllEndingSoon ? endingSoonSurveys : endingSoonSurveys.slice(0, 4)).map(s => (
-              <div 
-                key={s.id} 
-                className="live-item clickable" 
-                onClick={() => navigateTo('details', s)}
-                role="button"
-                tabIndex={0}
-                onKeyPress={(e) => e.key === 'Enter' && navigateTo('details', s)}
-                aria-label={`${s.title} の詳細を見る`}
-              >
-                <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>{s.title}</div>
-                <div style={{ fontSize: '0.8rem', color: '#e11d48', background: '#fff1f2', display: 'inline-block', padding: '2px 8px', borderRadius: '12px' }}>
-                  〆: {formatWithDay(s.deadline)}
-                </div>
-              </div>
-            ))}
-            {endingSoonSurveys.length > 4 && (
-              <button onClick={() => setShowAllEndingSoon(v => !v)} style={{
-                marginTop: '8px', width: '100%', background: 'none', border: '1.5px solid #fca5a5',
-                borderRadius: '12px', color: '#e11d48', fontSize: '0.8rem', padding: '4px 0', cursor: 'pointer', fontWeight: 'bold'
-              }}>
-                {showAllEndingSoon ? '▲ 閉じる' : `▼ あと${endingSoonSurveys.length - 4}件 もっと見る`}
-              </button>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* 4. 🏆 ユーザー称号＆レベル (みんクエ) */}
+      {/* 2. 🏆 ユーザー称号＆レベル (みんクエ) — トップ案内ボックスの横に配置 */}
       <div className="sidebar-section-card" style={{ marginBottom: '24px', background: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)', border: '2px solid #fbbf24', textAlign: 'center' }}>
           
           <h3 className="live-feed-title" style={{ color: '#b45309', border: 'none', padding: 0, justifyContent: 'center', marginTop: '12px' }}>🐰 みんクエ 🥕</h3>
@@ -562,6 +429,139 @@ const Sidebar = ({
             </div>
           </div>
         </div>
+
+      {/* 3. 🔥 人気ランキング — ちょうど左側の記事一覧（公式・ニュース）が始まる真横の高さに配置 */}
+      <div className="sidebar-section-card" style={{ marginBottom: '24px', padding: '20px 14px' }}>
+        <h3 className="live-feed-title" style={{ marginLeft: '4px' }}>🔥 人気ランキング</h3>
+        <div className="live-feed-content">
+          {popularSurveys.slice(0, 5).map((s, idx) => {
+            const thumbSrc = extractThumbUrl(s);
+            const showFallback = !thumbSrc || brokenRankImages.has(s.id);
+            const catColor = getCatColor(s.category);
+            return (
+              <div 
+                key={s.id} 
+                className="live-item popular clickable" 
+                onClick={() => navigateTo('details', s)}
+                role="button"
+                tabIndex={0}
+                onKeyPress={(e) => e.key === 'Enter' && navigateTo('details', s)}
+                aria-label={`${idx + 1}位: ${s.title} の詳細を見る`}
+                style={{
+                  borderLeft: `5px solid ${catColor}`,
+                  padding: '10px 8px',
+                  gap: '7px',
+                  alignItems: 'center'
+                }}
+              >
+                <span className="rank-label" style={idx > 2 ? { fontSize: '0.76rem', fontWeight: '800', color: '#64748b', minWidth: '20px', textAlign: 'center', flexShrink: 0 } : { fontSize: '1.2rem', minWidth: '20px', textAlign: 'center', flexShrink: 0 }}>
+                  {idx === 0 ? '👑' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `${idx + 1}位`}
+                </span>
+                <div className="popular-item-info" style={{ flex: 1, minWidth: 0 }}>
+                  <strong style={{
+                    display: '-webkit-box',
+                    WebkitLineClamp: 4,
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden',
+                    marginBottom: '4px',
+                    fontSize: '0.81rem',
+                    lineHeight: '1.35',
+                    color: '#1e293b'
+                  }}>{s.title}</strong>
+                  <div style={{ display: 'flex', gap: '5px', fontSize: '0.7rem', color: '#64748b', flexWrap: 'wrap', alignItems: 'center' }}>
+                    <span style={{ color: '#d97706', fontWeight: 'bold' }}>
+                      ⚡ {(Number(s.total_votes || 0) * 10) + (Number(s.likes_count || 0) * 5) + Number(s.view_count || 0)} pt
+                    </span>
+                    <span>🗳️ <AnimatedCounter value={s.total_votes || 0} /> 票</span>
+                    <span>👁️ {s.view_count || 0}</span>
+                    <span>💬 {s.comment_count || 0}</span>
+                  </div>
+                </div>
+                <div style={{
+                  width: '74px',
+                  height: '52px',
+                  flexShrink: 0,
+                  borderRadius: '8px',
+                  overflow: 'hidden',
+                  position: 'relative',
+                  background: '#f1f5f9',
+                  border: '1px solid #e2e8f0',
+                  boxShadow: '0 2px 5px rgba(0, 0, 0, 0.05)'
+                }}>
+                  {showFallback ? (
+                    <div style={{
+                      width: '100%',
+                      height: '100%',
+                      background: `linear-gradient(135deg, ${catColor} 0%, #1e293b 160%)`,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '2px',
+                      fontSize: '1.05rem'
+                    }}>
+                      <span>🐰</span>
+                      <span>{getCatIcon(s.category)}</span>
+                    </div>
+                  ) : (
+                    <img
+                      src={thumbSrc}
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                      referrerPolicy="no-referrer"
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        display: 'block'
+                      }}
+                      onError={() => {
+                        setBrokenRankImages(prev => new Set([...prev, s.id]));
+                      }}
+                    />
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* 3.5 💬 新着コメント（どの記事にどんなコメントがついたか） */}
+      <RecentComments navigateTo={navigateTo} />
+
+      {/* 4. ⏳ もうすぐ終了！ (条件付きレンダリング) */}
+      {endingSoonSurveys.length > 0 && (
+        <div className="sidebar-section-card" style={{ marginBottom: '24px', border: '2px solid #fee2e2' }}>
+          <h3 className="live-feed-title" style={{ color: '#e11d48' }}>⏰ もうすぐ終了！</h3>
+          <div className="live-feed-content">
+            {(showAllEndingSoon ? endingSoonSurveys : endingSoonSurveys.slice(0, 4)).map(s => (
+              <div 
+                key={s.id} 
+                className="live-item clickable" 
+                onClick={() => navigateTo('details', s)}
+                role="button"
+                tabIndex={0}
+                onKeyPress={(e) => e.key === 'Enter' && navigateTo('details', s)}
+                aria-label={`${s.title} の詳細を見る`}
+              >
+                <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>{s.title}</div>
+                <div style={{ fontSize: '0.8rem', color: '#e11d48', background: '#fff1f2', display: 'inline-block', padding: '2px 8px', borderRadius: '12px' }}>
+                  〆: {formatWithDay(s.deadline)}
+                </div>
+              </div>
+            ))}
+            {endingSoonSurveys.length > 4 && (
+              <button onClick={() => setShowAllEndingSoon(v => !v)} style={{
+                marginTop: '8px', width: '100%', background: 'none', border: '1.5px solid #fca5a5',
+                borderRadius: '12px', color: '#e11d48', fontSize: '0.8rem', padding: '4px 0', cursor: 'pointer', fontWeight: 'bold'
+              }}>
+                {showAllEndingSoon ? '▲ 閉じる' : `▼ あと${endingSoonSurveys.length - 4}件 もっと見る`}
+              </button>
+            )}
+          </div>
+        </div>
+      )}
       {/* 5. 💬 X風・広場のタイムライン（つぶやき） */}
       <SquareTimeline />
 
