@@ -430,7 +430,10 @@ const Sidebar = ({
           </div>
         </div>
 
-      {/* 3. 🔥 人気ランキング — ちょうど左側の記事一覧（公式・ニュース）が始まる真横の高さに配置 */}
+      {/* 3. 💬 X風・広場のタイムライン（つぶやき＆みんクエ速報） */}
+      <SquareTimeline />
+
+      {/* 4. 🔥 人気ランキング — ちょうど左側の記事一覧（公式・ニュース）が始まる真横の高さに配置 */}
       <div className="sidebar-section-card" style={{ marginBottom: '24px', padding: '20px 14px' }}>
         <h3 className="live-feed-title" style={{ marginLeft: '4px' }}>🔥 人気ランキング</h3>
         <div className="live-feed-content">
@@ -562,9 +565,6 @@ const Sidebar = ({
           </div>
         </div>
       )}
-      {/* 5. 💬 X風・広場のタイムライン（つぶやき） */}
-      <SquareTimeline />
-
       {/* 6. ✨ 広場の最新ニュース */}
       <div className="sidebar-section-card" style={{ marginBottom: '24px' }}>
         <h3 className="live-feed-title">✨ 広場の最新ニュース</h3>
